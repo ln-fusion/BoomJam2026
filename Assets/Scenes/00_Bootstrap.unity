@@ -233,8 +233,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b471bad4d84bf61f98c85f2267f06124, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  m_Name:
+  m_EditorClassIdentifier:
   startMenuSceneName: 01_StartMenu
   unloadBootstrapScene: 0
 --- !u!4 &1613511002
