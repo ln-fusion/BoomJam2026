@@ -68,8 +68,8 @@
     "explorer.fileNesting.enabled": true,
     "explorer.fileNesting.expand": false,
     "explorer.fileNesting.patterns": {
-        // 根目录 Unity 生成的 .csproj 全部折叠到 .sln 下（含 Directory.Build.props）
-        "*.sln": "*.csproj, Directory.Build.props",
+        // 根目录 Unity 生成的 .csproj 全部折叠到 .sln 下（含 Directory.Build.props / Directory.Build.targets）
+        "*.sln": "*.csproj, Directory.Build.props, Directory.Build.targets",
         // 每个资源/脚本的 .meta 折叠到对应文件下（因此需从 files.exclude 中移除 meta）
         "*": "$(capture).meta"
     },
