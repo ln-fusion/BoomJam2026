@@ -30,6 +30,10 @@ dotnet_diagnostic.UNT0005.severity = warning   # Update 内 GetComponent → 建
 dotnet_diagnostic.UNT0015.severity = warning   # 消息方法签名不匹配
 dotnet_diagnostic.UNT0024.severity = warning   # 新代码用 [ExecuteAlways] 而非 [ExecuteInEditMode]
 
+# Roslynator Unity 分析：识别 MonoBehaviour 派生类中的 Unity 消息方法（Start/Update 等），
+# 避免 RCS1213/RCS1163 对引擎回调误报"未使用成员"。（4.6.2+ 键名，旧键 roslynator_suppress_unity_script_methods 已废弃）
+roslynator_unity_code_analysis.enabled = true
+
 # 常见易错点（按需增删）
 dotnet_diagnostic.CA1062.severity = warning    # 公共方法参数未校验 null
 dotnet_diagnostic.CA1031.severity = suggestion # 捕获通用异常
@@ -38,6 +42,7 @@ dotnet_diagnostic.CA2007.severity = suggestion # 未 ConfigureAwait（Unity 场�
 # CA 规则对 Unity 框架模式的误报，关闭：
 dotnet_diagnostic.CA1016.severity = none       # 程序集版本：Unity 用 GenerateAssemblyInfo=false 自行管理
 dotnet_diagnostic.CA1000.severity = none       # 泛型静态成员（如 MonoSingleton<T>.Instance）是刻意设计
+dotnet_diagnostic.CA1051.severity = none       # 公开实例字段：Unity 常规序列化模式（Inspector 显示字段），非库 API 设计
 
 # Unity YAML / JSON 类文件
 [*.{unity,prefab,asset,meta,mat}]
