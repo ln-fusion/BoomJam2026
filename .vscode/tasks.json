@@ -1,0 +1,43 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Build (dotnet)",
+            // process 类型直接 spawn 进程，避免 shell（pwsh/cmd）对含空格路径的引号解析问题
+            // 注意：不能加 -warnaserror 命令行参数——它作为全局属性 TreatWarningsAsErrors=true 注入，
+            // 会覆盖 Directory.Build.props 里按程序集的区分（自有代码严格、第三方插件放宽）
+            "type": "process",
+            "command": "dotnet",
+            "args": [
+                "build",
+                "${workspaceFolder}\\Change and Run.sln",
+                "--nologo"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            // $msCompile 把 dotnet build 输出的 file(line,col): error/warning 解析进问题面板
+            "problemMatcher": "$msCompile",
+            "presentation": {
+                "reveal": "silent",
+                "panel": "shared"
+            }
+        },
+        {
+            "label": "CSharpier Check",
+            "type": "shell",
+            "command": "dotnet csharpier check .",
+            "problemMatcher": []
+        },
+        {
+            "label": "CSharpier Format",
+            "type": "shell",
+            "command": "dotnet csharpier format .",
+            "problemMatcher": []
+        }
+    ]
+}

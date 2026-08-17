@@ -56,5 +56,21 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "Change and Run.sln"
+    "dotnet.defaultSolution": "Change and Run.sln",
+    // C# 格式化：保存时自动跑 CSharpier（需安装 csharpier-vscode 扩展）
+    "[csharp]": {
+        "editor.defaultFormatter": "csharpier.csharpier-vscode",
+        "editor.formatOnSave": true
+    },
+    // 保存时自动应用可安全修复的诊断（未使用 using、命名建议等）
+    "editor.codeActionsOnSave": {
+        "source.fixAll": "always"
+    },
+    // Unity asmdef 按 JSONC 高亮（支持注释）
+    "files.associations": {
+        "*.asmdef": "jsonc",
+        "*.asmref": "jsonc"
+    },
+    // 语言服务对 Unity 自动生成 csproj 的兼容提示降级为 warning
+    "dotnet.compatibility.problemSeverity": "warning"
 }

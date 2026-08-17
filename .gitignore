@@ -34,6 +34,13 @@
 # Jetbrains Rider personal-layer settings
 *.DotSettings.user
 
+# Unity 场景烘焙缓存（编辑器自动生成，不纳入版本控制）
+# 烘焙数据生成在场景同名的子目录中（如 Assets/Scenes/SampleScene/）
+# 注意：场景文件自身的 .meta（如 SampleScene.unity.meta）必须纳入版本控制，不可忽略
+Assets/Scenes/*/          # Photoshop temp files 模式参考：忽略场景子目录（烘焙缓存）
+Assets/Scenes/**/LightingData.asset
+Assets/Scenes/**/lightingdata.asset
+
 # Visual Studio cache directory
 .vs/
 

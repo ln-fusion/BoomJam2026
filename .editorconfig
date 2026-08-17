@@ -1,0 +1,56 @@
+# Change and Run 项目 .editorconfig
+root = true
+
+[*]
+charset = utf-8
+insert_final_newline = true
+trim_trailing_whitespace = true
+indent_style = space
+indent_size = 4
+
+# C# 脚本：遵循 Unity 默认代码风格（4 空格、大括号换行）
+[*.cs]
+indent_size = 4
+csharp_new_line_before_open_brace = all
+csharp_space_after_cast = false
+csharp_indent_case_contents = true
+
+# ---------------- Roslyn 分析器规则（IDE 波浪线 + CI dotnet build 均生效） ----------------
+# 死代码规则：注意 Unity 的 [SerializeField] 私有字段、引擎消息方法（Update/OnCollisionEnter 等）
+# 会被"未使用成员"规则误报；确认是序列化/引擎用途时保留即可，不要删。
+dotnet_diagnostic.IDE0051.severity = warning   # 未使用的私有成员
+dotnet_diagnostic.IDE0052.severity = warning   # 未使用的私有字段
+dotnet_diagnostic.IDE0059.severity = warning   # 无意义的赋值
+dotnet_diagnostic.IDE0005.severity = none      # 未使用的 using：IDE 有灰色淡化提示；构建期启用需 GenerateDocumentationFile，Unity 不开文档生成
+dotnet_diagnostic.RCS1213.severity = warning   # 未使用的私有成员（Roslynator）
+dotnet_diagnostic.RCS1163.severity = suggestion # 未使用的参数（Roslynator，Unity 消息方法参数会误报）
+
+# Unity 官方分析器（Microsoft.Unity.Analyzers）重点规则提级
+dotnet_diagnostic.UNT0005.severity = warning   # Update 内 GetComponent → 建议缓存字段
+dotnet_diagnostic.UNT0015.severity = warning   # 消息方法签名不匹配
+dotnet_diagnostic.UNT0024.severity = warning   # 新代码用 [ExecuteAlways] 而非 [ExecuteInEditMode]
+
+# 常见易错点（按需增删）
+dotnet_diagnostic.CA1062.severity = warning    # 公共方法参数未校验 null
+dotnet_diagnostic.CA1031.severity = suggestion # 捕获通用异常
+dotnet_diagnostic.CA2007.severity = suggestion # 未 ConfigureAwait（Unity 场景不适用，仅提示）
+
+# CA 规则对 Unity 框架模式的误报，关闭：
+dotnet_diagnostic.CA1016.severity = none       # 程序集版本：Unity 用 GenerateAssemblyInfo=false 自行管理
+dotnet_diagnostic.CA1000.severity = none       # 泛型静态成员（如 MonoSingleton<T>.Instance）是刻意设计
+
+# Unity YAML / JSON 类文件
+[*.{unity,prefab,asset,meta,mat}]
+indent_style = space
+indent_size = 2
+
+[*.{json,asmdef,asmref}]
+indent_style = space
+indent_size = 2
+
+# 测试代码：允许 NUnit 惯例的 方法_场景_预期 命名（下划线），CA1707 仅对测试目录关闭
+[Assets/Tests/**/*.cs]
+dotnet_diagnostic.CA1707.severity = none
+
+[*.md]
+trim_trailing_whitespace = false
