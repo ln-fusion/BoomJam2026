@@ -40,7 +40,6 @@
         "**/*.cubemap": true,
         "**/*.flare": true,
         "**/*.mat": true,
-        "**/*.meta": true,
         "**/*.prefab": true,
         "**/*.unity": true,
         "build/": true,
@@ -56,6 +55,29 @@
         "temp/": true,
         "Temp/": true
     },
+    "search.exclude": {
+        "**/Library": true,
+        "**/Temp": true,
+        "**/Logs": true,
+        "**/obj": true,
+        "**/Build": true,
+        "**/Builds": true,
+        "**/*.meta": true
+    },
+    // 文件嵌套（File Nesting）：把派生文件按模式折叠到父文件下，视觉上像文件夹分组
+    "explorer.fileNesting.enabled": true,
+    "explorer.fileNesting.expand": false,
+    "explorer.fileNesting.patterns": {
+        // 根目录 Unity 生成的 .csproj 全部折叠到 .sln 下（含 Directory.Build.props）
+        "*.sln": "*.csproj, Directory.Build.props",
+        // 每个资源/脚本的 .meta 折叠到对应文件下（因此需从 files.exclude 中移除 meta）
+        "*": "$(capture).meta"
+    },
+    // Unity 2022.3 使用 .NET Framework 4.x，旧版 C# (OmniSharp) 扩展需要此设置；
+    // 若使用 C# Dev Kit (csdevkit) 则自动忽略，无副作用。
+    // C# 语言服务：统一使用 C# Dev Kit（Roslyn）。请勿同时安装旧版 ms-dotnettools.csharp，
+    // 两者共存会互相降级，导致分析器诊断（问题面板）不工作。
+    // 卸载命令：code --uninstall-extension ms-dotnettools.csharp
     "dotnet.defaultSolution": "Change and Run.sln",
     // C# 格式化：保存时自动跑 CSharpier（需安装 csharpier-vscode 扩展）
     "[csharp]": {
