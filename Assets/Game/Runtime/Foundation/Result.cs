@@ -28,18 +28,5 @@ namespace Game.Foundation
         /// <param name="errorCode">错误码</param>
         /// <param name="message">日志用错误消息</param>
         public static Result Failure(ErrorCode errorCode, string message) => new Result(false, errorCode, message);
-
-        /// <summary>
-        /// 将失败结果展开为异常失败；成功时抛异常，用于断言式调用点.
-        /// </summary>
-        public T GetValueOrThrow<T>()
-        {
-            if (IsSuccess)
-            {
-                throw new System.InvalidOperationException("Result 成功时空值无意义");
-            }
-
-            throw new System.InvalidOperationException($"Result failed with {ErrorCode}: {Message}");
-        }
     }
 }
