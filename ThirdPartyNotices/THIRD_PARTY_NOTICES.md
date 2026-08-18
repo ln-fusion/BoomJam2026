@@ -24,6 +24,24 @@ License texts are stored verbatim in the `licenses/` subdirectory. URL reference
 - **License text:** [licenses/UNITY_COMPANION_LICENSE.txt](./licenses/UNITY_COMPANION_LICENSE.txt)
 - **Upstream reference:** <https://unity.com/legal/licenses/unity-companion-license>
 
+## Unity Addressables
+
+- **Version:** 1.22.3
+- **Source:** Unity Registry (`com.unity.addressables`); transitive dependency of Unity Localization
+- **License Type:** Unity Companion License v1.4
+- **Copyright:** © Unity Technologies ApS
+- **License text:** [licenses/UNITY_COMPANION_LICENSE.txt](./licenses/UNITY_COMPANION_LICENSE.txt)
+- **Upstream reference:** <https://unity.com/legal/licenses/unity-companion-license>
+
+## Unity Scriptable Build Pipeline
+
+- **Version:** 1.21.25
+- **Source:** Unity Registry (`com.unity.scriptablebuildpipeline`); transitive dependency of Unity Addressables
+- **License Type:** Unity Companion License v1.4
+- **Copyright:** © Unity Technologies ApS
+- **License text:** [licenses/UNITY_COMPANION_LICENSE.txt](./licenses/UNITY_COMPANION_LICENSE.txt)
+- **Upstream reference:** <https://unity.com/legal/licenses/unity-companion-license>
+
 ## Unity Test Framework
 
 - **Version:** 1.1.33

@@ -1,5 +1,6 @@
 #nullable enable
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Game.Contracts;
@@ -139,7 +140,8 @@ namespace Game.Flow
                 using var linked = CancellationTokenSource.CreateLinkedTokenSource(scope.Token, cancellationToken);
 
                 // 2. 卸载非目标功能场景（目标已加载时跳过，保证幂等不加载两份）
-                foreach (var loaded in _sceneLoader.LoadedSceneNames)
+                // 先快照再卸载：LoadedSceneNames 可能是活集合视图（如测试替身），循环内卸载会改集合
+                foreach (var loaded in new List<string>(_sceneLoader.LoadedSceneNames))
                 {
                     if (loaded == sceneName)
                     {

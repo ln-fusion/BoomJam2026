@@ -42,7 +42,7 @@ namespace Game.Foundation
             _cts.Cancel();
         }
 
-        /// <summary>请求取消并释放资源；重复调用安全.</summary>
+        /// <summary>请求取消并释放资源；幂等，重复调用及 Dispose 后再调用均不抛异常.</summary>
         public void Dispose()
         {
             if (_disposed)
