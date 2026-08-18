@@ -1,0 +1,10 @@
+{
+  "name": "Game.Persistence",
+  "rootNamespace": "Game.Persistence",
+  "references": [
+    "Game.Foundation",
+    "Game.Contracts",
+    "Unity.Newtonsoft.Json"
+  ],
+  "autoReferenced": true
+}

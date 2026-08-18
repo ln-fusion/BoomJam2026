@@ -1,0 +1,18 @@
+{
+  "name": "Game.Tests.EditMode",
+  "rootNamespace": "Game.Tests.EditMode",
+  "references": [
+    "Game.Foundation",
+    "Game.Contracts",
+    "Game.Persistence",
+    "Game.Content",
+    "Game.Progression"
+  ],
+  "optionalUnityReferences": [
+    "TestAssemblies"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "autoReferenced": false
+}
