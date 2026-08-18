@@ -1,62 +1,43 @@
+#nullable enable
+using Game.Flow;
+using Game.Foundation;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 namespace Game.Bootstrap
 {
     /// <summary>
-    /// 应用组合根：驻留 00_Bootstrap 场景，负责启动阶段的场景流转.
+    /// 应用组合根：驻留 00_Bootstrap 场景，组装 Flow 服务并执行启动导航.
     /// </summary>
     /// <remarks>
-    /// C01 骨架期：仅完成最小链路（进入空 StartMenu），C02 将由 IGameFlowService 接管正式流转.
+    /// C02 起：GameRoot 不再直接调 SceneManager，改由 <see cref="IGameFlowService"/> 接管流转
+    /// （Additive 加载/卸载/激活、防重入、取消生命周期）.
     /// </remarks>
     [DefaultExecutionOrder(-100)]
     public sealed class GameRoot : MonoBehaviour
     {
-        [Tooltip("启动后加载的功能场景名称（Build Settings 顺序即可，Additive 加载）")]
+        [Tooltip("启动后加载的功能场景名（Build Settings 场景名）")]
         [SerializeField]
-        private string startMenuSceneName = "01_StartMenu";
+        private string startMenuSceneName = SceneNames.StartMenu;
 
-        [Tooltip("加载功能场景前卸载 Bootstrap 场景内不需要保留的对象层级")]
-        [SerializeField]
-        private bool unloadBootstrapScene = false;
+        private GameFlowService? _flowService;
 
         private void Start()
         {
-            LoadStartMenu();
+            var eventBus = new DomainEventBus(UnityDebugLogger.Instance);
+            _flowService = new GameFlowService(
+                new UnitySceneLoader(),
+                new SystemClock(),
+                UnityDebugLogger.Instance,
+                eventBus,
+                startMenuSceneName
+            );
+
+            _flowService.EnterStartMenuAsync(System.Threading.CancellationToken.None).ConfigureAwait(false);
         }
 
-        /// <summary>
-        /// 用 Additive 方式加载 StartMenu 并设为 Active 场景.
-        /// </summary>
-        private void LoadStartMenu()
+        private void OnDestroy()
         {
-            if (string.IsNullOrEmpty(startMenuSceneName))
-            {
-                Debug.LogError($"[{nameof(GameRoot)}] startMenuSceneName 为空,F1 无法继续");
-                return;
-            }
-
-            var op = SceneManager.LoadSceneAsync(startMenuSceneName, LoadSceneMode.Additive);
-            if (op == null)
-            {
-                Debug.LogError($"[{nameof(GameRoot)}] 场景 {startMenuSceneName} 不存在,Build Settings 未包含");
-                return;
-            }
-
-            op.completed += OnStartMenuLoaded;
-        }
-
-        /// <summary>
-        /// StartMenu 加载完成回调：设为 Active 场景，卸载 Bootstrap 场景（保护性双重校验）.
-        /// </summary>
-        private void OnStartMenuLoaded(AsyncOperation op)
-        {
-            SceneManager.SetActiveScene(SceneManager.GetSceneByName(startMenuSceneName));
-
-            if (unloadBootstrapScene)
-            {
-                SceneManager.UnloadSceneAsync(gameObject.scene);
-            }
+            _flowService?.Dispose();
         }
     }
 }

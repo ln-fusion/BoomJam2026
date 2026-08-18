@@ -19,6 +19,9 @@ namespace Game.Foundation
 
         /// <summary>IO/网络/平台错误</summary>
         Infrastructure,
+
+        /// <summary>场景流转错误（Additive 加载/卸载/激活失败）</summary>
+        SceneTransition,
     }
 
     /// <summary>
@@ -34,5 +37,14 @@ namespace Game.Foundation
         OperationNotAllowed = 5,
         SaveFailed = 6,
         LoadFailed = 7,
+
+        /// <summary>场景加载失败（Build Settings 缺失或加载中断）</summary>
+        SceneLoadFailed = 8,
+
+        /// <summary>场景卸载失败</summary>
+        SceneUnloadFailed = 9,
+
+        /// <summary>异步操作被取消</summary>
+        OperationCancelled = 10,
     }
 }

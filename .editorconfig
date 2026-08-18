@@ -43,6 +43,7 @@ dotnet_diagnostic.CA2007.severity = suggestion # 未 ConfigureAwait（Unity 场�
 dotnet_diagnostic.CA1016.severity = none       # 程序集版本：Unity 用 GenerateAssemblyInfo=false 自行管理
 dotnet_diagnostic.CA1000.severity = none       # 泛型静态成员（如 MonoSingleton<T>.Instance）是刻意设计
 dotnet_diagnostic.CA1051.severity = none       # 公开实例字段：Unity 常规序列化模式（Inspector 显示字段），非库 API 设计
+dotnet_diagnostic.CA1001.severity = none       # 可释放字段：Unity MonoBehaviour 生命周期（OnDestroy 释放）与测试 TearDown 释放是惯例模式
 
 # Unity YAML / JSON 类文件
 [*.{unity,prefab,asset,meta,mat}]
@@ -54,7 +55,7 @@ indent_style = space
 indent_size = 2
 
 # 测试代码：允许 NUnit 惯例的 方法_场景_预期 命名（下划线），CA1707 仅对测试目录关闭
-[Assets/Tests/**/*.cs]
+[Assets/**/Tests/**/*.cs]
 dotnet_diagnostic.CA1707.severity = none
 
 [*.md]
