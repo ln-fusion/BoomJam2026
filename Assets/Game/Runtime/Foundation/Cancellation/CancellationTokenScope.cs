@@ -14,18 +14,43 @@ namespace Game.Foundation
     {
         private readonly CancellationTokenSource _cts = new CancellationTokenSource();
 
+        // 缓存 Token：CancellationTokenSource 释放后其 Token 属性会抛 ObjectDisposedException
+        private readonly CancellationToken _token;
+
+        private bool _disposed;
+
+        public CancellationTokenScope()
+        {
+            _token = _cts.Token;
+        }
+
         /// <summary>作用域关联的取消令牌.</summary>
-        public CancellationToken Token => _cts.Token;
+        public CancellationToken Token => _token;
 
         /// <summary>是否已请求取消.</summary>
         public bool IsCancellationRequested => _cts.IsCancellationRequested;
 
         /// <summary>请求取消（幂等）.</summary>
-        public void Cancel() => _cts.Cancel();
+        public void Cancel()
+        {
+            // CancellationTokenSource 释放后 Cancel 会抛 ObjectDisposedException，与"幂等"承诺冲突
+            if (_disposed)
+            {
+                return;
+            }
+
+            _cts.Cancel();
+        }
 
         /// <summary>请求取消并释放资源；重复调用安全.</summary>
         public void Dispose()
         {
+            if (_disposed)
+            {
+                return;
+            }
+
+            _disposed = true;
             _cts.Cancel();
             _cts.Dispose();
         }
