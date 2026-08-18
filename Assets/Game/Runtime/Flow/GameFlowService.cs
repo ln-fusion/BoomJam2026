@@ -38,6 +38,9 @@ namespace Game.Flow
         /// <summary>诊断用时钟实例.</summary>
         public IClock Clock => _clock;
 
+        /// <summary>
+        /// 构造函数：注入场景加载/时钟/日志/事件总线依赖.
+        /// </summary>
         /// <param name="sceneLoader">场景加载器（默认 <see cref="UnitySceneLoader"/>）</param>
         /// <param name="clock">时钟</param>
         /// <param name="logger">日志；为 null 时静默</param>
