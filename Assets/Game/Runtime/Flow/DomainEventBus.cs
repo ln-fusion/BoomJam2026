@@ -36,7 +36,6 @@ namespace Game.Flow
                 throw new ArgumentNullException(nameof(handler));
             }
 
-            var entry = new SubscriptionEntry(handler);
             var type = typeof(T);
             if (!_subscriptions.TryGetValue(type, out var list))
             {
@@ -44,6 +43,7 @@ namespace Game.Flow
                 _subscriptions[type] = list;
             }
 
+            var entry = new SubscriptionEntry(list, handler);
             list.Add(entry);
             return entry;
         }
@@ -87,13 +87,29 @@ namespace Game.Flow
 
         private sealed class SubscriptionEntry : IDisposable
         {
+            private readonly List<SubscriptionEntry> _owner;
+
             internal object Handler { get; }
 
             internal bool IsDisposed { get; private set; }
 
-            internal SubscriptionEntry(object handler) => Handler = handler;
+            internal SubscriptionEntry(List<SubscriptionEntry> owner, object handler)
+            {
+                _owner = owner;
+                Handler = handler;
+            }
 
-            public void Dispose() => IsDisposed = true;
+            public void Dispose()
+            {
+                if (IsDisposed)
+                {
+                    return;
+                }
+
+                IsDisposed = true;
+                // 单线程模型下直接移除安全；Publish 走快照迭代不受影响
+                _owner.Remove(this);
+            }
         }
     }
 }

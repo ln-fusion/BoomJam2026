@@ -1,4 +1,6 @@
 #nullable enable
+using System;
+using System.Threading.Tasks;
 using Game.Flow;
 using Game.Foundation;
 using UnityEngine;
@@ -23,16 +25,29 @@ namespace Game.Bootstrap
 
         private void Start()
         {
-            var eventBus = new DomainEventBus(UnityDebugLogger.Instance);
-            _flowService = new GameFlowService(
+            var flowService = new GameFlowService(
                 new UnitySceneLoader(),
                 new SystemClock(),
                 UnityDebugLogger.Instance,
-                eventBus,
+                new DomainEventBus(UnityDebugLogger.Instance),
                 startMenuSceneName
             );
+            _flowService = flowService;
 
-            _flowService.EnterStartMenuAsync(System.Threading.CancellationToken.None).ConfigureAwait(false);
+            _ = RunStartupAsync(flowService);
+        }
+
+        private static async Task RunStartupAsync(GameFlowService flowService)
+        {
+            try
+            {
+                await flowService.EnterStartMenuAsync(System.Threading.CancellationToken.None);
+            }
+            catch (Exception ex)
+            {
+                // 启动导航失败不能静默丢弃：黑屏时这是唯一排查线索
+                Debug.LogException(ex);
+            }
         }
 
         private void OnDestroy()
