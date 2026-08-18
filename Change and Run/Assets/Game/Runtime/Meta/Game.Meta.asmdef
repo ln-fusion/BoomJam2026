@@ -1,0 +1,9 @@
+{
+  "name": "Game.Meta",
+  "rootNamespace": "Game.Meta",
+  "references": [
+    "Game.Foundation",
+    "Game.Contracts"
+  ],
+  "autoReferenced": true
+}
