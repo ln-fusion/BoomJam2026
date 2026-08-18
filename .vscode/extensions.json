@@ -1,0 +1,14 @@
+{
+    "recommendations": [
+      "visualstudiotoolsforunity.vstuc",
+      "ms-dotnettools.csdevkit",
+      "kleber-swf.unity-code-snippets",
+      "csharpier.csharpier-vscode",
+      "EditorConfig.EditorConfig",
+      "sonarsource.sonarlint-vscode",
+      "josefpihrt.roslynator"
+    ],
+    "unwantedRecommendations": [
+      "ms-dotnettools.csharp"
+    ]
+}

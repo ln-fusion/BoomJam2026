@@ -1,0 +1,18 @@
+<!--
+  与 Directory.Build.props 配套的"收尾"配置。
+  注意：静态求值阶段的属性条件（PropertyGroup Condition）不允许引用 item 列表（MSB4099），
+  因此空程序集判断必须在 Target（执行阶段）中进行。
+-->
+<Project>
+  <!--
+    空程序集（asmdef 目录下暂无任何 .cs 源文件）：
+    - CS2008（未指定源文件）与 CA1016（缺程序集版本）不适用——空 asmdef 是合法占位状态；
+    - Unity 重新打开项目时会重新生成 csproj/sln（空程序集自动移出 sln、补充源码后引用自动更新）。
+    一旦程序集有了源码，'@(Compile)' 非空，本豁免自动失效，恢复严格检查。
+  -->
+  <Target Name="SuppressEmptyAssemblyWarnings" BeforeTargets="CoreCompile">
+    <PropertyGroup Condition="'@(Compile)' == ''">
+      <NoWarn>$(NoWarn);CS2008;CA1016</NoWarn>
+    </PropertyGroup>
+  </Target>
+</Project>

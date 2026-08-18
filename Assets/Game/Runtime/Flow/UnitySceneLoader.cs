@@ -1,0 +1,104 @@
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
+using UnityEngine;
+using UnityEngine.SceneManagement;
+
+namespace Game.Flow
+{
+    /// <summary>
+    /// 基于 <see cref="SceneManager"/> 的场景加载器：Additive 加载、激活、卸载.
+    /// </summary>
+    public sealed class UnitySceneLoader : ISceneLoader
+    {
+        /// <summary>当前已加载的功能场景名（排除 Bootstrap 场景自身）.</summary>
+        public IReadOnlyCollection<string> LoadedSceneNames
+        {
+            get
+            {
+                var names = new List<string>();
+                for (var i = 0; i < SceneManager.sceneCount; i++)
+                {
+                    var scene = SceneManager.GetSceneAt(i);
+                    if (scene.isLoaded && scene.name != SceneNames.Bootstrap)
+                    {
+                        names.Add(scene.name);
+                    }
+                }
+
+                return names;
+            }
+        }
+
+        /// <summary>Additive 加载并激活场景；取消或失败返回 false.</summary>
+        public async Task<bool> LoadAdditiveAsync(string sceneName, CancellationToken cancellationToken)
+        {
+            if (IsLoaded(sceneName))
+            {
+                return true;
+            }
+
+            var op = SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Additive);
+            if (op == null)
+            {
+                return false;
+            }
+
+            if (!await AwaitAsyncOperation(op, cancellationToken))
+            {
+                return false;
+            }
+
+            var scene = SceneManager.GetSceneByName(sceneName);
+            if (!scene.IsValid())
+            {
+                return false;
+            }
+
+            // 新场景设为 Active，使新场景的 UI 获得输入焦点等场景级行为
+            SceneManager.SetActiveScene(scene);
+            return true;
+        }
+
+        /// <summary>卸载指定场景；未加载视为成功，取消返回 false.</summary>
+        public async Task<bool> UnloadAsync(string sceneName, CancellationToken cancellationToken)
+        {
+            var scene = SceneManager.GetSceneByName(sceneName);
+            if (!scene.IsValid() || !scene.isLoaded)
+            {
+                return true;
+            }
+
+            var op = SceneManager.UnloadSceneAsync(scene);
+            if (op == null)
+            {
+                return false;
+            }
+
+            return await AwaitAsyncOperation(op, cancellationToken);
+        }
+
+        private static async Task<bool> AwaitAsyncOperation(AsyncOperation op, CancellationToken cancellationToken)
+        {
+            // op.completed 只触发一次；取消时放弃等待并返回 false（SceneManager 不支持中途取消）
+            var tcs = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+            op.completed += _ => tcs.TrySetResult(true);
+            using var registration = cancellationToken.Register(() => tcs.TrySetResult(false));
+            return await tcs.Task;
+        }
+
+        private static bool IsLoaded(string sceneName)
+        {
+            for (var i = 0; i < SceneManager.sceneCount; i++)
+            {
+                var scene = SceneManager.GetSceneAt(i);
+                if (scene.isLoaded && scene.name == sceneName)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+    }
+}

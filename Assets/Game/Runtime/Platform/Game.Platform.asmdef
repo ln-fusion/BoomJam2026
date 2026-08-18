@@ -1,0 +1,17 @@
+{
+    "name": "Game.Platform",
+    "rootNamespace": "Game.Platform",
+    "references": [
+        "Game.Foundation",
+        "Game.Contracts"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

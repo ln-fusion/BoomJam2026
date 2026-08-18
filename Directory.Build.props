@@ -1,0 +1,39 @@
+<!--
+  Unity 项目代码质量强制配置（对应 TS 项目的 ESLint 层）。
+  必须放在 Unity 项目根目录：Unity 为每个 asmdef 生成的 csproj 会自动导入本文件。
+  注意：Unity 编译器本身不走 MSBuild，本配置作用于 IDE（VS Code / Rider / VS）与 CI 的 dotnet build；
+  Unity 编译器层面由 Player Settings → Treat warnings as errors 兜底。
+-->
+<Project>
+  <PropertyGroup>
+    <!-- SDK 内置 NetAnalyzers（CA 系）：Recommended = 官方推荐集；想更激进可改 All（误报会多） -->
+    <AnalysisLevel>latest</AnalysisLevel>
+    <AnalysisMode>Recommended</AnalysisMode>
+    <!-- IDE 代码风格规则（IDE 系，如未使用 using）在 dotnet build 时也执行 -->
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+    <!-- 编译警告视为错误；下面放行 Unity 序列化/事件相关无害警告 -->
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <WarningsNotAsErrors>CS0067;CS0414;CS0649</WarningsNotAsErrors>
+  </PropertyGroup>
+
+  <!--
+    第三方程序集（如 UniGLTF / VRM / MToon / SpringBoneJobs 等 Unity 插件）：
+    不属于本仓库自有代码，不适用严格规则：
+      - 警告不视为错误（否则会阻塞整个解决方案构建）
+      - 不执行增强分析 / 代码风格强制，减少构建噪音
+    自有程序集（Assembly-CSharp*、自定义 asmdef 程序集）保持上方严格配置。
+    注意：命令行 -warnaserror 会以全局属性覆盖这里的区分，勿在构建命令中加该参数。
+  -->
+  <PropertyGroup Condition="$(MSBuildProjectName.StartsWith('Uni')) Or $(MSBuildProjectName.StartsWith('VRM')) Or $(MSBuildProjectName.StartsWith('MToon')) Or '$(MSBuildProjectName)' == 'SpringBoneJobs'">
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <AnalysisMode>None</AnalysisMode>
+    <EnforceCodeStyleInBuild>false</EnforceCodeStyleInBuild>
+  </PropertyGroup>
+
+  <ItemGroup Condition="'$(MSBuildProjectExtension)' == '.csproj'">
+    <!-- Unity 官方分析器：检测 Unity API 误用（UNT/USG 规则） -->
+    <PackageReference Include="Microsoft.Unity.Analyzers" Version="1.*" PrivateAssets="all" />
+    <!-- Roslynator：600+ 质量与风格规则（RCS 规则），含死代码检测 -->
+    <PackageReference Include="Roslynator.Analyzers" Version="4.*" PrivateAssets="all" />
+  </ItemGroup>
+</Project>
