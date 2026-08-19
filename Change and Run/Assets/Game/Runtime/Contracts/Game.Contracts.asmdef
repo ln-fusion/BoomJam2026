@@ -1,8 +1,0 @@
-{
-  "name": "Game.Contracts",
-  "rootNamespace": "Game.Contracts",
-  "references": [
-    "Game.Foundation"
-  ],
-  "autoReferenced": true
-}

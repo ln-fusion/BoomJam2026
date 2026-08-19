@@ -3,7 +3,8 @@
     "rootNamespace": "Game.Content",
     "references": [
         "Game.Foundation",
-        "Game.Contracts"
+        "Game.Contracts",
+        "Unity.Newtonsoft.Json"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

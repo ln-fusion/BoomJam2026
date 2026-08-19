@@ -5,6 +5,9 @@
         "Game.Foundation",
         "Game.Contracts",
         "Game.Flow",
+        "Game.Content",
+        "Game.Persistence",
+        "Game.Progression",
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner"
     ],

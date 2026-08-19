@@ -1,9 +1,0 @@
-{
-  "name": "Game.Progression",
-  "rootNamespace": "Game.Progression",
-  "references": [
-    "Game.Foundation",
-    "Game.Contracts"
-  ],
-  "autoReferenced": true
-}

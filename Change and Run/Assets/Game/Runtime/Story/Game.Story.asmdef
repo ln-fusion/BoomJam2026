@@ -1,9 +1,0 @@
-{
-  "name": "Game.Story",
-  "rootNamespace": "Game.Story",
-  "references": [
-    "Game.Foundation",
-    "Game.Contracts"
-  ],
-  "autoReferenced": true
-}
