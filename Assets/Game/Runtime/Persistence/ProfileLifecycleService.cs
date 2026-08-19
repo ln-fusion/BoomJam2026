@@ -13,6 +13,7 @@ namespace Game.Persistence
             new ErrorCode(ErrorCategory.Validation, "profile.nickname_invalid");
         private static readonly ErrorCode SaveFailed =
             new ErrorCode(ErrorCategory.SaveIo, "profile.create_failed");
+        private static readonly char[] InvalidNicknameChars = { '\r', '\n', '\t' };
 
         private readonly ISaveRepository _repository;
         private readonly IClock _clock;
@@ -44,7 +45,7 @@ namespace Game.Persistence
         {
             string normalizedNickname = nickname == null ? string.Empty : nickname.Trim();
             if (normalizedNickname.Length < 1 || normalizedNickname.Length > 32 ||
-                normalizedNickname.IndexOfAny(new[] { '\r', '\n', '\t' }) >= 0)
+                normalizedNickname.IndexOfAny(InvalidNicknameChars) >= 0)
                 return Result<ProfileSave>.Failure(InvalidNickname,
                     "Nickname must contain 1 to 32 visible characters.");
 
