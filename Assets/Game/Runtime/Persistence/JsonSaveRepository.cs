@@ -2,10 +2,9 @@ using System;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
-using Game.Contracts.Logging;
+using Game.Contracts;
 using Game.Contracts.Persistence;
-using Game.Contracts.Time;
-using Game.Foundation.Results;
+using Game.Foundation;
 using Newtonsoft.Json;
 
 namespace Game.Persistence
@@ -38,7 +37,7 @@ namespace Game.Persistence
             _profilePath = Path.Combine(saveDirectory, "profile.json");
             _writer = writer ?? throw new ArgumentNullException(nameof(writer));
             _clock = clock ?? new SystemClock();
-            _logger = logger ?? NullGameLogger.Instance;
+            _logger = logger ?? NullLogger.Instance;
             _deviceId = string.IsNullOrWhiteSpace(deviceId) ? Environment.MachineName : deviceId;
         }
 
@@ -234,8 +233,8 @@ namespace Game.Persistence
                                               exception is UnauthorizedAccessException ||
                                               exception is InvalidDataException)
             {
-                _logger.Write(LogLevel.Error, "Saving a local file failed.",
-                    LogContext.Empty.With("fileName", Path.GetFileName(path)), exception);
+                _logger.LogError(LogContext.Empty.With("fileName", Path.GetFileName(path)),
+                    $"Saving a local file failed: {exception}");
                 return SaveResult.Failure(SaveErrors.Io, "The save file could not be written.");
             }
         }
@@ -248,9 +247,9 @@ namespace Game.Persistence
 
         private void LogReadFailure(string path, ErrorCode error, Exception exception)
         {
-            _logger.Write(LogLevel.Warning, "Loading a local file failed.",
-                LogContext.Empty.With("fileName", Path.GetFileName(path))
-                    .With("errorCode", error.ToString()), exception);
+            _logger.LogWarning(LogContext.Empty.With("fileName", Path.GetFileName(path))
+                    .With("errorCode", error.ToString()),
+                $"Loading a local file failed: {exception}");
         }
 
         private void ThrowIfDisposed()

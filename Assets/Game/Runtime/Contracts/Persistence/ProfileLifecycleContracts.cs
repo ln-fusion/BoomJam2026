@@ -1,6 +1,6 @@
 using System.Threading;
 using System.Threading.Tasks;
-using Game.Foundation.Results;
+using Game.Foundation;
 
 namespace Game.Contracts.Persistence
 {

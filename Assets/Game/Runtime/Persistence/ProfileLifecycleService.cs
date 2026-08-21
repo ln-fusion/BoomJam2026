@@ -1,9 +1,9 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Game.Contracts;
 using Game.Contracts.Persistence;
-using Game.Contracts.Time;
-using Game.Foundation.Results;
+using Game.Foundation;
 
 namespace Game.Persistence
 {

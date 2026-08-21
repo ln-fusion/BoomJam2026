@@ -1,4 +1,4 @@
-using Game.Foundation.Results;
+using Game.Foundation;
 
 namespace Game.Persistence
 {

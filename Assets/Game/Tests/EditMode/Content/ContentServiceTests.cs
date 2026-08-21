@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using Game.Content;
 using Game.Contracts.Content;
-using Game.Foundation.Ids;
+using Game.Foundation;
 using NUnit.Framework;
 
 namespace Game.Tests.EditMode.Content

@@ -1,7 +1,8 @@
 using System;
 using System.Threading;
-using Game.Contracts.Events;
+using Game.Contracts;
 using Game.Contracts.Lifetime;
+using Game.Flow;
 using NUnit.Framework;
 
 namespace Game.Tests.EditMode.Contracts
@@ -11,7 +12,7 @@ namespace Game.Tests.EditMode.Contracts
         [Test]
         public void DisposedSubscription_DoesNotReceiveLaterEvents()
         {
-            var eventBus = new DomainEventBus();
+            var eventBus = new DomainEventBus(null);
             int calls = 0;
             IDisposable subscription = eventBus.Subscribe<TestEvent>(_ => calls++);
 
@@ -25,7 +26,7 @@ namespace Game.Tests.EditMode.Contracts
         [Test]
         public void SubscriberFailure_DoesNotBlockOtherSubscribers()
         {
-            var eventBus = new DomainEventBus();
+            var eventBus = new DomainEventBus(null);
             int calls = 0;
             eventBus.Subscribe<TestEvent>(_ => throw new InvalidOperationException("test"));
             eventBus.Subscribe<TestEvent>(_ => calls++);

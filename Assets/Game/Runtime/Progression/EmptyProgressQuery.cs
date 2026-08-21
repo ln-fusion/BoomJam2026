@@ -1,5 +1,5 @@
 using Game.Contracts.Progression;
-using Game.Foundation.Ids;
+using Game.Foundation;
 
 namespace Game.Progression
 {

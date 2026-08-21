@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Game.Contracts.Content;
-using Game.Foundation.Ids;
+using Game.Foundation;
 
 namespace Game.Content
 {

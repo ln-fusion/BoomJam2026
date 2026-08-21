@@ -19,7 +19,13 @@ namespace Game.Foundation
         /// <param name="value">稳定 ID 字符串</param>
         protected StrongId(string value)
         {
-            Value = value ?? string.Empty;
+            if (string.IsNullOrWhiteSpace(value))
+                throw new ArgumentException("A stable ID is required.", nameof(value));
+
+            if (!string.Equals(value, value.Trim(), StringComparison.Ordinal))
+                throw new ArgumentException("A stable ID cannot contain surrounding whitespace.", nameof(value));
+
+            Value = value;
         }
 
         /// <summary>比较是否为空值</summary>

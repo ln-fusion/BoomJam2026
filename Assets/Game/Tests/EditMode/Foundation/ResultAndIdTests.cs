@@ -1,6 +1,5 @@
 using System;
-using Game.Foundation.Ids;
-using Game.Foundation.Results;
+using Game.Foundation;
 using NUnit.Framework;
 
 namespace Game.Tests.EditMode.Foundation

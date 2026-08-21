@@ -1,9 +1,10 @@
 using System;
 using System.IO;
 using System.Threading;
+using System.Threading.Tasks;
+using Game.Contracts;
 using Game.Contracts.Persistence;
-using Game.Contracts.Time;
-using Game.Foundation.Results;
+using Game.Foundation;
 using Game.Persistence;
 using NUnit.Framework;
 
@@ -31,39 +32,45 @@ namespace Game.Tests.EditMode.Persistence
         [Test]
         public void MissingProfile_RequestsNewNickname_ThenExistingProfileContinues()
         {
-            using (var repository = new JsonSaveRepository(_directory,
-                       new FixedClock()))
+            RunAsync(async () =>
             {
-                var lifecycle = new ProfileLifecycleService(repository, new FixedClock());
-                Result<ProfileStartupDecision> first = lifecycle
-                    .LoadOrDecideAsync(CancellationToken.None).GetAwaiter().GetResult();
-                Assert.That(first.IsSuccess, Is.True);
-                Assert.That(first.Value.Mode, Is.EqualTo(ProfileStartupMode.CreateNew));
+                using (var repository = new JsonSaveRepository(_directory,
+                           new FixedClock()))
+                {
+                    var lifecycle = new ProfileLifecycleService(repository, new FixedClock());
+                    Result<ProfileStartupDecision> first = await lifecycle
+                        .LoadOrDecideAsync(CancellationToken.None);
+                    Assert.That(first.IsSuccess, Is.True);
+                    Assert.That(first.Value.Mode, Is.EqualTo(ProfileStartupMode.CreateNew));
 
-                Result<ProfileSave> created = lifecycle.CreateProfileAsync("  Player  ",
-                    CancellationToken.None).GetAwaiter().GetResult();
-                Assert.That(created.IsSuccess, Is.True);
-                Assert.That(created.Value.PlayerNickname, Is.EqualTo("Player"));
+                    Result<ProfileSave> created = await lifecycle.CreateProfileAsync("  Player  ",
+                        CancellationToken.None);
+                    Assert.That(created.IsSuccess, Is.True);
+                    Assert.That(created.Value.PlayerNickname, Is.EqualTo("Player"));
 
-                Result<ProfileStartupDecision> second = lifecycle
-                    .LoadOrDecideAsync(CancellationToken.None).GetAwaiter().GetResult();
-                Assert.That(second.Value.Mode, Is.EqualTo(ProfileStartupMode.Continue));
-                Assert.That(second.Value.Profile.ProfileId, Is.EqualTo(created.Value.ProfileId));
-            }
+                    Result<ProfileStartupDecision> second = await lifecycle
+                        .LoadOrDecideAsync(CancellationToken.None);
+                    Assert.That(second.Value.Mode, Is.EqualTo(ProfileStartupMode.Continue));
+                    Assert.That(second.Value.Profile.ProfileId, Is.EqualTo(created.Value.ProfileId));
+                }
+            });
         }
 
         [Test]
         public void InvalidNickname_IsRejectedBeforeWriting()
         {
-            using (var repository = new JsonSaveRepository(_directory))
+            RunAsync(async () =>
             {
-                var lifecycle = new ProfileLifecycleService(repository);
-                Result<ProfileSave> result = lifecycle.CreateProfileAsync("\n",
-                    CancellationToken.None).GetAwaiter().GetResult();
+                using (var repository = new JsonSaveRepository(_directory))
+                {
+                    var lifecycle = new ProfileLifecycleService(repository);
+                    Result<ProfileSave> result = await lifecycle.CreateProfileAsync("\n",
+                        CancellationToken.None);
 
-                Assert.That(result.IsSuccess, Is.False);
-                Assert.That(File.Exists(Path.Combine(_directory, "profile.json")), Is.False);
-            }
+                    Assert.That(result.IsSuccess, Is.False);
+                    Assert.That(File.Exists(Path.Combine(_directory, "profile.json")), Is.False);
+                }
+            });
         }
 
         [Test]
@@ -83,6 +90,11 @@ namespace Game.Tests.EditMode.Persistence
             public DateTimeOffset UtcNow => new DateTimeOffset(2026, 8, 18, 12, 0, 0,
                 TimeSpan.Zero);
             public DateTimeOffset LocalNow => UtcNow;
+        }
+
+        private static void RunAsync(Func<Task> operation)
+        {
+            Task.Run(operation).GetAwaiter().GetResult();
         }
 
         private sealed class VersionZeroToOneMigrator : IProfileMigrator

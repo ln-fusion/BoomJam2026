@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using Game.Foundation.Ids;
+using Game.Foundation;
 using UnityEngine;
 
 namespace Game.Contracts.Content

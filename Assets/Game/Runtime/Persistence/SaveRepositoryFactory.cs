@@ -1,7 +1,7 @@
 using System.IO;
-using Game.Contracts.Logging;
+using Game.Contracts;
 using Game.Contracts.Persistence;
-using Game.Contracts.Time;
+using Game.Foundation;
 using UnityEngine;
 
 namespace Game.Persistence

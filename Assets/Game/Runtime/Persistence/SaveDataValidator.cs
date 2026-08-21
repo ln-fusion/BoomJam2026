@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Game.Contracts.Persistence;
-using Game.Foundation.Results;
+using Game.Foundation;
 
 namespace Game.Persistence
 {

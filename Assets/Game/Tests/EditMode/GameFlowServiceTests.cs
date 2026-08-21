@@ -1,3 +1,4 @@
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Game.Contracts;
@@ -33,42 +34,48 @@ namespace Game.Tests.EditMode
         }
 
         [Test]
-        public async Task EnterStartMenu_Loads_StartMenu()
+        public void EnterStartMenu_Loads_StartMenu()
         {
-            await _flow.EnterStartMenuAsync(CancellationToken.None);
+            RunAsync(() => _flow.EnterStartMenuAsync(CancellationToken.None));
 
             Assert.That(_loader.LoadedSceneNames, Does.Contain(SceneNames.StartMenu));
             Assert.That(_loader.LastLoadRequest, Is.EqualTo(SceneNames.StartMenu));
         }
 
         [Test]
-        public async Task Navigate_To_Another_Scene_Unloads_Old()
+        public void Navigate_To_Another_Scene_Unloads_Old()
         {
-            await _flow.EnterStartMenuAsync(CancellationToken.None);
-            await _flow.OpenMetaHubAsync(MetaPageId.Map, CancellationToken.None);
+            RunAsync(async () =>
+            {
+                await _flow.EnterStartMenuAsync(CancellationToken.None);
+                await _flow.OpenMetaHubAsync(MetaPageId.Map, CancellationToken.None);
+            });
 
             Assert.That(_loader.LoadedSceneNames, Does.Contain(SceneNames.MetaHub));
             Assert.That(_loader.LoadedSceneNames, Does.Not.Contain(SceneNames.StartMenu));
         }
 
         [Test]
-        public async Task Navigate_To_Same_Scene_Is_Idempotent()
+        public void Navigate_To_Same_Scene_Is_Idempotent()
         {
-            await _flow.EnterStartMenuAsync(CancellationToken.None);
-            await _flow.EnterStartMenuAsync(CancellationToken.None);
-            await _flow.EnterStartMenuAsync(CancellationToken.None);
+            RunAsync(async () =>
+            {
+                await _flow.EnterStartMenuAsync(CancellationToken.None);
+                await _flow.EnterStartMenuAsync(CancellationToken.None);
+                await _flow.EnterStartMenuAsync(CancellationToken.None);
+            });
 
             Assert.That(_loader.LoadedSceneNames, Has.Exactly(1).Matches<string>(n => n == SceneNames.StartMenu));
         }
 
         [Test]
-        public async Task Scene_Token_Is_Cancelled_On_Navigation()
+        public void Scene_Token_Is_Cancelled_On_Navigation()
         {
-            await _flow.EnterStartMenuAsync(CancellationToken.None);
+            RunAsync(() => _flow.EnterStartMenuAsync(CancellationToken.None));
             var firstToken = _flow.ActiveSceneToken;
             Assert.That(firstToken.IsCancellationRequested, Is.False);
 
-            await _flow.OpenMetaHubAsync(MetaPageId.Map, CancellationToken.None);
+            RunAsync(() => _flow.OpenMetaHubAsync(MetaPageId.Map, CancellationToken.None));
             var secondToken = _flow.ActiveSceneToken;
 
             Assert.That(firstToken.IsCancellationRequested, Is.True, "旧场景 token 应被取消");
@@ -76,28 +83,36 @@ namespace Game.Tests.EditMode
         }
 
         [Test]
-        public async Task Reset_Event_Is_Published_After_Navigation()
+        public void Reset_Event_Is_Published_After_Navigation()
         {
             var activatedScenes = new System.Collections.Generic.List<string>();
             using (_eventBus.Subscribe<SceneActivatedEvent>(e => activatedScenes.Add(e.SceneName)))
             {
-                await _flow.EnterStartMenuAsync(CancellationToken.None);
+                RunAsync(() => _flow.EnterStartMenuAsync(CancellationToken.None));
             }
 
             Assert.That(activatedScenes, Does.Contain(SceneNames.StartMenu));
         }
 
         [Test]
-        public async Task Duplicate_Navigation_During_Load_Is_Blocked()
+        public void Duplicate_Navigation_During_Load_Is_Blocked()
         {
             _loader.LoadDelayMs = 50;
 
-            var first = _flow.EnterStartMenuAsync(CancellationToken.None);
-            var second = _flow.EnterStartMenuAsync(CancellationToken.None);
-            await Task.WhenAll(first, second);
+            RunAsync(async () =>
+            {
+                var first = _flow.EnterStartMenuAsync(CancellationToken.None);
+                var second = _flow.EnterStartMenuAsync(CancellationToken.None);
+                await Task.WhenAll(first, second);
+            });
 
             // 防重入：第二次请求被忽略，场景只加载一份
             Assert.That(_loader.LoadedSceneNames, Has.Exactly(1).Matches<string>(n => n == SceneNames.StartMenu));
+        }
+
+        private static void RunAsync(Func<Task> operation)
+        {
+            Task.Run(operation).GetAwaiter().GetResult();
         }
     }
 }

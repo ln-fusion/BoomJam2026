@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using Game.Foundation.Ids;
+using Game.Foundation;
 
 namespace Game.Contracts.Progression
 {
