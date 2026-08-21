@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 
 namespace Game.Foundation
 {
@@ -8,43 +7,66 @@ namespace Game.Foundation
     /// </summary>
     public enum ErrorCategory
     {
-        /// <summary>未归类错误</summary>
-        Unknown = 0,
-
-        /// <summary>参数错误</summary>
-        InvalidArgument,
-
-        /// <summary>依赖资源缺失</summary>
-        MissingAsset,
-
-        /// <summary>IO/网络/平台错误</summary>
-        Infrastructure,
-
-        /// <summary>场景流转错误（Additive 加载/卸载/激活失败）</summary>
+        None = 0,
+        Unknown,
+        Validation,
+        Content,
+        SaveIo,
+        SaveCorrupt,
+        PlatformUnavailable,
+        PlatformSync,
         SceneTransition,
+        SimulationPerformance,
+        Infrastructure,
+        Unexpected
     }
 
     /// <summary>
     /// 错误码：标记具体失败原因；新增时保持数值向后兼容，不重排既有枚举值.
     /// </summary>
-    public enum ErrorCode
+    [Serializable]
+    public readonly struct ErrorCode : IEquatable<ErrorCode>
     {
-        None = 0,
-        Unknown = 1,
-        InvalidArgument = 2,
-        NotFound = 3,
-        AlreadyExists = 4,
-        OperationNotAllowed = 5,
-        SaveFailed = 6,
-        LoadFailed = 7,
+        public static readonly ErrorCode None = new ErrorCode(ErrorCategory.None, "none");
+        public static readonly ErrorCode Unknown = new ErrorCode(ErrorCategory.Unknown, "unknown");
+        public static readonly ErrorCode InvalidArgument = new ErrorCode(ErrorCategory.Validation, "invalid_argument");
+        public static readonly ErrorCode NotFound = new ErrorCode(ErrorCategory.Content, "not_found");
+        public static readonly ErrorCode AlreadyExists = new ErrorCode(ErrorCategory.Validation, "already_exists");
+        public static readonly ErrorCode OperationNotAllowed = new ErrorCode(ErrorCategory.Validation, "operation_not_allowed");
+        public static readonly ErrorCode SaveFailed = new ErrorCode(ErrorCategory.SaveIo, "save_failed");
+        public static readonly ErrorCode LoadFailed = new ErrorCode(ErrorCategory.SaveIo, "load_failed");
+        public static readonly ErrorCode SceneLoadFailed = new ErrorCode(ErrorCategory.SceneTransition, "scene_load_failed");
+        public static readonly ErrorCode SceneUnloadFailed = new ErrorCode(ErrorCategory.SceneTransition, "scene_unload_failed");
+        public static readonly ErrorCode OperationCancelled = new ErrorCode(ErrorCategory.Infrastructure, "operation_cancelled");
 
-        /// <summary>场景加载失败（Build Settings 缺失或加载中断）</summary>
-        SceneLoadFailed = 8,
+        public ErrorCategory Category { get; }
+        public string Value { get; }
 
-        /// <summary>场景卸载失败</summary>
-        SceneUnloadFailed = 9,
+        public ErrorCode(ErrorCategory category, string value)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+                throw new ArgumentException("An error code value is required.", nameof(value));
 
-        /// <summary>异步操作被取消</summary>
-        OperationCancelled = 10,
+            Category = category;
+            Value = value;
+        }
+
+        public bool Equals(ErrorCode other) =>
+            Category == other.Category && string.Equals(Value, other.Value, StringComparison.Ordinal);
+
+        public override bool Equals(object obj) => obj is ErrorCode other && Equals(other);
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                return ((int)Category * 397) ^ (Value == null ? 0 : Value.GetHashCode());
+            }
+        }
+
+        public override string ToString() => $"{Category}:{Value}";
+
+        public static bool operator ==(ErrorCode left, ErrorCode right) => left.Equals(right);
+        public static bool operator !=(ErrorCode left, ErrorCode right) => !left.Equals(right);
     }
 }

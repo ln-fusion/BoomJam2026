@@ -9,10 +9,16 @@ namespace Game.Foundation
         public bool IsSuccess { get; }
 
         /// <summary>成功时的返回值；失败时为 default</summary>
-        public T Value { get; }
+        private readonly T _value;
+
+        public T Value => IsSuccess
+            ? _value
+            : throw new System.InvalidOperationException("A failed result has no value.");
 
         /// <summary>错误码；成功时为 <see cref="ErrorCode.None"/></summary>
         public ErrorCode ErrorCode { get; }
+
+        public ErrorCode Error => ErrorCode;
 
         /// <summary>人类可读错误消息；仅用于日志，不直接展示为玩家文案</summary>
         public string Message { get; }
@@ -20,7 +26,7 @@ namespace Game.Foundation
         private Result(bool isSuccess, T value, ErrorCode errorCode, string message)
         {
             IsSuccess = isSuccess;
-            Value = value;
+            _value = value;
             ErrorCode = errorCode;
             Message = message ?? string.Empty;
         }
@@ -31,8 +37,13 @@ namespace Game.Foundation
         /// <summary>失败结果</summary>
         /// <param name="errorCode">错误码</param>
         /// <param name="message">日志用错误消息</param>
-        public static Result<T> Failure(ErrorCode errorCode, string message) =>
-            new Result<T>(false, default!, errorCode, message);
+        public static Result<T> Failure(ErrorCode errorCode, string message = null)
+        {
+            if (errorCode == ErrorCode.None)
+                throw new System.ArgumentException("A failed result requires an error code.", nameof(errorCode));
+
+            return new Result<T>(false, default!, errorCode, message);
+        }
 
         /// <summary>将成功值取出；失败时抛异常，用于已确认成功的调用点</summary>
         public T GetValueOrThrow() =>

@@ -11,6 +11,8 @@ namespace Game.Foundation
         /// <summary>错误码；成功时为 <see cref="ErrorCode.None"/></summary>
         public ErrorCode ErrorCode { get; }
 
+        public ErrorCode Error => ErrorCode;
+
         /// <summary>人类可读错误消息；仅用于日志，不直接展示为玩家文案</summary>
         public string Message { get; }
 
@@ -27,6 +29,12 @@ namespace Game.Foundation
         /// <summary>失败结果</summary>
         /// <param name="errorCode">错误码</param>
         /// <param name="message">日志用错误消息</param>
-        public static Result Failure(ErrorCode errorCode, string message) => new Result(false, errorCode, message);
+        public static Result Failure(ErrorCode errorCode, string message = null)
+        {
+            if (errorCode == ErrorCode.None)
+                throw new System.ArgumentException("A failed result requires an error code.", nameof(errorCode));
+
+            return new Result(false, errorCode, message);
+        }
     }
 }

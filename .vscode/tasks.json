@@ -10,7 +10,7 @@
             "command": "dotnet",
             "args": [
                 "build",
-                "${workspaceFolder}\\Change and Run.sln",
+                "${workspaceFolder}\\${workspaceFolderBasename}.sln",
                 "--nologo"
             ],
             "options": {
