@@ -23,6 +23,7 @@ namespace Game.Bootstrap
 
         private GameFlowService? _flowService;
 
+        /// <summary>创建流程服务并启动开始菜单导航。</summary>
         private void Start()
         {
             var flowService = new GameFlowService(
@@ -37,6 +38,8 @@ namespace Game.Bootstrap
             _ = RunStartupAsync(flowService);
         }
 
+        /// <summary>执行启动导航并记录不可恢复的启动异常。</summary>
+        /// <param name="flowService">应用流程服务。</param>
         private static async Task RunStartupAsync(GameFlowService flowService)
         {
             try
@@ -50,6 +53,7 @@ namespace Game.Bootstrap
             }
         }
 
+        /// <summary>销毁组合根时释放流程服务及其当前场景生命周期。</summary>
         private void OnDestroy()
         {
             _flowService?.Dispose();

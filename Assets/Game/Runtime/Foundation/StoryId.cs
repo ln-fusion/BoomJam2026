@@ -6,7 +6,8 @@ namespace Game.Foundation
     [System.Serializable]
     public sealed class StoryId : StrongId<StoryId>
     {
-        /// <param name="value">稳定 ID（如 official.story.prologue）</param>
+        /// <summary>创建剧情稳定标识。</summary>
+        /// <param name="value">稳定 ID（如 official.story.prologue）。</param>
         public StoryId(string value)
             : base(value) { }
     }

@@ -5,6 +5,9 @@ using Game.Foundation;
 
 namespace Game.Content
 {
+    /// <summary>
+    /// 官方内容查询服务，组合关卡/剧情提供者与角色/档案索引。
+    /// </summary>
     public sealed class OfficialContentService : IContentService
     {
         private readonly IContentProvider _provider;
@@ -14,6 +17,8 @@ namespace Game.Content
             new Dictionary<string, ArchiveEntryDefinition>(StringComparer.Ordinal);
         private readonly IReadOnlyCollection<LevelDefinition> _knownLevels;
 
+        /// <summary>从官方内容目录创建内容查询服务。</summary>
+        /// <param name="catalog">官方内容目录。</param>
         public OfficialContentService(OfficialContentCatalog catalog)
             : this(new OfficialContentProvider(catalog),
                    catalog == null ? null : catalog.Characters,
@@ -21,6 +26,10 @@ namespace Game.Content
         {
         }
 
+        /// <summary>从内容提供者及可选角色、档案定义创建查询服务。</summary>
+        /// <param name="provider">关卡与剧情内容提供者。</param>
+        /// <param name="characters">角色定义集合。</param>
+        /// <param name="archiveEntries">档案条目定义集合。</param>
         public OfficialContentService(IContentProvider provider,
             IEnumerable<CharacterDefinition> characters = null,
             IEnumerable<ArchiveEntryDefinition> archiveEntries = null)
@@ -37,6 +46,9 @@ namespace Game.Content
                         _archiveEntries[entry.EntryId] = entry;
         }
 
+        /// <summary>按稳定 ID 获取关卡定义。</summary>
+        /// <param name="levelId">关卡稳定标识。</param>
+        /// <returns>找到的关卡定义；不存在时为 null。</returns>
         public LevelDefinition GetLevel(LevelId levelId)
         {
             return _provider.TryGetLevel(levelId, out LevelDefinition definition)
@@ -44,6 +56,9 @@ namespace Game.Content
                 : null;
         }
 
+        /// <summary>按稳定 ID 获取剧情定义。</summary>
+        /// <param name="storyId">剧情稳定标识。</param>
+        /// <returns>找到的剧情定义；不存在时为 null。</returns>
         public StoryDefinition GetStory(StoryId storyId)
         {
             return _provider.TryGetStory(storyId, out StoryDefinition definition)
@@ -51,6 +66,9 @@ namespace Game.Content
                 : null;
         }
 
+        /// <summary>按稳定 ID 获取角色定义。</summary>
+        /// <param name="characterId">角色稳定标识。</param>
+        /// <returns>找到的角色定义；不存在时为 null。</returns>
         public CharacterDefinition GetCharacter(CharacterId characterId)
         {
             return _characters.TryGetValue(characterId.Value, out CharacterDefinition definition)
@@ -58,6 +76,9 @@ namespace Game.Content
                 : null;
         }
 
+        /// <summary>按稳定 ID 获取档案条目定义。</summary>
+        /// <param name="entryId">档案条目稳定标识。</param>
+        /// <returns>找到的档案条目定义；不存在时为 null。</returns>
         public ArchiveEntryDefinition GetArchiveEntry(ArchiveEntryId entryId)
         {
             return _archiveEntries.TryGetValue(entryId.Value, out ArchiveEntryDefinition definition)
@@ -65,6 +86,9 @@ namespace Game.Content
                 : null;
         }
 
+        /// <summary>获取指定地图下按排序值排列的关卡摘要。</summary>
+        /// <param name="mapId">地图稳定标识。</param>
+        /// <returns>关卡摘要只读列表；没有已知关卡时为空列表。</returns>
         public IReadOnlyList<LevelSummary> GetLevelsForMap(MapId mapId)
         {
             var levelSummaries = new List<LevelSummary>();
@@ -83,6 +107,9 @@ namespace Game.Content
             return levelSummaries.AsReadOnly();
         }
 
+        /// <summary>检查内容头是否符合当前官方内容服务的兼容要求。</summary>
+        /// <param name="header">待检查的内容头。</param>
+        /// <returns>对应的兼容性结果。</returns>
         public ContentCompatibility CheckCompatibility(ContentHeader header)
         {
             if (header == null)

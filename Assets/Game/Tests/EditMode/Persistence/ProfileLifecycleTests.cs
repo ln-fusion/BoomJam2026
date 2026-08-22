@@ -10,10 +10,14 @@ using NUnit.Framework;
 
 namespace Game.Tests.EditMode.Persistence
 {
+    /// <summary>
+    /// ProfileLifecycleService 测试：启动决策、昵称校验和迁移管线。
+    /// </summary>
     public sealed class ProfileLifecycleTests
     {
         private string _directory;
 
+        /// <summary>创建临时档案目录。</summary>
         [SetUp]
         public void SetUp()
         {
@@ -22,6 +26,7 @@ namespace Game.Tests.EditMode.Persistence
             Directory.CreateDirectory(_directory);
         }
 
+        /// <summary>清理临时档案目录。</summary>
         [TearDown]
         public void TearDown()
         {
@@ -29,6 +34,7 @@ namespace Game.Tests.EditMode.Persistence
                 Directory.Delete(_directory, true);
         }
 
+        /// <summary>验证缺少档案时先要求新昵称，随后可继续已有档案。</summary>
         [Test]
         public void MissingProfile_RequestsNewNickname_ThenExistingProfileContinues()
         {
@@ -56,6 +62,7 @@ namespace Game.Tests.EditMode.Persistence
             });
         }
 
+        /// <summary>验证非法昵称会在写入前被拒绝。</summary>
         [Test]
         public void InvalidNickname_IsRejectedBeforeWriting()
         {
@@ -73,6 +80,7 @@ namespace Game.Tests.EditMode.Persistence
             });
         }
 
+        /// <summary>验证迁移管线要求显式版本步骤并能按链路迁移。</summary>
         [Test]
         public void MigrationPipeline_RequiresAndAppliesExplicitVersionSteps()
         {
@@ -85,22 +93,33 @@ namespace Game.Tests.EditMode.Persistence
             Assert.That(migrated.SchemaVersion, Is.EqualTo(ProfileSave.CurrentSchemaVersion));
         }
 
+        /// <summary>固定时钟替身。</summary>
         private sealed class FixedClock : IClock
         {
+            /// <summary>固定 UTC 时间。</summary>
             public DateTimeOffset UtcNow => new DateTimeOffset(2026, 8, 18, 12, 0, 0,
                 TimeSpan.Zero);
+            /// <summary>固定本地时间。</summary>
             public DateTimeOffset LocalNow => UtcNow;
         }
 
+        /// <summary>在同步测试中执行异步操作并等待结果。</summary>
+        /// <param name="operation">要执行的异步操作。</param>
         private static void RunAsync(Func<Task> operation)
         {
             Task.Run(operation).GetAwaiter().GetResult();
         }
 
+        /// <summary>从 0 版本迁移到 1 版本的测试迁移器。</summary>
         private sealed class VersionZeroToOneMigrator : IProfileMigrator
         {
+            /// <summary>迁移输入版本。</summary>
             public int FromVersion => 0;
+            /// <summary>迁移输出版本。</summary>
             public int ToVersion => 1;
+            /// <summary>把旧档案版本号更新为 1。</summary>
+            /// <param name="oldData">旧版本档案。</param>
+            /// <returns>更新后的档案。</returns>
             public ProfileSave Migrate(ProfileSave oldData)
             {
                 oldData.SchemaVersion = 1;

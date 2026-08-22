@@ -9,6 +9,7 @@ namespace Game.Tests.EditMode
     /// </summary>
     public class SystemClockTests
     {
+        /// <summary>验证可注入时钟会返回配置时间。</summary>
         [Test]
         public void FixedClock_Returns_Configured_Time()
         {
@@ -18,6 +19,7 @@ namespace Game.Tests.EditMode
             Assert.That(clock.UtcNow, Is.EqualTo(now.AddDays(1)));
         }
 
+        /// <summary>验证系统时钟返回当前 UTC 与本地时间。</summary>
         [Test]
         public void SystemClock_Returns_Current_Time()
         {

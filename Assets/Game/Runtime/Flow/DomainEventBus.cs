@@ -19,7 +19,8 @@ namespace Game.Flow
 
         private readonly IGameLogger _logger;
 
-        /// <param name="logger">用于记录订阅者异常；为 null 时静默（不推荐，仅测试）</param>
+        /// <summary>创建领域事件总线。</summary>
+        /// <param name="logger">用于记录订阅者异常；为 null 时使用丢弃日志实现。</param>
         public DomainEventBus(IGameLogger logger)
         {
             _logger = logger ?? NullLogger.Instance;
@@ -28,6 +29,9 @@ namespace Game.Flow
         /// <summary>
         /// 订阅指定事件类型，返回释放即退订的句柄.
         /// </summary>
+        /// <typeparam name="T">需要订阅的领域事件类型。</typeparam>
+        /// <param name="handler">收到事件时调用的处理器。</param>
+        /// <returns>释放时取消本次订阅的句柄。</returns>
         public IDisposable Subscribe<T>(Action<T> handler)
             where T : IDomainEvent
         {
@@ -51,6 +55,8 @@ namespace Game.Flow
         /// <summary>
         /// 发布事件：按订阅顺序调用，每个订阅者异常隔离并记录错误日志.
         /// </summary>
+        /// <typeparam name="T">需要发布的领域事件类型。</typeparam>
+        /// <param name="domainEvent">发布给该类型所有有效订阅者的事件。</param>
         public void Publish<T>(T domainEvent)
             where T : IDomainEvent
         {
@@ -85,6 +91,9 @@ namespace Game.Flow
             }
         }
 
+        /// <summary>
+        /// 单个订阅的可释放句柄，同时持有订阅者回调和所属列表。
+        /// </summary>
         private sealed class SubscriptionEntry : IDisposable
         {
             private readonly List<SubscriptionEntry> _owner;
@@ -93,12 +102,16 @@ namespace Game.Flow
 
             internal bool IsDisposed { get; private set; }
 
+            /// <summary>创建订阅句柄。</summary>
+            /// <param name="owner">所属订阅列表。</param>
+            /// <param name="handler">订阅者回调。</param>
             internal SubscriptionEntry(List<SubscriptionEntry> owner, object handler)
             {
                 _owner = owner;
                 Handler = handler;
             }
 
+            /// <summary>取消当前订阅；重复调用安全。</summary>
             public void Dispose()
             {
                 if (IsDisposed)

@@ -11,21 +11,26 @@ namespace Game.Foundation
     /// </remarks>
     public sealed class LogContext
     {
-        /// <summary>空上下文（无附加字段）</summary>
+        /// <summary>空上下文（无附加字段）。</summary>
         public static LogContext Empty { get; } = new LogContext();
 
         private readonly Dictionary<string, string> _fields = new Dictionary<string, string>();
 
-        /// <summary>构建版本号（BuildVersion）</summary>
+        /// <summary>构建版本号（BuildVersion）。</summary>
         public string BuildVersion => Get("BuildVersion");
 
-        /// <summary>内容修订号（ContentRevision）</summary>
+        /// <summary>内容修订号（ContentRevision）。</summary>
         public string ContentRevision => Get("ContentRevision");
 
-        /// <summary>获取指定字段值；不存在返回空串.</summary>
+        /// <summary>获取指定字段值；不存在返回空串。</summary>
+        /// <param name="key">字段名。</param>
+        /// <returns>字段值；不存在时返回空串。</returns>
         public string Get(string key) => _fields.TryGetValue(key, out var value) ? value : string.Empty;
 
-        /// <summary>带指定字段创建新上下文（不可变，不修改原实例）.</summary>
+        /// <summary>带指定字段创建新上下文（不可变，不修改原实例）。</summary>
+        /// <param name="key">字段名。</param>
+        /// <param name="value">字段值。</param>
+        /// <returns>包含新字段的上下文副本。</returns>
         public LogContext With(string key, string value)
         {
             var copy = new LogContext();
@@ -38,7 +43,8 @@ namespace Game.Foundation
             return copy;
         }
 
-        /// <summary>格式化所有字段为日志前缀文本（如 [BuildVersion=0.1.0]）.</summary>
+        /// <summary>格式化所有字段为日志前缀文本（如 [BuildVersion=0.1.0]）。</summary>
+        /// <returns>格式化后的上下文前缀。</returns>
         public string FormatPrefix()
         {
             if (_fields.Count == 0)
