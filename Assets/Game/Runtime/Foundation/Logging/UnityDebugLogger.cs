@@ -10,6 +10,10 @@ namespace Game.Foundation
         /// <summary>共享实例（无内部状态，可全局复用）.</summary>
         public static UnityDebugLogger Instance { get; } = new UnityDebugLogger();
 
+        /// <summary>按日志级别写入 Unity Debug 日志。</summary>
+        /// <param name="level">日志级别。</param>
+        /// <param name="context">结构化日志上下文。</param>
+        /// <param name="message">日志消息。</param>
         public void Log(LogLevel level, LogContext context, string message)
         {
             var prefixed = $"{context?.FormatPrefix() ?? "[]"} {message}";
@@ -27,10 +31,19 @@ namespace Game.Foundation
             }
         }
 
+        /// <summary>写入信息级日志。</summary>
+        /// <param name="context">结构化日志上下文。</param>
+        /// <param name="message">日志消息。</param>
         public void LogInfo(LogContext context, string message) => Log(LogLevel.Info, context, message);
 
+        /// <summary>写入警告级日志。</summary>
+        /// <param name="context">结构化日志上下文。</param>
+        /// <param name="message">日志消息。</param>
         public void LogWarning(LogContext context, string message) => Log(LogLevel.Warning, context, message);
 
+        /// <summary>写入错误级日志。</summary>
+        /// <param name="context">结构化日志上下文。</param>
+        /// <param name="message">日志消息。</param>
         public void LogError(LogContext context, string message) => Log(LogLevel.Error, context, message);
     }
 }

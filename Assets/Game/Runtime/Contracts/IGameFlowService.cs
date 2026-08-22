@@ -14,24 +14,35 @@ namespace Game.Contracts
     public interface IGameFlowService
     {
         /// <summary>进入开始菜单场景.</summary>
+        /// <param name="cancellationToken">取消导航操作的令牌。</param>
         Task EnterStartMenuAsync(CancellationToken cancellationToken);
 
         /// <summary>首次开始或继续已有档案.</summary>
+        /// <param name="cancellationToken">取消导航操作的令牌。</param>
         Task StartOrContinueAsync(CancellationToken cancellationToken);
 
         /// <summary>打开主界面指定页面.</summary>
+        /// <param name="page">需要打开的主界面页面。</param>
+        /// <param name="cancellationToken">取消导航操作的令牌。</param>
         Task OpenMetaHubAsync(MetaPageId page, CancellationToken cancellationToken);
 
         /// <summary>进入指定关卡（含首次/再次关前剧情分支）.</summary>
+        /// <param name="levelId">需要进入的关卡稳定标识。</param>
+        /// <param name="cancellationToken">取消导航操作的令牌。</param>
         Task EnterLevelAsync(LevelId levelId, CancellationToken cancellationToken);
 
         /// <summary>播放剧情并定义返回目标.</summary>
+        /// <param name="storyId">需要播放的剧情稳定标识。</param>
+        /// <param name="returnTarget">剧情播放结束后的返回目标。</param>
+        /// <param name="cancellationToken">取消导航操作的令牌。</param>
         Task PlayStoryAsync(StoryId storyId, StoryReturnTarget returnTarget, CancellationToken cancellationToken);
 
         /// <summary>返回开始菜单.</summary>
+        /// <param name="cancellationToken">取消导航操作的令牌。</param>
         Task ReturnToStartMenuAsync(CancellationToken cancellationToken);
 
         /// <summary>退出游戏.</summary>
+        /// <param name="cancellationToken">在退出前检查的取消令牌。</param>
         Task QuitGameAsync(CancellationToken cancellationToken);
     }
 
@@ -60,6 +71,10 @@ namespace Game.Contracts
         /// <summary>返回目标关卡（Kind 为 Level 时有效）.</summary>
         public LevelId? Level { get; }
 
+        /// <summary>创建具有指定类别和可选页面或关卡数据的剧情返回目标。</summary>
+        /// <param name="kind">返回目标类别。</param>
+        /// <param name="metaPage"><paramref name="kind"/> 为 <see cref="StoryReturnKind.MetaPage"/> 时的目标页面。</param>
+        /// <param name="level"><paramref name="kind"/> 为 <see cref="StoryReturnKind.Level"/> 时的目标关卡。</param>
         private StoryReturnTarget(StoryReturnKind kind, MetaPageId metaPage, LevelId? level)
         {
             Kind = kind;
@@ -67,9 +82,15 @@ namespace Game.Contracts
             Level = level;
         }
 
+        /// <summary>创建返回主界面指定页面的目标。</summary>
+        /// <param name="page">返回的主界面页面。</param>
+        /// <returns>主界面页面返回目标。</returns>
         public static StoryReturnTarget ToMetaPage(MetaPageId page) =>
             new StoryReturnTarget(StoryReturnKind.MetaPage, page, null);
 
+        /// <summary>创建返回指定关卡的目标。</summary>
+        /// <param name="level">返回的关卡稳定标识。</param>
+        /// <returns>关卡返回目标。</returns>
         public static StoryReturnTarget ToLevel(LevelId level) =>
             new StoryReturnTarget(StoryReturnKind.Level, default, level);
     }

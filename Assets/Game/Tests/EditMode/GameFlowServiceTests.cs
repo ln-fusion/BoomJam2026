@@ -18,6 +18,7 @@ namespace Game.Tests.EditMode
         private IGameLogger _logger;
         private GameFlowService _flow;
 
+        /// <summary>创建流转服务测试依赖。</summary>
         [SetUp]
         public void SetUp()
         {
@@ -27,12 +28,14 @@ namespace Game.Tests.EditMode
             _flow = new GameFlowService(_loader, new FixedClock(), _logger, _eventBus, SceneNames.StartMenu);
         }
 
+        /// <summary>释放流转服务。</summary>
         [TearDown]
         public void TearDown()
         {
             _flow.Dispose();
         }
 
+        /// <summary>验证进入开始菜单会加载对应场景。</summary>
         [Test]
         public void EnterStartMenu_Loads_StartMenu()
         {
@@ -42,6 +45,7 @@ namespace Game.Tests.EditMode
             Assert.That(_loader.LastLoadRequest, Is.EqualTo(SceneNames.StartMenu));
         }
 
+        /// <summary>验证切换到其他场景时会卸载旧场景。</summary>
         [Test]
         public void Navigate_To_Another_Scene_Unloads_Old()
         {
@@ -55,6 +59,7 @@ namespace Game.Tests.EditMode
             Assert.That(_loader.LoadedSceneNames, Does.Not.Contain(SceneNames.StartMenu));
         }
 
+        /// <summary>验证重复导航到同一场景是幂等的。</summary>
         [Test]
         public void Navigate_To_Same_Scene_Is_Idempotent()
         {
@@ -68,6 +73,7 @@ namespace Game.Tests.EditMode
             Assert.That(_loader.LoadedSceneNames, Has.Exactly(1).Matches<string>(n => n == SceneNames.StartMenu));
         }
 
+        /// <summary>验证切换场景时旧场景的 token 会被取消。</summary>
         [Test]
         public void Scene_Token_Is_Cancelled_On_Navigation()
         {
@@ -82,6 +88,7 @@ namespace Game.Tests.EditMode
             Assert.That(secondToken.IsCancellationRequested, Is.False, "新场景 token 应可用");
         }
 
+        /// <summary>验证场景激活事件会在导航完成后发布。</summary>
         [Test]
         public void Reset_Event_Is_Published_After_Navigation()
         {
@@ -94,6 +101,7 @@ namespace Game.Tests.EditMode
             Assert.That(activatedScenes, Does.Contain(SceneNames.StartMenu));
         }
 
+        /// <summary>验证加载期间的重复导航请求会被忽略。</summary>
         [Test]
         public void Duplicate_Navigation_During_Load_Is_Blocked()
         {
@@ -110,6 +118,8 @@ namespace Game.Tests.EditMode
             Assert.That(_loader.LoadedSceneNames, Has.Exactly(1).Matches<string>(n => n == SceneNames.StartMenu));
         }
 
+        /// <summary>在同步测试中执行异步操作并等待结果。</summary>
+        /// <param name="operation">要执行的异步操作。</param>
         private static void RunAsync(Func<Task> operation)
         {
             Task.Run(operation).GetAwaiter().GetResult();

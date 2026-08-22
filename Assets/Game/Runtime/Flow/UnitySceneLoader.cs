@@ -31,6 +31,9 @@ namespace Game.Flow
         }
 
         /// <summary>Additive 加载并激活场景；取消或失败返回 false.</summary>
+        /// <param name="sceneName">需要加载并激活的场景名。</param>
+        /// <param name="cancellationToken">放弃等待加载完成的取消令牌。</param>
+        /// <returns>场景已加载或成功完成加载时为 true；取消或失败时为 false。</returns>
         public async Task<bool> LoadAdditiveAsync(string sceneName, CancellationToken cancellationToken)
         {
             if (IsLoaded(sceneName))
@@ -61,6 +64,9 @@ namespace Game.Flow
         }
 
         /// <summary>卸载指定场景；未加载视为成功，取消返回 false.</summary>
+        /// <param name="sceneName">需要卸载的场景名。</param>
+        /// <param name="cancellationToken">放弃等待卸载完成的取消令牌。</param>
+        /// <returns>场景未加载或成功完成卸载时为 true；取消或失败时为 false。</returns>
         public async Task<bool> UnloadAsync(string sceneName, CancellationToken cancellationToken)
         {
             var scene = SceneManager.GetSceneByName(sceneName);
@@ -78,6 +84,10 @@ namespace Game.Flow
             return await AwaitAsyncOperation(op, cancellationToken);
         }
 
+        /// <summary>等待 Unity 异步操作完成或外部取消。</summary>
+        /// <param name="op">Unity 异步操作。</param>
+        /// <param name="cancellationToken">取消标记。</param>
+        /// <returns>操作完成返回 true；取消返回 false。</returns>
         private static async Task<bool> AwaitAsyncOperation(AsyncOperation op, CancellationToken cancellationToken)
         {
             // op.completed 只触发一次；取消时放弃等待并返回 false（SceneManager 不支持中途取消）
@@ -87,6 +97,9 @@ namespace Game.Flow
             return await tcs.Task;
         }
 
+        /// <summary>检查指定场景是否已经加载。</summary>
+        /// <param name="sceneName">场景名。</param>
+        /// <returns>已加载返回 true，否则返回 false。</returns>
         private static bool IsLoaded(string sceneName)
         {
             for (var i = 0; i < SceneManager.sceneCount; i++)

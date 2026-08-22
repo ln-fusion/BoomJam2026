@@ -6,10 +6,19 @@ using System.Threading.Tasks;
 
 namespace Game.Persistence
 {
+    /// <summary>
+    /// 以临时文件、校验、替换和备份顺序写入本地文件的原子写入器。
+    /// </summary>
     internal sealed class AtomicFileWriter : IAtomicFileWriter
     {
         private static readonly UTF8Encoding Utf8WithoutBom = new UTF8Encoding(false);
 
+        /// <summary>异步写入并校验一个本地文件。</summary>
+        /// <param name="targetPath">目标文件路径。</param>
+        /// <param name="contents">待写入的 UTF-8 文本内容。</param>
+        /// <param name="validateTemporaryFile">临时文件落盘后的校验回调。</param>
+        /// <param name="cancellationToken">取消标记。</param>
+        /// <returns>表示写入任务的异步任务。</returns>
         public Task WriteAsync(string targetPath, string contents,
             Func<string, bool> validateTemporaryFile,
             CancellationToken cancellationToken)
@@ -25,6 +34,11 @@ namespace Game.Persistence
                 cancellationToken), cancellationToken);
         }
 
+        /// <summary>在后台线程执行临时文件写入、校验和目标替换。</summary>
+        /// <param name="targetPath">目标文件路径。</param>
+        /// <param name="contents">待写入内容。</param>
+        /// <param name="validateTemporaryFile">临时文件校验回调。</param>
+        /// <param name="cancellationToken">取消标记。</param>
         private static void Write(string targetPath, string contents,
             Func<string, bool> validateTemporaryFile,
             CancellationToken cancellationToken)

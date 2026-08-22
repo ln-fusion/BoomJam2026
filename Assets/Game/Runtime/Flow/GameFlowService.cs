@@ -63,14 +63,18 @@ namespace Game.Flow
         }
 
         /// <summary>进入开始菜单场景.</summary>
+        /// <param name="cancellationToken">取消导航操作的令牌。</param>
         public Task EnterStartMenuAsync(CancellationToken cancellationToken) =>
             NavigateAsync(_startMenuSceneName, cancellationToken);
 
         /// <summary>首次开始或继续（C02 占位：直接进入 MetaHub；首次/继续判定在 C05 由 Profile 决定）.</summary>
+        /// <param name="cancellationToken">取消导航操作的令牌。</param>
         public Task StartOrContinueAsync(CancellationToken cancellationToken) =>
             NavigateAsync(SceneNames.MetaHub, cancellationToken);
 
         /// <summary>打开主界面指定页面（页面切换不换 Scene，记录最后页面供恢复）.</summary>
+        /// <param name="page">需要打开并记录的主界面页面。</param>
+        /// <param name="cancellationToken">取消导航操作的令牌。</param>
         public Task OpenMetaHubAsync(MetaPageId page, CancellationToken cancellationToken)
         {
             _lastMetaPage = page;
@@ -78,10 +82,15 @@ namespace Game.Flow
         }
 
         /// <summary>进入指定关卡（C02 占位：直接进入 Gameplay；关前/关后剧情分支在 C15/C16 落地）.</summary>
+        /// <param name="levelId">目标关卡稳定标识；C02 占位实现尚未按关卡分流。</param>
+        /// <param name="cancellationToken">取消导航操作的令牌。</param>
         public Task EnterLevelAsync(LevelId levelId, CancellationToken cancellationToken) =>
             NavigateAsync(SceneNames.Gameplay, cancellationToken);
 
         /// <summary>播放剧情并记录返回目标.</summary>
+        /// <param name="storyId">目标剧情稳定标识；C02 占位实现尚未按剧情分流。</param>
+        /// <param name="returnTarget">剧情播放结束后使用的返回目标。</param>
+        /// <param name="cancellationToken">取消导航操作的令牌。</param>
         public Task PlayStoryAsync(StoryId storyId, StoryReturnTarget returnTarget, CancellationToken cancellationToken)
         {
             _storyReturnTarget = returnTarget;
@@ -89,10 +98,12 @@ namespace Game.Flow
         }
 
         /// <summary>返回开始菜单.</summary>
+        /// <param name="cancellationToken">取消导航操作的令牌。</param>
         public Task ReturnToStartMenuAsync(CancellationToken cancellationToken) =>
             NavigateAsync(_startMenuSceneName, cancellationToken);
 
         /// <summary>退出游戏（Editor 中仅记录模拟退出；Player 中调用 Application.Quit）.</summary>
+        /// <param name="cancellationToken">在退出前检查的取消令牌。</param>
         public Task QuitGameAsync(CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
@@ -118,6 +129,11 @@ namespace Game.Flow
             _activeScope = null;
         }
 
+        /// <summary>
+        /// 执行一次带防重入、旧场景卸载和新场景激活的功能场景导航。
+        /// </summary>
+        /// <param name="sceneName">目标功能场景名。</param>
+        /// <param name="cancellationToken">调用方取消标记。</param>
         private async Task NavigateAsync(string sceneName, CancellationToken cancellationToken)
         {
             // 防重入：切换期间屏蔽重复导航请求
@@ -186,6 +202,7 @@ namespace Game.Flow
             }
         }
 
+        /// <summary>在服务已经释放时抛出对象已释放异常。</summary>
         private void ThrowIfDisposed()
         {
             if (_disposed)

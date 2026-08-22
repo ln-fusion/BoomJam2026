@@ -9,10 +9,14 @@ using NUnit.Framework;
 
 namespace Game.Tests.EditMode.Persistence
 {
+    /// <summary>
+    /// JsonSaveRepository 测试：备份恢复、默认值恢复和修订写入时机。
+    /// </summary>
     public sealed class JsonSaveRepositoryTests
     {
         private string _directory;
 
+        /// <summary>创建临时存档目录。</summary>
         [SetUp]
         public void SetUp()
         {
@@ -21,6 +25,7 @@ namespace Game.Tests.EditMode.Persistence
             Directory.CreateDirectory(_directory);
         }
 
+        /// <summary>清理临时存档目录。</summary>
         [TearDown]
         public void TearDown()
         {
@@ -28,6 +33,7 @@ namespace Game.Tests.EditMode.Persistence
                 Directory.Delete(_directory, true);
         }
 
+        /// <summary>验证第二次写入会创建备份，主文件损坏时可从备份恢复。</summary>
         [Test]
         public void Settings_SecondSaveCreatesBackup_AndCorruptPrimaryRecoversIt()
         {
@@ -57,6 +63,7 @@ namespace Game.Tests.EditMode.Persistence
             });
         }
 
+        /// <summary>验证缺少文件时会返回安全默认设置。</summary>
         [Test]
         public void Settings_MissingFilesReturnSafeDefaults()
         {
@@ -74,6 +81,7 @@ namespace Game.Tests.EditMode.Persistence
             });
         }
 
+        /// <summary>验证档案修订号只在成功写入后递增。</summary>
         [Test]
         public void Profile_SaveIncrementsRevisionOnlyAfterSuccessfulWrite()
         {
@@ -102,16 +110,23 @@ namespace Game.Tests.EditMode.Persistence
             });
         }
 
+        /// <summary>在同步测试中执行异步操作并等待结果。</summary>
+        /// <param name="operation">要执行的异步操作。</param>
         private static void RunAsync(Func<Task> operation)
         {
             Task.Run(operation).GetAwaiter().GetResult();
         }
 
+        /// <summary>固定时钟替身。</summary>
         private sealed class FixedClock : IClock
         {
+            /// <summary>固定 UTC 时间。</summary>
             public DateTimeOffset UtcNow { get; }
+            /// <summary>固定本地时间。</summary>
             public DateTimeOffset LocalNow => UtcNow.ToLocalTime();
 
+            /// <summary>创建固定时钟。</summary>
+            /// <param name="utcNow">固定 UTC 时间。</param>
             public FixedClock(DateTimeOffset utcNow)
             {
                 UtcNow = utcNow;

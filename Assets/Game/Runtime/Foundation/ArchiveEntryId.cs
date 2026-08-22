@@ -6,7 +6,8 @@ namespace Game.Foundation
     [System.Serializable]
     public sealed class ArchiveEntryId : StrongId<ArchiveEntryId>
     {
-        /// <param name="value">稳定 ID（如 official.archive.char_hani_01）</param>
+        /// <summary>创建档案条目稳定标识。</summary>
+        /// <param name="value">稳定 ID（如 official.archive.char_hani_01）。</param>
         public ArchiveEntryId(string value)
             : base(value) { }
     }

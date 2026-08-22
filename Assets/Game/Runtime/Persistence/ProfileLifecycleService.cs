@@ -7,6 +7,9 @@ using Game.Foundation;
 
 namespace Game.Persistence
 {
+    /// <summary>
+    /// 玩家档案生命周期服务，负责启动决策和新档案创建。
+    /// </summary>
     public sealed class ProfileLifecycleService : IProfileLifecycleService
     {
         private static readonly ErrorCode InvalidNickname =
@@ -18,12 +21,18 @@ namespace Game.Persistence
         private readonly ISaveRepository _repository;
         private readonly IClock _clock;
 
+        /// <summary>创建玩家档案生命周期服务。</summary>
+        /// <param name="repository">本地存档仓储。</param>
+        /// <param name="clock">创建档案时间使用的时钟。</param>
         public ProfileLifecycleService(ISaveRepository repository, IClock clock = null)
         {
             _repository = repository ?? throw new ArgumentNullException(nameof(repository));
             _clock = clock ?? new SystemClock();
         }
 
+        /// <summary>加载档案并决定进入创建新档案还是继续已有档案流程。</summary>
+        /// <param name="cancellationToken">取消标记。</param>
+        /// <returns>启动决策结果。</returns>
         public async Task<Result<ProfileStartupDecision>> LoadOrDecideAsync(
             CancellationToken cancellationToken)
         {
@@ -40,6 +49,10 @@ namespace Game.Persistence
                     result.HasRecoveryWarning));
         }
 
+        /// <summary>校验昵称、创建单一玩家档案并保存。</summary>
+        /// <param name="nickname">玩家输入的昵称。</param>
+        /// <param name="cancellationToken">取消标记。</param>
+        /// <returns>创建出的档案或失败结果。</returns>
         public async Task<Result<ProfileSave>> CreateProfileAsync(string nickname,
             CancellationToken cancellationToken)
         {

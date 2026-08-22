@@ -13,8 +13,9 @@ namespace Game.Flow
         /// <summary>进入该场景时携带的主界面页面（非 MetaHub 场景时为默认值）</summary>
         public MetaPageId MetaPage { get; }
 
-        /// <param name="sceneName">场景名</param>
-        /// <param name="metaPage">主界面页面</param>
+        /// <summary>创建功能场景激活事件。</summary>
+        /// <param name="sceneName">已激活的场景名。</param>
+        /// <param name="metaPage">进入场景时携带的主界面页面。</param>
         public SceneActivatedEvent(string sceneName, MetaPageId metaPage)
         {
             SceneName = sceneName;
