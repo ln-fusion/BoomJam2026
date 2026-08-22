@@ -7,13 +7,13 @@ namespace Game.Contracts.Persistence
     /// </summary>
     public enum LoadSource
     {
-        /// <summary>主文件和备份文件均不存在。</summary>
+        /// <summary>主文件和备份文件均不存在（仅玩家档案会返回该来源）。</summary>
         NotFound,
         /// <summary>从主文件读取成功。</summary>
         Primary,
         /// <summary>主文件不可用时从备份文件恢复成功。</summary>
         Backup,
-        /// <summary>读取失败后回退到安全默认对象。</summary>
+        /// <summary>无可用文件（仅设置存档）或读取失败时回退到安全默认对象。</summary>
         Default
     }
 

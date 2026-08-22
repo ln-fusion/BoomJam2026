@@ -89,8 +89,12 @@ namespace Game.Contracts.Progression
         public ProgressSnapshot(IReadOnlyCollection<LevelId> completedLevels,
             IReadOnlyCollection<StoryId> completedStories)
         {
-            CompletedLevels = completedLevels;
-            CompletedStories = completedStories;
+            CompletedLevels = completedLevels == null
+                ? new List<LevelId>().AsReadOnly()
+                : new List<LevelId>(completedLevels).AsReadOnly();
+            CompletedStories = completedStories == null
+                ? new List<StoryId>().AsReadOnly()
+                : new List<StoryId>(completedStories).AsReadOnly();
         }
 
         /// <summary>

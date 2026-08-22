@@ -9,10 +9,11 @@ namespace Game.Foundation
         /// <summary>操作是否成功。</summary>
         public bool IsSuccess { get; }
 
-        /// <summary>成功时的返回值；失败时访问会抛出异常。</summary>
+        /// <summary>成功结果携带的返回值。</summary>
         private readonly T _value;
 
         /// <summary>获取成功结果的值；失败结果访问时抛出异常。</summary>
+        /// <exception cref="System.InvalidOperationException">当结果为失败时抛出。</exception>
         public T Value => IsSuccess
             ? _value
             : throw new System.InvalidOperationException("A failed result has no value.");

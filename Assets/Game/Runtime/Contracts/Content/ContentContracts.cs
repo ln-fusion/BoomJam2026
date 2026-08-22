@@ -88,12 +88,15 @@ namespace Game.Contracts.Content
         public string MapId;
         /// <summary>本地化显示名称键。</summary>
         public string DisplayNameKey;
+        /// <summary>同一地图内的显示排序值。</summary>
+        public int SortOrder;
         /// <summary>由完整定义派生的关卡选择摘要。</summary>
         public LevelSummary Summary => new LevelSummary
         {
             LevelId = LevelId,
             MapId = MapId,
-            DisplayNameKey = DisplayNameKey
+            DisplayNameKey = DisplayNameKey,
+            SortOrder = SortOrder
         };
     }
 

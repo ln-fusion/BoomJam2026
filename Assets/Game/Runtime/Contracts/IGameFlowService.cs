@@ -26,7 +26,7 @@ namespace Game.Contracts
         /// <param name="cancellationToken">取消导航操作的令牌。</param>
         Task OpenMetaHubAsync(MetaPageId page, CancellationToken cancellationToken);
 
-        /// <summary>进入指定关卡（含首次/再次关前剧情分支）.</summary>
+        /// <summary>进入指定关卡（当前骨架实现统一进入 Gameplay 占位场景）.</summary>
         /// <param name="levelId">需要进入的关卡稳定标识。</param>
         /// <param name="cancellationToken">取消导航操作的令牌。</param>
         Task EnterLevelAsync(LevelId levelId, CancellationToken cancellationToken);

@@ -37,7 +37,7 @@ namespace SoundManager
         [Range(-3f, 3f)]
         public float pitch = 1f;
 
-        /// <summary>是否循环播放。</summary>
+        /// <summary>是否循环播放（仅对 SFX 生效，Music 始终循环）。</summary>
         public bool loop;
     }
 
@@ -127,7 +127,7 @@ namespace SoundManager
         /// <summary>
         /// 播放或覆盖当前正在播放的音效。
         /// </summary>
-        /// <param name="name">声音名称。</param>
+        /// <param name="name">声音名称；当当前音效为 DoorOpen 且请求并非 DoorOpen 时会忽略本次请求。</param>
         public void PlaySFXReplace(string name)
         {
             if (sfxSource.isPlaying)
