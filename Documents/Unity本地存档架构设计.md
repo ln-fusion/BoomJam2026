@@ -33,7 +33,7 @@
 ### 当前实现与本方案的差异
 
 - 运行时入口是 `ISaveRepository`，默认实现为 `JsonSaveRepository`；没有名为 `SaveSystem` 的类型。
-- 设置和玩家档案分别写入 `settings.json`、`profile.json`。设计稿早期使用的 `progress.json`、`SettingsRepository` 和 `ProgressRepository` 仍是方案名称，不对应当前类。
+- 设置和玩家档案分别写入 `settings.json`、`profile.json`。设计稿早期使用的 `SaveSystem`、`SettingsRepository` 和 `ProgressRepository` 仍是方案名称，不对应当前类。
 - `SettingsService.ApplyAsync` 在点击 Apply 时应用并保存设置，不是每次拖动滑块都写盘。
 - `ProfileLifecycleService` 负责新档案和继续游戏的启动判断；通关进度服务尚未接入。
 
@@ -64,13 +64,13 @@ SaveSystem
 ├── SettingsRepository
 │   └── settings.json
 └── ProgressRepository
-    └── progress.json
+    └── profile.json
 ```
 
 其中：
 
 - `settings.json` 只负责玩家设置。
-- `progress.json` 负责关卡解锁进度及未来新增的游戏数据。
+- `profile.json` 负责关卡解锁进度及未来新增的游戏数据。
 - 地图布局、谜题配置和关卡预设不进入存档文件。
 - 不再使用 `PlayerPrefs` 保存核心进度数据。
 
@@ -96,7 +96,7 @@ SaveSystem
 
 ```text
 settings.json
-progress.json
+profile.json
 ```
 
 这样可以实现：
@@ -108,7 +108,7 @@ settings.json 损坏
 ```
 
 ```text
-progress.json 损坏
+profile.json 损坏
 → 只重置游戏进度
 → 不影响玩家设置
 ```
@@ -166,7 +166,7 @@ SaveSystem
 
 ### 4.3 ProgressRepository
 
-负责 `progress.json` 的读取、写入、校验、迁移和重置。
+负责 `profile.json` 的读取、写入、校验、迁移和重置。
 
 它只处理游戏进度，不了解分辨率、语言等设置。
 
@@ -322,7 +322,7 @@ nextLevel = N + 1
 highestUnlockedLevel =
     max(highestUnlockedLevel, nextLevel)
 
-保存 progress.json
+保存 profile.json
 ```
 
 使用 `max` 很重要。
@@ -529,7 +529,7 @@ Application.persistentDataPath
 ```text
 Application.persistentDataPath
 ├── settings.json
-└── progress.json
+└── profile.json
 ```
 
 不要将存档放在：
@@ -561,14 +561,14 @@ Application.persistentDataPath
 
 3. 应用音量、语言、分辨率和全屏设置
 
-4. 加载 progress.json
+4. 加载 profile.json
    ├── 成功
    │   → 校验进度数据
    │   → 执行版本迁移
    │   → 使用保存的进度
    └── 失败
        → 创建默认进度
-       → 保存新的 progress.json
+       → 保存新的 profile.json
 
 5. 进入主菜单
 
@@ -608,7 +608,7 @@ Application.persistentDataPath
 
 ```text
 每刷新一个关卡按钮
-→ 打开 progress.json
+→ 打开 profile.json
 → 重新读取文件
 ```
 
@@ -742,12 +742,12 @@ highestUnlockedLevel = 1
 
 ```text
 settings.json 损坏
-→ 只重置设置
+→ 先尝试 settings.bak，失败后才返回默认设置
 ```
 
 ```text
-progress.json 损坏
-→ 只重置游戏进度
+profile.json 损坏
+→ 先尝试 profile.bak，失败后才返回默认档案或 NotFound
 ```
 
 方案处理流程：
@@ -758,19 +758,15 @@ progress.json 损坏
 │   → 创建默认数据
 │   → 写入新文件
 ├── JSON 解析失败
-│   → 创建默认数据
-│   → 覆盖损坏文件
+│   → 记录 Corrupt
+│   → 尝试读取 .bak
 ├── 版本无法识别
-│   → 创建默认数据
-│   → 覆盖旧文件
+│   → 按当前校验结果尝试 .bak 或返回默认数据
 └── 数据校验失败且无法修复
-    → 创建默认数据
-    → 覆盖异常文件
+    → 返回默认数据，并保留恢复错误码
 ```
 
-按照当前需求，不需要备份恢复。
-
-不过安全写入仍然应该保留，因为它可以减少文件损坏发生的概率。
+当前实现会在原子替换时保留 `.bak`，读取主文件失败后先尝试备份。安全写入和备份都属于现有行为；如果以后改变恢复策略，应同步更新 `JsonSaveRepository` 与测试。
 
 ---
 
@@ -897,7 +893,7 @@ levelProgress = 空
 → 覆盖 settings.json
 ```
 
-不影响 `progress.json`。
+不影响 `profile.json`。
 
 ---
 
@@ -911,7 +907,7 @@ levelProgress = 空
 → 玩家确认
 → 创建默认 ProgressData
 → 更新内存进度
-→ 覆盖 progress.json
+→ 覆盖 profile.json
 → 刷新关卡选择界面
 ```
 
@@ -941,7 +937,7 @@ Level Complete System
 → 更新 highestUnlockedLevel
 → 更新未来的每关数据
 → SaveSystem.SaveProgress()
-→ ProgressRepository 安全写入 progress.json
+→ ProgressRepository 安全写入 profile.json
 ```
 
 ### 进入关卡选择界面
@@ -969,7 +965,7 @@ Settings UI
 Settings UI
 → 玩家确认
 → SaveSystem.ResetProgress()
-→ 保存 progress.json
+→ 保存 profile.json
 → 刷新关卡选择界面
 ```
 
@@ -1028,8 +1024,8 @@ level3Unlocked
 
 ```text
 音量 UI 直接写 settings.json
-关卡脚本直接写 progress.json
-主菜单直接读取 progress.json
+关卡脚本直接写 profile.json
+主菜单直接读取 profile.json
 ```
 
 这样会导致：
@@ -1078,7 +1074,7 @@ SettingsRepository
 └── CreateDefault()
 
 ProgressRepository
-├── progress.json 路径
+├── profile.json 路径
 ├── Load()
 ├── Save()
 ├── Validate()
