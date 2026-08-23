@@ -51,9 +51,13 @@ namespace Game.Contracts
     /// </summary>
     public enum MetaPageId
     {
+        /// <summary>地图页面。</summary>
         Map = 0,
+        /// <summary>档案页面。</summary>
         Archive,
+        /// <summary>人员页面。</summary>
         Character,
+        /// <summary>休息室页面。</summary>
         Lounge,
     }
 

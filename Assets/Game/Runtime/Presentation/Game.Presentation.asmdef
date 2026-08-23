@@ -3,7 +3,10 @@
     "rootNamespace": "Game.Presentation",
     "references": [
         "Game.Foundation",
-        "Game.Contracts"
+        "Game.Contracts",
+        "Game.Content",
+        "Unity.Localization",
+        "Unity.ResourceManager"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

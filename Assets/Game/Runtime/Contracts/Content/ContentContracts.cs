@@ -223,6 +223,10 @@ namespace Game.Contracts.Content
         /// <param name="id">预制体稳定标识。</param>
         /// <returns>预制体资源；不存在时为 null。</returns>
         GameObject GetPrefab(PrefabId id);
+        /// <summary>获取指定 UI 预制体资源；不存在时返回 null。</summary>
+        /// <param name="id">UI 预制体稳定标识。</param>
+        /// <returns>UI 预制体资源；不存在时为 null。</returns>
+        GameObject GetUiPrefab(UiPrefabId id);
         /// <summary>获取指定精灵资源；不存在时返回 null。</summary>
         /// <param name="id">精灵资源稳定标识。</param>
         /// <returns>精灵资源；不存在时为 null。</returns>

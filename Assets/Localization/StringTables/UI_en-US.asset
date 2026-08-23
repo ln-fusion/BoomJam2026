@@ -1,0 +1,143 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9620f8c34305754d8cc9a7e49e852d9, type: 3}
+  m_Name: UI_en-US
+  m_EditorClassIdentifier: 
+  m_LocaleId:
+    m_Code: en-US
+  m_SharedData: {fileID: 11400000, guid: a4b4f9dd1fbf840ef85765656efda652, type: 2}
+  m_Metadata:
+    m_Items: []
+  m_TableData:
+  - m_Id: 967827456
+    m_Localized: Boom Jam 2026
+    m_Metadata:
+      m_Items: []
+  - m_Id: 984604672
+    m_Localized: Start Game
+    m_Metadata:
+      m_Items: []
+  - m_Id: 988798976
+    m_Localized: Continue
+    m_Metadata:
+      m_Items: []
+  - m_Id: 988798977
+    m_Localized: Settings
+    m_Metadata:
+      m_Items: []
+  - m_Id: 988798978
+    m_Localized: Quit
+    m_Metadata:
+      m_Items: []
+  - m_Id: 988798979
+    m_Localized: Settings
+    m_Metadata:
+      m_Items: []
+  - m_Id: 988798980
+    m_Localized: Apply
+    m_Metadata:
+      m_Items: []
+  - m_Id: 988798981
+    m_Localized: Cancel
+    m_Metadata:
+      m_Items: []
+  - m_Id: 992993280
+    m_Localized: Restore Defaults
+    m_Metadata:
+      m_Items: []
+  - m_Id: 992993281
+    m_Localized: Master Volume
+    m_Metadata:
+      m_Items: []
+  - m_Id: 992993282
+    m_Localized: Music Volume
+    m_Metadata:
+      m_Items: []
+  - m_Id: 992993283
+    m_Localized: SFX Volume
+    m_Metadata:
+      m_Items: []
+  - m_Id: 992993284
+    m_Localized: Language
+    m_Metadata:
+      m_Items: []
+  - m_Id: 992993285
+    m_Localized: Resolution
+    m_Metadata:
+      m_Items: []
+  - m_Id: 992993286
+    m_Localized: Fullscreen
+    m_Metadata:
+      m_Items: []
+  - m_Id: 992993287
+    m_Localized: Nickname
+    m_Metadata:
+      m_Items: []
+  - m_Id: 992993288
+    m_Localized: Confirm
+    m_Metadata:
+      m_Items: []
+  - m_Id: 992993289
+    m_Localized: Choose an action
+    m_Metadata:
+      m_Items: []
+  - m_Id: 992993290
+    m_Localized: "Loading\u2026"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 992993291
+    m_Localized: Settings saved
+    m_Metadata:
+      m_Items: []
+  - m_Id: 992993292
+    m_Localized: Quit simulated in the Editor
+    m_Metadata:
+      m_Items: []
+  - m_Id: 992993293
+    m_Localized: Map
+    m_Metadata:
+      m_Items: []
+  - m_Id: 997187584
+    m_Localized: Archive
+    m_Metadata:
+      m_Items: []
+  - m_Id: 997187585
+    m_Localized: Characters
+    m_Metadata:
+      m_Items: []
+  - m_Id: 997187586
+    m_Localized: Lounge
+    m_Metadata:
+      m_Items: []
+  - m_Id: 997187587
+    m_Localized: Not available yet
+    m_Metadata:
+      m_Items: []
+  - m_Id: 997187588
+    m_Localized: Map page placeholder
+    m_Metadata:
+      m_Items: []
+  - m_Id: 997187589
+    m_Localized: Archive page placeholder
+    m_Metadata:
+      m_Items: []
+  - m_Id: 997187590
+    m_Localized: Character page placeholder
+    m_Metadata:
+      m_Items: []
+  - m_Id: 997187591
+    m_Localized: Enter a nickname to continue
+    m_Metadata:
+      m_Items: []
+  references:
+    version: 2
+    RefIds: []

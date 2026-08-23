@@ -5,7 +5,10 @@
         "Game.Foundation",
         "Game.Contracts",
         "Game.Flow",
-        "Game.Presentation"
+        "Game.Presentation",
+        "Game.Persistence",
+        "Game.Progression",
+        "Game.Content"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

@@ -98,8 +98,10 @@ namespace Game.Flow
         {
             private readonly List<SubscriptionEntry> _owner;
 
+            /// <summary>订阅者回调对象。</summary>
             internal object Handler { get; }
 
+            /// <summary>该订阅是否已经释放。</summary>
             internal bool IsDisposed { get; private set; }
 
             /// <summary>创建订阅句柄。</summary>

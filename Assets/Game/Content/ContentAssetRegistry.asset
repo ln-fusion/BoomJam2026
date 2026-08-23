@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cd7936fc6f0ccab4ea849eeaae2bf0c7, type: 3}
+  m_Name: ContentAssetRegistry
+  m_EditorClassIdentifier: 
+  prefabs: []
+  uiPrefabs:
+  - Id: ui.start-menu
+    Asset: {fileID: 2727180448874847937, guid: e792648069a4c4bd78c8bdb4292545cd, type: 3}
+  - Id: ui.meta-hub
+    Asset: {fileID: 905849420239346442, guid: 7b3b4d838931e478095869fd76154111, type: 3}
+  - Id: ui.settings-modal
+    Asset: {fileID: 5828662595183140162, guid: 087d58b8c6f6744fdbd973060f80c33f, type: 3}
+  sprites: []
+  audioClips: []

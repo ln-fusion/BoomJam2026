@@ -8,6 +8,7 @@
         "Game.Content",
         "Game.Persistence",
         "Game.Progression",
+        "Game.Presentation",
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner"
     ],

@@ -1,0 +1,31 @@
+Key,Id,zh-CN,en-US
+ui.game_title,,Boom Jam 2026,Boom Jam 2026
+ui.start_game,,开始游戏,Start Game
+ui.continue_game,,继续游戏,Continue
+ui.settings,,设置,Settings
+ui.quit,,退出游戏,Quit
+ui.settings_title,,设置,Settings
+ui.apply,,应用,Apply
+ui.cancel,,取消,Cancel
+ui.restore_defaults,,恢复默认,Restore Defaults
+ui.master_volume,,主音量,Master Volume
+ui.music_volume,,音乐音量,Music Volume
+ui.sfx_volume,,音效音量,SFX Volume
+ui.language,,语言,Language
+ui.resolution,,分辨率,Resolution
+ui.fullscreen,,全屏,Fullscreen
+ui.nickname,,输入昵称,Nickname
+ui.confirm,,确认,Confirm
+ui.feedback_ready,,请选择一个操作,Choose an action
+ui.feedback_loading,,正在加载……,Loading…
+ui.feedback_saved,,设置已保存,Settings saved
+ui.feedback_quit_editor,,编辑器中模拟退出,Quit simulated in the Editor
+meta.map,,地图,Map
+meta.archive,,档案,Archive
+meta.character,,人员,Characters
+meta.lounge,,休息室,Lounge
+meta.lounge_unavailable,,暂未开放,Not available yet
+meta.page_map,,地图页面占位,Map page placeholder
+meta.page_archive,,档案页面占位,Archive page placeholder
+meta.page_character,,人员页面占位,Character page placeholder
+ui.nickname_required,,请输入昵称后继续,Enter a nickname to continue

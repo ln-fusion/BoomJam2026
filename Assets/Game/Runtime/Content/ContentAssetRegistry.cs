@@ -17,6 +17,16 @@ namespace Game.Content
         public GameObject Asset;
     }
 
+    /// <summary>UI 预制体稳定 ID 与 Unity 资源的映射项。</summary>
+    [System.Serializable]
+    public sealed class UiPrefabAssetEntry
+    {
+        /// <summary>UI 预制体稳定标识。</summary>
+        public string Id;
+        /// <summary>对应的 UI 预制体。</summary>
+        public GameObject Asset;
+    }
+
     /// <summary>
     /// 精灵资源 ID 与 Unity 资源的映射项。
     /// </summary>
@@ -48,11 +58,14 @@ namespace Game.Content
     public sealed class ContentAssetRegistry : ScriptableObject
     {
         [SerializeField] private List<PrefabAssetEntry> prefabs = new List<PrefabAssetEntry>();
+        [SerializeField] private List<UiPrefabAssetEntry> uiPrefabs = new List<UiPrefabAssetEntry>();
         [SerializeField] private List<SpriteAssetEntry> sprites = new List<SpriteAssetEntry>();
         [SerializeField] private List<AudioAssetEntry> audioClips = new List<AudioAssetEntry>();
 
         /// <summary>Inspector 配置的预制体映射项。</summary>
         public IReadOnlyList<PrefabAssetEntry> Prefabs => prefabs;
+        /// <summary>Inspector 配置的 UI 预制体映射项。</summary>
+        public IReadOnlyList<UiPrefabAssetEntry> UiPrefabs => uiPrefabs;
         /// <summary>Inspector 配置的精灵映射项。</summary>
         public IReadOnlyList<SpriteAssetEntry> Sprites => sprites;
         /// <summary>Inspector 配置的音频映射项。</summary>
@@ -65,6 +78,8 @@ namespace Game.Content
     public sealed class OfficialAssetResolver : IAssetResolver
     {
         private readonly Dictionary<string, GameObject> _prefabs =
+            new Dictionary<string, GameObject>();
+        private readonly Dictionary<string, GameObject> _uiPrefabs =
             new Dictionary<string, GameObject>();
         private readonly Dictionary<string, Sprite> _sprites =
             new Dictionary<string, Sprite>();
@@ -80,6 +95,8 @@ namespace Game.Content
 
             foreach (PrefabAssetEntry entry in registry.Prefabs)
                 AddUnique(_prefabs, entry.Id, entry.Asset);
+            foreach (UiPrefabAssetEntry entry in registry.UiPrefabs)
+                AddUnique(_uiPrefabs, entry.Id, entry.Asset);
             foreach (SpriteAssetEntry entry in registry.Sprites)
                 AddUnique(_sprites, entry.Id, entry.Asset);
             foreach (AudioAssetEntry entry in registry.AudioClips)
@@ -92,6 +109,15 @@ namespace Game.Content
         public GameObject GetPrefab(PrefabId id)
         {
             return _prefabs.TryGetValue(id.Value, out GameObject asset) ? asset : null;
+        }
+
+        /// <summary>按稳定 ID 获取 UI 预制体。</summary>
+        /// <param name="id">UI 预制体稳定标识。</param>
+        /// <returns>找到的 UI 预制体；不存在时为 null。</returns>
+        public GameObject GetUiPrefab(UiPrefabId id)
+        {
+            return id != null && _uiPrefabs.TryGetValue(id.Value, out GameObject asset)
+                ? asset : null;
         }
 
         /// <summary>按稳定 ID 获取精灵。</summary>

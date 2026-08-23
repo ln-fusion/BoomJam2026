@@ -61,6 +61,20 @@ namespace Game.Foundation
         public static readonly ErrorCode SceneUnloadFailed = new ErrorCode(ErrorCategory.SceneTransition, "scene_unload_failed");
         /// <summary>操作被取消。</summary>
         public static readonly ErrorCode OperationCancelled = new ErrorCode(ErrorCategory.Infrastructure, "operation_cancelled");
+        /// <summary>本地化系统初始化失败。</summary>
+        public static readonly ErrorCode LocalizationInitializationFailed =
+            new ErrorCode(ErrorCategory.Infrastructure, "localization.initialization_failed");
+        /// <summary>本地化资源未通过必需 Key 校验。</summary>
+        public static readonly ErrorCode LocalizationDataInvalid =
+            new ErrorCode(ErrorCategory.Content, "localization.data_invalid");
+        /// <summary>设置草稿不符合约束。</summary>
+        public static readonly ErrorCode SettingsInvalid = new ErrorCode(ErrorCategory.Validation, "settings.invalid");
+        /// <summary>请求的 Locale 不受支持。</summary>
+        public static readonly ErrorCode LocaleUnsupported = new ErrorCode(ErrorCategory.Validation, "locale.unsupported");
+        /// <summary>窗口设置无法应用。</summary>
+        public static readonly ErrorCode WindowApplyFailed = new ErrorCode(ErrorCategory.Infrastructure, "window.apply_failed");
+        /// <summary>设置存档写入失败。</summary>
+        public static readonly ErrorCode SettingsSaveFailed = new ErrorCode(ErrorCategory.SaveIo, "settings.save_failed");
 
         /// <summary>错误所属类别。</summary>
         public ErrorCategory Category { get; }

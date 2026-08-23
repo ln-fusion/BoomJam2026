@@ -1,0 +1,26 @@
+{
+    "name": "Game.Editor",
+    "rootNamespace": "Game.Editor",
+    "references": [
+        "Game.Foundation",
+        "Game.Content",
+        "Game.Presentation",
+        "Game.Bootstrap",
+        "Unity.Localization",
+        "Unity.Localization.Editor",
+        "Unity.ResourceManager"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [
+        "Unity.Localization.ThirdParty.Editor.dll"
+    ],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
