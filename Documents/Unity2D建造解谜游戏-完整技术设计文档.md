@@ -1,10 +1,12 @@
 # Unity 2D 横版能力框建造解谜游戏——完整技术设计文档
 
 > 文档版本：1.0  
-> 目标引擎：Unity 2022.3.62f3c1 LTS  
+> 目标引擎：Unity 2022.3.62f3 LTS
 > 目标平台：Windows PC / Steam  
 > 渲染管线：Built-in Render Pipeline  
 > 文档用途：作为项目从零搭建时的架构、模块、工程目录、存档结构及跨模块接口依据
+
+> 阅读提示：这是目标设计，不是当前进度报告。已落地行为以 `Assets/` 中的实现和测试为准；尚未实现的模块在正文中使用“首发”“未来”或“预留”标明。
 
 ---
 
@@ -690,7 +692,7 @@ elapsedTicks * tickDuration
 
 Unity 原生 2D 物理不作为跨电脑、跨引擎版本严格确定性方案。本项目只承诺锁定构建下的尽量可复现，并执行以下约束：
 
-- 锁定 Unity `2022.3.62f3c1`、包版本、Windows 架构和 Scripting Backend；升级引擎必须重跑物理回归集。
+- 锁定 Unity `2022.3.62f3`、包版本、Windows 架构和 Scripting Backend；升级引擎必须重跑物理回归集。
 - 锁定 Gravity、Velocity/Position Iterations、Contact Offset、Layer Collision Matrix 等物理设置，并计算 `physicsProfileHash`。
 - 使用固定 Tick 和本地 `PhysicsScene2D.Simulate`。
 - 所有物体按稳定 ID 创建；所有自写集合遍历在影响结果前明确排序。
