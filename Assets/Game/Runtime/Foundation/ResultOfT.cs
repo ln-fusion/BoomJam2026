@@ -1,7 +1,7 @@
 namespace Game.Foundation
 {
     /// <summary>
-    /// 带返回值操作结果：成功时携带 Value，失败时携带错误信息.
+    /// 带返回值操作结果：成功时携带 Value，失败时携带错误信息。
     /// </summary>
     /// <typeparam name="T">成功结果携带的值类型。</typeparam>
     public readonly struct Result<T>

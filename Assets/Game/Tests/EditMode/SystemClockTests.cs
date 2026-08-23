@@ -5,7 +5,7 @@ using NUnit.Framework;
 namespace Game.Tests.EditMode
 {
     /// <summary>
-    /// 系统时钟测试：固定时间可注入，真实时钟走通 DateTimeOffset.
+    /// 系统时钟测试：固定时间可注入，真实时钟走通 DateTimeOffset。
     /// </summary>
     public class SystemClockTests
     {

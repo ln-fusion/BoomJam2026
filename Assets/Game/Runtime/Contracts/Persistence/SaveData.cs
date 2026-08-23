@@ -76,7 +76,7 @@ namespace Game.Contracts.Persistence
         public List<string> CompletedStoryIds = new List<string>();
         /// <summary>已经授予的解锁事实 ID 列表。</summary>
         public List<string> GrantedUnlockIds = new List<string>();
-        /// <summary>本地统计值列表，用于未来 Steam 统计同步。</summary>
+        /// <summary>本地统计值列表，供平台适配层读取和同步。</summary>
         public List<LocalStatSave> LocalStats = new List<LocalStatSave>();
         /// <summary>已经处理过的通关提交运行 ID，防止重复提交。</summary>
         public List<string> AppliedCompletionRunIds = new List<string>();
@@ -102,7 +102,7 @@ namespace Game.Contracts.Persistence
     /// 关卡最佳成绩存档 DTO。
     /// </summary>
     /// <remarks>
-    /// 设计文档要求最佳成绩优先比较通关耗时，耗时相同时比较容量消耗；此 DTO 保存比较和回溯所需的版本信息。
+    /// 保存一次最佳成绩及其比较所需的模拟、内容和规则版本信息。
     /// </remarks>
     [Serializable]
     public sealed class BestScoreSave

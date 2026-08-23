@@ -3,7 +3,7 @@ using System;
 namespace Game.Foundation
 {
     /// <summary>
-    /// 统一错误类别：错误所属的模块边界，用于日志聚合与平台上报.
+    /// 统一错误类别：错误所属的模块边界，用于日志聚合与平台上报。
     /// </summary>
     public enum ErrorCategory
     {
@@ -34,7 +34,7 @@ namespace Game.Foundation
     }
 
     /// <summary>
-    /// 错误码：标记具体失败原因；新增时保持数值向后兼容，不重排既有枚举值.
+    /// 错误码：标记具体失败原因；新增时保持数值向后兼容，不重排既有枚举值。
     /// </summary>
     [Serializable]
     public readonly struct ErrorCode : IEquatable<ErrorCode>

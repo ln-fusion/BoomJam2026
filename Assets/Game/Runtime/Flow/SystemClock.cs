@@ -4,10 +4,10 @@ using Game.Contracts;
 namespace Game.Flow
 {
     /// <summary>
-    /// 系统时钟实现：基于 <see cref="DateTimeOffset"/>（真实本地时间）.
+    /// 系统时钟实现：基于 <see cref="DateTimeOffset"/>（真实本地时间）。
     /// </summary>
     /// <remarks>
-    /// 系统时间不可信，不参与解锁、成绩或存档排序（技术设计文档 §8.3）.
+    /// 提供系统 UTC 与本地时间；调用方不得用它决定解锁、成绩或存档排序。
     /// </remarks>
     public sealed class SystemClock : IClock
     {

@@ -1,7 +1,7 @@
 namespace Game.Foundation
 {
     /// <summary>
-    /// 关卡稳定 ID：对应内容目录中关卡资源的稳定标识.
+    /// 关卡稳定 ID，对应内容目录中关卡资源的标识。
     /// </summary>
     [System.Serializable]
     public sealed class LevelId : StrongId<LevelId>

@@ -9,7 +9,7 @@ using NUnit.Framework;
 namespace Game.Tests.EditMode
 {
     /// <summary>
-    /// 领域事件总线测试：订阅/发布/退订释放/异常隔离.
+    /// 领域事件总线测试：订阅/发布/退订释放/异常隔离。
     /// </summary>
     public class DomainEventBusTests
     {

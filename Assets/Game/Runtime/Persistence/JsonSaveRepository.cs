@@ -10,7 +10,7 @@ using Newtonsoft.Json;
 namespace Game.Persistence
 {
     /// <summary>
-    /// 基于 JSON 文件的本地存档仓储，分别管理 settings.json 与 profile.json。
+    /// 基于 JSON 文件的本地存档仓储，管理 <c>settings.json</c> 与 <c>profile.json</c>。
     /// </summary>
     /// <remarks>
     /// 设置和档案使用独立并发门闩；写入通过原子临时文件流程完成，读取失败时按主文件、备份和默认值顺序恢复。

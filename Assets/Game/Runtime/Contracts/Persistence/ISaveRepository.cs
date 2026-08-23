@@ -4,10 +4,11 @@ using System.Threading.Tasks;
 namespace Game.Contracts.Persistence
 {
     /// <summary>
-    /// 本地存档仓储接口，统一读写设置与单一玩家档案文件。
+    /// 本地存档仓储接口，读写设置文件和单一玩家档案文件。
     /// </summary>
     /// <remarks>
-    /// 设计文档要求业务系统不直接操作 JSON 文件；设置和进度分文件保存，仓储负责加载、保存、校验和恢复来源上报。
+    /// 业务系统不直接操作 JSON 文件。当前实现使用 <c>settings.json</c> 和
+    /// <c>profile.json</c>，仓储负责校验、原子写入，并在读取失败时报告恢复来源。
     /// </remarks>
     public interface ISaveRepository
     {

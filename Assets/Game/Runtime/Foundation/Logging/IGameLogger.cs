@@ -1,10 +1,10 @@
 namespace Game.Foundation
 {
     /// <summary>
-    /// 日志抽象：跨模块统一入口，隔离 UnityEngine.Debug 依赖以便测试.
+    /// 日志抽象，隔离跨模块代码对 <see cref="UnityEngine.Debug"/> 的依赖。
     /// </summary>
     /// <remarks>
-    /// 预期失败路径必须有 Result/日志，不静默吞掉（开发计划 §2.2 最低验收标准 4）.
+    /// 预期失败路径必须有 Result/日志，不静默吞掉（开发计划 §2.2 最低验收标准 4）。
     /// </remarks>
     public interface IGameLogger
     {

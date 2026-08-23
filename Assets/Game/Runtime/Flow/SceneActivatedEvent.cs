@@ -3,7 +3,7 @@ using Game.Contracts;
 namespace Game.Flow
 {
     /// <summary>
-    /// 功能场景已激活事件：场景加载完成并设为 Active 后发布.
+    /// 功能场景已激活事件：场景加载完成并设为 Active 后发布。
     /// </summary>
     public sealed class SceneActivatedEvent : IDomainEvent
     {

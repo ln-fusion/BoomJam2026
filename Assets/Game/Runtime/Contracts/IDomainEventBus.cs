@@ -4,23 +4,23 @@ using System;
 namespace Game.Contracts
 {
     /// <summary>
-    /// 领域事件标记接口：只发布已经发生或已经提交的不可变事实.
+    /// 领域事件标记接口：只发布已经发生或已经提交的不可变事实。
     /// </summary>
     /// <remarks>
-    /// 参见技术设计文档 §13.2：不得把 GameObject、Collider2D 或 View 引用放进跨模块事件.
+    /// 参见技术设计文档 §13.2：不得把 GameObject、Collider2D 或 View 引用放进跨模块事件。
     /// </remarks>
     public interface IDomainEvent { }
 
     /// <summary>
-    /// 领域事件总线：订阅已提交事实；订阅返回句柄，释放句柄即取消订阅.
+    /// 领域事件总线：订阅已提交事实；订阅返回句柄，释放句柄即取消订阅。
     /// </summary>
     /// <remarks>
-    /// 订阅者异常必须被隔离并记录，不能回滚已经提交的事务；卸载场景时通过释放订阅句柄清理.
+    /// 领域事件总线；订阅者异常会被隔离并记录，卸载场景时释放订阅句柄。
     /// </remarks>
     public interface IDomainEventBus
     {
         /// <summary>
-        /// 订阅指定事件类型.
+        /// 订阅指定事件类型。
         /// </summary>
         /// <typeparam name="T">事件类型，须实现 <see cref="IDomainEvent"/></typeparam>
         /// <param name="handler">事件回调</param>

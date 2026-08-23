@@ -9,12 +9,12 @@ using Game.Foundation;
 namespace Game.Flow
 {
     /// <summary>
-    /// 应用流程服务第一版：驱动功能场景 Additive 加载/卸载/激活，带防重入与取消生命周期.
+    /// 应用流程服务第一版：驱动功能场景 Additive 加载/卸载/激活，带防重入与取消生命周期。
     /// </summary>
     /// <remarks>
     /// C02 范围：StartMenu/MetaHub/Story/Gameplay 占位场景可往返切换、重复导航不加载两份、
-    /// 切换场景时取消旧场景的订阅与异步请求（开发计划 C02 验收）.
-    /// 首次/继续、关前/关后剧情分支等路由细节在 C05/C15/C16 落地.
+    /// 切换场景时取消旧场景的订阅与异步请求（开发计划 C02 验收）。
+    /// 首次/继续、关前/关后剧情分支等路由细节在 C05/C15/C16 落地。
     /// </remarks>
     public sealed class GameFlowService : IGameFlowService, IDisposable
     {
@@ -40,7 +40,7 @@ namespace Game.Flow
         public IClock Clock => _clock;
 
         /// <summary>
-        /// 构造函数：注入场景加载/时钟/日志/事件总线依赖.
+        /// 构造函数：注入场景加载/时钟/日志/事件总线依赖。
         /// </summary>
         /// <param name="sceneLoader">场景加载器（默认 <see cref="UnitySceneLoader"/>）</param>
         /// <param name="clock">时钟</param>

@@ -86,7 +86,7 @@ namespace Game.Contracts.Persistence
     }
 
     /// <summary>
-    /// 触发存档写入的业务原因，用于日志、诊断和未来云同步策略。
+    /// 触发存档写入的业务原因，写入日志并供平台同步策略使用。
     /// </summary>
     public enum SaveReason
     {

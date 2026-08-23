@@ -3,11 +3,11 @@ using System.Collections.Generic;
 namespace Game.Foundation
 {
     /// <summary>
-    /// 结构化日志上下文：随日志附带的定位信息，不得包含敏感平台令牌.
+    /// 结构化日志上下文：随日志附带的定位信息，不得包含敏感平台令牌。
     /// </summary>
     /// <remarks>
     /// 参见技术设计文档 §14.1：日志包含 BuildVersion、ContentRevision、LevelId、RunId、
-    /// SaveRevision 和物理 Profile Hash；此处用键值对承载，缺失字段留空.
+    /// SaveRevision 和物理 Profile Hash；此处用键值对承载，缺失字段留空。
     /// </remarks>
     public sealed class LogContext
     {

@@ -4,11 +4,11 @@ using System.Threading;
 namespace Game.Foundation
 {
     /// <summary>
-    /// 取消令牌生命周期作用域：Dispose 时统一取消关联的异步操作.
+    /// 取消令牌生命周期作用域；释放时取消关联的异步操作。
     /// </summary>
     /// <remarks>
     /// C02 用于场景生命周期：活跃场景卸载后调用 <see cref="Dispose"/>，
-    /// 使基于该 token 的订阅与异步请求一并取消（开发计划 C02 验收第 3 条）.
+    /// 使基于该 token 的订阅与异步请求一并取消（开发计划 C02 验收第 3 条）。
     /// </remarks>
     public sealed class CancellationTokenScope : IDisposable
     {

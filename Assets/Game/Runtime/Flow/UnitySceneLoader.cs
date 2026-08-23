@@ -7,7 +7,7 @@ using UnityEngine.SceneManagement;
 namespace Game.Flow
 {
     /// <summary>
-    /// 基于 <see cref="SceneManager"/> 的场景加载器：Additive 加载、激活、卸载.
+    /// 基于 <see cref="SceneManager"/> 的场景加载器：Additive 加载、激活、卸载。
     /// </summary>
     public sealed class UnitySceneLoader : ISceneLoader
     {

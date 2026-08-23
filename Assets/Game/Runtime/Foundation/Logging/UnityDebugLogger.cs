@@ -3,7 +3,7 @@ using UnityEngine;
 namespace Game.Foundation
 {
     /// <summary>
-    /// 基于 UnityEngine.Debug 的日志实现：把上下文前缀拼入消息，按级别映射 Debug API.
+    /// 基于 UnityEngine.Debug 的日志实现：把上下文前缀拼入消息，按级别映射 Debug API。
     /// </summary>
     public sealed class UnityDebugLogger : IGameLogger
     {

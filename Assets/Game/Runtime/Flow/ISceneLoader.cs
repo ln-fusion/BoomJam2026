@@ -4,15 +4,15 @@ using System.Threading.Tasks;
 namespace Game.Flow
 {
     /// <summary>
-    /// 场景加载器（Flow 内部接口）：封装功能 Scene 的 Additive 加载/卸载/激活.
+    /// 场景加载器（Flow 内部接口）：封装功能 Scene 的 Additive 加载/卸载/激活。
     /// </summary>
     /// <remarks>
-    /// C02 由 <see cref="UnitySceneLoader"/> 提供默认实现；测试可用内存假实现替代.
+    /// C02 由 <see cref="UnitySceneLoader"/> 提供默认实现；测试可用内存假实现替代。
     /// </remarks>
     public interface ISceneLoader
     {
         /// <summary>
-        /// Additive 加载场景并设为 Active 场景，返回是否成功.
+        /// Additive 加载场景并设为 Active 场景，返回是否成功。
         /// </summary>
         /// <param name="sceneName">Build Settings 中的场景名</param>
         /// <param name="cancellationToken">取消标记；取消时返回失败而非抛异常</param>

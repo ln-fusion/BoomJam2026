@@ -3,7 +3,7 @@ using System.Collections.Generic;
 namespace Game.Foundation
 {
     /// <summary>
-    /// 丢弃所有日志的实现：用于单元测试与显式静默场景（不静默吞错，仅测试替身）.
+    /// 丢弃所有日志的实现：用于单元测试与显式静默场景（不静默吞错，仅测试替身）。
     /// </summary>
     public sealed class NullLogger : IGameLogger
     {

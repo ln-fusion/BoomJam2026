@@ -1,7 +1,7 @@
 namespace Game.Foundation
 {
     /// <summary>
-    /// 角色稳定 ID：对应角色/立绘资源目录中的稳定标识.
+    /// 角色稳定 ID，对应角色和立绘资源目录中的标识。
     /// </summary>
     [System.Serializable]
     public sealed class CharacterId : StrongId<CharacterId>

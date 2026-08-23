@@ -80,7 +80,7 @@ namespace Game.Editor.Localization
             }
         }
 
-        /// <summary>确保项目拥有活动 LocalizationSettings 资源。</summary>
+        /// <summary>创建或加载项目的活动 LocalizationSettings 资源。</summary>
         /// <returns>活动设置资源。</returns>
         private static LocalizationSettings EnsureSettings()
         {
@@ -99,7 +99,7 @@ namespace Game.Editor.Localization
             return settings;
         }
 
-        /// <summary>确保所有项目 Locale 资产存在并注册到 Localization。</summary>
+        /// <summary>创建缺少的 Locale 资产，并将项目 Locale 注册到 Localization。</summary>
         /// <returns>按稳定代码排序的 Locale 列表。</returns>
         private static List<Locale> EnsureLocales()
         {
@@ -125,7 +125,7 @@ namespace Game.Editor.Localization
             return locales;
         }
 
-        /// <summary>确保 UI String Table 集合包含所有目标 Locale。</summary>
+        /// <summary>创建 UI String Table 集合，并为每个目标 Locale 添加表。</summary>
         /// <param name="locales">目标 Locale。</param>
         /// <returns>UI String Table 集合。</returns>
         private static StringTableCollection EnsureCollection(IList<Locale> locales)

@@ -3,7 +3,7 @@ using System;
 namespace Game.Foundation
 {
     /// <summary>
-    /// 强类型 ID 基类：以 string 承载稳定内容标识，禁止不同 ID 以裸 string 互传.
+    /// 强类型 ID 基类：以 string 承载稳定内容标识，禁止不同 ID 以裸 string 互传。
     /// </summary>
     /// <typeparam name="TSelf">继承类型自身，用于实现同类型比较</typeparam>
     [Serializable]

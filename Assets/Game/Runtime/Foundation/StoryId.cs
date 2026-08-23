@@ -1,7 +1,7 @@
 namespace Game.Foundation
 {
     /// <summary>
-    /// 剧情稳定 ID：对应剧情资源目录中的稳定标识.
+    /// 剧情稳定 ID，对应剧情资源目录中的标识。
     /// </summary>
     [System.Serializable]
     public sealed class StoryId : StrongId<StoryId>

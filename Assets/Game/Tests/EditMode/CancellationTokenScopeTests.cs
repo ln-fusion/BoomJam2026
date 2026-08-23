@@ -5,7 +5,7 @@ using NUnit.Framework;
 namespace Game.Tests.EditMode
 {
     /// <summary>
-    /// 取消令牌生命周期测试：Dispose 时统一取消关联的异步操作.
+    /// 取消令牌生命周期测试：Dispose 时统一取消关联的异步操作。
     /// </summary>
     public class CancellationTokenScopeTests
     {

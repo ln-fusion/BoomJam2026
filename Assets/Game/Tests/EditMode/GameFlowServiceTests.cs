@@ -9,7 +9,7 @@ using NUnit.Framework;
 namespace Game.Tests.EditMode
 {
     /// <summary>
-    /// 应用流程服务测试：导航、防重入、场景生命周期取消.
+    /// 应用流程服务测试：导航、防重入、场景生命周期取消。
     /// </summary>
     public class GameFlowServiceTests
     {

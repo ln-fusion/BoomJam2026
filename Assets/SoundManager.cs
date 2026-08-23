@@ -42,7 +42,7 @@ namespace SoundManager
     }
 
     /// <summary>
-    /// 简单的全局声音管理器，负责背景音乐和音效播放。
+    /// 全局声音管理器，播放背景音乐和一次性音效。
     /// </summary>
     public class SoundManager : MonoBehaviour
     {

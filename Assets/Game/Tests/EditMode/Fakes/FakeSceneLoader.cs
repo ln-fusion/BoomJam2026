@@ -7,7 +7,7 @@ using Game.Flow;
 namespace Game.Tests.EditMode
 {
     /// <summary>
-    /// 内存场景加载器（测试替身）：不依赖 SceneManager，模拟延迟加载与失败.
+    /// 内存场景加载器（测试替身）：不依赖 SceneManager，模拟延迟加载与失败。
     /// </summary>
     public sealed class FakeSceneLoader : ISceneLoader
     {

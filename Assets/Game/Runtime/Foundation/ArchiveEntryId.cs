@@ -1,7 +1,7 @@
 namespace Game.Foundation
 {
     /// <summary>
-    /// 档案条目稳定 ID：对应档案内容目录中的稳定标识.
+    /// 档案条目稳定 ID，对应档案内容目录中的标识。
     /// </summary>
     [System.Serializable]
     public sealed class ArchiveEntryId : StrongId<ArchiveEntryId>

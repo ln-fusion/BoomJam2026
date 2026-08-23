@@ -6,7 +6,7 @@ using UnityEngine;
 namespace Game.Contracts.Content
 {
     /// <summary>
-    /// 内容来源类别，用于区分随安装包发布的官方内容与未来的 UGC 内容。
+    /// 内容来源类别，区分随安装包发布的官方内容和用户生成内容。
     /// </summary>
     public enum ContentSource
     {
@@ -34,7 +34,7 @@ namespace Game.Contracts.Content
         public string MinGameVersion;
         /// <summary>该内容最后验证通过的游戏版本。</summary>
         public string MaxTestedGameVersion;
-        /// <summary>内容载荷的 SHA-256 摘要，用于未来的完整性校验。</summary>
+        /// <summary>内容载荷的 SHA-256 摘要，供加载校验使用。</summary>
         public string PayloadSha256;
     }
 

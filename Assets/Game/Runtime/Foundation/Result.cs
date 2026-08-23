@@ -1,7 +1,7 @@
 namespace Game.Foundation
 {
     /// <summary>
-    /// 无返回值操作结果：成功或携带错误码/消息.
+    /// 无返回值操作结果：成功或携带错误码/消息。
     /// </summary>
     public readonly struct Result
     {

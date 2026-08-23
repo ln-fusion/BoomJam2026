@@ -6,10 +6,10 @@ using Game.Foundation;
 namespace Game.Contracts
 {
     /// <summary>
-    /// 应用流程服务：管理场景流转、首次/继续与剧情返回目标.
+    /// 应用流程服务：管理场景流转、首次/继续与剧情返回目标。
     /// </summary>
     /// <remarks>
-    /// C01/C02 骨架期：接口先行定义，具体实现与完整路由在 C02 落地.
+    /// C01/C02 阶段的场景流程接口；当前实现已提供基础场景切换和返回操作。
     /// </remarks>
     public interface IGameFlowService
     {
@@ -26,7 +26,7 @@ namespace Game.Contracts
         /// <param name="cancellationToken">取消导航操作的令牌。</param>
         Task OpenMetaHubAsync(MetaPageId page, CancellationToken cancellationToken);
 
-        /// <summary>进入指定关卡（当前骨架实现统一进入 Gameplay 占位场景）.</summary>
+        /// <summary>进入指定关卡；当前实现统一进入 Gameplay 占位场景。</summary>
         /// <param name="levelId">需要进入的关卡稳定标识。</param>
         /// <param name="cancellationToken">取消导航操作的令牌。</param>
         Task EnterLevelAsync(LevelId levelId, CancellationToken cancellationToken);
@@ -47,7 +47,7 @@ namespace Game.Contracts
     }
 
     /// <summary>
-    /// 主界面页面标识：MetaHub 内容页路由.
+    /// 主界面页面标识：MetaHub 内容页路由。
     /// </summary>
     public enum MetaPageId
     {
@@ -62,7 +62,7 @@ namespace Game.Contracts
     }
 
     /// <summary>
-    /// 剧情播放结束后的返回目标.
+    /// 剧情播放结束后的返回目标。
     /// </summary>
     public readonly struct StoryReturnTarget
     {
@@ -100,7 +100,7 @@ namespace Game.Contracts
     }
 
     /// <summary>
-    /// 剧情返回目标类别.
+    /// 剧情返回目标类别。
     /// </summary>
     public enum StoryReturnKind
     {
