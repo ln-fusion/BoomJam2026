@@ -46,6 +46,8 @@ namespace Game.Bootstrap
         /// </summary>
         private async void Start()
         {
+            ApplyFrameRateLimit();
+
             var logger = UnityDebugLogger.Instance;
             var clock = new SystemClock();
             var eventBus = new DomainEventBus(logger);
@@ -99,6 +101,24 @@ namespace Game.Bootstrap
         private void OnSettingsApplied(SettingsAppliedEvent evt)
         {
             _audioService?.ApplyVolumes(evt.Snapshot.MasterVolume, evt.Snapshot.MusicVolume, evt.Snapshot.SfxVolume);
+        }
+
+        /// <summary>
+        /// 限制帧率到显示器刷新率: 桌面端降低 Vulkan 无效渲染线程负载.
+        /// </summary>
+        /// <remarks>
+        /// 仅针对桌面平台生效; 移动端交给 Unity 默认行为或后续帧率设置项.
+        /// 关闭 Vsync 改用 targetFrameRate 软锁: Vulkan 下 Vsync 与 D3D11 行为存在差异,
+        /// 且软锁允许后续按显示器刷新率精确控制上限, 避免 90/120Hz 被 60 上限卡死.
+        /// </remarks>
+        private static void ApplyFrameRateLimit()
+        {
+            if (Application.isMobilePlatform)
+                return;
+
+            QualitySettings.vSyncCount = 0;
+            var refresh = System.Math.Max(1, (int)System.Math.Round(Screen.currentResolution.refreshRateRatio.value));
+            Application.targetFrameRate = refresh;
         }
 
         /// <summary>
