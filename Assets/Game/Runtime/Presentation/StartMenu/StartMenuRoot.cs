@@ -28,6 +28,10 @@ namespace Game.Presentation
         private StartMenuView? _view;
 
         /// <summary>装配依赖并订阅场景激活事件，由组合根调用.</summary>
+        /// <remarks>
+        /// UIRootManager 是在 SceneActivatedEvent 发布后才创建本组件,
+        /// 订阅会错过当前事件, 因此订阅后立即核对激活场景并补发一次.
+        /// </remarks>
         public void Initialize(
             IGameFlowService flow,
             IDomainEventBus eventBus,
@@ -47,6 +51,12 @@ namespace Game.Presentation
             _localization = localization;
 
             _subscriptions.Add(eventBus.Subscribe<SceneActivatedEvent>(OnSceneActivated));
+
+            // 补发: 组件创建晚于事件发布时, 直接用激活场景初始化视图
+            if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name == SceneNames.StartMenu)
+            {
+                OnSceneActivated(new SceneActivatedEvent(SceneNames.StartMenu, default));
+            }
         }
 
         private void OnSceneActivated(SceneActivatedEvent evt)
