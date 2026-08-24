@@ -125,7 +125,7 @@ namespace Game.Presentation
             var image = go.AddComponent<Image>();
             image.color = new Color(0.12f, 0.13f, 0.18f, 1f);
 
-            UIFactory.CreateText("PageLabel", go.transform, label, 32, TextAnchor.MiddleCenter, Color.white);
+            UIFactory.CreateText("PageLabel", go.transform, label, 26, TextAnchor.MiddleCenter, Color.white);
             return go;
         }
 
@@ -157,19 +157,26 @@ namespace Game.Presentation
 
         public MetaHubShellView(Transform parent)
         {
-            _canvas = UIFactory.CreateCanvas("MetaHubCanvas");
+            // 按 1920x1080 参考分辨率缩放：小窗口整体缩小，元素比例与相对关系稳定
+            _canvas = UIFactory.CreateCanvas("MetaHubCanvas", scaleWithScreenSize: true);
             _canvas.transform.SetParent(parent, false);
 
-            _headerTitle = CreateBar("HeaderBar", new Vector2(0f, 320f), "上栏占位");
+            _headerTitle = CreateBar("HeaderBar", "上栏占位");
             _footerTitle = CreateFooterBar();
 
+            // 侧栏：贴左垂直居中（锚点相对布局，不写死绝对像素）
             var side = UIFactory.CreatePanel(
                 "Sidebar",
                 _canvas.transform,
                 new Vector2(220f, 640f),
-                new Vector2(-550f, 0f),
+                new Vector2(90f, 0f),
                 new Color(0.18f, 0.2f, 0.3f, 0.9f)
             );
+            var sideRect = side.rectTransform;
+            sideRect.anchorMin = new Vector2(0f, 0.5f);
+            sideRect.anchorMax = new Vector2(0f, 0.5f);
+            sideRect.pivot = new Vector2(0f, 0.5f);
+            sideRect.anchoredPosition = new Vector2(90f, 0f);
             _ = UIFactory.CreateText(
                 "SidebarLabel",
                 side.transform,
@@ -182,21 +189,44 @@ namespace Game.Presentation
             var content = new GameObject("ContentRoot");
             content.transform.SetParent(_canvas.transform, false);
             var rect = content.AddComponent<RectTransform>();
-            rect.anchorMin = new Vector2(0.32f, 0.05f);
-            rect.anchorMax = new Vector2(0.95f, 0.9f);
+            rect.anchorMin = new Vector2(0.18f, 0.08f);
+            rect.anchorMax = new Vector2(0.96f, 0.92f);
+            rect.offsetMin = Vector2.zero;
+            rect.offsetMax = Vector2.zero;
             ContentRoot = content.transform;
         }
 
-        private Text CreateBar(string name, Vector2 position, string label)
+        /// <summary>创建上/下栏（贴顶/贴底，宽度跟随屏幕）.</summary>
+        private Text CreateBar(string name, string label)
         {
             var bar = UIFactory.CreatePanel(
                 name,
                 _canvas.transform,
-                new Vector2(1900f, 80f),
-                position,
+                new Vector2(1000f, 64f),
+                Vector2.zero,
                 new Color(0.13f, 0.15f, 0.22f, 1f)
             );
-            return UIFactory.CreateText($"{name}Label", bar.transform, label, 20, TextAnchor.MiddleLeft, Color.white);
+            var barRect = bar.rectTransform;
+            if (name == "HeaderBar")
+            {
+                // 上栏：顶边锚点拉伸，高 64，贴顶
+                barRect.anchorMin = new Vector2(0f, 1f);
+                barRect.anchorMax = new Vector2(1f, 1f);
+                barRect.pivot = new Vector2(0.5f, 1f);
+                barRect.offsetMin = new Vector2(0f, -64f);
+                barRect.offsetMax = Vector2.zero;
+            }
+            else
+            {
+                // 下栏：底边锚点拉伸，高 64，贴底
+                barRect.anchorMin = new Vector2(0f, 0f);
+                barRect.anchorMax = new Vector2(1f, 0f);
+                barRect.pivot = new Vector2(0.5f, 0f);
+                barRect.offsetMin = Vector2.zero;
+                barRect.offsetMax = new Vector2(0f, 64f);
+            }
+
+            return UIFactory.CreateText($"{name}Label", bar.transform, label, 18, TextAnchor.MiddleLeft, Color.white);
         }
 
         /// <summary>下栏：Logo + 四个导航按钮.</summary>
@@ -205,28 +235,35 @@ namespace Game.Presentation
             var bar = UIFactory.CreatePanel(
                 "FooterBar",
                 _canvas.transform,
-                new Vector2(1900f, 80f),
-                new Vector2(0f, -320f),
+                new Vector2(1000f, 64f),
+                Vector2.zero,
                 new Color(0.13f, 0.15f, 0.22f, 1f)
             );
+            var barRect = bar.rectTransform;
+            barRect.anchorMin = new Vector2(0f, 0f);
+            barRect.anchorMax = new Vector2(1f, 0f);
+            barRect.pivot = new Vector2(0.5f, 0f);
+            barRect.offsetMin = Vector2.zero;
+            barRect.offsetMax = new Vector2(0f, 64f);
 
             var label = UIFactory.CreateText(
                 "FooterLabel",
                 bar.transform,
                 "下栏",
-                20,
+                18,
                 TextAnchor.MiddleLeft,
                 Color.white
             );
-            label.rectTransform.anchoredPosition = new Vector2(-800f, 0f);
+            label.rectTransform.anchoredPosition = new Vector2(-860f, 0f);
 
-            CreateNavButton(bar.transform, "地图", MetaPageId.Map, -500f);
-            CreateNavButton(bar.transform, "档案", MetaPageId.Archive, -300f);
-            CreateNavButton(bar.transform, "人员", MetaPageId.Character, -100f);
-            CreateNavButton(bar.transform, "休息室", MetaPageId.Lounge, 100f);
+            CreateNavButton(bar.transform, "地图", MetaPageId.Map, -420f);
+            CreateNavButton(bar.transform, "档案", MetaPageId.Archive, -240f);
+            CreateNavButton(bar.transform, "人员", MetaPageId.Character, -60f);
+            CreateNavButton(bar.transform, "休息室", MetaPageId.Lounge, 120f);
             return label;
         }
 
+        /// <summary>创建导航按钮（下栏内，固定间隔）.</summary>
         private void CreateNavButton(Transform parent, string label, MetaPageId page, float x)
         {
             UIFactory.CreateButton(
@@ -234,7 +271,7 @@ namespace Game.Presentation
                 parent,
                 label,
                 () => OnPageSelected?.Invoke(page),
-                new Vector2(180f, 56f),
+                new Vector2(150f, 48f),
                 new Vector2(x, 0f)
             );
         }
