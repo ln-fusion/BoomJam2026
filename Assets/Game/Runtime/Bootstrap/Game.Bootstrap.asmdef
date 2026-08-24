@@ -5,7 +5,11 @@
         "Game.Foundation",
         "Game.Contracts",
         "Game.Flow",
-        "Game.Presentation"
+        "Game.Presentation",
+        "Game.Localization",
+        "Game.Audio",
+        "Game.Persistence",
+        "Unity.Localization"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

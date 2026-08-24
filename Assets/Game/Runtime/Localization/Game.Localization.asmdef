@@ -1,11 +1,10 @@
 {
-    "name": "Game.Presentation",
-    "rootNamespace": "Game.Presentation",
+    "name": "Game.Localization",
+    "rootNamespace": "Game.Localization",
     "references": [
         "Game.Foundation",
         "Game.Contracts",
-        "Game.Flow",
-        "UnityEngine.UI"
+        "Unity.Localization"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

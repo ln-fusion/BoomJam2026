@@ -1,13 +1,15 @@
 {
-    "name": "Game.Presentation",
-    "rootNamespace": "Game.Presentation",
+    "name": "Game.Editor.Backbone",
+    "rootNamespace": "Game.Editor.Backbone",
     "references": [
         "Game.Foundation",
         "Game.Contracts",
-        "Game.Flow",
-        "UnityEngine.UI"
+        "Unity.Localization.Editor",
+        "Unity.Localization"
     ],
-    "includePlatforms": [],
+    "includePlatforms": [
+        "Editor"
+    ],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": false,

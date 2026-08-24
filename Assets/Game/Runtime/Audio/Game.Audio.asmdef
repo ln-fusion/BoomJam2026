@@ -1,11 +1,9 @@
 {
-    "name": "Game.Presentation",
-    "rootNamespace": "Game.Presentation",
+    "name": "Game.Audio",
+    "rootNamespace": "Game.Audio",
     "references": [
         "Game.Foundation",
-        "Game.Contracts",
-        "Game.Flow",
-        "UnityEngine.UI"
+        "Game.Contracts"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

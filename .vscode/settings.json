@@ -79,7 +79,7 @@
     // C# 语言服务：统一使用 C# Dev Kit（Roslyn）。请勿同时安装旧版 ms-dotnettools.csharp，
     // 两者共存会互相降级，导致分析器诊断（问题面板）不工作。
     // 卸载命令：code --uninstall-extension ms-dotnettools.csharp
-    "dotnet.defaultSolution": "再跑亿遍.sln",
+    "dotnet.defaultSolution": "Change and Run.sln",
     // C# 格式化：保存时自动跑 CSharpier（需安装 csharpier-vscode 扩展）
     "[csharp]": {
         "editor.defaultFormatter": "csharpier.csharpier-vscode",
