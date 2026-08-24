@@ -68,6 +68,9 @@ namespace Game.Bootstrap
 
             await _settingsService.LoadAsync(System.Threading.CancellationToken.None);
 
+            // 项目启用新 Input System，必须挂载 EventSystem + InputSystemUIInputModule 才能接收真实点击
+            BootstrapUI.EnsureEventSystem();
+
             _flowService = new GameFlowService(new UnitySceneLoader(), clock, logger, eventBus, startMenuSceneName);
 
             // 音频服务（无 AudioMixer 时使用 AudioListener 兜底）
