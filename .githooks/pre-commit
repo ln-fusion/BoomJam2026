@@ -4,22 +4,22 @@ BRANCH_NAME=$(git rev-parse --abbrev-ref HEAD 2>/dev/null)
 
 # 我们在此允许 "HEAD"，以支持对分离的HEAD状态或者诸如 rebase 的进行提交
 if [ "$BRANCH_NAME" != "HEAD" ]; then
-    if [[ "$BRANCH_NAME" == "master" || "$BRANCH_NAME" == "main" || "$BRANCH_NAME" == "develop" ]]; then
+    if [[ "$BRANCH_NAME" == "master" || "$BRANCH_NAME" == "main" ]]; then
         echo -e "\033[0;31m❌ [Pre-Commit 拦截] 抱歉，禁止直接在 $BRANCH_NAME 分支上进行本地提交！\033[0m"
-        echo "根据项目规范，master、main 和 develop 为受保护的集成分支。"
-        echo "请基于 develop 签出规范的子分支（如 feat/*, fix/*）进行开发，"
+        echo "根据项目规范，master 和 main 为受保护的集成分支。"
+        echo "请基于 main 签出规范的子分支（如 feat/*, fix/*）进行开发，"
         echo "并在远端通过 PR (Pull Request) 合并代码。"
         echo "--------------------------------------------------------"
         exit 1
     fi
 
-    PATTERN='^(master|main|develop|feat/.+|ref/.+|fix/.+|release/.+|docs/.+|chore/.+|test/.+)$'
+    PATTERN='^(master|main|feat/.+|ref/.+|fix/.+|release/.+|docs/.+|chore/.+|test/.+)$'
     if ! echo "$BRANCH_NAME" | grep -qE "$PATTERN"; then
         echo ""
         echo "❌ [Pre-Commit 拦截] 抱歉，当前分支名（$BRANCH_NAME）不符合项目规范！"
         echo "为了保证协作时 Remote 分支整洁，暂禁止在此分支上产生新的 commit。"
         echo "--------------------------------------------------------"
-        echo "规范的主分支：master, main, develop"
+        echo "规范的主分支：master, main"
         echo "规范的发版类：release/xxx"
         echo "规范的开发类：feat/xxx, ref/xxx, fix/xxx"
         echo "规范的配套类：docs/xxx, chore/xxx, test/xxx"
