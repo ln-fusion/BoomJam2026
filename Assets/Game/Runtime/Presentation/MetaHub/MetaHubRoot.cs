@@ -20,6 +20,7 @@ namespace Game.Presentation
     {
         private readonly List<IDisposable> _subscriptions = new List<IDisposable>();
 
+        private IGameFlowService _flow = null!;
         private IDomainEventBus _eventBus = null!;
         private IProgressQuery _progress = null!;
         private IClock _clock = null!;
@@ -44,6 +45,7 @@ namespace Game.Presentation
             if (clock == null)
                 throw new ArgumentNullException(nameof(clock));
 
+            _flow = flow;
             _eventBus = eventBus;
             _progress = progress;
             _clock = clock;
@@ -75,6 +77,7 @@ namespace Game.Presentation
 
             _shell = new MetaHubShellView(transform);
             _shell.OnPageSelected += SwitchPage;
+            _shell.OnBackClicked += ReturnToStartMenu;
             BuildPages(_shell.ContentRoot);
 
             // 默认页：优先事件携带的页面，其次 Map
@@ -109,6 +112,12 @@ namespace Game.Presentation
 
             // 页面切换事实：组合根订阅后写入 Profile.LastMetaPageId（页面恢复用）
             _eventBus.Publish(new MetaPageChangedEvent(page));
+        }
+
+        /// <summary>返回开始菜单（异步导航，不阻塞 UI）.</summary>
+        private void ReturnToStartMenu()
+        {
+            _ = _flow.ReturnToStartMenuAsync(System.Threading.CancellationToken.None);
         }
 
         private static GameObject CreatePlaceholderPage(Transform parent, string label)
@@ -152,6 +161,9 @@ namespace Game.Presentation
         /// <summary>下栏导航点击事件（页面切换）.</summary>
         public event Action<MetaPageId>? OnPageSelected;
 
+        /// <summary>返回按钮点击事件（返回开始菜单）.</summary>
+        public event Action? OnBackClicked;
+
         /// <summary>内容区根节点（页面 Presenter 挂载点）.</summary>
         public Transform ContentRoot { get; }
 
@@ -163,6 +175,7 @@ namespace Game.Presentation
 
             _headerTitle = CreateBar("HeaderBar", "上栏占位");
             _footerTitle = CreateFooterBar();
+            CreateBackButton(_headerTitle.transform.parent);
 
             // 侧栏：贴左垂直居中（锚点相对布局，不写死绝对像素）
             var side = UIFactory.CreatePanel(
@@ -261,6 +274,20 @@ namespace Game.Presentation
             CreateNavButton(bar.transform, "人员", MetaPageId.Character, -60f);
             CreateNavButton(bar.transform, "休息室", MetaPageId.Lounge, 120f);
             return label;
+        }
+
+        /// <summary>创建返回按钮（上栏左侧，点击返回开始菜单）.</summary>
+        /// <param name="headerBar">上栏容器（返回按钮的父节点）.</param>
+        private void CreateBackButton(Transform headerBar)
+        {
+            UIFactory.CreateButton(
+                "BackButton",
+                headerBar,
+                "返回",
+                () => OnBackClicked?.Invoke(),
+                new Vector2(90f, 40f),
+                new Vector2(-830f, 0f)
+            );
         }
 
         /// <summary>创建导航按钮（下栏内，固定间隔）.</summary>
