@@ -17,39 +17,28 @@ if [ "$CHECKOUT_TYPE" = "1" ]; then
 
         # 检查来源和目标分支状态的合规性（只有当并不是切换回同一分支，且之前分支可识别时）
         if [ -n "$PREV_BRANCH" ] && [ "$PREV_BRANCH" != "$BRANCH_NAME" ]; then
-            # 规则 1：只允许 master/main 签出 develop
-            # 如果当前新建/切换到了其它分支，但它前置位是 master/main，只能是 develop
-            if [[ "$PREV_BRANCH" = "master" || "$PREV_BRANCH" = "main" ]] && [ "$BRANCH_NAME" != "develop" ] && [ "$BRANCH_NAME" != "master" ] && [ "$BRANCH_NAME" != "main" ]; then
-                echo -e "\033[0;33m==========================================================\033[0m"
-                echo -e "\033[0;33m⚠️  [Post-Checkout 警告] 违反约束：基于 master/main 分支只允许签出 develop！\033[0m"
-                echo "👉 当前签出源是 $PREV_BRANCH -> $BRANCH_NAME"
-                echo -e "\033[0;31m❗️ 如果这是新建分支操作，请使用 git checkout $PREV_BRANCH 撤销并重新考虑。\033[0m"
-                echo -e "\033[0;33m==========================================================\033[0m"
-                echo ""
-            fi
-
-            # 规则 2/3：基于 develop 签出日常分支或release分支
+            # 规则 1：开发、修复、发版等子分支必须从 main/master 签出
             TARGET_PATTERN='^(feat/.+|ref/.+|fix/.+|docs/.+|chore/.+|test/.+|release/.+)$'
             if echo "$BRANCH_NAME" | grep -qE "$TARGET_PATTERN"; then
-                if [ "$PREV_BRANCH" != "develop" ]; then
+                if [ "$PREV_BRANCH" != "main" ] && [ "$PREV_BRANCH" != "master" ]; then
                     echo -e "\033[0;33m==========================================================\033[0m"
-                    echo -e "\033[0;33m⚠️  [Post-Checkout 警告] 违反约束：特性、修复或发版分支必须从 develop 签出！\033[0m"
+                    echo -e "\033[0;33m⚠️  [Post-Checkout 警告] 违反约束：特性、修复或发版分支必须从 main/master 签出！\033[0m"
                     echo "👉 当前签出源是 $PREV_BRANCH -> $BRANCH_NAME"
-                    echo -e "\033[0;31m❗️ 如果这是新建分支操作，请切换回 develop 后重新执行新建。\033[0m"
+                    echo -e "\033[0;31m❗️ 如果这是新建分支操作，请切换回 main 后重新执行新建。\033[0m"
                     echo -e "\033[0;33m==========================================================\033[0m"
                     echo ""
                 fi
             fi
         fi
 
-        PATTERN='^(master|main|develop|feat/.+|ref/.+|fix/.+|release/.+|docs/.+|chore/.+|test/.+)$'
+        PATTERN='^(master|main|feat/.+|ref/.+|fix/.+|release/.+|docs/.+|chore/.+|test/.+)$'
         if ! echo "$BRANCH_NAME" | grep -qE "$PATTERN"; then
             echo ""
             echo -e "\033[0;31m==========================================================\033[0m"
             echo -e "\033[0;31m❌  错误：您当前签出的分支名 ($BRANCH_NAME) 不符合项目规范！\033[0m"
             echo -e "\033[0;31m==========================================================\033[0m"
             echo "这将会阻拦您未来的 Push，为了维持仓库整洁，规范的分支建议格式为："
-            echo "  - master / main / develop (主分支)"
+            echo "  - master / main (主分支)"
             echo "  - release/xxxx (发版分支)"
             echo "  - feat/xxxx (新功能分支)"
             echo "  - ref/xxxx (重构分支)"

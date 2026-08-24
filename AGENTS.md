@@ -2,6 +2,8 @@
 
 本文件适用于仓库根目录及其全部子目录。任何在本项目中工作的 Agent 都必须遵守本契约；子目录中的 `AGENTS.md` 只能补充或收紧要求，不能降低本文件的约束。
 
+> 主指令入口：本契约的具体规则与详细约束参见 `.github/copilot-instructions.md`（GitHub Copilot）与 `.github/instructions/` 下的各指令文件。`.github/copilot-instructions.md` 为本项目的权威主指令，本文档为契约主文档，两者冲突时以 `.github/copilot-instructions.md` 为准。
+
 ## 项目边界
 
 - 仓库根目录是唯一 Unity 项目，必须包含 `Assets/`、`Packages/` 和 `ProjectSettings/`。

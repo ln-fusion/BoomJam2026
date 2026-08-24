@@ -4,10 +4,10 @@
 BRANCH_NAME=$(git branch --show-current 2>/dev/null)
 
 if [ -n "$BRANCH_NAME" ]; then
-  if ! echo "$BRANCH_NAME" | grep -qE '^(master|main|develop|feat/.+|fix/.+|ref/.+|release/.+|docs/.+|chore/.+|test/.+)$'; then
+  if ! echo "$BRANCH_NAME" | grep -qE '^(master|main|feat/.+|fix/.+|ref/.+|release/.+|docs/.+|chore/.+|test/.+)$'; then
     echo -e "\033[0;31m❌ 提交中止：非法的工作流分支名！\033[0m"
     echo "当前分支: $BRANCH_NAME"
-    echo "允许的分支名: master, main, develop, feat/xxxx, fix/xxxx, ref/xxxx, release/xxxx, docs/xxxx, chore/xxxx, test/xxxx"
+    echo "允许的分支名: master, main, feat/xxxx, fix/xxxx, ref/xxxx, release/xxxx, docs/xxxx, chore/xxxx, test/xxxx"
     exit 1
   fi
 fi
