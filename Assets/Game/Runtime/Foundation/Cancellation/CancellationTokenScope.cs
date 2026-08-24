@@ -19,18 +19,19 @@ namespace Game.Foundation
 
         private bool _disposed;
 
+        /// <summary>创建一个新的取消令牌作用域。</summary>
         public CancellationTokenScope()
         {
             _token = _cts.Token;
         }
 
-        /// <summary>作用域关联的取消令牌.</summary>
+        /// <summary>作用域关联的取消令牌。</summary>
         public CancellationToken Token => _token;
 
-        /// <summary>是否已请求取消.</summary>
+        /// <summary>是否已请求取消。</summary>
         public bool IsCancellationRequested => _cts.IsCancellationRequested;
 
-        /// <summary>请求取消（幂等）.</summary>
+        /// <summary>请求取消（幂等）。</summary>
         public void Cancel()
         {
             // CancellationTokenSource 释放后 Cancel 会抛 ObjectDisposedException，与"幂等"承诺冲突
@@ -42,7 +43,7 @@ namespace Game.Foundation
             _cts.Cancel();
         }
 
-        /// <summary>请求取消并释放资源；幂等，重复调用及 Dispose 后再调用均不抛异常.</summary>
+        /// <summary>请求取消并释放资源；幂等，重复调用及 Dispose 后再调用均不抛异常。</summary>
         public void Dispose()
         {
             if (_disposed)

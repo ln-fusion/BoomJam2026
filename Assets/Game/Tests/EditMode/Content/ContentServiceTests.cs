@@ -6,8 +6,12 @@ using NUnit.Framework;
 
 namespace Game.Tests.EditMode.Content
 {
+    /// <summary>
+    /// 内容服务测试：官方目录读取、摘要生成和重复 ID 拒绝。
+    /// </summary>
     public sealed class ContentServiceTests
     {
+        /// <summary>验证官方提供者可读取关卡摘要和剧情定义。</summary>
         [Test]
         public void OfficialProvider_ReadsTestLevelSummaryAndStory()
         {
@@ -47,6 +51,7 @@ namespace Game.Tests.EditMode.Content
                 Is.EqualTo(ContentCompatibility.Compatible));
         }
 
+        /// <summary>验证重复稳定 ID 会被拒绝。</summary>
         [Test]
         public void OfficialProvider_RejectsDuplicateStableIds()
         {
@@ -57,6 +62,9 @@ namespace Game.Tests.EditMode.Content
                 new[] { first, second }, null));
         }
 
+        /// <summary>创建最小内容头。</summary>
+        /// <param name="id">内容 ID。</param>
+        /// <returns>带稳定 ID 的官方内容头。</returns>
         private static ContentHeader Header(string id)
         {
             return new ContentHeader { ContentId = id, FormatVersion = 1 };

@@ -4,8 +4,12 @@ using NUnit.Framework;
 
 namespace Game.Tests.EditMode.Foundation
 {
+    /// <summary>
+    /// Foundation 类型测试：强类型 ID 和 Result 的基本契约。
+    /// </summary>
     public sealed class ResultAndIdTests
     {
+        /// <summary>验证不同强类型 ID 即使文本相同也不会混淆。</summary>
         [Test]
         public void StrongIds_WithSameTextAndDifferentTypes_DoNotShareAType()
         {
@@ -16,12 +20,14 @@ namespace Game.Tests.EditMode.Foundation
             Assert.That(level.GetType(), Is.Not.EqualTo(story.GetType()));
         }
 
+        /// <summary>验证强类型 ID 拒绝空白值。</summary>
         [Test]
         public void StrongId_RejectsEmptyValue()
         {
             Assert.Throws<ArgumentException>(() => new LevelId(" "));
         }
 
+        /// <summary>验证失败结果不会暴露成功值。</summary>
         [Test]
         public void FailedResult_DoesNotExposeValue()
         {

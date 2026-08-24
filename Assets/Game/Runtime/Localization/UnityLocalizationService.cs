@@ -86,7 +86,7 @@ namespace Game.Localization
         }
 
         /// <summary>同步读取本地化文本；Key 缺失时回退 Key 本身.</summary>
-        public string Get(string key, params object[] arguments)
+        public string Resolve(string key, params object[] arguments)
         {
             if (string.IsNullOrWhiteSpace(key))
                 return string.Empty;

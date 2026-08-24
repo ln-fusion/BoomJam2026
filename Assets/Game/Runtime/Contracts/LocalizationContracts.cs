@@ -24,7 +24,7 @@ namespace Game.Contracts
         /// <summary>同步读取本地化文本（Key 缺失时回退 Key 本身）.</summary>
         /// <param name="key">本地化 Key</param>
         /// <param name="arguments">格式化参数（可选）</param>
-        string Get(string key, params object[] arguments);
+        string Resolve(string key, params object[] arguments);
     }
 
     /// <summary>
@@ -35,21 +35,21 @@ namespace Game.Contracts
     /// </remarks>
     public static class LocalizationKeys
     {
-        public const string StartMenu_Title = "ui.start_menu.title";
-        public const string StartMenu_Start = "ui.start_menu.start";
-        public const string StartMenu_Continue = "ui.start_menu.continue";
-        public const string StartMenu_Settings = "ui.start_menu.settings";
-        public const string StartMenu_Quit = "ui.start_menu.quit";
+        public const string StartMenuTitle = "ui.start_menu.title";
+        public const string StartMenuStart = "ui.start_menu.start";
+        public const string StartMenuContinue = "ui.start_menu.continue";
+        public const string StartMenuSettings = "ui.start_menu.settings";
+        public const string StartMenuQuit = "ui.start_menu.quit";
 
-        public const string Settings_Title = "ui.settings.title";
-        public const string Settings_MasterVolume = "ui.settings.master_volume";
-        public const string Settings_MusicVolume = "ui.settings.music_volume";
-        public const string Settings_SfxVolume = "ui.settings.sfx_volume";
-        public const string Settings_Language = "ui.settings.language";
-        public const string Settings_Fullscreen = "ui.settings.fullscreen";
-        public const string Settings_Resolution = "ui.settings.resolution";
-        public const string Settings_Apply = "ui.settings.apply";
-        public const string Settings_Close = "ui.settings.close";
+        public const string SettingsTitle = "ui.settings.title";
+        public const string SettingsMasterVolume = "ui.settings.master_volume";
+        public const string SettingsMusicVolume = "ui.settings.music_volume";
+        public const string SettingsSfxVolume = "ui.settings.sfx_volume";
+        public const string SettingsLanguage = "ui.settings.language";
+        public const string SettingsFullscreen = "ui.settings.fullscreen";
+        public const string SettingsResolution = "ui.settings.resolution";
+        public const string SettingsApply = "ui.settings.apply";
+        public const string SettingsClose = "ui.settings.close";
     }
 
     /// <summary>

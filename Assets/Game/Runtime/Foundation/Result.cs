@@ -5,17 +5,22 @@ namespace Game.Foundation
     /// </summary>
     public readonly struct Result
     {
-        /// <summary>操作是否成功</summary>
+        /// <summary>操作是否成功。</summary>
         public bool IsSuccess { get; }
 
-        /// <summary>错误码；成功时为 <see cref="ErrorCode.None"/></summary>
+        /// <summary>错误码；成功时为 <see cref="ErrorCode.None"/>。</summary>
         public ErrorCode ErrorCode { get; }
 
+        /// <summary>错误码的兼容别名。</summary>
         public ErrorCode Error => ErrorCode;
 
-        /// <summary>人类可读错误消息；仅用于日志，不直接展示为玩家文案</summary>
+        /// <summary>人类可读错误消息；仅用于日志，不直接展示为玩家文案。</summary>
         public string Message { get; }
 
+        /// <summary>创建操作结果。</summary>
+        /// <param name="isSuccess">操作是否成功。</param>
+        /// <param name="errorCode">错误码。</param>
+        /// <param name="message">日志用消息。</param>
         private Result(bool isSuccess, ErrorCode errorCode, string message)
         {
             IsSuccess = isSuccess;
@@ -23,10 +28,11 @@ namespace Game.Foundation
             Message = message ?? string.Empty;
         }
 
-        /// <summary>成功结果</summary>
+        /// <summary>创建成功结果。</summary>
+        /// <returns>成功结果。</returns>
         public static Result Success() => new Result(true, ErrorCode.None, string.Empty);
 
-        /// <summary>失败结果</summary>
+        /// <summary>创建失败结果。</summary>
         /// <param name="errorCode">错误码</param>
         /// <param name="message">日志用错误消息</param>
         public static Result Failure(ErrorCode errorCode, string message = null)

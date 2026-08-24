@@ -9,6 +9,7 @@
         "Game.Localization",
         "Game.Audio",
         "Game.Persistence",
+        "Game.Progression",
         "Unity.Localization"
     ],
     "includePlatforms": [],

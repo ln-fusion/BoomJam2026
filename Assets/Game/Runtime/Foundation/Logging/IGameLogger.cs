@@ -15,12 +15,18 @@ namespace Game.Foundation
         void Log(LogLevel level, LogContext context, string message);
 
         /// <summary>记录信息级日志.</summary>
+        /// <param name="context">结构化日志上下文。</param>
+        /// <param name="message">日志消息。</param>
         void LogInfo(LogContext context, string message);
 
         /// <summary>记录警告.</summary>
+        /// <param name="context">结构化日志上下文。</param>
+        /// <param name="message">日志消息。</param>
         void LogWarning(LogContext context, string message);
 
         /// <summary>记录错误.</summary>
+        /// <param name="context">结构化日志上下文。</param>
+        /// <param name="message">日志消息。</param>
         void LogError(LogContext context, string message);
     }
 }

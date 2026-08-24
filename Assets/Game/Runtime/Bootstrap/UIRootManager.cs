@@ -2,10 +2,10 @@
 using System;
 using System.Collections.Generic;
 using Game.Contracts;
-using Game.Contracts.Progression;
 using Game.Flow;
 using Game.Foundation;
 using Game.Presentation;
+using Game.Progression;
 using UnityEngine;
 
 namespace Game.Bootstrap
@@ -70,19 +70,5 @@ namespace Game.Bootstrap
 
             _subscriptions.Clear();
         }
-    }
-
-    /// <summary>
-    /// 空的进度查询实现（C05 占位：IProgressQuery 内存空实现）.
-    /// </summary>
-    public sealed class EmptyProgressQuery : IProgressQuery
-    {
-        public ProgressSnapshot GetSnapshot() => ProgressSnapshot.Empty;
-
-        public bool IsLevelUnlocked(LevelId levelId) => false;
-
-        public bool IsStoryReplayUnlocked(StoryId storyId) => false;
-
-        public BestScoreView? GetBestScore(LevelId levelId) => null;
     }
 }

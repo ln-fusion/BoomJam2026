@@ -52,7 +52,7 @@ namespace Game.Presentation
             if (_view != null)
                 return;
 
-            _view = new StartMenuView(transform, key => _localization?.Get(key) ?? key);
+            _view = new StartMenuView(transform, key => _localization?.Resolve(key) ?? key);
             _view.Render(
                 new StartMenuViewModel(hasProfile: false, playerNickname: string.Empty, canOpenSettings: true)
             );

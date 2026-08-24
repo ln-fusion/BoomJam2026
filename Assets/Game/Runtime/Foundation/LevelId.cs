@@ -6,7 +6,8 @@ namespace Game.Foundation
     [System.Serializable]
     public sealed class LevelId : StrongId<LevelId>
     {
-        /// <param name="value">稳定 ID（如 official.level.factory_001）</param>
+        /// <summary>创建关卡稳定标识。</summary>
+        /// <param name="value">稳定 ID（如 official.level.factory_001）。</param>
         public LevelId(string value)
             : base(value) { }
     }

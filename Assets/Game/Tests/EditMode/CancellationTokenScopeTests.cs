@@ -9,6 +9,7 @@ namespace Game.Tests.EditMode
     /// </summary>
     public class CancellationTokenScopeTests
     {
+        /// <summary>验证 Dispose 会请求取消。</summary>
         [Test]
         public void Dispose_Requests_Cancellation()
         {
@@ -18,6 +19,7 @@ namespace Game.Tests.EditMode
             Assert.That(scope.IsCancellationRequested, Is.True);
         }
 
+        /// <summary>验证 Cancel 是幂等的。</summary>
         [Test]
         public void Cancel_Is_Idempotent()
         {
@@ -27,6 +29,7 @@ namespace Game.Tests.EditMode
             Assert.That(scope.IsCancellationRequested, Is.True);
         }
 
+        /// <summary>验证释放后缓存的 Token 仍可检查取消状态。</summary>
         [Test]
         public void Token_Remains_Usable_After_Dispose()
         {
@@ -36,6 +39,7 @@ namespace Game.Tests.EditMode
             Assert.That(token.IsCancellationRequested, Is.True);
         }
 
+        /// <summary>验证重复 Dispose 不会抛异常。</summary>
         [Test]
         public void Double_Dispose_Is_Safe()
         {

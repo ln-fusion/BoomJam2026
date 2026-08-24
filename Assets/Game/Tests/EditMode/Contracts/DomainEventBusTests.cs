@@ -7,8 +7,12 @@ using NUnit.Framework;
 
 namespace Game.Tests.EditMode.Contracts
 {
+    /// <summary>
+    /// Contracts 层领域事件总线测试：订阅释放、异常隔离与取消生命周期。
+    /// </summary>
     public sealed class DomainEventBusTests
     {
+        /// <summary>验证释放订阅后不会收到后续事件。</summary>
         [Test]
         public void DisposedSubscription_DoesNotReceiveLaterEvents()
         {
@@ -23,6 +27,7 @@ namespace Game.Tests.EditMode.Contracts
             Assert.That(calls, Is.EqualTo(1));
         }
 
+        /// <summary>验证一个订阅者失败不会阻断其他订阅者。</summary>
         [Test]
         public void SubscriberFailure_DoesNotBlockOtherSubscribers()
         {
@@ -35,6 +40,7 @@ namespace Game.Tests.EditMode.Contracts
             Assert.That(calls, Is.EqualTo(1));
         }
 
+        /// <summary>验证取消生命周期在释放时会请求取消。</summary>
         [Test]
         public void Lifetime_DisposeCancelsToken()
         {
@@ -46,6 +52,7 @@ namespace Game.Tests.EditMode.Contracts
             Assert.That(token.IsCancellationRequested, Is.True);
         }
 
+        /// <summary>测试事件类型。</summary>
         private sealed class TestEvent : IDomainEvent
         {
         }

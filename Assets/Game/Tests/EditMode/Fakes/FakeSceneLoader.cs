@@ -31,14 +31,21 @@ namespace Game.Tests.EditMode
         public int UnloadDelayMs { get; set; }
 
         /// <summary>设置指定场景加载失败.</summary>
+        /// <param name="sceneName">后续加载时需要模拟失败的场景名。</param>
         public void FailLoad(string sceneName) => _failLoads[sceneName] = true;
 
         /// <summary>设置指定场景卸载失败.</summary>
+        /// <param name="sceneName">后续卸载时需要模拟失败的场景名。</param>
         public void FailUnload(string sceneName) => _failUnloads[sceneName] = true;
 
         /// <summary>手动注入一个已加载场景（模拟其他来源）.</summary>
+        /// <param name="sceneName">需要加入已加载集合的场景名。</param>
         public void SimulateLoaded(string sceneName) => _loaded.Add(sceneName);
 
+        /// <summary>模拟 Additive 加载场景。</summary>
+        /// <param name="sceneName">场景名。</param>
+        /// <param name="cancellationToken">取消标记。</param>
+        /// <returns>加载成功返回 true。</returns>
         public async Task<bool> LoadAdditiveAsync(string sceneName, CancellationToken cancellationToken)
         {
             LastLoadRequest = sceneName;
@@ -61,6 +68,10 @@ namespace Game.Tests.EditMode
             return true;
         }
 
+        /// <summary>模拟卸载场景。</summary>
+        /// <param name="sceneName">场景名。</param>
+        /// <param name="cancellationToken">取消标记。</param>
+        /// <returns>卸载成功返回 true。</returns>
         public async Task<bool> UnloadAsync(string sceneName, CancellationToken cancellationToken)
         {
             LastUnloadRequest = sceneName;

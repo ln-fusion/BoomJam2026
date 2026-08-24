@@ -1,4 +1,5 @@
 #nullable enable
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Game.Foundation;
@@ -75,8 +76,11 @@ namespace Game.Contracts
         public int ResolutionHeight { get; set; } = 1080;
 
         /// <summary>从只读快照创建草稿（编辑前复制）.</summary>
-        public static SettingsDraft FromSnapshot(SettingsSnapshot snapshot) =>
-            new SettingsDraft
+        public static SettingsDraft FromSnapshot(SettingsSnapshot snapshot)
+        {
+            if (snapshot == null)
+                throw new ArgumentNullException(nameof(snapshot));
+            return new SettingsDraft
             {
                 LanguageCode = snapshot.LanguageCode,
                 MasterVolume = snapshot.MasterVolume,
@@ -86,6 +90,7 @@ namespace Game.Contracts
                 ResolutionWidth = snapshot.ResolutionWidth,
                 ResolutionHeight = snapshot.ResolutionHeight,
             };
+        }
     }
 
     /// <summary>

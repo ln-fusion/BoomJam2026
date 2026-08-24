@@ -41,6 +41,9 @@ namespace Game.Bootstrap
         private IDisposable? _pageSubscription;
         private IDisposable? _settingsAppliedSubscription;
 
+        /// <summary>
+        /// 创建流程服务并启动开始菜单导航（需先加载设置再装配服务）.
+        /// </summary>
         private async void Start()
         {
             var logger = UnityDebugLogger.Instance;
@@ -118,6 +121,8 @@ namespace Game.Bootstrap
             );
         }
 
+        /// <summary>执行启动导航并记录不可恢复的启动异常。</summary>
+        /// <param name="flowService">应用流程服务。</param>
         private static async Task RunStartupAsync(GameFlowService flowService)
         {
             try
@@ -131,6 +136,7 @@ namespace Game.Bootstrap
             }
         }
 
+        /// <summary>销毁组合根时释放流程服务及其当前场景生命周期。</summary>
         private void OnDestroy()
         {
             _pageSubscription?.Dispose();

@@ -59,15 +59,10 @@ namespace Game.Flow
     {
         private static readonly ErrorCode InvalidDraft = new ErrorCode(ErrorCategory.Validation, "settings.invalid");
         private static readonly ErrorCode SaveFailed = new ErrorCode(ErrorCategory.SaveIo, "settings.save_failed");
-        private static readonly ErrorCode LanguageUnsupported = new ErrorCode(
-            ErrorCategory.Validation,
-            "settings.language_unsupported"
-        );
 
         private readonly ISaveRepository _repository;
         private readonly ISettingsApplier _applier;
         private readonly IDomainEventBus _eventBus;
-        private readonly IClock _clock;
         private readonly IGameLogger _logger;
         private readonly ILocalizationService? _localization;
 
@@ -97,7 +92,6 @@ namespace Game.Flow
             _repository = repository ?? throw new ArgumentNullException(nameof(repository));
             _applier = applier ?? throw new ArgumentNullException(nameof(applier));
             _eventBus = eventBus ?? throw new ArgumentNullException(nameof(eventBus));
-            _clock = clock ?? new SystemClock();
             _logger = logger ?? NullLogger.Instance;
             _localization = localization;
             _current = SettingsSnapshot.Default();
