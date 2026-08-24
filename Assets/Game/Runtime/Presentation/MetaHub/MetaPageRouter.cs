@@ -40,9 +40,7 @@ namespace Game.Presentation
         /// <summary>页面切换时触发（新页为参数）.</summary>
         public event Action<MetaPageId>? OnPageChanged;
 
-        public MetaPagePresenter()
-        {
-        }
+        public MetaPagePresenter() { }
 
         /// <summary>切换页面.</summary>
         public void Select(MetaPageId page)

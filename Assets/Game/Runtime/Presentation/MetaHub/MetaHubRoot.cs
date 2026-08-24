@@ -241,7 +241,10 @@ namespace Game.Presentation
         /// <summary>刷新下栏时间显示（每秒由 MetaHubRoot 调用）.</summary>
         public void RenderClock(DateTimeOffset localNow)
         {
-            _footerTitle.text = localNow.ToString("yyyy-MM-dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
+            _footerTitle.text = localNow.ToString(
+                "yyyy-MM-dd HH:mm:ss",
+                System.Globalization.CultureInfo.InvariantCulture
+            );
         }
     }
 }

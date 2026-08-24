@@ -10,10 +10,12 @@ namespace Game.Content
     /// </summary>
     public sealed class OfficialContentProvider : IContentProvider
     {
-        private readonly Dictionary<string, LevelDefinition> _levels =
-            new Dictionary<string, LevelDefinition>(StringComparer.Ordinal);
-        private readonly Dictionary<string, StoryDefinition> _stories =
-            new Dictionary<string, StoryDefinition>(StringComparer.Ordinal);
+        private readonly Dictionary<string, LevelDefinition> _levels = new Dictionary<string, LevelDefinition>(
+            StringComparer.Ordinal
+        );
+        private readonly Dictionary<string, StoryDefinition> _stories = new Dictionary<string, StoryDefinition>(
+            StringComparer.Ordinal
+        );
 
         /// <summary>该提供者固定负责官方内容。</summary>
         public ContentSource Source => ContentSource.Official;
@@ -24,8 +26,7 @@ namespace Game.Content
         /// <summary>从关卡和剧情定义集合创建官方内容提供者。</summary>
         /// <param name="levels">官方关卡定义集合。</param>
         /// <param name="stories">官方剧情定义集合。</param>
-        public OfficialContentProvider(IEnumerable<LevelDefinition> levels,
-            IEnumerable<StoryDefinition> stories)
+        public OfficialContentProvider(IEnumerable<LevelDefinition> levels, IEnumerable<StoryDefinition> stories)
         {
             if (levels != null)
                 foreach (LevelDefinition definition in levels)
@@ -38,10 +39,7 @@ namespace Game.Content
         /// <summary>从官方内容目录创建内容提供者。</summary>
         /// <param name="catalog">官方内容目录；为空时创建空提供者。</param>
         public OfficialContentProvider(OfficialContentCatalog catalog)
-            : this(catalog == null ? null : catalog.Levels,
-                   catalog == null ? null : catalog.Stories)
-        {
-        }
+            : this(catalog == null ? null : catalog.Levels, catalog == null ? null : catalog.Stories) { }
 
         /// <summary>按稳定 ID 尝试获取官方关卡定义。</summary>
         /// <param name="levelId">关卡稳定标识。</param>

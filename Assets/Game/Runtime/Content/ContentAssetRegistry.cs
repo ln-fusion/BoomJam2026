@@ -1,6 +1,6 @@
 using System.Collections.Generic;
-using Game.Foundation;
 using Game.Contracts.Content;
+using Game.Foundation;
 using UnityEngine;
 
 namespace Game.Content
@@ -13,6 +13,7 @@ namespace Game.Content
     {
         /// <summary>预制体资源稳定标识。</summary>
         public string Id;
+
         /// <summary>对应的 Unity 预制体。</summary>
         public GameObject Asset;
     }
@@ -25,6 +26,7 @@ namespace Game.Content
     {
         /// <summary>精灵资源稳定标识。</summary>
         public string Id;
+
         /// <summary>对应的 Unity 精灵。</summary>
         public Sprite Asset;
     }
@@ -37,6 +39,7 @@ namespace Game.Content
     {
         /// <summary>音频资源稳定标识。</summary>
         public string Id;
+
         /// <summary>对应的 Unity 音频片段。</summary>
         public AudioClip Asset;
     }
@@ -47,14 +50,21 @@ namespace Game.Content
     [CreateAssetMenu(fileName = "ContentAssetRegistry", menuName = "Game/Content/Asset Registry")]
     public sealed class ContentAssetRegistry : ScriptableObject
     {
-        [SerializeField] private List<PrefabAssetEntry> prefabs = new List<PrefabAssetEntry>();
-        [SerializeField] private List<SpriteAssetEntry> sprites = new List<SpriteAssetEntry>();
-        [SerializeField] private List<AudioAssetEntry> audioClips = new List<AudioAssetEntry>();
+        [SerializeField]
+        private List<PrefabAssetEntry> prefabs = new List<PrefabAssetEntry>();
+
+        [SerializeField]
+        private List<SpriteAssetEntry> sprites = new List<SpriteAssetEntry>();
+
+        [SerializeField]
+        private List<AudioAssetEntry> audioClips = new List<AudioAssetEntry>();
 
         /// <summary>Inspector 配置的预制体映射项。</summary>
         public IReadOnlyList<PrefabAssetEntry> Prefabs => prefabs;
+
         /// <summary>Inspector 配置的精灵映射项。</summary>
         public IReadOnlyList<SpriteAssetEntry> Sprites => sprites;
+
         /// <summary>Inspector 配置的音频映射项。</summary>
         public IReadOnlyList<AudioAssetEntry> AudioClips => audioClips;
     }
@@ -64,12 +74,9 @@ namespace Game.Content
     /// </summary>
     public sealed class OfficialAssetResolver : IAssetResolver
     {
-        private readonly Dictionary<string, GameObject> _prefabs =
-            new Dictionary<string, GameObject>();
-        private readonly Dictionary<string, Sprite> _sprites =
-            new Dictionary<string, Sprite>();
-        private readonly Dictionary<string, AudioClip> _audio =
-            new Dictionary<string, AudioClip>();
+        private readonly Dictionary<string, GameObject> _prefabs = new Dictionary<string, GameObject>();
+        private readonly Dictionary<string, Sprite> _sprites = new Dictionary<string, Sprite>();
+        private readonly Dictionary<string, AudioClip> _audio = new Dictionary<string, AudioClip>();
 
         /// <summary>从资源 Registry 创建官方资源解析器。</summary>
         /// <param name="registry">资源 Registry；为空时创建空索引。</param>
