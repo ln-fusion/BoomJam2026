@@ -14,24 +14,21 @@ namespace Game.Tests.EditMode
         [Test]
         public void FromString_UnknownValue_FallsBackToMap()
         {
-            var router = new MetaPageRouter();
-            Assert.That(router.FromString("not-a-page"), Is.EqualTo(MetaPageId.Map));
-            Assert.That(router.FromString(""), Is.EqualTo(MetaPageId.Map));
+            Assert.That(MetaPageRouter.FromString("not-a-page"), Is.EqualTo(MetaPageId.Map));
+            Assert.That(MetaPageRouter.FromString(""), Is.EqualTo(MetaPageId.Map));
         }
 
         [Test]
         public void FromString_KnownValue_ParsesCaseInsensitive()
         {
-            var router = new MetaPageRouter();
-            Assert.That(router.FromString("archive"), Is.EqualTo(MetaPageId.Archive));
-            Assert.That(router.FromString("ARCHIVE"), Is.EqualTo(MetaPageId.Archive));
-            Assert.That(router.FromString("lounge"), Is.EqualTo(MetaPageId.Lounge));
+            Assert.That(MetaPageRouter.FromString("archive"), Is.EqualTo(MetaPageId.Archive));
+            Assert.That(MetaPageRouter.FromString("ARCHIVE"), Is.EqualTo(MetaPageId.Archive));
+            Assert.That(MetaPageRouter.FromString("lounge"), Is.EqualTo(MetaPageId.Lounge));
         }
 
         [Test]
         public void ToString_RoundTrips()
         {
-            var router = new MetaPageRouter();
             foreach (
                 var page in new List<MetaPageId>
                 {
@@ -42,15 +39,14 @@ namespace Game.Tests.EditMode
                 }
             )
             {
-                Assert.That(router.FromString(router.ToString(page)), Is.EqualTo(page));
+                Assert.That(MetaPageRouter.FromString(MetaPageRouter.ToString(page)), Is.EqualTo(page));
             }
         }
 
         [Test]
         public void Select_PublishesOnlyOnChange()
         {
-            var router = new MetaPageRouter();
-            var presenter = new MetaPagePresenter(router);
+            var presenter = new MetaPagePresenter();
             var changes = new List<MetaPageId>();
             presenter.OnPageChanged += page => changes.Add(page);
 
@@ -64,8 +60,7 @@ namespace Game.Tests.EditMode
         [Test]
         public void Restore_InvalidString_SelectsMap()
         {
-            var router = new MetaPageRouter();
-            var presenter = new MetaPagePresenter(router);
+            var presenter = new MetaPagePresenter();
 
             presenter.Restore("???");
             Assert.That(presenter.CurrentPage, Is.EqualTo(MetaPageId.Map));

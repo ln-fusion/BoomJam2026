@@ -23,7 +23,7 @@ namespace Game.Tests.EditMode
         [Test]
         public void SystemClock_Returns_Current_Time()
         {
-            var clock = new Game.Flow.SystemClock();
+            var clock = new Game.Persistence.SystemClock();
             var before = DateTimeOffset.UtcNow.AddMinutes(-1);
             var after = DateTimeOffset.UtcNow.AddMinutes(1);
             Assert.That(clock.UtcNow, Is.InRange(before, after));

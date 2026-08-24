@@ -11,28 +11,34 @@ namespace Game.Content
     public sealed class OfficialContentService : IContentService
     {
         private readonly IContentProvider _provider;
-        private readonly Dictionary<string, CharacterDefinition> _characters =
-            new Dictionary<string, CharacterDefinition>(StringComparer.Ordinal);
-        private readonly Dictionary<string, ArchiveEntryDefinition> _archiveEntries =
-            new Dictionary<string, ArchiveEntryDefinition>(StringComparer.Ordinal);
+        private readonly Dictionary<string, CharacterDefinition> _characters = new Dictionary<
+            string,
+            CharacterDefinition
+        >(StringComparer.Ordinal);
+        private readonly Dictionary<string, ArchiveEntryDefinition> _archiveEntries = new Dictionary<
+            string,
+            ArchiveEntryDefinition
+        >(StringComparer.Ordinal);
         private readonly IReadOnlyCollection<LevelDefinition> _knownLevels;
 
         /// <summary>从官方内容目录创建内容查询服务。</summary>
         /// <param name="catalog">官方内容目录。</param>
         public OfficialContentService(OfficialContentCatalog catalog)
-            : this(new OfficialContentProvider(catalog),
-                   catalog == null ? null : catalog.Characters,
-                   catalog == null ? null : catalog.ArchiveEntries)
-        {
-        }
+            : this(
+                new OfficialContentProvider(catalog),
+                catalog == null ? null : catalog.Characters,
+                catalog == null ? null : catalog.ArchiveEntries
+            ) { }
 
         /// <summary>从内容提供者及可选角色、档案定义创建查询服务。</summary>
         /// <param name="provider">关卡与剧情内容提供者。</param>
         /// <param name="characters">角色定义集合。</param>
         /// <param name="archiveEntries">档案条目定义集合。</param>
-        public OfficialContentService(IContentProvider provider,
+        public OfficialContentService(
+            IContentProvider provider,
             IEnumerable<CharacterDefinition> characters = null,
-            IEnumerable<ArchiveEntryDefinition> archiveEntries = null)
+            IEnumerable<ArchiveEntryDefinition> archiveEntries = null
+        )
         {
             _provider = provider ?? throw new ArgumentNullException(nameof(provider));
             _knownLevels = (provider as OfficialContentProvider)?.Levels;
@@ -51,9 +57,7 @@ namespace Game.Content
         /// <returns>找到的关卡定义；不存在时为 null。</returns>
         public LevelDefinition GetLevel(LevelId levelId)
         {
-            return _provider.TryGetLevel(levelId, out LevelDefinition definition)
-                ? definition
-                : null;
+            return _provider.TryGetLevel(levelId, out LevelDefinition definition) ? definition : null;
         }
 
         /// <summary>按稳定 ID 获取剧情定义。</summary>
@@ -61,9 +65,7 @@ namespace Game.Content
         /// <returns>找到的剧情定义；不存在时为 null。</returns>
         public StoryDefinition GetStory(StoryId storyId)
         {
-            return _provider.TryGetStory(storyId, out StoryDefinition definition)
-                ? definition
-                : null;
+            return _provider.TryGetStory(storyId, out StoryDefinition definition) ? definition : null;
         }
 
         /// <summary>按稳定 ID 获取角色定义。</summary>
@@ -71,9 +73,10 @@ namespace Game.Content
         /// <returns>找到的角色定义；不存在时为 null。</returns>
         public CharacterDefinition GetCharacter(CharacterId characterId)
         {
-            return _characters.TryGetValue(characterId.Value, out CharacterDefinition definition)
-                ? definition
-                : null;
+            if (characterId == null)
+                throw new ArgumentNullException(nameof(characterId));
+
+            return _characters.TryGetValue(characterId.Value, out CharacterDefinition definition) ? definition : null;
         }
 
         /// <summary>按稳定 ID 获取档案条目定义。</summary>
@@ -81,6 +84,9 @@ namespace Game.Content
         /// <returns>找到的档案条目定义；不存在时为 null。</returns>
         public ArchiveEntryDefinition GetArchiveEntry(ArchiveEntryId entryId)
         {
+            if (entryId == null)
+                throw new ArgumentNullException(nameof(entryId));
+
             return _archiveEntries.TryGetValue(entryId.Value, out ArchiveEntryDefinition definition)
                 ? definition
                 : null;
@@ -91,14 +97,16 @@ namespace Game.Content
         /// <returns>关卡摘要只读列表；没有已知关卡时为空列表。</returns>
         public IReadOnlyList<LevelSummary> GetLevelsForMap(MapId mapId)
         {
+            if (mapId == null)
+                throw new ArgumentNullException(nameof(mapId));
+
             var levelSummaries = new List<LevelSummary>();
             if (_knownLevels == null)
                 return levelSummaries.AsReadOnly();
 
             foreach (LevelDefinition definition in _knownLevels)
             {
-                if (definition == null ||
-                    !string.Equals(definition.MapId, mapId.Value, StringComparison.Ordinal))
+                if (definition == null || !string.Equals(definition.MapId, mapId.Value, StringComparison.Ordinal))
                     continue;
                 levelSummaries.Add(definition.Summary);
             }
@@ -122,6 +130,5 @@ namespace Game.Content
                 return ContentCompatibility.InvalidPayload;
             return ContentCompatibility.Compatible;
         }
-
     }
 }

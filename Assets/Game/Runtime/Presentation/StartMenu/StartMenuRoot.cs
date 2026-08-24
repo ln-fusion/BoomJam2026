@@ -23,7 +23,6 @@ namespace Game.Presentation
             new System.Collections.Generic.List<IDisposable>();
 
         private IGameFlowService _flow = null!;
-        private IDomainEventBus _eventBus = null!;
         private ISettingsService _settings = null!;
         private ILocalizationService? _localization;
         private StartMenuView? _view;
@@ -36,8 +35,14 @@ namespace Game.Presentation
             ILocalizationService? localization = null
         )
         {
+            if (flow == null)
+                throw new ArgumentNullException(nameof(flow));
+            if (eventBus == null)
+                throw new ArgumentNullException(nameof(eventBus));
+            if (settings == null)
+                throw new ArgumentNullException(nameof(settings));
+
             _flow = flow;
-            _eventBus = eventBus;
             _settings = settings;
             _localization = localization;
 
@@ -165,6 +170,9 @@ namespace Game.Presentation
 
         public void Render(StartMenuViewModel viewModel)
         {
+            if (viewModel == null)
+                throw new ArgumentNullException(nameof(viewModel));
+
             _startButton.Button.gameObject.SetActive(true);
             _startButton.Text.text = viewModel.HasProfile
                 ? _resolveText("ui.start_menu.continue")
@@ -182,6 +190,9 @@ namespace Game.Presentation
 
         public ListEntryHandler(Button button)
         {
+            if (button == null)
+                throw new ArgumentNullException(nameof(button));
+
             Button = button;
             Text = button.GetComponentInChildren<Text>();
         }

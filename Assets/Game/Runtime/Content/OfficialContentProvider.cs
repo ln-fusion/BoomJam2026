@@ -49,6 +49,9 @@ namespace Game.Content
         /// <returns>找到返回 true，否则返回 false。</returns>
         public bool TryGetLevel(LevelId levelId, out LevelDefinition definition)
         {
+            if (levelId == null)
+                throw new ArgumentNullException(nameof(levelId));
+
             return _levels.TryGetValue(levelId.Value, out definition);
         }
 
@@ -58,6 +61,9 @@ namespace Game.Content
         /// <returns>找到返回 true，否则返回 false。</returns>
         public bool TryGetStory(StoryId storyId, out StoryDefinition definition)
         {
+            if (storyId == null)
+                throw new ArgumentNullException(nameof(storyId));
+
             return _stories.TryGetValue(storyId.Value, out definition);
         }
 

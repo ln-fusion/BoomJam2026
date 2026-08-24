@@ -91,6 +91,9 @@ namespace Game.Content
         /// <returns>找到的预制体；不存在时为 null。</returns>
         public GameObject GetPrefab(PrefabId id)
         {
+            if (id == null)
+                throw new System.ArgumentNullException(nameof(id));
+
             return _prefabs.TryGetValue(id.Value, out GameObject asset) ? asset : null;
         }
 
@@ -99,6 +102,9 @@ namespace Game.Content
         /// <returns>找到的精灵；不存在时为 null。</returns>
         public Sprite GetSprite(SpriteId id)
         {
+            if (id == null)
+                throw new System.ArgumentNullException(nameof(id));
+
             return _sprites.TryGetValue(id.Value, out Sprite asset) ? asset : null;
         }
 
@@ -107,6 +113,9 @@ namespace Game.Content
         /// <returns>找到的音频片段；不存在时为 null。</returns>
         public AudioClip GetAudio(AudioId id)
         {
+            if (id == null)
+                throw new System.ArgumentNullException(nameof(id));
+
             return _audio.TryGetValue(id.Value, out AudioClip asset) ? asset : null;
         }
 

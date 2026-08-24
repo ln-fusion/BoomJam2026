@@ -141,6 +141,7 @@ namespace Game.Bootstrap
         {
             _pageSubscription?.Dispose();
             _settingsAppliedSubscription?.Dispose();
+            _uiRootManager?.Dispose();
             _flowService?.Dispose();
             _settingsService?.Dispose();
             (_saveRepository as IDisposable)?.Dispose();
