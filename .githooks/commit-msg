@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+
+# ============================================================
+# 规则 1（分支命名规范）已临时停用，保留原代码以便恢复：
+# ============================================================
+# # 1. 验证分支名规则
+# BRANCH_NAME=$(git branch --show-current 2>/dev/null)
+#
+# if [ -n "$BRANCH_NAME" ]; then
+#   if ! echo "$BRANCH_NAME" | grep -qE '^(master|develop|feat/.+|fix/.+|ref/.+|release/.+|docs/.+|chore/.+|test/.+)$'; then
+#     echo -e "\033[0;31m❌ 提交中止：非法的工作流分支名！\033[0m"
+#     echo "当前分支: $BRANCH_NAME"
+#     echo "允许的分支名: master, develop, feat/xxxx, fix/xxxx, ref/xxxx, release/xxxx, docs/xxxx, chore/xxxx, test/xxxx"
+#     exit 1
+#   fi
+# fi
+
+# 2. 验证 Commit Message 规则
+MSG_FILE=$1
+# We just need the first logical line (ignoring comments) for the subject
+MSG=$(grep -v "^#" "$MSG_FILE" | head -n 1 | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
+
+# 允许系统默认的合并信息格式
+if echo "$MSG" | grep -qE "^Merge (branch|pull request) "; then
+  exit 0
+fi
+
+# 基于 CONTRIBUTING.md 的规范正则校验
+PATTERN='^\[(Add|Fix|Ref|Del|Doc|Chore|Style|Test|Merge)\]\([^)]+\): .+'
+
+if ! echo "$MSG" | grep -qE "$PATTERN"; then
+  echo ""
+  echo "❌ 提交失败：Commit Message 不符合规范！"
+  echo "--------------------------------------------------------"
+  echo "规定格式: [Type](scope): 简短描述信息 (推荐祈使句)"
+  echo "可用 Type:"
+  echo "  [Add]   - 新增功能"
+  echo "  [Fix]   - 修复 Bug"
+  echo "  [Ref]   - 重构代码或性能优化"
+  echo "  [Del]   - 删除无用代码"
+  echo "  [Doc]   - 文档修改"
+  echo "  [Chore] - 基础依赖、配置维护"
+  echo "  [Style] - 格式化或样式调整"
+  echo "  [Test]  - 测试用例增改"
+  echo "  [Merge] - 分支合并记录"
+  echo ""
+  echo "当前提取的您的输入为: \"$MSG\""
+  echo "--------------------------------------------------------"
+  exit 1
+fi

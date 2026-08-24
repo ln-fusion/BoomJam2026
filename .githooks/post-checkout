@@ -1,0 +1,69 @@
+#!/usr/bin/env bash
+
+# ============================================================
+# 规则 3（分支签出来源约束）+ 规则 1（分支命名规范）
+# 已临时停用，保留原代码以便恢复：
+# ============================================================
+# PREV_HEAD=$1
+# NEW_HEAD=$2
+# CHECKOUT_TYPE=$3
+#
+# # type=1 代表改变分支的 checkout
+# if [ "$CHECKOUT_TYPE" = "1" ]; then
+#     BRANCH_NAME=$(git rev-parse --abbrev-ref HEAD)
+#
+#     # 忽略处于游离的 HEAD 状态（detached HEAD）
+#     if [ "$BRANCH_NAME" != "HEAD" ]; then
+#         # 提取之前分支的名字
+#         PREV_BRANCH=$(git name-rev --name-only $PREV_HEAD 2>/dev/null | grep -v '^undefined$' | sed 's/~.*//' | sed 's/\^.*//')
+#         # 去除 'remotes/origin/' 前缀，避免远端名干扰
+#         PREV_BRANCH=${PREV_BRANCH#remotes/origin/}
+#
+#         # 检查来源和目标分支状态的合规性（只有当并不是切换回同一分支，且之前分支可识别时）
+#         if [ -n "$PREV_BRANCH" ] && [ "$PREV_BRANCH" != "$BRANCH_NAME" ]; then
+#             # 规则 1：只允许 master 签出 develop
+#             # 如果当前新建/切换到了其它分支，但它前置位是 master，只能是 develop
+#             if [ "$PREV_BRANCH" = "master" ] && [ "$BRANCH_NAME" != "develop" ] && [ "$BRANCH_NAME" != "master" ]; then
+#                 echo -e "\033[0;33m==========================================================\033[0m"
+#                 echo -e "\033[0;33m⚠️  [Post-Checkout 警告] 违反约束：基于 master 分支只允许签出 develop！\033[0m"
+#                 echo "👉 当前签出源是 $PREV_BRANCH -> $BRANCH_NAME"
+#                 echo -e "\033[0;31m❗️ 如果这是新建分支操作，请使用 git checkout $PREV_BRANCH 撤销并重新考虑。\033[0m"
+#                 echo -e "\033[0;33m==========================================================\033[0m"
+#                 echo ""
+#             fi
+#
+#             # 规则 2/3：基于 develop 签出日常分支或release分支
+#             TARGET_PATTERN='^(feat/.+|ref/.+|fix/.+|docs/.+|chore/.+|test/.+|release/.+)$'
+#             if echo "$BRANCH_NAME" | grep -qE "$TARGET_PATTERN"; then
+#                 if [ "$PREV_BRANCH" != "develop" ]; then
+#                     echo -e "\033[0;33m==========================================================\033[0m"
+#                     echo -e "\033[0;33m⚠️  [Post-Checkout 警告] 违反约束：特性、修复或发版分支必须从 develop 签出！\033[0m"
+#                     echo "👉 当前签出源是 $PREV_BRANCH -> $BRANCH_NAME"
+#                     echo -e "\033[0;31m❗️ 如果这是新建分支操作，请切换回 develop 后重新执行新建。\033[0m"
+#                     echo -e "\033[0;33m==========================================================\033[0m"
+#                     echo ""
+#                 fi
+#             fi
+#         fi
+#
+#         PATTERN='^(master|develop|feat/.+|ref/.+|fix/.+|release/.+|docs/.+|chore/.+|test/.+)$'
+#         if ! echo "$BRANCH_NAME" | grep -qE "$PATTERN"; then
+#             echo ""
+#             echo -e "\033[0;31m==========================================================\033[0m"
+#             echo -e "\033[0;31m❌  错误：您当前签出的分支名 ($BRANCH_NAME) 不符合项目规范！\033[0m"
+#             echo -e "\033[0;31m==========================================================\033[0m"
+#             echo "这将会阻拦您未来的 Push，为了维持仓库整洁，规范的分支建议格式为："
+#             echo "  - master / develop (主分支)"
+#             echo "  - release/xxxx (发版分支)"
+#             echo "  - feat/xxxx (新功能分支)"
+#             echo "  - ref/xxxx (重构分支)"
+#             echo "  - fix/xxxx (修复分支)"
+#             echo "  - docs/xxxx (文档分支)"
+#             echo "  - chore/xxxx (工程维保分支)"
+#             echo "  - test/xxxx (测试专补分支)"
+#             echo "请考虑尽早用 'git branch -m <新建名>' 进行修改！"
+#             echo "=========================================================="
+#             echo ""
+#         fi
+#     fi
+# fi
