@@ -35,6 +35,15 @@ namespace Game.Bootstrap
             IClock clock
         )
         {
+            if (flow == null)
+                throw new ArgumentNullException(nameof(flow));
+            if (eventBus == null)
+                throw new ArgumentNullException(nameof(eventBus));
+            if (settings == null)
+                throw new ArgumentNullException(nameof(settings));
+            if (clock == null)
+                throw new ArgumentNullException(nameof(clock));
+
             _flow = flow;
             _eventBus = eventBus;
             _settings = settings;

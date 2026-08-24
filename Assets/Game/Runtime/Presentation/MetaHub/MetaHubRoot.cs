@@ -20,7 +20,6 @@ namespace Game.Presentation
     {
         private readonly List<IDisposable> _subscriptions = new List<IDisposable>();
 
-        private IGameFlowService _flow = null!;
         private IDomainEventBus _eventBus = null!;
         private IProgressQuery _progress = null!;
         private IClock _clock = null!;
@@ -32,7 +31,15 @@ namespace Game.Presentation
         /// <summary>装配依赖并订阅场景事件，由组合根调用.</summary>
         public void Initialize(IGameFlowService flow, IDomainEventBus eventBus, IProgressQuery progress, IClock clock)
         {
-            _flow = flow;
+            if (flow == null)
+                throw new ArgumentNullException(nameof(flow));
+            if (eventBus == null)
+                throw new ArgumentNullException(nameof(eventBus));
+            if (progress == null)
+                throw new ArgumentNullException(nameof(progress));
+            if (clock == null)
+                throw new ArgumentNullException(nameof(clock));
+
             _eventBus = eventBus;
             _progress = progress;
             _clock = clock;
@@ -224,6 +231,9 @@ namespace Game.Presentation
 
         public void Render(MetaHubShellViewModel viewModel)
         {
+            if (viewModel == null)
+                throw new ArgumentNullException(nameof(viewModel));
+
             _headerTitle.text = $"上栏占位 - {viewModel.PlayerNickname}";
             _footerTitle.text = $"下栏 - 当前页: {viewModel.LastPageId}";
         }
@@ -231,7 +241,10 @@ namespace Game.Presentation
         /// <summary>刷新下栏时间显示（每秒由 MetaHubRoot 调用）.</summary>
         public void RenderClock(DateTimeOffset localNow)
         {
-            _footerTitle.text = localNow.ToString("yyyy-MM-dd HH:mm:ss");
+            _footerTitle.text = localNow.ToString(
+                "yyyy-MM-dd HH:mm:ss",
+                System.Globalization.CultureInfo.InvariantCulture
+            );
         }
     }
 }
