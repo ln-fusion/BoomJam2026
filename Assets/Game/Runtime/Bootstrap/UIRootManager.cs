@@ -57,14 +57,20 @@ namespace Game.Bootstrap
         {
             if (evt.SceneName == SceneNames.StartMenu)
             {
-                // 构建 StartMenu UI 根（挂在 Bootstrap 场景下，随场景加载创建）
+                // 构建 StartMenu UI 根（移入功能场景，随场景卸载自动销毁）
                 var root = new GameObject("[StartMenuUI]");
+                var target = UnityEngine.SceneManagement.SceneManager.GetSceneByName(evt.SceneName);
+                if (target.IsValid())
+                    UnityEngine.SceneManagement.SceneManager.MoveGameObjectToScene(root, target);
                 var component = root.AddComponent<StartMenuRoot>();
                 component.Initialize(_flow, _eventBus, _settings, _localization);
             }
             else if (evt.SceneName == SceneNames.MetaHub)
             {
                 var root = new GameObject("[MetaHubUI]");
+                var target = UnityEngine.SceneManagement.SceneManager.GetSceneByName(evt.SceneName);
+                if (target.IsValid())
+                    UnityEngine.SceneManagement.SceneManager.MoveGameObjectToScene(root, target);
                 var component = root.AddComponent<MetaHubRoot>();
                 component.Initialize(_flow, _eventBus, new EmptyProgressQuery(), _clock);
             }

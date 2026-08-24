@@ -11,13 +11,25 @@ namespace Game.Presentation
     public static class UIFactory
     {
         /// <summary>创建一个 Screen Space Overlay Canvas 根对象.</summary>
-        public static Canvas CreateCanvas(string name, int sortingOrder = 0)
+        /// <param name="name">画布根对象名。</param>
+        /// <param name="sortingOrder">画布渲染排序。</param>
+        /// <param name="scaleWithScreenSize">
+        /// 是否按参考分辨率缩放（ScaleWithScreenSize）。为 true 时 UI 在小窗口下整体缩小、
+        /// 大窗口下放大，元素相对关系保持稳定；为 false 时固定 1:1 像素（旧行为）.
+        /// </param>
+        public static Canvas CreateCanvas(string name, int sortingOrder = 0, bool scaleWithScreenSize = false)
         {
             var go = new GameObject(name);
             var canvas = go.AddComponent<Canvas>();
             canvas.renderMode = RenderMode.ScreenSpaceOverlay;
             canvas.sortingOrder = sortingOrder;
-            go.AddComponent<CanvasScaler>();
+            var scaler = go.AddComponent<CanvasScaler>();
+            if (scaleWithScreenSize)
+            {
+                scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
+                scaler.referenceResolution = new Vector2(1920f, 1080f);
+                scaler.matchWidthOrHeight = 0.5f;
+            }
             go.AddComponent<GraphicRaycaster>();
             return canvas;
         }

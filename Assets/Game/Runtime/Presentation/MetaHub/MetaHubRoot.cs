@@ -20,6 +20,7 @@ namespace Game.Presentation
     {
         private readonly List<IDisposable> _subscriptions = new List<IDisposable>();
 
+        private IGameFlowService _flow = null!;
         private IDomainEventBus _eventBus = null!;
         private IProgressQuery _progress = null!;
         private IClock _clock = null!;
@@ -29,6 +30,10 @@ namespace Game.Presentation
         private float _clockTimer;
 
         /// <summary>装配依赖并订阅场景事件，由组合根调用.</summary>
+        /// <remarks>
+        /// UIRootManager 是在 SceneActivatedEvent 发布后才创建本组件,
+        /// 订阅会错过当前事件, 因此订阅后立即核对激活场景并补发一次.
+        /// </remarks>
         public void Initialize(IGameFlowService flow, IDomainEventBus eventBus, IProgressQuery progress, IClock clock)
         {
             if (flow == null)
@@ -40,11 +45,18 @@ namespace Game.Presentation
             if (clock == null)
                 throw new ArgumentNullException(nameof(clock));
 
+            _flow = flow;
             _eventBus = eventBus;
             _progress = progress;
             _clock = clock;
 
             _subscriptions.Add(eventBus.Subscribe<SceneActivatedEvent>(OnSceneActivated));
+
+            // 补发: 组件创建晚于事件发布时, 直接用激活场景初始化视图
+            if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name == SceneNames.MetaHub)
+            {
+                OnSceneActivated(new SceneActivatedEvent(SceneNames.MetaHub, default));
+            }
         }
 
         private void Update()
@@ -65,6 +77,7 @@ namespace Game.Presentation
 
             _shell = new MetaHubShellView(transform);
             _shell.OnPageSelected += SwitchPage;
+            _shell.OnBackClicked += ReturnToStartMenu;
             BuildPages(_shell.ContentRoot);
 
             // 默认页：优先事件携带的页面，其次 Map
@@ -101,6 +114,12 @@ namespace Game.Presentation
             _eventBus.Publish(new MetaPageChangedEvent(page));
         }
 
+        /// <summary>返回开始菜单（异步导航，不阻塞 UI）.</summary>
+        private void ReturnToStartMenu()
+        {
+            _ = _flow.ReturnToStartMenuAsync(System.Threading.CancellationToken.None);
+        }
+
         private static GameObject CreatePlaceholderPage(Transform parent, string label)
         {
             var go = new GameObject(label);
@@ -115,7 +134,7 @@ namespace Game.Presentation
             var image = go.AddComponent<Image>();
             image.color = new Color(0.12f, 0.13f, 0.18f, 1f);
 
-            UIFactory.CreateText("PageLabel", go.transform, label, 32, TextAnchor.MiddleCenter, Color.white);
+            UIFactory.CreateText("PageLabel", go.transform, label, 26, TextAnchor.MiddleCenter, Color.white);
             return go;
         }
 
@@ -142,24 +161,35 @@ namespace Game.Presentation
         /// <summary>下栏导航点击事件（页面切换）.</summary>
         public event Action<MetaPageId>? OnPageSelected;
 
+        /// <summary>返回按钮点击事件（返回开始菜单）.</summary>
+        public event Action? OnBackClicked;
+
         /// <summary>内容区根节点（页面 Presenter 挂载点）.</summary>
         public Transform ContentRoot { get; }
 
         public MetaHubShellView(Transform parent)
         {
-            _canvas = UIFactory.CreateCanvas("MetaHubCanvas");
+            // 按 1920x1080 参考分辨率缩放：小窗口整体缩小，元素比例与相对关系稳定
+            _canvas = UIFactory.CreateCanvas("MetaHubCanvas", scaleWithScreenSize: true);
             _canvas.transform.SetParent(parent, false);
 
-            _headerTitle = CreateBar("HeaderBar", new Vector2(0f, 320f), "上栏占位");
+            _headerTitle = CreateBar("HeaderBar", "上栏占位");
             _footerTitle = CreateFooterBar();
+            CreateBackButton(_headerTitle.transform.parent);
 
+            // 侧栏：贴左垂直居中（锚点相对布局，不写死绝对像素）
             var side = UIFactory.CreatePanel(
                 "Sidebar",
                 _canvas.transform,
                 new Vector2(220f, 640f),
-                new Vector2(-550f, 0f),
+                new Vector2(90f, 0f),
                 new Color(0.18f, 0.2f, 0.3f, 0.9f)
             );
+            var sideRect = side.rectTransform;
+            sideRect.anchorMin = new Vector2(0f, 0.5f);
+            sideRect.anchorMax = new Vector2(0f, 0.5f);
+            sideRect.pivot = new Vector2(0f, 0.5f);
+            sideRect.anchoredPosition = new Vector2(90f, 0f);
             _ = UIFactory.CreateText(
                 "SidebarLabel",
                 side.transform,
@@ -172,21 +202,44 @@ namespace Game.Presentation
             var content = new GameObject("ContentRoot");
             content.transform.SetParent(_canvas.transform, false);
             var rect = content.AddComponent<RectTransform>();
-            rect.anchorMin = new Vector2(0.32f, 0.05f);
-            rect.anchorMax = new Vector2(0.95f, 0.9f);
+            rect.anchorMin = new Vector2(0.18f, 0.08f);
+            rect.anchorMax = new Vector2(0.96f, 0.92f);
+            rect.offsetMin = Vector2.zero;
+            rect.offsetMax = Vector2.zero;
             ContentRoot = content.transform;
         }
 
-        private Text CreateBar(string name, Vector2 position, string label)
+        /// <summary>创建上/下栏（贴顶/贴底，宽度跟随屏幕）.</summary>
+        private Text CreateBar(string name, string label)
         {
             var bar = UIFactory.CreatePanel(
                 name,
                 _canvas.transform,
-                new Vector2(1900f, 80f),
-                position,
+                new Vector2(1000f, 64f),
+                Vector2.zero,
                 new Color(0.13f, 0.15f, 0.22f, 1f)
             );
-            return UIFactory.CreateText($"{name}Label", bar.transform, label, 20, TextAnchor.MiddleLeft, Color.white);
+            var barRect = bar.rectTransform;
+            if (name == "HeaderBar")
+            {
+                // 上栏：顶边锚点拉伸，高 64，贴顶
+                barRect.anchorMin = new Vector2(0f, 1f);
+                barRect.anchorMax = new Vector2(1f, 1f);
+                barRect.pivot = new Vector2(0.5f, 1f);
+                barRect.offsetMin = new Vector2(0f, -64f);
+                barRect.offsetMax = Vector2.zero;
+            }
+            else
+            {
+                // 下栏：底边锚点拉伸，高 64，贴底
+                barRect.anchorMin = new Vector2(0f, 0f);
+                barRect.anchorMax = new Vector2(1f, 0f);
+                barRect.pivot = new Vector2(0.5f, 0f);
+                barRect.offsetMin = Vector2.zero;
+                barRect.offsetMax = new Vector2(0f, 64f);
+            }
+
+            return UIFactory.CreateText($"{name}Label", bar.transform, label, 18, TextAnchor.MiddleLeft, Color.white);
         }
 
         /// <summary>下栏：Logo + 四个导航按钮.</summary>
@@ -195,28 +248,49 @@ namespace Game.Presentation
             var bar = UIFactory.CreatePanel(
                 "FooterBar",
                 _canvas.transform,
-                new Vector2(1900f, 80f),
-                new Vector2(0f, -320f),
+                new Vector2(1000f, 64f),
+                Vector2.zero,
                 new Color(0.13f, 0.15f, 0.22f, 1f)
             );
+            var barRect = bar.rectTransform;
+            barRect.anchorMin = new Vector2(0f, 0f);
+            barRect.anchorMax = new Vector2(1f, 0f);
+            barRect.pivot = new Vector2(0.5f, 0f);
+            barRect.offsetMin = Vector2.zero;
+            barRect.offsetMax = new Vector2(0f, 64f);
 
             var label = UIFactory.CreateText(
                 "FooterLabel",
                 bar.transform,
                 "下栏",
-                20,
+                18,
                 TextAnchor.MiddleLeft,
                 Color.white
             );
-            label.rectTransform.anchoredPosition = new Vector2(-800f, 0f);
+            label.rectTransform.anchoredPosition = new Vector2(-860f, 0f);
 
-            CreateNavButton(bar.transform, "地图", MetaPageId.Map, -500f);
-            CreateNavButton(bar.transform, "档案", MetaPageId.Archive, -300f);
-            CreateNavButton(bar.transform, "人员", MetaPageId.Character, -100f);
-            CreateNavButton(bar.transform, "休息室", MetaPageId.Lounge, 100f);
+            CreateNavButton(bar.transform, "地图", MetaPageId.Map, -420f);
+            CreateNavButton(bar.transform, "档案", MetaPageId.Archive, -240f);
+            CreateNavButton(bar.transform, "人员", MetaPageId.Character, -60f);
+            CreateNavButton(bar.transform, "休息室", MetaPageId.Lounge, 120f);
             return label;
         }
 
+        /// <summary>创建返回按钮（上栏左侧，点击返回开始菜单）.</summary>
+        /// <param name="headerBar">上栏容器（返回按钮的父节点）.</param>
+        private void CreateBackButton(Transform headerBar)
+        {
+            UIFactory.CreateButton(
+                "BackButton",
+                headerBar,
+                "返回",
+                () => OnBackClicked?.Invoke(),
+                new Vector2(90f, 40f),
+                new Vector2(-830f, 0f)
+            );
+        }
+
+        /// <summary>创建导航按钮（下栏内，固定间隔）.</summary>
         private void CreateNavButton(Transform parent, string label, MetaPageId page, float x)
         {
             UIFactory.CreateButton(
@@ -224,7 +298,7 @@ namespace Game.Presentation
                 parent,
                 label,
                 () => OnPageSelected?.Invoke(page),
-                new Vector2(180f, 56f),
+                new Vector2(150f, 48f),
                 new Vector2(x, 0f)
             );
         }
