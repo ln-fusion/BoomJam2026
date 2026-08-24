@@ -8,9 +8,9 @@ applyTo: ["Assets/**", "**/*.cs", "**/*.asmdef"]
 
 > 本项目为 Unity 2022.3 LTS 2D 建造解谜游戏（模块化单体 + 分层 + 组合根）。新文件的放置位置必须遵循以下规则，不确定时先查此文件，再查 [README](../../../README.md) 与 [技术设计文档](../../../Documents/Unity2D建造解谜游戏-完整技术设计文档.md)（**文档 4.1/4.2 节是目录与程序集的权威来源，本节为磁盘现状快照**）。
 
-> 目录基准快照日期：2026-08-18。反应的是磁盘现状，新建目录时优先参考设计文档目录树，本快照随项目演进需同步更新。
+> 目录基准快照日期：2026-08-25。反应的是磁盘现状，新建目录时优先参考设计文档目录树，本快照随项目演进需同步更新。
 
-## 目录树（磁盘现状 2026-08-18）
+## 目录树（磁盘现状 2026-08-25）
 
 ```
 Assets/
@@ -20,24 +20,43 @@ Assets/
 │   │   │   ├── Cancellation/
 │   │   │   └── Logging/
 │   │   ├── Contracts/          #   Game.Contracts：跨模块接口/命令/事件/只读模型（稳定边界）
+│   │   │   ├── Content/        #     内容相关契约
+│   │   │   ├── Lifetime/       #     取消/生命周期契约
+│   │   │   ├── Persistence/    #     存档相关契约（ISaveRepository、SaveData 等）
+│   │   │   ├── Progression/    #     进度相关契约
+│   │   │   └── UI/             #     UI 相关契约（IView、ViewModel 等）
 │   │   ├── Flow/               #   Game.Flow：启动、返回栈、完成事务协调
 │   │   ├── Content/            #   Game.Content：官方内容目录与 Provider
 │   │   ├── Persistence/        #   Game.Persistence：Repository、迁移、原子写入（本地存档）
+│   │   │   └── Properties/     #     程序集属性
 │   │   ├── Platform/           #   Game.Platform：Steam/离线适配器（当前空，待实现）
-│   │   ├── Progression/        #   Game.Progression：解锁事实、规则、最佳成绩（当前空，待实现）
-│   │   ├── Story/              #   Game.Story：StoryRunner、节点执行器、历史（当前空，待实现）
-│   │   ├── Meta/               #   Game.Meta：地图/档案/人员查询服务（当前空，待实现）
-│   │   ├── Gameplay/           #   Game.Gameplay：部署、物理、能力、条件、结算（当前空，待实现）
-│   │   ├── Presentation/       #   Game.Presentation：uGUI View/Presenter/Input Adapter（当前空，待实现）
+│   │   ├── Progression/        #   Game.Progression：解锁事实、规则、最佳成绩（锚点占位已有代码）
+│   │   ├── Story/              #   Game.Story：StoryRunner、节点执行器、历史（锚点占位）
+│   │   ├── Meta/               #   Game.Meta：地图/档案/人员查询服务（锚点占位）
+│   │   ├── Gameplay/           #   Game.Gameplay：部署、物理、能力、条件、结算（锚点占位）
+│   │   ├── Localization/       #   Game.Localization：Unity Localization 适配服务
+│   │   ├── Audio/              #   Game.Audio：音频服务（UnityAudioService、NullAudioAssetResolver）
+│   │   ├── Presentation/       #   Game.Presentation：uGUI View/Presenter/Input Adapter
+│   │   │   ├── Common/         #     UIFactory 等通用 UI 设施
+│   │   │   ├── MetaHub/        #     主界面/局内中心（MetaHubRoot、MetaPageRouter）
+│   │   │   ├── Settings/       #     设置对话框
+│   │   │   └── StartMenu/      #     开始菜单
 │   │   └── Bootstrap/          #   Game.Bootstrap：组合根与全局生命周期（GameRoot 所在）
-│   ├── Editor/                 # ★ 规划中：编辑器程序集（磁盘上尚未创建，见 csproj Game.Editor.Backbone）
-│   │   └── AssemblyValidation/ #     AssemblyDependencyValidator.cs（csproj 已引用，磁盘缺失，待补）
+│   ├── Editor/                 # 编辑器程序集（Game.Editor.Backbone）
+│   │   └── AssemblyValidation/ #     AssemblyDependencyValidator.cs、SetupLocalization.cs
+│   ├── Localization/           # 本地化资产（LocalizationSettings、Locale、String Table）
 │   └── Tests/
 │       └── EditMode/           # Game.Tests.EditMode：编辑器模式测试
-│           └── Fakes/          # 测试替身
+│           ├── Content/        #     内容服务测试
+│           ├── Contracts/      #     契约层测试
+│           ├── Foundation/     #     基础设施测试
+│           ├── Fakes/          #     测试替身
+│           └── Persistence/    #     存档相关测试
 ├── Scenes/                     # 场景（00_Bootstrap / 01_StartMenu / 02_MetaHub / 03_Story / 04_Gameplay）
 └── SoundManager.cs             # 旧版全局单例（Assets 根，遗留，新代码禁止扩展）
 ```
+
+> AddressableAssetsData/ 已存在（指向 Assets/AddressableAssetsData/），当前仅初始化未使用，资源加载暂用常规引用。
 
 ## 程序集分层（依赖方向是硬性约束）
 
@@ -66,9 +85,13 @@ Assets/
 | --- | --- |
 | Game.Foundation | （无） |
 | Game.Contracts | Game.Foundation |
-| Game.Flow / Content / Persistence / Platform / Progression / Story / Meta / Gameplay / Presentation | Game.Foundation + Game.Contracts |
-| Game.Bootstrap | Game.Foundation + Game.Contracts + Game.Flow + Game.Presentation |
-| Game.Tests.EditMode | Game.Foundation + Game.Contracts + Game.Flow + UnityEngine.TestRunner + UnityEditor.TestRunner（includePlatforms=Editor，autoReferenced=false，defineConstraints=UNITY_INCLUDE_TESTS） |
+| Game.Flow / Content / Persistence / Platform / Progression / Story / Meta / Gameplay / Audio | Game.Foundation + Game.Contracts |
+| Game.Persistence / Content | 另引 Unity.Newtonsoft.Json |
+| Game.Localization | Game.Foundation + Game.Contracts + Unity.Localization |
+| Game.Presentation | Game.Foundation + Game.Contracts + Game.Flow + UnityEngine.UI |
+| Game.Bootstrap | Game.Foundation + Game.Contracts + Game.Flow + Game.Presentation + Game.Localization + Game.Audio + Game.Persistence + Game.Progression + Unity.Localization + Unity.InputSystem |
+| Game.Editor.Backbone | Game.Foundation + Game.Contracts + Unity.Localization.Editor + Unity.Localization（includePlatforms=Editor） |
+| Game.Tests.EditMode | Game.Foundation + Game.Contracts + Game.Flow + Game.Content + Game.Persistence + Game.Progression + Game.Presentation + UnityEngine.TestRunner + UnityEditor.TestRunner（includePlatforms=Editor，autoReferenced=false，defineConstraints=UNITY_INCLUDE_TESTS） |
 
 ## 新文件放置决策表
 
@@ -86,10 +109,12 @@ Assets/
 | 剧情/节点执行器 | `Runtime/Story/` | Game.Story |
 | 地图/档案/人员查询 | `Runtime/Meta/` | Game.Meta |
 | 玩法规则（部署/物理/能力/条件/结算） | `Runtime/Gameplay/` | Game.Gameplay |
+| 本地化服务/表驱动翻译 | `Runtime/Localization/` | Game.Localization |
+| 音频服务/音频加载 | `Runtime/Audio/` | Game.Audio |
 | uGUI View/Presenter/Input Adapter | `Runtime/Presentation/` | Game.Presentation |
 | 组合根/全局生命周期/启动装配 | `Runtime/Bootstrap/` | Game.Bootstrap |
-| 编辑器工具/菜单/校验/生成器 | `Game/Editor/` 下对应子目录 | 各 Editor 程序集 |
-| EditMode 测试 | `Game/Tests/EditMode/` | Game.Tests.EditMode |
+| 编辑器工具/菜单/校验/生成器 | `Game/Editor/` 下对应子目录 | 各 Editor 程序集（当前 Game.Editor.Backbone） |
+| EditMode 测试 | `Game/Tests/EditMode/`（按被测层分子目录） | Game.Tests.EditMode |
 
 ### 场景与资源（当前尚未建立 Art/Prefabs 等资源目录，落地时按设计文档 4.1 创建）
 
