@@ -81,13 +81,17 @@ namespace Game.Contracts.Progression
         /// <summary>已经完成的剧情集合。</summary>
         public IReadOnlyCollection<StoryId> CompletedStories { get; }
 
+        /// <summary>Per-level progress views included in this snapshot.</summary>
+        public IReadOnlyList<LevelProgressView> Levels { get; }
+
         /// <summary>
         /// 创建进度快照。
         /// </summary>
         /// <param name="completedLevels">已经完成的关卡集合。</param>
         /// <param name="completedStories">已经完成的剧情集合。</param>
         public ProgressSnapshot(IReadOnlyCollection<LevelId> completedLevels,
-            IReadOnlyCollection<StoryId> completedStories)
+            IReadOnlyCollection<StoryId> completedStories,
+            IReadOnlyList<LevelProgressView> levels = null)
         {
             CompletedLevels = completedLevels == null
                 ? new List<LevelId>().AsReadOnly()
@@ -95,6 +99,9 @@ namespace Game.Contracts.Progression
             CompletedStories = completedStories == null
                 ? new List<StoryId>().AsReadOnly()
                 : new List<StoryId>(completedStories).AsReadOnly();
+            Levels = levels == null
+                ? new List<LevelProgressView>().AsReadOnly()
+                : new List<LevelProgressView>(levels).AsReadOnly();
         }
 
         /// <summary>

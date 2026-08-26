@@ -69,6 +69,47 @@ namespace Game.Contracts.Content
         public string DisplayNameKey;
         /// <summary>同一地图内的显示排序值。</summary>
         public int SortOrder;
+
+        /// <summary>Unlock rule evaluated before the level can be entered.</summary>
+        public UnlockRequirementData UnlockRequirement;
+    }
+
+    /// <summary>Describes the completion facts required to unlock a level.</summary>
+    [Serializable]
+    public sealed class UnlockRequirementData
+    {
+        /// <summary>Combines required facts with all or any semantics.</summary>
+        public UnlockRequirementMode Mode;
+
+        /// <summary>Stable level IDs whose completion facts are required.</summary>
+        public List<string> RequiredLevelIds = new List<string>();
+    }
+
+    /// <summary>Combines multiple level completion requirements.</summary>
+    public enum UnlockRequirementMode
+    {
+        /// <summary>No prerequisite is required.</summary>
+        None,
+        /// <summary>Every listed prerequisite must be complete.</summary>
+        All,
+        /// <summary>At least one listed prerequisite must be complete.</summary>
+        Any
+    }
+
+    /// <summary>Groups ordered level summaries into a selectable map.</summary>
+    [Serializable]
+    public sealed class MapDefinition
+    {
+        /// <summary>Content compatibility metadata for this map.</summary>
+        public ContentHeader Header;
+        /// <summary>Stable map identifier.</summary>
+        public string MapId;
+        /// <summary>Localization key for the map name.</summary>
+        public string DisplayNameKey;
+        /// <summary>Order among official maps.</summary>
+        public int SortOrder;
+        /// <summary>Levels belonging to this map.</summary>
+        public List<LevelSummary> Levels = new List<LevelSummary>();
     }
 
     /// <summary>
@@ -90,13 +131,16 @@ namespace Game.Contracts.Content
         public string DisplayNameKey;
         /// <summary>同一地图内的显示排序值。</summary>
         public int SortOrder;
+        /// <summary>Unlock rule copied into the level summary.</summary>
+        public UnlockRequirementData UnlockRequirement;
         /// <summary>由完整定义派生的关卡选择摘要。</summary>
         public LevelSummary Summary => new LevelSummary
         {
             LevelId = LevelId,
             MapId = MapId,
             DisplayNameKey = DisplayNameKey,
-            SortOrder = SortOrder
+            SortOrder = SortOrder,
+            UnlockRequirement = UnlockRequirement
         };
     }
 
@@ -107,6 +151,10 @@ namespace Game.Contracts.Content
     {
         /// <summary>播放一段剧情文本后进入后续节点。</summary>
         Dialogue,
+        /// <summary>Waits for a player choice before continuing.</summary>
+        Choice,
+        /// <summary>Jumps to another node without presentation.</summary>
+        Goto,
         /// <summary>剧情序列结束。</summary>
         End
     }
@@ -125,6 +173,20 @@ namespace Game.Contracts.Content
         public string TextKey;
         /// <summary>下一节点标识；结束节点可为空。</summary>
         public string NextNodeId;
+        /// <summary>Available choices when this is a choice node.</summary>
+        public List<StoryChoiceDefinition> Choices = new List<StoryChoiceDefinition>();
+    }
+
+    /// <summary>One selectable branch of a choice node.</summary>
+    [Serializable]
+    public sealed class StoryChoiceDefinition
+    {
+        /// <summary>Stable choice identifier.</summary>
+        public string ChoiceId;
+        /// <summary>Localization key for the choice label.</summary>
+        public string TextKey;
+        /// <summary>Target node reached after selecting this choice.</summary>
+        public string NextNodeId;
     }
 
     /// <summary>
@@ -137,6 +199,8 @@ namespace Game.Contracts.Content
         public ContentHeader Header;
         /// <summary>剧情稳定标识。</summary>
         public string StoryId;
+        /// <summary>Stable ID of the first node to execute.</summary>
+        public string StartNodeId = "start";
         /// <summary>按编辑器生成顺序保存的剧情节点集合。</summary>
         public List<StoryNodeDefinition> Nodes = new List<StoryNodeDefinition>();
     }
@@ -168,6 +232,11 @@ namespace Game.Contracts.Content
     {
         /// <summary>该提供者负责的内容来源。</summary>
         ContentSource Source { get; }
+        /// <summary>Attempts to resolve a map by stable ID.</summary>
+        /// <param name="mapId">Map stable identifier.</param>
+        /// <param name="definition">Resolved map or null.</param>
+        /// <returns>True when the map exists.</returns>
+        bool TryGetMap(MapId mapId, out MapDefinition definition);
         /// <summary>尝试按稳定 ID 获取关卡定义。</summary>
         /// <param name="levelId">关卡稳定标识。</param>
         /// <param name="definition">找到时返回关卡定义；未找到时为 null。</param>
@@ -185,6 +254,15 @@ namespace Game.Contracts.Content
     /// </summary>
     public interface IContentService
     {
+        /// <summary>Gets a map definition by stable ID.</summary>
+        /// <param name="mapId">Map stable identifier.</param>
+        /// <returns>The map or null when it is not known.</returns>
+        MapDefinition GetMap(MapId mapId);
+
+        /// <summary>Gets all official maps in display order.</summary>
+        /// <returns>An immutable ordered map list.</returns>
+        IReadOnlyList<MapDefinition> GetMaps();
+
         /// <summary>获取指定关卡定义；不存在时返回 null。</summary>
         /// <param name="levelId">关卡稳定标识。</param>
         /// <returns>关卡定义；不存在时为 null。</returns>

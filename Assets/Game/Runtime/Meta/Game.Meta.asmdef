@@ -3,7 +3,9 @@
     "rootNamespace": "Game.Meta",
     "references": [
         "Game.Foundation",
-        "Game.Contracts"
+        "Game.Contracts",
+        "Game.Content",
+        "Game.Progression"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

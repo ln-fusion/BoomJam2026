@@ -3,6 +3,7 @@
     "rootNamespace": "Game.Editor",
     "references": [
         "Game.Foundation",
+        "Game.Contracts",
         "Game.Content",
         "Game.Presentation",
         "Game.Bootstrap",

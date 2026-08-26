@@ -126,7 +126,8 @@ namespace Game.Presentation
                 }
 
                 _runtimeServices.SetCurrentProfile(decision.Value.Profile);
-                await _runtimeServices.Flow.StartOrContinueAsync(_lifetime.Token);
+                // 场景跳转会销毁当前 Presenter；不能把当前场景的生命周期令牌传给跳转请求。
+                await _runtimeServices.Flow.StartOrContinueAsync(CancellationToken.None);
             }
             catch (OperationCanceledException)
             {
@@ -179,7 +180,8 @@ namespace Game.Presentation
                 _runtimeServices.SetCurrentProfile(created.Value);
                 _view.HideNicknamePrompt();
                 _waitingForNickname = false;
-                await _runtimeServices.Flow.StartOrContinueAsync(_lifetime.Token);
+                // 场景跳转会销毁当前 Presenter；不能把当前场景的生命周期令牌传给跳转请求。
+                await _runtimeServices.Flow.StartOrContinueAsync(CancellationToken.None);
             }
             catch (OperationCanceledException)
             {

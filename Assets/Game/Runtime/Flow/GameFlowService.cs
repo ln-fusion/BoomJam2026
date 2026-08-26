@@ -29,6 +29,7 @@ namespace Game.Flow
         private bool _disposed;
         private MetaPageId _lastMetaPage = MetaPageId.Map;
         private StoryReturnTarget? _storyReturnTarget;
+        private readonly HashSet<string> _levelsWithPrelude = new HashSet<string>(StringComparer.Ordinal);
 
         /// <summary>当前场景生命周期的取消令牌（场景激活后有效，切换时被取消）.</summary>
         public CancellationToken ActiveSceneToken => _activeScope?.Token ?? CancellationToken.None;
@@ -84,8 +85,13 @@ namespace Game.Flow
         /// <summary>进入指定关卡（C02 占位：直接进入 Gameplay；关前/关后剧情分支在 C15/C16 落地）.</summary>
         /// <param name="levelId">目标关卡稳定标识；C02 占位实现尚未按关卡分流。</param>
         /// <param name="cancellationToken">取消导航操作的令牌。</param>
-        public Task EnterLevelAsync(LevelId levelId, CancellationToken cancellationToken) =>
-            NavigateAsync(SceneNames.Gameplay, cancellationToken);
+        public Task EnterLevelAsync(LevelId levelId, CancellationToken cancellationToken)
+        {
+            if (levelId != null && _levelsWithPrelude.Add(levelId.Value))
+                return PlayStoryAsync(new StoryId("official.story.c06_branch"),
+                    StoryReturnTarget.ToLevel(levelId), cancellationToken);
+            return NavigateAsync(SceneNames.Gameplay, cancellationToken);
+        }
 
         /// <summary>播放剧情并记录返回目标.</summary>
         /// <param name="storyId">目标剧情稳定标识；C02 占位实现尚未按剧情分流。</param>

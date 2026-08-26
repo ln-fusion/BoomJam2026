@@ -6,8 +6,10 @@
         "Game.Contracts",
         "Game.Flow",
         "Game.Content",
+        "Game.Story",
         "Game.Persistence",
         "Game.Progression",
+        "Game.Meta",
         "Game.Presentation",
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner"

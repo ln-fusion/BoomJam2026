@@ -31,7 +31,13 @@ namespace Game.Bootstrap
             }
 
             if (scene.name == SceneNames.MetaHub)
+            {
                 InstallMetaHub(scene, runtimeServices, globalCanvasLayer, contentRegistry);
+                return;
+            }
+
+            if (scene.name == SceneNames.Story)
+                InstallStory(scene, runtimeServices);
         }
 
         /// <summary>安装开始菜单 View/Presenter。</summary>
@@ -69,6 +75,17 @@ namespace Game.Bootstrap
             SceneManager.MoveGameObjectToScene(root, scene);
             var shell = root.GetComponent<MetaHubShell>() ?? root.AddComponent<MetaHubShell>();
             shell.Initialize(runtimeServices, globalCanvasLayer);
+        }
+
+        /// <summary>安装 C09 剧情白盒表现器。</summary>
+        /// <param name="scene">剧情场景。</param>
+        private static void InstallStory(Scene scene, GameRuntimeServices runtimeServices)
+        {
+            if (FindInScene<StoryScenePresenter>(scene) != null)
+                return;
+            var root = new GameObject("StoryUI");
+            SceneManager.MoveGameObjectToScene(root, scene);
+            root.AddComponent<StoryScenePresenter>().Initialize(runtimeServices);
         }
 
         /// <summary>从官方 Registry 实例化 UI 预制体，缺失时回退为空根节点。</summary>

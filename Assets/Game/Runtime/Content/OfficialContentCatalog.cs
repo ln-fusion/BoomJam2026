@@ -11,6 +11,7 @@ namespace Game.Content
     public sealed class OfficialContentCatalog : ScriptableObject
     {
         [SerializeField] private List<LevelDefinition> levels = new List<LevelDefinition>();
+        [SerializeField] private List<MapDefinition> maps = new List<MapDefinition>();
         [SerializeField] private List<StoryDefinition> stories = new List<StoryDefinition>();
         [SerializeField] private List<CharacterDefinition> characters = new List<CharacterDefinition>();
         [SerializeField] private List<ArchiveEntryDefinition> archiveEntries =
@@ -19,6 +20,8 @@ namespace Game.Content
 
         /// <summary>目录中的官方关卡定义。</summary>
         public IReadOnlyList<LevelDefinition> Levels => levels;
+        /// <summary>Official map definitions in authored order.</summary>
+        public IReadOnlyList<MapDefinition> Maps => maps;
         /// <summary>目录中的官方剧情定义。</summary>
         public IReadOnlyList<StoryDefinition> Stories => stories;
         /// <summary>目录中的官方角色定义。</summary>

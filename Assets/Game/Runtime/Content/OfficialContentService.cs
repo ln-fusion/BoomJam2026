@@ -16,6 +16,7 @@ namespace Game.Content
         private readonly Dictionary<string, ArchiveEntryDefinition> _archiveEntries =
             new Dictionary<string, ArchiveEntryDefinition>(StringComparer.Ordinal);
         private readonly IReadOnlyCollection<LevelDefinition> _knownLevels;
+        private readonly IReadOnlyCollection<MapDefinition> _knownMaps;
 
         /// <summary>从官方内容目录创建内容查询服务。</summary>
         /// <param name="catalog">官方内容目录。</param>
@@ -36,6 +37,7 @@ namespace Game.Content
         {
             _provider = provider ?? throw new ArgumentNullException(nameof(provider));
             _knownLevels = (provider as OfficialContentProvider)?.Levels;
+            _knownMaps = (provider as OfficialContentProvider)?.Maps;
             if (characters != null)
                 foreach (CharacterDefinition character in characters)
                     if (character != null && !string.IsNullOrWhiteSpace(character.CharacterId))
@@ -54,6 +56,25 @@ namespace Game.Content
             return _provider.TryGetLevel(levelId, out LevelDefinition definition)
                 ? definition
                 : null;
+        }
+
+        /// <summary>Gets an official map by stable ID.</summary>
+        /// <param name="mapId">Map stable identifier.</param>
+        /// <returns>The map or null when it is not known.</returns>
+        public MapDefinition GetMap(MapId mapId)
+        {
+            return _provider.TryGetMap(mapId, out MapDefinition definition) ? definition : null;
+        }
+
+        /// <summary>Gets all official maps ordered by authored sort order.</summary>
+        /// <returns>An immutable ordered map list.</returns>
+        public IReadOnlyList<MapDefinition> GetMaps()
+        {
+            var maps = new List<MapDefinition>();
+            if (_knownMaps != null)
+                maps.AddRange(_knownMaps);
+            maps.Sort((left, right) => left.SortOrder.CompareTo(right.SortOrder));
+            return maps.AsReadOnly();
         }
 
         /// <summary>按稳定 ID 获取剧情定义。</summary>

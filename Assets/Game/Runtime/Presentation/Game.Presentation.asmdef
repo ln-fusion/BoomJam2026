@@ -5,6 +5,8 @@
         "Game.Foundation",
         "Game.Contracts",
         "Game.Content",
+        "Game.Flow",
+        "Game.Story",
         "Unity.Localization",
         "Unity.ResourceManager"
     ],

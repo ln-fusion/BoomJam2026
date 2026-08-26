@@ -3,6 +3,7 @@ using System.Globalization;
 using System.Threading;
 using System.Threading.Tasks;
 using Game.Contracts;
+using Game.Foundation;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -53,7 +54,8 @@ namespace Game.Presentation
             MetaPageId restoredPage = _router.Restore(_runtimeServices.CurrentProfile == null
                 ? "map" : _runtimeServices.CurrentProfile.LastMetaPageId);
             Render(new MetaHubViewModel(restoredPage,
-                _runtimeServices.CurrentProfile?.PlayerNickname ?? string.Empty));
+                _runtimeServices.CurrentProfile?.PlayerNickname ?? string.Empty,
+                "Chapter 01", _runtimeServices.Clock.LocalNow));
         }
 
         /// <summary>在编辑器导出临时预制体时创建默认壳层。</summary>
@@ -269,6 +271,36 @@ namespace Game.Presentation
             var text = UiFactory.CreateText("Placeholder", page.transform, Text(textKey), 32,
                 UiTheme.Muted);
             UiFactory.Stretch(text.rectTransform, new Vector2(32f, 32f));
+            text.raycastTarget = false;
+            if (name == "MapPageView")
+            {
+                var mapController = page.AddComponent<MetaMapInteractionController>();
+                mapController.BuildPreview();
+                var cardPanel = page.AddComponent<LevelCardPanel>();
+                cardPanel.BuildPreview();
+                for (int index = 0; index < 5; index++)
+                {
+                    Button nodeButton = UiFactory.CreateButton("MapNode_" + (index + 1),
+                        mapController.Content, "Node " + (index + 1));
+                    RectTransform nodeRect = nodeButton.GetComponent<RectTransform>();
+                    nodeRect.sizeDelta = new Vector2(180f, 64f);
+                    nodeRect.anchoredPosition = new Vector2(-480f + index * 240f, 0f);
+                    int selectedIndex = index;
+                    nodeButton.onClick.AddListener(() =>
+                    {
+                        mapController.FocusNode(selectedIndex);
+                        cardPanel.Show(null);
+                    });
+                }
+                Button storyButton = UiFactory.CreateButton("TestStory", page.transform, "Test Story");
+                RectTransform storyRect = storyButton.GetComponent<RectTransform>();
+                storyRect.anchorMin = new Vector2(0.04f, 0.84f);
+                storyRect.anchorMax = new Vector2(0.24f, 0.94f);
+                storyButton.onClick.AddListener(() =>
+                    _ = _runtimeServices.Flow.PlayStoryAsync(
+                        new StoryId("official.story.c06_branch"),
+                        StoryReturnTarget.ToMetaPage(MetaPageId.Map), CancellationToken.None));
+            }
             return page;
         }
 
@@ -451,14 +483,21 @@ namespace Game.Presentation
         public MetaPageId Page { get; }
         /// <summary>玩家昵称。</summary>
         public string Nickname { get; }
+        /// <summary>Current chapter placeholder shown until chapter content is available.</summary>
+        public string ChapterPlaceholder { get; }
+        /// <summary>Local time supplied by the application clock.</summary>
+        public DateTimeOffset LocalTime { get; }
 
         /// <summary>创建 MetaHub 模型。</summary>
         /// <param name="page">页面。</param>
         /// <param name="nickname">昵称。</param>
-        public MetaHubViewModel(MetaPageId page, string nickname)
+        public MetaHubViewModel(MetaPageId page, string nickname,
+            string chapterPlaceholder = "Chapter 01", DateTimeOffset? localTime = null)
         {
             Page = page;
             Nickname = nickname ?? string.Empty;
+            ChapterPlaceholder = chapterPlaceholder ?? string.Empty;
+            LocalTime = localTime ?? DateTimeOffset.Now;
         }
     }
 }
