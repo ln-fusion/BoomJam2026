@@ -10,36 +10,40 @@ namespace Game.Content
     /// </summary>
     public sealed class OfficialContentProvider : IContentProvider
     {
-        private readonly Dictionary<string, LevelDefinition> _levels =
-            new Dictionary<string, LevelDefinition>(StringComparer.Ordinal);
-        private readonly Dictionary<string, MapDefinition> _maps =
-            new Dictionary<string, MapDefinition>(StringComparer.Ordinal);
-        private readonly Dictionary<string, StoryDefinition> _stories =
-            new Dictionary<string, StoryDefinition>(StringComparer.Ordinal);
+        private readonly Dictionary<string, LevelDefinition> _levels = new Dictionary<string, LevelDefinition>(
+            StringComparer.Ordinal
+        );
+        private readonly Dictionary<string, MapDefinition> _maps = new Dictionary<string, MapDefinition>(
+            StringComparer.Ordinal
+        );
+        private readonly Dictionary<string, StoryDefinition> _stories = new Dictionary<string, StoryDefinition>(
+            StringComparer.Ordinal
+        );
 
         /// <summary>该提供者固定负责官方内容。</summary>
         public ContentSource Source => ContentSource.Official;
 
         /// <summary>当前索引中的官方关卡集合。</summary>
         public IReadOnlyCollection<LevelDefinition> Levels => _levels.Values;
+
         /// <summary>Current indexed official maps.</summary>
         public IReadOnlyCollection<MapDefinition> Maps => _maps.Values;
 
         /// <summary>从关卡和剧情定义集合创建官方内容提供者。</summary>
         /// <param name="levels">官方关卡定义集合。</param>
         /// <param name="stories">官方剧情定义集合。</param>
-        public OfficialContentProvider(IEnumerable<LevelDefinition> levels,
-            IEnumerable<StoryDefinition> stories)
-            : this(null, levels, stories)
-        {
-        }
+        public OfficialContentProvider(IEnumerable<LevelDefinition> levels, IEnumerable<StoryDefinition> stories)
+            : this(null, levels, stories) { }
 
         /// <summary>Creates an official provider from maps, levels and stories.</summary>
         /// <param name="maps">Official map definitions.</param>
         /// <param name="levels">Official level definitions.</param>
         /// <param name="stories">Official story definitions.</param>
-        public OfficialContentProvider(IEnumerable<MapDefinition> maps,
-            IEnumerable<LevelDefinition> levels, IEnumerable<StoryDefinition> stories)
+        public OfficialContentProvider(
+            IEnumerable<MapDefinition> maps,
+            IEnumerable<LevelDefinition> levels,
+            IEnumerable<StoryDefinition> stories
+        )
         {
             if (maps != null)
                 foreach (MapDefinition definition in maps)
@@ -55,11 +59,11 @@ namespace Game.Content
         /// <summary>从官方内容目录创建内容提供者。</summary>
         /// <param name="catalog">官方内容目录；为空时创建空提供者。</param>
         public OfficialContentProvider(OfficialContentCatalog catalog)
-            : this(catalog == null ? null : catalog.Maps,
-                   catalog == null ? null : catalog.Levels,
-                   catalog == null ? null : catalog.Stories)
-        {
-        }
+            : this(
+                catalog == null ? null : catalog.Maps,
+                catalog == null ? null : catalog.Levels,
+                catalog == null ? null : catalog.Stories
+            ) { }
 
         /// <summary>按稳定 ID 尝试获取官方关卡定义。</summary>
         /// <param name="levelId">关卡稳定标识。</param>
@@ -67,6 +71,8 @@ namespace Game.Content
         /// <returns>找到返回 true，否则返回 false。</returns>
         public bool TryGetLevel(LevelId levelId, out LevelDefinition definition)
         {
+            if (levelId == null)
+                throw new ArgumentNullException(nameof(levelId));
             return _levels.TryGetValue(levelId.Value, out definition);
         }
 
@@ -76,6 +82,8 @@ namespace Game.Content
         /// <returns>True when the map exists.</returns>
         public bool TryGetMap(MapId mapId, out MapDefinition definition)
         {
+            if (mapId == null)
+                throw new ArgumentNullException(nameof(mapId));
             return _maps.TryGetValue(mapId.Value, out definition);
         }
 
@@ -85,6 +93,8 @@ namespace Game.Content
         /// <returns>找到返回 true，否则返回 false。</returns>
         public bool TryGetStory(StoryId storyId, out StoryDefinition definition)
         {
+            if (storyId == null)
+                throw new ArgumentNullException(nameof(storyId));
             return _stories.TryGetValue(storyId.Value, out definition);
         }
 
