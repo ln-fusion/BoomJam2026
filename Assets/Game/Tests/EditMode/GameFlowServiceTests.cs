@@ -1,7 +1,10 @@
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Game.Contracts;
+using Game.Contracts.Persistence;
+using Game.Contracts.Progression;
 using Game.Flow;
 using Game.Foundation;
 using NUnit.Framework;
@@ -17,6 +20,8 @@ namespace Game.Tests.EditMode
         private DomainEventBus _eventBus;
         private IGameLogger _logger;
         private GameFlowService _flow;
+        private ProfileSave _profile;
+        private StoryCompletionCoordinator _coordinator;
 
         /// <summary>创建流转服务测试依赖。</summary>
         [SetUp]
@@ -25,7 +30,21 @@ namespace Game.Tests.EditMode
             _loader = new FakeSceneLoader();
             _eventBus = new DomainEventBus(NullLogger.Instance);
             _logger = new NullLogger(collectEntries: true);
-            _flow = new GameFlowService(_loader, new FixedClock(), _logger, _eventBus, SceneNames.StartMenu);
+            _profile = new ProfileSave();
+            _coordinator = new StoryCompletionCoordinator(
+                () => _profile,
+                (profile, reason, token) => Task.FromResult(SaveResult.Success()),
+                _eventBus,
+                NullLogger.Instance
+            );
+            _flow = new GameFlowService(
+                _loader,
+                new FixedClock(),
+                _logger,
+                _eventBus,
+                SceneNames.StartMenu,
+                _coordinator
+            );
         }
 
         /// <summary>释放流转服务。</summary>
@@ -123,6 +142,43 @@ namespace Game.Tests.EditMode
         private static void RunAsync(Func<Task> operation)
         {
             Task.Run(operation).GetAwaiter().GetResult();
+        }
+
+        /// <summary>验证首次进入关卡先播放关前剧情再进 Gameplay。</summary>
+        [Test]
+        public void EnterLevel_FirstTime_PlaysPreludeThenGameplay()
+        {
+            var level = new LevelId("official.level.test_01_01");
+            RunAsync(async () =>
+            {
+                await _flow.EnterLevelAsync(level, CancellationToken.None);
+            });
+
+            Assert.That(_loader.LoadedSceneNames, Does.Contain(SceneNames.Story));
+        }
+
+        /// <summary>验证关卡完成提交事实后播放关后剧情并返回地图。</summary>
+        [Test]
+        public void CompleteLevel_CommitsFact_ThenPlaysPostStory_ReturnsToMap()
+        {
+            var level = new LevelId("official.level.test_01_01");
+            RunAsync(async () =>
+            {
+                await _flow.EnterLevelAsync(level, CancellationToken.None);
+                // 首次进入先播放关前剧情，经路径进入 Gameplay
+                await _flow.EnterLevelAsync(level, CancellationToken.None);
+                await _flow.CompleteLevelAsync(level, CancellationToken.None);
+            });
+
+            // 关后剧情 → 返回地图，元界页面为目标
+            Assert.That(
+                _coordinator.IsCompleted(new StoryId("official.story.c06_branch")),
+                Is.True,
+                "完成事实应已提交"
+            );
+            Assert.That(_flow.LastStoryReturnTarget.HasValue, Is.True);
+            Assert.That(_flow.LastStoryReturnTarget.Value.Kind, Is.EqualTo(StoryReturnKind.MetaPage));
+            Assert.That(_flow.LastStoryReturnTarget.Value.MetaPage, Is.EqualTo(MetaPageId.Map));
         }
     }
 }

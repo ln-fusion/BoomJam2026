@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Game.Contracts;
+using Game.Contracts.Persistence;
+using Game.Contracts.Progression;
 using Game.Foundation;
 
 namespace Game.Flow
@@ -23,19 +25,24 @@ namespace Game.Flow
         private readonly IGameLogger _logger;
         private readonly IDomainEventBus _eventBus;
         private readonly string _startMenuSceneName;
+        private readonly IStoryCompletionCoordinator? _storyCompletion;
 
         private CancellationTokenScope? _activeScope;
         private bool _isNavigating;
         private bool _disposed;
         private MetaPageId _lastMetaPage = MetaPageId.Map;
         private StoryReturnTarget? _storyReturnTarget;
-        private readonly HashSet<string> _levelsWithPrelude = new HashSet<string>(StringComparer.Ordinal);
+        private LevelId? _currentLevel;
+        private const string TestStoryId = "official.story.c06_branch";
 
         /// <summary>当前场景生命周期的取消令牌（场景激活后有效，切换时被取消）.</summary>
         public CancellationToken ActiveSceneToken => _activeScope?.Token ?? CancellationToken.None;
 
         /// <summary>最近一次剧情返回目标（PlayStory 时记录，供返回路由使用）.</summary>
         public StoryReturnTarget? LastStoryReturnTarget => _storyReturnTarget;
+
+        /// <summary>最近一次进入的关卡稳定标识（关后流程返回地图前均有值）.</summary>
+        public LevelId? CurrentLevelId => _currentLevel;
 
         /// <summary>诊断用时钟实例.</summary>
         public IClock Clock => _clock;
@@ -48,12 +55,14 @@ namespace Game.Flow
         /// <param name="logger">日志；为 null 时静默</param>
         /// <param name="eventBus">事件总线</param>
         /// <param name="startMenuSceneName">开始菜单场景名，默认 <see cref="SceneNames.StartMenu"/></param>
+        /// <param name="storyCompletion">剧情完成事务协调器；为 null 时关后流程跳过提交。</param>
         public GameFlowService(
             ISceneLoader sceneLoader,
             IClock clock,
             IGameLogger? logger,
             IDomainEventBus eventBus,
-            string startMenuSceneName = SceneNames.StartMenu
+            string startMenuSceneName = SceneNames.StartMenu,
+            IStoryCompletionCoordinator? storyCompletion = null
         )
         {
             _sceneLoader = sceneLoader ?? throw new ArgumentNullException(nameof(sceneLoader));
@@ -61,6 +70,7 @@ namespace Game.Flow
             _logger = logger ?? NullLogger.Instance;
             _eventBus = eventBus ?? throw new ArgumentNullException(nameof(eventBus));
             _startMenuSceneName = startMenuSceneName;
+            _storyCompletion = storyCompletion;
         }
 
         /// <summary>进入开始菜单场景.</summary>
@@ -82,15 +92,48 @@ namespace Game.Flow
             return NavigateAsync(SceneNames.MetaHub, cancellationToken);
         }
 
-        /// <summary>进入指定关卡（C02 占位：直接进入 Gameplay；关前/关后剧情分支在 C15/C16 落地）.</summary>
-        /// <param name="levelId">目标关卡稳定标识；C02 占位实现尚未按关卡分流。</param>
+        /// <summary>
+        /// 进入指定关卡：剧情完成事实未提交时先播放关前剧情，已提交时直接进入占位关卡。
+        /// </summary>
+        /// <param name="levelId">目标关卡稳定标识。</param>
         /// <param name="cancellationToken">取消导航操作的令牌。</param>
         public Task EnterLevelAsync(LevelId levelId, CancellationToken cancellationToken)
         {
-            if (levelId != null && _levelsWithPrelude.Add(levelId.Value))
-                return PlayStoryAsync(new StoryId("official.story.c06_branch"),
-                    StoryReturnTarget.ToLevel(levelId), cancellationToken);
+            _currentLevel = levelId;
+            bool preludeDone =
+                _storyCompletion != null && levelId != null && _storyCompletion.IsCompleted(new StoryId(TestStoryId));
+            if (levelId != null && !preludeDone)
+                return PlayStoryAsync(new StoryId(TestStoryId), StoryReturnTarget.ToLevel(levelId), cancellationToken);
             return NavigateAsync(SceneNames.Gameplay, cancellationToken);
+        }
+
+        /// <summary>
+        /// 占位关卡完成后提交剧情完成事实并播放关后剧情，结束后返回地图。
+        /// </summary>
+        /// <param name="levelId">已完成的关卡稳定标识。</param>
+        /// <param name="cancellationToken">取消导航操作的令牌。</param>
+        public async Task CompleteLevelAsync(LevelId levelId, CancellationToken cancellationToken)
+        {
+            if (_storyCompletion != null)
+            {
+                var storyId = new StoryId(TestStoryId);
+                SaveResult result = await _storyCompletion.CommitCompletedAsync(storyId, cancellationToken);
+                if (!result.IsSuccess)
+                {
+                    _logger.LogError(
+                        LogContext.Empty,
+                        "[GameFlowService] 关后流程被阻断: 完成事实提交失败 " + result.Message
+                    );
+                    return;
+                }
+            }
+
+            // C16 占位：关后剧情复用测试剧情；正式 PostStoryId 在关卡数据契约阶段接入。
+            await PlayStoryAsync(
+                new StoryId(TestStoryId),
+                StoryReturnTarget.ToMetaPage(MetaPageId.Map),
+                cancellationToken
+            );
         }
 
         /// <summary>播放剧情并记录返回目标.</summary>

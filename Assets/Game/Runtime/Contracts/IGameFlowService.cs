@@ -26,10 +26,15 @@ namespace Game.Contracts
         /// <param name="cancellationToken">取消导航操作的令牌。</param>
         Task OpenMetaHubAsync(MetaPageId page, CancellationToken cancellationToken);
 
-        /// <summary>进入指定关卡；当前实现统一进入 Gameplay 占位场景。</summary>
+        /// <summary>进入指定关卡；首次进入播放关前剧情，再次进入直接进入。</summary>
         /// <param name="levelId">需要进入的关卡稳定标识。</param>
         /// <param name="cancellationToken">取消导航操作的令牌。</param>
         Task EnterLevelAsync(LevelId levelId, CancellationToken cancellationToken);
+
+        /// <summary>占位关卡完成后提交事实并播放关后剧情。</summary>
+        /// <param name="levelId">已完成的关卡稳定标识。</param>
+        /// <param name="cancellationToken">取消导航操作的令牌。</param>
+        Task CompleteLevelAsync(LevelId levelId, CancellationToken cancellationToken);
 
         /// <summary>播放剧情并定义返回目标.</summary>
         /// <param name="storyId">需要播放的剧情稳定标识。</param>
@@ -53,10 +58,13 @@ namespace Game.Contracts
     {
         /// <summary>地图页面。</summary>
         Map = 0,
+
         /// <summary>档案页面。</summary>
         Archive,
+
         /// <summary>人员页面。</summary>
         Character,
+
         /// <summary>休息室页面。</summary>
         Lounge,
     }

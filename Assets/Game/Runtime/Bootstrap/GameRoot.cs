@@ -2,14 +2,15 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Game.Content;
 using Game.Contracts;
 using Game.Contracts.Persistence;
-using Game.Content;
 using Game.Flow;
 using Game.Foundation;
 using Game.Persistence;
-using Game.Progression;
 using Game.Presentation;
+using Game.Progression;
+using Game.Story;
 using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.SceneManagement;
@@ -70,22 +71,49 @@ namespace Game.Bootstrap
             musicSource.outputAudioMixerGroup = musicGroup;
             sfxSource.outputAudioMixerGroup = sfxGroup;
             var audio = new UnityAudioService(audioMixer, null, musicSource, sfxSource);
-            _settingsService = new SettingsService(_saveRepository, audio, localization,
-                new UnityWindowSettingsApplier(), eventBus);
+            _settingsService = new SettingsService(
+                _saveRepository,
+                audio,
+                localization,
+                new UnityWindowSettingsApplier(),
+                eventBus
+            );
             var profileLifecycle = new ProfileLifecycleService(_saveRepository, clock);
+
+            var storyCompletion = new StoryCompletionCoordinator(
+                () => _runtimeServices?.CurrentProfile,
+                _saveRepository.SaveProfileAsync,
+                eventBus,
+                logger
+            );
+            var characters = new DefaultCharacterAssetRegistry(
+                OfficialTestMapCatalog.CreateCharacters(),
+                contentAssetRegistry == null ? null : new OfficialAssetResolver(contentAssetRegistry),
+                logger
+            );
 
             var flowService = new GameFlowService(
                 new UnitySceneLoader(),
                 clock,
                 logger,
                 eventBus,
-                startMenuSceneName
+                startMenuSceneName,
+                storyCompletion
             );
             _flowService = flowService;
 
-            _runtimeServices = new GameRuntimeServices(flowService, _settingsService, localization,
-                audio, profileLifecycle, new EmptyProgressQuery(), clock,
-                _saveRepository.SaveProfileAsync);
+            _runtimeServices = new GameRuntimeServices(
+                flowService,
+                _settingsService,
+                localization,
+                audio,
+                profileLifecycle,
+                new EmptyProgressQuery(),
+                clock,
+                _saveRepository.SaveProfileAsync,
+                characters,
+                storyCompletion
+            );
             _globalUiRoot = new GameObject("GlobalUi");
             DontDestroyOnLoad(_globalUiRoot);
             _globalCanvasLayer = _globalUiRoot.AddComponent<GlobalCanvasLayer>();
@@ -100,18 +128,19 @@ namespace Game.Bootstrap
         /// <param name="settingsService">设置服务。</param>
         /// <param name="localizationService">负责预加载 String Table 的本地化服务。</param>
         /// <param name="cancellationToken">启动生命周期令牌。</param>
-        private static async Task RunStartupAsync(GameFlowService flowService,
-            SettingsService settingsService, DefaultLocalizationService localizationService,
-            CancellationToken cancellationToken)
+        private static async Task RunStartupAsync(
+            GameFlowService flowService,
+            SettingsService settingsService,
+            DefaultLocalizationService localizationService,
+            CancellationToken cancellationToken
+        )
         {
             try
             {
-                Result localizationResult = await localizationService.InitializeAsync(
-                    cancellationToken);
+                Result localizationResult = await localizationService.InitializeAsync(cancellationToken);
                 if (!localizationResult.IsSuccess)
                 {
-                    Debug.LogError("Localization initialization failed: " +
-                        localizationResult.Message);
+                    Debug.LogError("Localization initialization failed: " + localizationResult.Message);
                     return;
                 }
 
@@ -138,8 +167,7 @@ namespace Game.Bootstrap
         private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
             if (_runtimeServices != null && _globalCanvasLayer != null)
-                SceneUiInstaller.Install(scene, _runtimeServices, _globalCanvasLayer,
-                    contentAssetRegistry);
+                SceneUiInstaller.Install(scene, _runtimeServices, _globalCanvasLayer, contentAssetRegistry);
         }
 
         /// <summary>销毁组合根时释放服务、取消启动并清理全局 UI。</summary>
