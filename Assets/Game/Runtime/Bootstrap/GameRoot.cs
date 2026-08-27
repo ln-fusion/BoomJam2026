@@ -49,6 +49,7 @@ namespace Game.Bootstrap
         private GameObject? _audioRoot;
         private CancellationTokenSource? _startupLifetime;
         private GameRuntimeServices? _runtimeServices;
+        private IDisposable? _sceneActivatedSubscription;
 
         /// <summary>创建组合根服务、全局 Canvas 并启动设置加载和开始菜单导航。</summary>
         private void Start()
@@ -120,6 +121,11 @@ namespace Game.Bootstrap
             _globalCanvasLayer.Initialize(_runtimeServices, contentAssetRegistry);
             SceneManager.sceneLoaded += OnSceneLoaded;
 
+            // 兜底安装：导航成功（哪怕场景已在场景列表中）也会发布 SceneActivatedEvent，
+            // 保证 Editor 中"已打开的功能场景"继承进 PlayMode 时（sceneLoaded 不触发）UI 仍被安装。
+            _sceneActivatedSubscription = eventBus.Subscribe<SceneActivatedEvent>(OnSceneActivated);
+            InstallUiForLoadedFeatureScenes();
+
             _ = RunStartupAsync(flowService, _settingsService, localization, _startupLifetime.Token);
         }
 
@@ -170,10 +176,39 @@ namespace Game.Bootstrap
                 SceneUiInstaller.Install(scene, _runtimeServices, _globalCanvasLayer, contentAssetRegistry);
         }
 
+        /// <summary>游戏流程发布场景激活事件后兜底安装 UI（幂等）。</summary>
+        /// <param name="sceneEvent">场景激活事件。</param>
+        private void OnSceneActivated(SceneActivatedEvent sceneEvent)
+        {
+            var scene = SceneManager.GetSceneByName(sceneEvent.SceneName);
+            if (_runtimeServices != null && _globalCanvasLayer != null && scene.IsValid() && scene.isLoaded)
+                SceneUiInstaller.Install(scene, _runtimeServices, _globalCanvasLayer, contentAssetRegistry);
+        }
+
+        /// <summary>
+        /// 启动时扫描已加载的功能场景并安装 UI。
+        /// Editor 中若功能场景已被打开（继承进 PlayMode），sceneLoaded 不会触发，
+        /// 此扫描保证这些场景的 UI 仍被安装。
+        /// </summary>
+        private void InstallUiForLoadedFeatureScenes()
+        {
+            if (_runtimeServices == null || _globalCanvasLayer == null)
+                return;
+
+            for (var i = 0; i < SceneManager.sceneCount; i++)
+            {
+                var scene = SceneManager.GetSceneAt(i);
+                if (scene.isLoaded && scene.name != SceneNames.Bootstrap)
+                    SceneUiInstaller.Install(scene, _runtimeServices, _globalCanvasLayer, contentAssetRegistry);
+            }
+        }
+
         /// <summary>销毁组合根时释放服务、取消启动并清理全局 UI。</summary>
         private void OnDestroy()
         {
             SceneManager.sceneLoaded -= OnSceneLoaded;
+            _sceneActivatedSubscription?.Dispose();
+            _sceneActivatedSubscription = null;
             _startupLifetime?.Cancel();
             _startupLifetime?.Dispose();
             _flowService?.Dispose();
