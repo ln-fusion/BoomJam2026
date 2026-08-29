@@ -111,8 +111,9 @@ namespace Game.Presentation
             _choicesRoot = new GameObject("Choices", typeof(RectTransform));
             _choicesRoot.transform.SetParent(panel.transform, false);
             var root = (RectTransform)_choicesRoot.transform;
-            root.anchorMin = new Vector2(0.04f, 0.04f);
-            root.anchorMax = new Vector2(0.68f, 0.2f);
+            // 选项区避开 Skip/History 按钮带, 放在正文区域以便垂直堆叠多个选项。
+            root.anchorMin = new Vector2(0.28f, 0.24f);
+            root.anchorMax = new Vector2(0.96f, 0.62f);
             root.offsetMin = root.offsetMax = Vector2.zero;
             _historyView = UiFactory
                 .CreatePanel("HistoryView", panel.transform, new Color(0.02f, 0.03f, 0.06f, 0.98f))
@@ -355,14 +356,20 @@ namespace Game.Presentation
             BuildPreview();
             ClearChoices();
             _continueAction = null;
-            _skipAction = null;
             _skipPending = false;
             _continue.gameObject.SetActive(false);
+            StopTyping();
+            _body.text = _fullText;
             _choiceAction = onChoice;
             if (choices == null)
                 return;
-            foreach (StoryChoiceView choice in choices)
+            // 逐项下排布：点锚定的父容器不会自动撑满宽度，必须显式给出全宽矩形,
+            // 否则按钮宽度为 0 而完全不可见、不可点击。
+            const float itemHeight = 48f;
+            const float itemGap = 10f;
+            for (int i = 0; i < choices.Count; i++)
             {
+                StoryChoiceView choice = choices[i];
                 if (choice == null)
                     continue;
                 Button button = UiFactory.CreateButton(
@@ -371,7 +378,12 @@ namespace Game.Presentation
                     Localize(choice.TextKey)
                 );
                 button.onClick.AddListener(() => _choiceAction?.Invoke(choice.ChoiceId));
-                button.GetComponent<RectTransform>().sizeDelta = new Vector2(0f, 42f);
+                RectTransform rect = button.GetComponent<RectTransform>();
+                rect.anchorMin = new Vector2(0f, 1f);
+                rect.anchorMax = new Vector2(1f, 1f);
+                rect.pivot = new Vector2(0.5f, 1f);
+                rect.sizeDelta = new Vector2(0f, itemHeight);
+                rect.anchoredPosition = new Vector2(0f, -i * (itemHeight + itemGap));
             }
         }
 
