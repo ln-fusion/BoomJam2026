@@ -1,8 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 using Game.Content;
 using Game.Contracts;
 using Game.Contracts.Content;
+using Game.Contracts.Persistence;
 using Game.Contracts.Story;
 using Game.Foundation;
 using Game.Story;
@@ -216,7 +219,7 @@ namespace Game.Presentation
                 RenderCurrentNode();
         }
 
-        /// <summary>剧情结束后按流程返回地图或进入占位关卡。</summary>
+        /// <summary>剧情结束后提交完成事实，再按流程返回地图或进入占位关卡。</summary>
         private void ReturnAfterStory()
         {
             if (_runtimeServices == null)
@@ -224,19 +227,32 @@ namespace Game.Presentation
             Game.Flow.GameFlowService flow = _runtimeServices.Flow as Game.Flow.GameFlowService;
             if (flow == null || !flow.LastStoryReturnTarget.HasValue)
                 return;
-            if (
-                flow.LastStoryReturnTarget.Value.Kind == StoryReturnKind.Level
-                && flow.LastStoryReturnTarget.Value.Level != null
-            )
-                _ = flow.EnterLevelAsync(
-                    flow.LastStoryReturnTarget.Value.Level,
-                    System.Threading.CancellationToken.None
+            _ = CompleteAndReturnAsync(flow);
+        }
+
+        /// <summary>提交剧情完成事实后再执行返回跳转；写档失败时阻断跳转供重试。</summary>
+        /// <param name="flow">应用流程服务。</param>
+        private async Task CompleteAndReturnAsync(Game.Flow.GameFlowService flow)
+        {
+            StorySnapshot finished = _runner.GetSnapshot();
+            if (finished != null && finished.IsCompleted)
+            {
+                SaveResult commit = await _runtimeServices.SaveStoryCompletedAsync(
+                    finished.StoryId,
+                    CancellationToken.None
                 );
-            else if (flow.LastStoryReturnTarget.Value.Kind == StoryReturnKind.MetaPage)
-                _ = flow.OpenMetaHubAsync(
-                    flow.LastStoryReturnTarget.Value.MetaPage,
-                    System.Threading.CancellationToken.None
-                );
+                if (!commit.IsSuccess)
+                {
+                    Debug.LogError("剧情完成事实提交失败, 返回跳转被阻断: " + commit.Message, this);
+                    return;
+                }
+            }
+
+            StoryReturnTarget target = flow.LastStoryReturnTarget.Value;
+            if (target.Kind == StoryReturnKind.Level && target.Level != null)
+                await flow.EnterLevelAsync(target.Level, CancellationToken.None);
+            else if (target.Kind == StoryReturnKind.MetaPage)
+                await flow.OpenMetaHubAsync(target.MetaPage, CancellationToken.None);
         }
     }
 }
