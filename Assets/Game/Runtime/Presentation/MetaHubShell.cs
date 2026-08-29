@@ -98,6 +98,9 @@ namespace Game.Presentation
                 _nicknameText.text = viewModel.Nickname;
             if (_router != null)
                 _router.Navigate(viewModel.Page);
+            // 路由到当前页时 Navigate 可能因页面未变而不触发 PageChanged,
+            // 因此显隐必须在渲染路径无条件应用, 否则预制体中全部激活的页面会叠加显示。
+            ApplyPageVisibility(viewModel.Page);
             UpdatePageText(viewModel.Page);
         }
 
@@ -356,11 +359,22 @@ namespace Game.Presentation
         /// <param name="page">当前页面。</param>
         private void OnPageChanged(MetaPageId page)
         {
-            _mapPage.SetActive(page == MetaPageId.Map);
-            _archivePage.SetActive(page == MetaPageId.Archive);
-            _characterPage.SetActive(page == MetaPageId.Character);
-            _loungePage.SetActive(page == MetaPageId.Lounge);
+            ApplyPageVisibility(page);
             UpdatePageText(page);
+        }
+
+        /// <summary>只点亮目标页面，其余页面隐藏。</summary>
+        /// <param name="page">需要显示的页面。</param>
+        private void ApplyPageVisibility(MetaPageId page)
+        {
+            if (_mapPage != null)
+                _mapPage.SetActive(page == MetaPageId.Map);
+            if (_archivePage != null)
+                _archivePage.SetActive(page == MetaPageId.Archive);
+            if (_characterPage != null)
+                _characterPage.SetActive(page == MetaPageId.Character);
+            if (_loungePage != null)
+                _loungePage.SetActive(page == MetaPageId.Lounge);
         }
 
         /// <summary>Locale 变化回调。</summary>
