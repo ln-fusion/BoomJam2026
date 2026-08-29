@@ -56,6 +56,8 @@ namespace Game.Presentation
             Render(new MetaHubViewModel(restoredPage,
                 _runtimeServices.CurrentProfile?.PlayerNickname ?? string.Empty,
                 "Chapter 01", _runtimeServices.Clock.LocalNow));
+            // 预制体与代码回退两条路径都在最终 _mapPage 上挂测试入口（一次性，受 _initialized 保护）。
+            BuildTestEntryButtons(_mapPage);
         }
 
         /// <summary>在编辑器导出临时预制体时创建默认壳层。</summary>
@@ -295,16 +297,33 @@ namespace Game.Presentation
                         cardPanel.Show(null);
                     });
                 }
-                Button storyButton = UiFactory.CreateButton("TestStory", page.transform, "Test Story");
-                RectTransform storyRect = storyButton.GetComponent<RectTransform>();
-                storyRect.anchorMin = new Vector2(0.04f, 0.84f);
-                storyRect.anchorMax = new Vector2(0.24f, 0.94f);
-                storyButton.onClick.AddListener(() =>
-                    _ = _runtimeServices.Flow.PlayStoryAsync(
-                        new StoryId("official.story.c06_branch"),
-                        StoryReturnTarget.ToMetaPage(MetaPageId.Map), CancellationToken.None));
             }
             return page;
+        }
+
+        /// <summary>在地图页生成测试入口按钮：播放测试剧情与走占位关卡流程。</summary>
+        /// <param name="mapPage">地图页容器；为 null 时不生成。</param>
+        private void BuildTestEntryButtons(GameObject mapPage)
+        {
+            if (mapPage == null)
+                return;
+            Button storyButton = UiFactory.CreateButton("TestStory", mapPage.transform, "Test Story");
+            RectTransform storyRect = storyButton.GetComponent<RectTransform>();
+            storyRect.anchorMin = new Vector2(0.04f, 0.84f);
+            storyRect.anchorMax = new Vector2(0.24f, 0.94f);
+            storyButton.onClick.AddListener(() =>
+                _ = _runtimeServices.Flow.PlayStoryAsync(
+                    new StoryId("official.story.c06_branch"),
+                    StoryReturnTarget.ToMetaPage(MetaPageId.Map),
+                    CancellationToken.None));
+            Button levelButton = UiFactory.CreateButton("TestLevel", mapPage.transform, "Test Level");
+            RectTransform levelRect = levelButton.GetComponent<RectTransform>();
+            levelRect.anchorMin = new Vector2(0.04f, 0.72f);
+            levelRect.anchorMax = new Vector2(0.24f, 0.82f);
+            levelButton.onClick.AddListener(() =>
+                _ = _runtimeServices.Flow.EnterLevelAsync(
+                    new LevelId("official.level.test_01_01"),
+                    CancellationToken.None));
         }
 
         /// <summary>添加底部页面导航按钮。</summary>
