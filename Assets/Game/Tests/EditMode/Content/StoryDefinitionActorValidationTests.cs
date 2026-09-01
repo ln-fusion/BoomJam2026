@@ -107,6 +107,57 @@ namespace Game.Tests.EditMode.Content
             Assert.That(StoryDefinitionValidator.TryValidate(story, new[] { Hani }, out _), Is.False);
         }
 
+        /// <summary>验证本地化键谓词存在时，缺失键的对白被拒绝。</summary>
+        [Test]
+        public void TryValidate_MissingLocalizationKey_Fails()
+        {
+            StoryDefinition story = Story(
+                new StoryNodeDefinition
+                {
+                    NodeId = "start",
+                    Type = StoryNodeType.Dialogue,
+                    TextKey = "story.missing",
+                    NextNodeId = "end",
+                }
+            );
+
+            bool valid = StoryDefinitionValidator.TryValidate(
+                story,
+                null,
+                null,
+                key => key == "story.existing",
+                out string error
+            );
+
+            Assert.That(valid, Is.False, error);
+            StringAssert.Contains("story.missing", error);
+        }
+
+        /// <summary>验证本地化键谓词存在时，键存在则通过，键缺失拒绝；谓词为 null 时不校验。</summary>
+        [Test]
+        public void TryValidate_LocalizationKeyPredicate_RespectsKeys()
+        {
+            StoryDefinition story = Story(
+                new StoryNodeDefinition
+                {
+                    NodeId = "start",
+                    Type = StoryNodeType.Dialogue,
+                    TextKey = "story.existing",
+                    NextNodeId = "end",
+                }
+            );
+
+            Assert.That(
+                StoryDefinitionValidator.TryValidate(story, null, null, key => key == "story.existing", out _),
+                Is.True
+            );
+            Assert.That(
+                StoryDefinitionValidator.TryValidate(story, null, null, null, out _),
+                Is.True,
+                "谓词为 null 时不校验本地化键"
+            );
+        }
+
         /// <summary>创建包含 start 与 end 的剧情。</summary>
         /// <param name="start">起始节点。</param>
         /// <returns>剧情定义。</returns>

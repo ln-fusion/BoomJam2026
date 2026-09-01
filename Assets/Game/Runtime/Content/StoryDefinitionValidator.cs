@@ -45,6 +45,26 @@ namespace Game.Content
             out string error
         )
         {
+            return TryValidate(definition, characters, assetExists, null, out error);
+        }
+
+        /// <summary>
+        /// Validates a story definition with character references, asset and localization key predicates.
+        /// </summary>
+        /// <param name="definition">Story definition to validate.</param>
+        /// <param name="characters">Known characters; optional, enables speaker/appearance checks.</param>
+        /// <param name="assetExists">Asset existence predicate; null skips existence checks.</param>
+        /// <param name="localizationKeyExists">Localization key existence predicate; null skips key checks.</param>
+        /// <param name="error">Failure diagnostic, or null when valid.</param>
+        /// <returns>True when the definition is valid.</returns>
+        public static bool TryValidate(
+            StoryDefinition definition,
+            IReadOnlyCollection<CharacterDefinition> characters,
+            Func<string, bool> assetExists,
+            Func<string, bool> localizationKeyExists,
+            out string error
+        )
+        {
             error = null;
             if (
                 definition == null
@@ -145,6 +165,19 @@ namespace Game.Content
                         return Fail("Background asset does not exist: " + node.BackgroundId, out error);
                     if (node.Type == StoryNodeType.PlayAudio && !assetExists(node.AudioId))
                         return Fail("Audio asset does not exist: " + node.AudioId, out error);
+                }
+                if (localizationKeyExists != null)
+                {
+                    if (node.Type == StoryNodeType.Dialogue && !localizationKeyExists(node.TextKey))
+                        return Fail("Dialogue localization key does not exist: " + node.TextKey, out error);
+                    if (
+                        node.Type == StoryNodeType.Choice
+                        && node.Choices != null
+                        && !node.Choices.TrueForAll(c => localizationKeyExists(c.TextKey))
+                    )
+                        return Fail("Choice localization key does not exist: " + node.Choices[0].TextKey, out error);
+                    if (!string.IsNullOrWhiteSpace(node.SpeakerKey) && !localizationKeyExists(node.SpeakerKey))
+                        return Fail("Speaker localization key does not exist: " + node.SpeakerKey, out error);
                 }
             }
             return true;
