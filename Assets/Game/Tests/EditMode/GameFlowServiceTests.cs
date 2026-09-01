@@ -180,5 +180,58 @@ namespace Game.Tests.EditMode
             Assert.That(_flow.LastStoryReturnTarget.Value.Kind, Is.EqualTo(StoryReturnKind.MetaPage));
             Assert.That(_flow.LastStoryReturnTarget.Value.MetaPage, Is.EqualTo(MetaPageId.Map));
         }
+
+        /// <summary>验证关卡完成时把关卡 ID 写入 CompletedLevelIds 并以 ProgressCommitted 保存。</summary>
+        [Test]
+        public void CompleteLevel_WritesLevelFact_ToProfile()
+        {
+            var level = new LevelId("official.level.test_01_01");
+            var saves = new System.Collections.Generic.List<SaveReason>();
+            var profile = new ProfileSave();
+            ProfileSave captured = null;
+            var flow = new GameFlowService(
+                _loader,
+                new FixedClock(),
+                _logger,
+                _eventBus,
+                SceneNames.StartMenu,
+                null,
+                () => profile,
+                (data, reason, token) =>
+                {
+                    saves.Add(reason);
+                    captured = data;
+                    return Task.FromResult(SaveResult.Success());
+                }
+            );
+            RunAsync(() => flow.CompleteLevelAsync(level, CancellationToken.None));
+
+            Assert.That(profile.CompletedLevelIds, Does.Contain(level.Value));
+            Assert.That(saves, Does.Contain(SaveReason.ProgressCommitted));
+            Assert.That(captured, Is.SameAs(profile), "保存委托应收到同一份 Profile 引用");
+            flow.Dispose();
+        }
+
+        /// <summary>验证保存失败时关卡完成事实回滚, 可重试且不阻断流程判断。</summary>
+        [Test]
+        public void CompleteLevel_SaveFailure_RollsBackLevelFact()
+        {
+            var level = new LevelId("official.level.test_01_01");
+            var profile = new ProfileSave();
+            var flow = new GameFlowService(
+                _loader,
+                new FixedClock(),
+                _logger,
+                _eventBus,
+                SceneNames.StartMenu,
+                null,
+                () => profile,
+                (data, reason, token) => Task.FromResult(SaveResult.Failure(ErrorCode.SaveFailed, "disk error"))
+            );
+            RunAsync(() => flow.CompleteLevelAsync(level, CancellationToken.None));
+
+            Assert.That(profile.CompletedLevelIds, Does.Not.Contain(level.Value), "失败时不应残留内存标记");
+            flow.Dispose();
+        }
     }
 }
