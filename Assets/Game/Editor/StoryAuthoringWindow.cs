@@ -363,17 +363,28 @@ namespace Game.Editor
         {
             if (_definition == null)
                 return;
-            if (!Game.Content.StoryDefinitionValidator.TryValidate(_definition, null, AssetExists, out string error))
+            if (
+                !Game.Content.StoryDefinitionValidator.TryValidate(
+                    _definition,
+                    null,
+                    AssetExists,
+                    LocalizationKeyExists,
+                    out string error
+                )
+            )
             {
                 EditorUtility.DisplayDialog("Story Compile", error, "OK");
                 return;
             }
-            string folder = Path.Combine(Application.dataPath, "Game/Content/Generated");
+            // 编译产物写入 Resources/StoryRuntime: 与运行时 GeneratedStoryLoader.ReadAll 一致,
+            // 且 Resources 目录随构建打包, 可被游戏运行时读取。
+            string folder = Path.Combine(Application.dataPath, "Game/Resources/StoryRuntime");
             Directory.CreateDirectory(folder);
             string target = Path.Combine(folder, _definition.StoryId + ".story.runtime.json");
-            RefreshJson();
+            // 写信封而非裸 JSON: 内含 formatVersion 与源摘要, 读取端兼容旧格式。
+            string json = Game.Content.StoryRuntimeSerializer.SerializeEnvelope(_definition);
             string temp = target + ".tmp";
-            File.WriteAllText(temp, _json);
+            File.WriteAllText(temp, json);
             if (File.Exists(target))
                 File.Delete(target);
             File.Move(temp, target);
@@ -383,20 +394,62 @@ namespace Game.Editor
         /// <summary>刷新窗口内 JSON 预览。</summary>
         private void RefreshJson() => _json = JsonUtility.ToJson(_definition, true);
 
-        /// <summary>检查资源稳定 ID 是否存在于第一个 ContentAssetRegistry 资源中。</summary>
+        /// <summary>
+        /// 检查资源稳定 ID 是否已登记: 优先使用 00_Bootstrap GameRoot 引用的 Registry,
+        /// 读不到时合并全部 ContentAssetRegistry 资产, 重复 ID 仅警告一次。
+        /// </summary>
         /// <param name="id">资源稳定标识。</param>
-        /// <returns>存在时为 true；未找到 Registry 时返回 false。</returns>
+        /// <returns>存在时为 true; 未找到任何 Registry 时返回 false。</returns>
         private static bool AssetExists(string id)
         {
             if (string.IsNullOrWhiteSpace(id))
                 return false;
+            Game.Content.ContentAssetRegistry gameRootRegistry = FindGameRootRegistry();
+            if (gameRootRegistry != null)
+                return ContainsId(gameRootRegistry, id);
             string[] guids = AssetDatabase.FindAssets("t:ContentAssetRegistry");
             if (guids.Length == 0)
                 return false;
-            string path = AssetDatabase.GUIDToAssetPath(guids[0]);
-            var registry = AssetDatabase.LoadAssetAtPath<Game.Content.ContentAssetRegistry>(path);
-            if (registry == null)
-                return false;
+            bool duplicateWarned = false;
+            foreach (string guid in guids)
+            {
+                string path = AssetDatabase.GUIDToAssetPath(guid);
+                var registry = AssetDatabase.LoadAssetAtPath<Game.Content.ContentAssetRegistry>(path);
+                if (registry == null)
+                    continue;
+                if (!duplicateWarned && guids.Length > 1)
+                {
+                    duplicateWarned = true;
+                    Debug.LogWarning(
+                        "[StoryCompiler] 未找到 GameRoot 引用的 Registry, 回退合并扫描 "
+                            + guids.Length
+                            + " 个 Registry 资产; 建议在 GameRoot 上显式指派 Content Asset Registry。"
+                    );
+                }
+                if (ContainsId(registry, id))
+                    return true;
+            }
+            return false;
+        }
+
+        /// <summary>从当前 00_Bootstrap 场景的 GameRoot 读取序列化的资源 Registry。</summary>
+        /// <returns>GameRoot 引用的 Registry; 未找到 GameRoot 或其引用为空时返回 null。</returns>
+        private static Game.Content.ContentAssetRegistry FindGameRootRegistry()
+        {
+            Game.Bootstrap.GameRoot root = FindObjectOfType<Game.Bootstrap.GameRoot>();
+            if (root == null)
+                return null;
+            var serialized = new SerializedObject(root);
+            SerializedProperty property = serialized.FindProperty("contentAssetRegistry");
+            return property?.objectReferenceValue as Game.Content.ContentAssetRegistry;
+        }
+
+        /// <summary>检查单个 Registry 是否包含指定精灵或音频稳定 ID。</summary>
+        /// <param name="registry">目标 Registry。</param>
+        /// <param name="id">资源稳定标识。</param>
+        /// <returns>包含时为 true。</returns>
+        private static bool ContainsId(Game.Content.ContentAssetRegistry registry, string id)
+        {
             return HasSprite(registry.Sprites, id) || HasAudio(registry.AudioClips, id);
         }
 
@@ -432,6 +485,30 @@ namespace Game.Editor
                 if (entry != null && string.Equals(entry.Id, id, StringComparison.Ordinal))
                     return true;
             return false;
+        }
+
+        /// <summary>
+        /// 检查本地化键是否存在于项目 UI String Table。
+        /// 本地化资产未生成或表未找到时不阻断（返回 true），避免本地化未导入时影响剧情编译。
+        /// </summary>
+        /// <param name="key">本地化键。</param>
+        /// <returns>键存在于 UI 表时为 true；表缺失时不阻断返回 true。</returns>
+        private static bool LocalizationKeyExists(string key)
+        {
+            if (string.IsNullOrWhiteSpace(key))
+                return false;
+            try
+            {
+                UnityEditor.Localization.StringTableCollection collection =
+                    UnityEditor.Localization.LocalizationEditorSettings.GetStringTableCollection("UI");
+                if (collection == null || collection.SharedData == null)
+                    return true;
+                return collection.SharedData.GetEntry(key) != null;
+            }
+            catch (Exception)
+            {
+                return true;
+            }
         }
     }
 }
