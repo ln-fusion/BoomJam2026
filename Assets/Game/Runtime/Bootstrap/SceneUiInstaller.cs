@@ -158,5 +158,8 @@ namespace Game.Bootstrap
 
         /// <summary>设置弹窗预制体。</summary>
         public const string SettingsModal = "ui.settings-modal";
+
+        /// <summary>剧情对白面板预制体。</summary>
+        public const string StoryPanel = "ui.story-panel";
     }
 }

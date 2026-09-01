@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Game.Contracts;
@@ -7,6 +8,7 @@ using Game.Contracts.Persistence;
 using Game.Contracts.Progression;
 using Game.Foundation;
 using Game.Story;
+using UnityEngine;
 
 namespace Game.Presentation
 {
@@ -44,6 +46,19 @@ namespace Game.Presentation
 
         /// <summary>当前角色形象查询与立绘资源注册表。</summary>
         public ICharacterAppearanceQuery Characters { get; }
+
+        /// <summary>当前立绘资源注册表（与 Characters 同源，避免向下转型）。</summary>
+        public ICharacterAssetRegistry CharacterAssets { get; }
+
+        /// <summary>当前官方资源解析器；可为 null。</summary>
+        public IAssetResolver Assets { get; private set; }
+
+        /// <summary>剧情面板预制体资源；可为 null 时回退代码生成。</summary>
+        public GameObject StoryPrefab { get; private set; }
+
+        /// <summary>编辑器编译产出的 Generated 剧情集合；加载时优先于测试剧情。</summary>
+        public IReadOnlyDictionary<string, StoryDefinition> GeneratedStories { get; private set; } =
+            new Dictionary<string, StoryDefinition>();
 
         /// <summary>当前剧情完成事务协调器。</summary>
         public IStoryCompletionCoordinator StoryCompletion { get; }
@@ -83,7 +98,29 @@ namespace Game.Presentation
             Clock = clock ?? throw new ArgumentNullException(nameof(clock));
             _saveProfileAsync = saveProfileAsync ?? throw new ArgumentNullException(nameof(saveProfileAsync));
             Characters = characters ?? new DefaultCharacterAssetRegistry(null);
+            CharacterAssets = Characters as ICharacterAssetRegistry;
             StoryCompletion = storyCompletion;
+        }
+
+        /// <summary>把官方资源解析器注入演出资源源。</summary>
+        /// <param name="assetResolver">官方资源解析器；可为 null。</param>
+        public void SetAssetResolver(IAssetResolver assetResolver)
+        {
+            Assets = assetResolver;
+        }
+
+        /// <summary>设置剧情面板预制体资源；为 null 时回退代码生成。</summary>
+        /// <param name="prefab">剧情面板预制体。</param>
+        public void SetStoryPrefab(GameObject prefab)
+        {
+            StoryPrefab = prefab;
+        }
+
+        /// <summary>注入编辑器编译产出的 Generated 剧情集合。</summary>
+        /// <param name="stories">按 StoryId 索引的剧情定义。</param>
+        public void SetGeneratedStories(IReadOnlyDictionary<string, StoryDefinition> stories)
+        {
+            GeneratedStories = stories ?? new Dictionary<string, StoryDefinition>();
         }
 
         /// <summary>设置当前档案引用，供开始菜单和 MetaHub 读取。</summary>
