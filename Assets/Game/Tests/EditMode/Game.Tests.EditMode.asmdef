@@ -11,6 +11,8 @@
         "Game.Progression",
         "Game.Meta",
         "Game.Presentation",
+        "Game.Gameplay",
+        "Game.Editor.Level",
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner"
     ],
