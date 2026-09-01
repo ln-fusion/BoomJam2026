@@ -133,10 +133,12 @@ namespace Game.Contracts.Content
     }
 
     /// <summary>
-    /// 运行时关卡定义的最小数据模型。
+    /// 运行时关卡定义。
     /// </summary>
     /// <remarks>
-    /// 当前 C04/C05 阶段只保存关卡目录和显示所需字段，玩法实体数据会在后续关卡编辑器阶段扩展。
+    /// C04/C05 只保存关卡目录与显示字段; C19 起追加关卡玩法数据
+    /// （物理、世界边界、对象、部署区、能力白名单、胜负条件），
+    /// 字段以 JsonUtility 可序列化的原始类型承载。
     /// </remarks>
     [Serializable]
     public sealed class LevelDefinition
@@ -159,6 +161,45 @@ namespace Game.Contracts.Content
         /// <summary>Unlock rule copied into the level summary.</summary>
         public UnlockRequirementData UnlockRequirement;
 
+        /// <summary>部署方案容量上限; 0 表示未配置（C23 生效）。</summary>
+        public int CapacityLimit;
+
+        /// <summary>关卡物理配置文件; 未配置时使用项目预设。</summary>
+        public PhysicsProfileData PhysicsProfile;
+
+        /// <summary>关卡世界边界矩形; 用于越界判定。</summary>
+        public BoundsData WorldBounds;
+
+        /// <summary>允许玩家部署能力框的多边形区域集合。</summary>
+        public List<ZoneData> DeployableZones = new List<ZoneData>();
+
+        /// <summary>禁止玩家部署能力框的多边形区域集合。</summary>
+        public List<ZoneData> ForbiddenZones = new List<ZoneData>();
+
+        /// <summary>小车/角色出生点。恰好一个起点由编辑器校验。</summary>
+        public SpawnPointData StartPoint;
+
+        /// <summary>终点区域; 恰好一个终点由编辑器校验。</summary>
+        public GoalPointData GoalPoint;
+
+        /// <summary>官方静态对象集合, 只保存 PrefabId、稳定对象 ID 与变换。</summary>
+        public List<StageObjectData> Objects = new List<StageObjectData>();
+
+        /// <summary>关卡允许的角色/能力框白名单。</summary>
+        public List<AllowedAbilityData> AllowedAbilities = new List<AllowedAbilityData>();
+
+        /// <summary>成功条件集合; 默认 All 语义。</summary>
+        public List<ConditionData> SuccessConditions = new List<ConditionData>();
+
+        /// <summary>失败条件集合; 默认 Any 语义。</summary>
+        public List<ConditionData> FailureConditions = new List<ConditionData>();
+
+        /// <summary>进入关卡前播放的剧情稳定 ID; 为空表示不播放。</summary>
+        public string PreStoryId;
+
+        /// <summary>关卡结束后播放的剧情稳定 ID; 为空表示不播放。</summary>
+        public string PostStoryId;
+
         /// <summary>由完整定义派生的关卡选择摘要。</summary>
         public LevelSummary Summary =>
             new LevelSummary
@@ -169,6 +210,231 @@ namespace Game.Contracts.Content
                 SortOrder = SortOrder,
                 UnlockRequirement = UnlockRequirement,
             };
+    }
+
+    /// <summary>
+    /// 关卡物理配置参数, 参与物理复现性哈希计算。
+    /// </summary>
+    [Serializable]
+    public sealed class PhysicsProfileData
+    {
+        /// <summary>重力加速度 Y 值。</summary>
+        public float GravityY = -9.81f;
+
+        /// <summary>速度迭代次数。</summary>
+        public int VelocityIterations = 8;
+
+        /// <summary>位置迭代次数。</summary>
+        public int PositionIterations = 3;
+
+        /// <summary>接触偏移量; 单位为世界单位。</summary>
+        public float ContactOffset = 0.01f;
+    }
+
+    /// <summary>
+    /// 世界边界或任意矩形区域数据; 以 Min/Max 角点表示。
+    /// </summary>
+    [Serializable]
+    public sealed class BoundsData
+    {
+        /// <summary>最小 X; 必须小于 <see cref="MaxX"/>。</summary>
+        public float MinX;
+
+        /// <summary>最小 Y; 必须小于 <see cref="MaxY"/>。</summary>
+        public float MinY;
+
+        /// <summary>最大 X。</summary>
+        public float MaxX;
+
+        /// <summary>最大 Y。</summary>
+        public float MaxY;
+    }
+
+    /// <summary>
+    /// 二维空间点数据（世界坐标）。
+    /// </summary>
+    [Serializable]
+    public sealed class PointData
+    {
+        /// <summary>X 坐标。</summary>
+        public float X;
+
+        /// <summary>Y 坐标。</summary>
+        public float Y;
+    }
+
+    /// <summary>
+    /// 多边形区域数据; 矩形区域也表达为四个顶点。
+    /// </summary>
+    [Serializable]
+    public sealed class ZoneData
+    {
+        /// <summary>区域稳定标识; 区域内唯一。</summary>
+        public string ZoneId;
+
+        /// <summary>按逆时针顺序排列的多边形顶点。</summary>
+        public List<PointData> Vertices = new List<PointData>();
+    }
+
+    /// <summary>
+    /// 关卡静态对象数据; 只保存 PrefabId、稳定对象 ID 与变换及白名单参数。
+    /// </summary>
+    [Serializable]
+    public sealed class StageObjectData
+    {
+        /// <summary>对象稳定标识; 关卡内唯一且保持不变。</summary>
+        public string ObjectId;
+
+        /// <summary>预制体资源稳定标识。</summary>
+        public string PrefabId;
+
+        /// <summary>世界 X 坐标。</summary>
+        public float PositionX;
+
+        /// <summary>世界 Y 坐标。</summary>
+        public float PositionY;
+
+        /// <summary>绕 Z 轴旋转角度（度）。</summary>
+        public float RotationZ;
+
+        /// <summary>X 缩放。</summary>
+        public float ScaleX = 1f;
+
+        /// <summary>Y 缩放。</summary>
+        public float ScaleY = 1f;
+
+        /// <summary>白名单参数; 数值/枚举以字符串承载。</summary>
+        public List<ParameterData> Parameters = new List<ParameterData>();
+    }
+
+    /// <summary>
+    /// 对象白名单参数键值对。
+    /// </summary>
+    [Serializable]
+    public sealed class ParameterData
+    {
+        /// <summary>参数键。</summary>
+        public string Key;
+
+        /// <summary>参数值; 以字符串承载, 由白名单校验解释。</summary>
+        public string Value;
+    }
+
+    /// <summary>
+    /// 关卡出生点数据。
+    /// </summary>
+    [Serializable]
+    public sealed class SpawnPointData
+    {
+        /// <summary>世界 X 坐标。</summary>
+        public float PositionX;
+
+        /// <summary>世界 Y 坐标。</summary>
+        public float PositionY;
+
+        /// <summary>初始朝向角（度）。</summary>
+        public float RotationZ;
+    }
+
+    /// <summary>
+    /// 关卡终点目标区域数据。
+    /// </summary>
+    [Serializable]
+    public sealed class GoalPointData
+    {
+        /// <summary>目标区域中心 X 坐标。</summary>
+        public float PositionX;
+
+        /// <summary>目标区域中心 Y 坐标。</summary>
+        public float PositionY;
+
+        /// <summary>目标区域宽度; 大于 0。</summary>
+        public float Width = 1f;
+
+        /// <summary>目标区域高度; 大于 0。</summary>
+        public float Height = 1f;
+    }
+
+    /// <summary>
+    /// 关卡允许的一种能力; 包含角色要求与可选尺寸。
+    /// </summary>
+    [Serializable]
+    public sealed class AllowedAbilityData
+    {
+        /// <summary>允许使用该能力的角色稳定标识。</summary>
+        public string CharacterId;
+
+        /// <summary>能力类型稳定标识。</summary>
+        public string AbilityTypeId;
+
+        /// <summary>关卡允许的尺寸选项集合。</summary>
+        public List<AbilitySizeOptionData> SizeOptions = new List<AbilitySizeOptionData>();
+    }
+
+    /// <summary>
+    /// 尺寸选项数据; 描述某能力一个可选尺寸及其容量费用。
+    /// </summary>
+    [Serializable]
+    public sealed class AbilitySizeOptionData
+    {
+        /// <summary>尺寸选项稳定标识。</summary>
+        public string SizeOptionId;
+
+        /// <summary>宽度; 大于 0。</summary>
+        public float Width = 1f;
+
+        /// <summary>高度; 大于 0。</summary>
+        public float Height = 1f;
+
+        /// <summary>容量费用; 非负。</summary>
+        public int CapacityCost;
+
+        /// <summary>效果优先级; 越大越优先。</summary>
+        public int EffectPriority;
+    }
+
+    /// <summary>
+    /// 条件匹配语义; 成功条件默认 All, 失败条件默认 Any。
+    /// </summary>
+    public enum MatchMode
+    {
+        /// <summary>所有子条件都满足才算命中。</summary>
+        All,
+
+        /// <summary>任一子条件满足即命中。</summary>
+        Any,
+    }
+
+    /// <summary>
+    /// 胜负条件数据; 由条件库按 ConditionTypeId 解释参数。
+    /// </summary>
+    [Serializable]
+    public sealed class ConditionData
+    {
+        /// <summary>条件类型稳定标识; 对应条件库中的类型。</summary>
+        public string ConditionTypeId;
+
+        /// <summary>条件参数集合。</summary>
+        public List<ConditionParameterData> Parameters = new List<ConditionParameterData>();
+
+        /// <summary>多子条件的匹配语义。</summary>
+        public MatchMode MatchMode = MatchMode.All;
+
+        /// <summary>同一 Tick 内成功与失败同时命中时的优先级; 越小越优先。</summary>
+        public int OutcomePriority;
+    }
+
+    /// <summary>
+    /// 条件参数键值对。
+    /// </summary>
+    [Serializable]
+    public sealed class ConditionParameterData
+    {
+        /// <summary>参数键。</summary>
+        public string Key;
+
+        /// <summary>参数值; 以字符串承载, 由条件库解释。</summary>
+        public string Value;
     }
 
     /// <summary>
