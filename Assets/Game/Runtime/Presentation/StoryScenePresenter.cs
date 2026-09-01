@@ -31,6 +31,14 @@ namespace Game.Presentation
             var provider = OfficialTestMapCatalog.CreateProvider();
             _runner = new StoryRunner(id =>
             {
+                // Generated 剧情优先, 其后才是官方测试目录中的剧情。
+                if (_runtimeServices != null)
+                {
+                    if (_runtimeServices.GeneratedStories.TryGetValue(id.Value, out StoryDefinition generated))
+                        return generated;
+                    if (provider.TryGetStory(id, out StoryDefinition official))
+                        return official;
+                }
                 provider.TryGetStory(id, out StoryDefinition definition);
                 return definition;
             });
@@ -43,8 +51,43 @@ namespace Game.Presentation
             _localization = runtimeServices == null ? null : runtimeServices.Localization;
             if (_localization != null)
                 _panel.SetLocalization(_localization);
-            _runner.Start(new StoryId(TestStoryId));
+            TryBindStoryPrefab();
+            if (runtimeServices != null && runtimeServices.Assets != null)
+            {
+                var stageSource = new StoryAssetSource(runtimeServices.Assets);
+                _panel.SetStageAssetSource(stageSource);
+            }
+            StoryId storyId = ResolveStoryId();
+            _runner.Start(storyId);
             RenderCurrentNode();
+        }
+
+        /// <summary>解析本次播放的剧情 ID: 优先 Flow 记录, 否则回退测试剧情。</summary>
+        /// <returns>剧情稳定标识。</returns>
+        private StoryId ResolveStoryId()
+        {
+            Game.Flow.GameFlowService flow = _runtimeServices?.Flow as Game.Flow.GameFlowService;
+            return flow?.CurrentStoryId ?? new StoryId(TestStoryId);
+        }
+
+        /// <summary>尝试绑定剧情面板预制体；缺失时回退代码生成。</summary>
+        private void TryBindStoryPrefab()
+        {
+            GameObject prefab = _runtimeServices?.StoryPrefab;
+            if (prefab == null)
+                return;
+            GameObject instance = Instantiate(prefab, _panel.transform, false);
+            StoryUiBindings bindings = instance.GetComponent<StoryUiBindings>();
+            if (bindings == null)
+            {
+                Debug.LogWarning(
+                    "[StoryScenePresenter] ui.story-panel 预制体缺少 StoryUiBindings, 回退代码生成界面。",
+                    this
+                );
+                Destroy(instance);
+                return;
+            }
+            _panel.BindFromPrefab(bindings);
         }
 
         /// <summary>每帧同步设置弹窗对剧情输入的阻塞状态。</summary>
@@ -168,7 +211,8 @@ namespace Game.Presentation
                 : new AppearanceId(node.AppearanceOverride);
             if (appearance == null)
                 return null;
-            ICharacterAssetRegistry registry = _runtimeServices.Characters as ICharacterAssetRegistry;
+            // 通过直持的注册表解析, 避免 Characters as ICharacterAssetRegistry 向下转型。
+            ICharacterAssetRegistry registry = _runtimeServices.CharacterAssets;
             return registry == null ? null : registry.GetPortrait(characterId, appearance, null);
         }
 

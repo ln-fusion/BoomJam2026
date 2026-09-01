@@ -17,7 +17,6 @@ namespace Game.Presentation
     {
         private Text _speaker;
         private Text _body;
-        private Image _portrait;
         private Image _background;
         private Image _effect;
         private Button _continue;
@@ -26,6 +25,7 @@ namespace Game.Presentation
         private Action<ChoiceId> _choiceAction;
         private Action _skipAction;
         private Button _skipButton;
+        private Button _historyButton;
         private bool _skipPending;
         private bool _inputBlocked;
         private Coroutine _typingCoroutine;
@@ -37,11 +37,57 @@ namespace Game.Presentation
         private GameObject _historyView;
         private ILocalizationService _localization;
         private string _currentCharacterId;
+        private IStoryStageAssetSource _stageAssets;
+        private Image _cg;
+        private Coroutine _effectFadeCoroutine;
+        private const float EffectFadeSeconds = 0.4f;
+
+        // 槽位化立绘: 同一角色只占一个槽位, 多角色各自 Show/Hide/Move 互不干扰。
+        private readonly Dictionary<string, PortraitSlot> _slots = new Dictionary<string, PortraitSlot>(
+            StringComparer.Ordinal
+        );
+        private Image[] _slotImages = System.Array.Empty<Image>();
+
+        /// <summary>从预制体契约绑定全部控件引用（S4: ui.story-panel）。</summary>
+        /// <param name="bindings">预制体上的契约组件。</param>
+        public void BindFromPrefab(StoryUiBindings bindings)
+        {
+            _background = bindings.Background;
+            _effect = bindings.EffectLayer;
+            _cg = bindings.CgLayer;
+            _speaker = bindings.Speaker;
+            _body = bindings.Body;
+            _continue = bindings.ContinueButton;
+            _skipButton = bindings.SkipButton;
+            _choicesRoot = bindings.ChoicesRoot;
+            _historyView = bindings.HistoryView;
+            _historyText = bindings.HistoryText;
+            _slotImages = new Image[] { bindings.PortraitLeft, bindings.PortraitCenter, bindings.PortraitRight };
+            if (_continue != null)
+                _continue.onClick.AddListener(ContinueClicked);
+            if (_skipButton != null)
+                _skipButton.onClick.AddListener(RequestSkip);
+            if (_historyView != null)
+                _historyView.SetActive(false);
+            _historyButton = bindings.HistoryButton;
+            if (_historyButton != null)
+                _historyButton.onClick.AddListener(ToggleHistory);
+        }
+
+        /// <summary>单个角色立绘槽位: 图像与当前位置。</summary>
+        private sealed class PortraitSlot
+        {
+            /// <summary>槽位立绘图像。</summary>
+            public Image Image;
+
+            /// <summary>槽位当前所在位置。</summary>
+            public StoryCharacterPosition Position = StoryCharacterPosition.Left;
+        }
 
         /// <summary>在场景中创建默认 uGUI 控件。</summary>
         public void BuildPreview()
         {
-            if (_speaker != null)
+            if (_speaker != null || _background != null)
                 return;
             Canvas canvas = UiFactory.CreateCanvas("StoryCanvas", transform, 10);
             _background = new GameObject("Background", typeof(RectTransform), typeof(Image)).GetComponent<Image>();
@@ -54,6 +100,12 @@ namespace Game.Presentation
             UiFactory.Stretch(_effect.rectTransform, Vector2.zero);
             _effect.color = Color.clear;
             _effect.raycastTarget = false;
+            _cg = new GameObject("CgLayer", typeof(RectTransform), typeof(Image)).GetComponent<Image>();
+            _cg.transform.SetParent(canvas.transform, false);
+            UiFactory.Stretch(_cg.rectTransform, Vector2.zero);
+            _cg.color = Color.white;
+            _cg.raycastTarget = false;
+            _cg.gameObject.SetActive(false);
             Image panel = UiFactory.CreatePanel("DialoguePanel", canvas.transform, UiTheme.Panel);
             UiFactory.Stretch(panel.rectTransform, new Vector2(0.08f, 0.06f));
             GameObject clickSurface = new GameObject(
@@ -81,13 +133,7 @@ namespace Game.Presentation
             _speaker.raycastTarget = false;
             _speaker.rectTransform.anchorMin = new Vector2(0.04f, 0.68f);
             _speaker.rectTransform.anchorMax = new Vector2(0.96f, 0.94f);
-            _portrait = new GameObject("Portrait", typeof(RectTransform), typeof(Image)).GetComponent<Image>();
-            _portrait.transform.SetParent(panel.transform, false);
-            _portrait.rectTransform.anchorMin = new Vector2(0.04f, 0.22f);
-            _portrait.rectTransform.anchorMax = new Vector2(0.26f, 0.68f);
-            _portrait.rectTransform.offsetMin = _portrait.rectTransform.offsetMax = Vector2.zero;
-            _portrait.preserveAspect = true;
-            _portrait.gameObject.SetActive(false);
+            CreatePortraitSlots(panel.transform);
             _body = UiFactory.CreateText("Body", panel.transform, string.Empty, 26, UiTheme.Text, TextAnchor.UpperLeft);
             _body.raycastTarget = false;
             _body.rectTransform.anchorMin = new Vector2(0.04f, 0.22f);
@@ -130,6 +176,30 @@ namespace Game.Presentation
             );
             UiFactory.Stretch(_historyText.rectTransform, new Vector2(16f, 16f));
             _historyView.SetActive(false);
+            // 屏幕效果层（白闪/红闪/黑屏/模糊）必须覆盖 CG 与对话面板,
+            // 否则会被后创建的 CgLayer 和 DialoguePanel 遮挡, 只能压暗背景。
+            _effect.transform.SetAsLastSibling();
+        }
+
+        /// <summary>创建左/中/右三个立绘槽位并默认隐藏。</summary>
+        /// <param name="parent">槽位父节点。</param>
+        private void CreatePortraitSlots(Transform parent)
+        {
+            string[] names = { "PortraitLeft", "PortraitCenter", "PortraitRight" };
+            _slotImages = new Image[names.Length];
+            for (int i = 0; i < names.Length; i++)
+            {
+                Image slot = new GameObject(names[i], typeof(RectTransform), typeof(Image)).GetComponent<Image>();
+                slot.transform.SetParent(parent, false);
+                slot.preserveAspect = true;
+                var rect = slot.rectTransform;
+                rect.anchorMin = rect.anchorMax = new Vector2(0.5f, 0.5f);
+                rect.sizeDelta = new Vector2(0f, 0f);
+                rect.offsetMin = rect.offsetMax = Vector2.zero;
+                slot.raycastTarget = false;
+                slot.gameObject.SetActive(false);
+                _slotImages[i] = slot;
+            }
         }
 
         /// <summary>空格键触发当前对白继续。</summary>
@@ -163,28 +233,37 @@ namespace Game.Presentation
             _continue.gameObject.SetActive(true);
         }
 
-        /// <summary>显示当前对白附带指定立绘。</summary>
+        /// <summary>显示当前对白附带指定立绘（临时说话位展示; 有槽位则高亮槽位）。</summary>
         /// <param name="dialogue">对白数据。</param>
         /// <param name="portrait">角色立绘；无角色或资源缺失时为 null。</param>
         /// <param name="onContinue">继续回调。</param>
         public void ShowDialogue(StoryDialogueView dialogue, Sprite portrait, Action onContinue)
         {
             ShowDialogue(dialogue, onContinue);
-            if (_portrait == null)
+            SetSpeakerHighlight(_currentCharacterId, portrait);
+        }
+
+        /// <summary>突出当前说话人槽位; 无槽位时用临时左位显示立绘。</summary>
+        /// <param name="characterId">说话角色稳定标识。</param>
+        /// <param name="portrait">说话人立绘；可为 null。</param>
+        private void SetSpeakerHighlight(string characterId, Sprite portrait)
+        {
+            if (_body == null)
                 return;
-            _portrait.sprite = portrait;
-            _portrait.gameObject.SetActive(portrait != null);
-            // 立绘占据左侧后正文右移，避免与立绘重叠；无立绘时恢复原位置。
-            Vector2 bodyMin = _body.rectTransform.anchorMin;
-            _body.rectTransform.anchorMin =
-                portrait == null ? new Vector2(0.04f, bodyMin.y) : new Vector2(0.28f, bodyMin.y);
+            if (characterId != null && _slots.ContainsKey(characterId))
+            {
+                // 说话人已有槽位: 只调整正文布局, 不移位不改图。
+                UpdateBodyLayout(occupiedPortraitCount());
+                return;
+            }
+            UpdateBodyLayout(portrait != null ? 1 : occupiedPortraitCount());
         }
 
         /// <summary>注入本地化服务用于说话人和正文文本解析。</summary>
         /// <param name="localization">本地化服务。</param>
         public void SetLocalization(ILocalizationService localization) => _localization = localization;
 
-        /// <summary>应用角色立绘状态（ShowCharacter 节点）。</summary>
+        /// <summary>应用角色立绘状态（ShowCharacter 节点）: 更新或创建对应槽位。</summary>
         /// <param name="characterId">角色稳定标识。</param>
         /// <param name="appearanceId">形象稳定标识；可为空。</param>
         /// <param name="portrait">解析出的立绘精灵。</param>
@@ -192,73 +271,151 @@ namespace Game.Presentation
         {
             BuildPreview();
             _currentCharacterId = characterId;
-            if (_portrait == null)
+            if (string.IsNullOrWhiteSpace(characterId))
                 return;
-            _portrait.sprite = portrait;
-            _portrait.gameObject.SetActive(portrait != null);
-            _portrait.name = characterId + "/" + appearanceId;
+            PortraitSlot slot = GetOrCreateSlot(characterId);
+            if (slot == null)
+                return;
+            slot.Image.sprite = portrait;
+            slot.Image.gameObject.SetActive(portrait != null);
+            slot.Image.name = characterId + "/" + appearanceId;
+            ApplyCharacterPosition(slot, slot.Position);
+            UpdateBodyLayout(occupiedPortraitCount());
         }
 
-        /// <summary>显示全屏 CG（ShowCg 节点占位实现：显示纯色覆盖层）。</summary>
+        /// <summary>注入演出资源源用于背景与 CG 解析。</summary>
+        /// <param name="stageAssets">演出资源源；可为 null 时保持占位回退。</param>
+        public void SetStageAssetSource(IStoryStageAssetSource stageAssets) => _stageAssets = stageAssets;
+
+        /// <summary>显示全屏 CG（ShowCg 节点）；资源缺失时回退占位提示。</summary>
         /// <param name="assetId">CG 资源稳定标识。</param>
         public void ShowCg(string assetId)
         {
             BuildPreview();
-            // C16/C17 占位：CG 资源解析器尚未接入，用提示文本占位。
-            Debug.Log("[StoryDialoguePanel] ShowCg placeholder for asset: " + assetId, this);
+            Sprite sprite = _stageAssets?.GetCg(assetId);
+            if (_cg == null)
+                return;
+            if (sprite == null)
+            {
+                Debug.Log("[StoryDialoguePanel] ShowCg placeholder for missing asset: " + assetId, this);
+                _cg.gameObject.SetActive(false);
+                return;
+            }
+            _cg.sprite = sprite;
+            _cg.color = Color.white;
+            _cg.gameObject.SetActive(true);
         }
 
-        /// <summary>切换背景（SetBackground 节点占位实现：显示纯色背景）。</summary>
+        /// <summary>切换背景（SetBackground 节点）；资源缺失时回退现有纯色背景。</summary>
         /// <param name="backgroundId">背景资源稳定标识。</param>
         public void SetBackground(string backgroundId)
         {
             BuildPreview();
-            // C17 占位：背景资源解析器尚未接入，用提示文本占位。
-            Debug.Log("[StoryDialoguePanel] SetBackground placeholder for asset: " + backgroundId, this);
+            Sprite sprite = _stageAssets?.GetBackground(backgroundId);
+            if (_background == null)
+                return;
+            if (sprite == null)
+            {
+                Debug.Log("[StoryDialoguePanel] SetBackground placeholder for missing asset: " + backgroundId, this);
+                _background.sprite = null;
+                _background.color = new Color(0.06f, 0.08f, 0.12f, 1f);
+                return;
+            }
+            _background.sprite = sprite;
+            _background.color = Color.white;
         }
 
-        /// <summary>隐藏指定角色的立绘（HideCharacter 节点）。</summary>
+        /// <summary>隐藏指定角色的立绘（HideCharacter 节点）: 只移除对应槽位。</summary>
         /// <param name="characterId">角色稳定标识。</param>
         public void HideCharacter(string characterId)
         {
             BuildPreview();
-            if (
-                _portrait != null
-                && !string.IsNullOrEmpty(_currentCharacterId)
-                && string.Equals(_currentCharacterId, characterId, StringComparison.Ordinal)
-            )
+            if (_slots.TryGetValue(characterId, out PortraitSlot slot))
             {
-                _portrait.sprite = null;
-                _portrait.gameObject.SetActive(false);
-                _currentCharacterId = null;
+                slot.Image.sprite = null;
+                slot.Image.gameObject.SetActive(false);
+                _slots.Remove(characterId);
+                if (string.Equals(_currentCharacterId, characterId, StringComparison.Ordinal))
+                    _currentCharacterId = null;
+                UpdateBodyLayout(occupiedPortraitCount());
             }
         }
 
-        /// <summary>移动角色立绘到指定位置（MoveCharacter 节点）。</summary>
+        /// <summary>移动角色立绘到指定位置（MoveCharacter 节点）: 换槽位且不销毁。</summary>
         /// <param name="characterId">角色稳定标识。</param>
         /// <param name="position">目标位置。</param>
         public void MoveCharacter(string characterId, StoryCharacterPosition position)
         {
             BuildPreview();
-            if (_portrait == null || !string.Equals(_currentCharacterId, characterId, StringComparison.Ordinal))
+            if (!_slots.TryGetValue(characterId, out PortraitSlot slot))
                 return;
-            ApplyCharacterPosition(position);
+            slot.Position = position;
+            ApplyCharacterPosition(slot, position);
         }
 
-        /// <summary>播放屏幕效果（ScreenEffect 节点占位实现：纯色覆盖）。</summary>
+        /// <summary>根据角色 ID 取得或创建立绘槽位。</summary>
+        /// <param name="characterId">角色稳定标识。</param>
+        /// <returns>槽位; 面板未创建时为 null。</returns>
+        private PortraitSlot GetOrCreateSlot(string characterId)
+        {
+            if (_slots.TryGetValue(characterId, out PortraitSlot existing))
+                return existing;
+            Image[] images = GetCreatedSlotImages();
+            // 复用空闲槽位: 优先取当前隐藏的槽位, 否则取第一个空闲或新建。
+            foreach (Image image in images)
+            {
+                if (image == null || image.gameObject.activeSelf)
+                    continue;
+                var slot = new PortraitSlot { Image = image };
+                _slots[characterId] = slot;
+                return slot;
+            }
+            return null;
+        }
+
+        /// <summary>获取已创建的三槽位图像列表。</summary>
+        /// <returns>槽位图像; 未创建时为空数组。</returns>
+        private Image[] GetCreatedSlotImages() => _slotImages;
+
+        /// <summary>当前占用槽位数。</summary>
+        /// <returns>有立绘精灵的槽位数量。</returns>
+        private int occupiedPortraitCount()
+        {
+            int count = 0;
+            foreach (PortraitSlot slot in _slots.Values)
+                if (slot.Image != null && slot.Image.sprite != null)
+                    count++;
+            return count;
+        }
+
+        /// <summary>根据立绘数量调整正文区域: 有立绘时右移留出左/中/右槽位空间。</summary>
+        /// <param name="portraitCount">当前立绘数量。</param>
+        private void UpdateBodyLayout(int portraitCount)
+        {
+            if (_body == null)
+                return;
+            Vector2 bodyMin = _body.rectTransform.anchorMin;
+            _body.rectTransform.anchorMin =
+                portraitCount > 0 ? new Vector2(0.28f, bodyMin.y) : new Vector2(0.04f, bodyMin.y);
+        }
+
+        /// <summary>播放屏幕效果：白/红闪 0.4 秒淡出，黑屏维持到下次效果，模糊使用占位半透明。</summary>
         /// <param name="effect">屏幕效果类型。</param>
         public void PlayScreenEffect(StoryScreenEffectType effect)
         {
             BuildPreview();
             if (_effect == null)
                 return;
+            StopEffectFade();
             switch (effect)
             {
                 case StoryScreenEffectType.WhiteFlash:
                     _effect.color = new Color(1f, 1f, 1f, 0.85f);
+                    StartEffectFade();
                     break;
                 case StoryScreenEffectType.RedFlash:
                     _effect.color = new Color(1f, 0.1f, 0.1f, 0.85f);
+                    StartEffectFade();
                     break;
                 case StoryScreenEffectType.Blackout:
                     _effect.color = new Color(0f, 0f, 0f, 0.95f);
@@ -272,9 +429,42 @@ namespace Game.Presentation
             }
         }
 
-        /// <summary>把立绘移动到指定位置。</summary>
+        /// <summary>启动效果淡出协程。</summary>
+        private void StartEffectFade()
+        {
+            _effectFadeCoroutine = StartCoroutine(EffectFadeCoroutine());
+        }
+
+        /// <summary>停止当前效果淡出协程并保留当前颜色。</summary>
+        private void StopEffectFade()
+        {
+            if (_effectFadeCoroutine != null)
+            {
+                StopCoroutine(_effectFadeCoroutine);
+                _effectFadeCoroutine = null;
+            }
+        }
+
+        /// <summary>把效果覆盖层在不透明度 0 后清为透明色。</summary>
+        private System.Collections.IEnumerator EffectFadeCoroutine()
+        {
+            Color start = _effect.color;
+            float elapsed = 0f;
+            while (elapsed < EffectFadeSeconds)
+            {
+                elapsed += Time.deltaTime;
+                float alpha = Mathf.Lerp(start.a, 0f, elapsed / EffectFadeSeconds);
+                _effect.color = new Color(start.r, start.g, start.b, alpha);
+                yield return null;
+            }
+            _effect.color = Color.clear;
+            _effectFadeCoroutine = null;
+        }
+
+        /// <summary>把指定槽位移动到目标位置。</summary>
+        /// <param name="slot">目标槽位。</param>
         /// <param name="position">目标位置。</param>
-        private void ApplyCharacterPosition(StoryCharacterPosition position)
+        private static void ApplyCharacterPosition(PortraitSlot slot, StoryCharacterPosition position)
         {
             Vector2 min = position switch
             {
@@ -282,8 +472,8 @@ namespace Game.Presentation
                 StoryCharacterPosition.Right => new Vector2(0.72f, 0.22f),
                 _ => new Vector2(0.04f, 0.22f),
             };
-            _portrait.rectTransform.anchorMin = min;
-            _portrait.rectTransform.anchorMax = min + new Vector2(0.22f, 0.46f);
+            slot.Image.rectTransform.anchorMin = min;
+            slot.Image.rectTransform.anchorMax = min + new Vector2(0.22f, 0.46f);
         }
 
         /// <summary>显示可跳过的等待（Wait 节点）。</summary>
@@ -422,14 +612,18 @@ namespace Game.Presentation
                 _speaker.text = string.Empty;
             if (_body != null)
                 _body.text = string.Empty;
-            if (_portrait != null)
+            foreach (PortraitSlot slot in _slots.Values)
             {
-                _portrait.sprite = null;
-                _portrait.gameObject.SetActive(false);
+                slot.Image.sprite = null;
+                slot.Image.gameObject.SetActive(false);
             }
+            _slots.Clear();
             _currentCharacterId = null;
             if (_effect != null)
                 _effect.color = Color.clear;
+            StopEffectFade();
+            if (_cg != null)
+                _cg.gameObject.SetActive(false);
             if (_waitCoroutine != null)
             {
                 StopCoroutine(_waitCoroutine);

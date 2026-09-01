@@ -509,4 +509,24 @@ namespace Game.Contracts.Content
         /// <returns>立绘精灵；资源缺失时返回 null。</returns>
         Sprite GetPortrait(CharacterId characterId, AppearanceId appearanceId, ExpressionId expressionId);
     }
+
+    /// <summary>
+    /// 剧情演出资源源：按稳定 ID 解析背景与 CG 精灵。
+    /// </summary>
+    /// <remarks>
+    /// 由 Presentation 侧适配器包装 <see cref="IAssetResolver.GetSprite"/>,
+    /// 保持剧情表现层不直接依赖具体资源系统。
+    /// </remarks>
+    public interface IStoryStageAssetSource
+    {
+        /// <summary>按稳定 ID 获取背景精灵；不存在时返回 null。</summary>
+        /// <param name="backgroundId">背景资源稳定标识。</param>
+        /// <returns>背景精灵；资源缺失时返回 null。</returns>
+        Sprite GetBackground(string backgroundId);
+
+        /// <summary>按稳定 ID 获取 CG 精灵；不存在时返回 null。</summary>
+        /// <param name="assetId">CG 资源稳定标识。</param>
+        /// <returns>CG 精灵；资源缺失时返回 null。</returns>
+        Sprite GetCg(string assetId);
+    }
 }
