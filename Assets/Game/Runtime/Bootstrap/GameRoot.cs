@@ -99,7 +99,9 @@ namespace Game.Bootstrap
                 logger,
                 eventBus,
                 startMenuSceneName,
-                storyCompletion
+                storyCompletion,
+                () => _runtimeServices?.CurrentProfile,
+                _saveRepository.SaveProfileAsync
             );
             _flowService = flowService;
 
@@ -115,6 +117,17 @@ namespace Game.Bootstrap
                 characters,
                 storyCompletion
             );
+            _runtimeServices.SetAssetResolver(
+                contentAssetRegistry == null ? null : new OfficialAssetResolver(contentAssetRegistry)
+            );
+            if (contentAssetRegistry != null)
+            {
+                GameObject storyPrefab = new OfficialAssetResolver(contentAssetRegistry).GetUiPrefab(
+                    new UiPrefabId(UiPrefabIds.StoryPanel)
+                );
+                _runtimeServices.SetStoryPrefab(storyPrefab);
+            }
+            _runtimeServices.SetGeneratedStories(GeneratedStoryLoader.LoadAll());
             _globalUiRoot = new GameObject("GlobalUi");
             DontDestroyOnLoad(_globalUiRoot);
             _globalCanvasLayer = _globalUiRoot.AddComponent<GlobalCanvasLayer>();
