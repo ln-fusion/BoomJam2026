@@ -1,7 +1,10 @@
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Game.Contracts;
+using Game.Contracts.Persistence;
+using Game.Contracts.Progression;
 using Game.Flow;
 using Game.Foundation;
 using NUnit.Framework;
@@ -17,6 +20,8 @@ namespace Game.Tests.EditMode
         private DomainEventBus _eventBus;
         private IGameLogger _logger;
         private GameFlowService _flow;
+        private ProfileSave _profile;
+        private StoryCompletionCoordinator _coordinator;
 
         /// <summary>创建流转服务测试依赖。</summary>
         [SetUp]
@@ -25,7 +30,21 @@ namespace Game.Tests.EditMode
             _loader = new FakeSceneLoader();
             _eventBus = new DomainEventBus(NullLogger.Instance);
             _logger = new NullLogger(collectEntries: true);
-            _flow = new GameFlowService(_loader, new FixedClock(), _logger, _eventBus, SceneNames.StartMenu);
+            _profile = new ProfileSave();
+            _coordinator = new StoryCompletionCoordinator(
+                () => _profile,
+                (profile, reason, token) => Task.FromResult(SaveResult.Success()),
+                _eventBus,
+                NullLogger.Instance
+            );
+            _flow = new GameFlowService(
+                _loader,
+                new FixedClock(),
+                _logger,
+                _eventBus,
+                SceneNames.StartMenu,
+                _coordinator
+            );
         }
 
         /// <summary>释放流转服务。</summary>
@@ -123,6 +142,96 @@ namespace Game.Tests.EditMode
         private static void RunAsync(Func<Task> operation)
         {
             Task.Run(operation).GetAwaiter().GetResult();
+        }
+
+        /// <summary>验证首次进入关卡先播放关前剧情再进 Gameplay。</summary>
+        [Test]
+        public void EnterLevel_FirstTime_PlaysPreludeThenGameplay()
+        {
+            var level = new LevelId("official.level.test_01_01");
+            RunAsync(async () =>
+            {
+                await _flow.EnterLevelAsync(level, CancellationToken.None);
+            });
+
+            Assert.That(_loader.LoadedSceneNames, Does.Contain(SceneNames.Story));
+        }
+
+        /// <summary>验证关卡完成提交事实后播放关后剧情并返回地图。</summary>
+        [Test]
+        public void CompleteLevel_CommitsFact_ThenPlaysPostStory_ReturnsToMap()
+        {
+            var level = new LevelId("official.level.test_01_01");
+            RunAsync(async () =>
+            {
+                await _flow.EnterLevelAsync(level, CancellationToken.None);
+                // 首次进入先播放关前剧情，经路径进入 Gameplay
+                await _flow.EnterLevelAsync(level, CancellationToken.None);
+                await _flow.CompleteLevelAsync(level, CancellationToken.None);
+            });
+
+            // 关后剧情 → 返回地图，元界页面为目标
+            Assert.That(
+                _coordinator.IsCompleted(new StoryId("official.story.c06_branch")),
+                Is.True,
+                "完成事实应已提交"
+            );
+            Assert.That(_flow.LastStoryReturnTarget.HasValue, Is.True);
+            Assert.That(_flow.LastStoryReturnTarget.Value.Kind, Is.EqualTo(StoryReturnKind.MetaPage));
+            Assert.That(_flow.LastStoryReturnTarget.Value.MetaPage, Is.EqualTo(MetaPageId.Map));
+        }
+
+        /// <summary>验证关卡完成时把关卡 ID 写入 CompletedLevelIds 并以 ProgressCommitted 保存。</summary>
+        [Test]
+        public void CompleteLevel_WritesLevelFact_ToProfile()
+        {
+            var level = new LevelId("official.level.test_01_01");
+            var saves = new System.Collections.Generic.List<SaveReason>();
+            var profile = new ProfileSave();
+            ProfileSave captured = null;
+            var flow = new GameFlowService(
+                _loader,
+                new FixedClock(),
+                _logger,
+                _eventBus,
+                SceneNames.StartMenu,
+                null,
+                () => profile,
+                (data, reason, token) =>
+                {
+                    saves.Add(reason);
+                    captured = data;
+                    return Task.FromResult(SaveResult.Success());
+                }
+            );
+            RunAsync(() => flow.CompleteLevelAsync(level, CancellationToken.None));
+
+            Assert.That(profile.CompletedLevelIds, Does.Contain(level.Value));
+            Assert.That(saves, Does.Contain(SaveReason.ProgressCommitted));
+            Assert.That(captured, Is.SameAs(profile), "保存委托应收到同一份 Profile 引用");
+            flow.Dispose();
+        }
+
+        /// <summary>验证保存失败时关卡完成事实回滚, 可重试且不阻断流程判断。</summary>
+        [Test]
+        public void CompleteLevel_SaveFailure_RollsBackLevelFact()
+        {
+            var level = new LevelId("official.level.test_01_01");
+            var profile = new ProfileSave();
+            var flow = new GameFlowService(
+                _loader,
+                new FixedClock(),
+                _logger,
+                _eventBus,
+                SceneNames.StartMenu,
+                null,
+                () => profile,
+                (data, reason, token) => Task.FromResult(SaveResult.Failure(ErrorCode.SaveFailed, "disk error"))
+            );
+            RunAsync(() => flow.CompleteLevelAsync(level, CancellationToken.None));
+
+            Assert.That(profile.CompletedLevelIds, Does.Not.Contain(level.Value), "失败时不应残留内存标记");
+            flow.Dispose();
         }
     }
 }
