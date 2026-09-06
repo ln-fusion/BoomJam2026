@@ -66,7 +66,7 @@ namespace Game.Bootstrap
             presenter.Initialize(view, runtimeServices, globalCanvasLayer);
         }
 
-        /// <summary>安装 MetaHubShell。</summary>
+        /// <summary>优先复用场景内的 MetaHub UI，缺失时创建，并初始化主界面壳。</summary>
         /// <param name="scene">MetaHub 场景。</param>
         /// <param name="runtimeServices">运行时服务容器。</param>
         /// <param name="globalCanvasLayer">全局 UI 层。</param>
@@ -74,12 +74,25 @@ namespace Game.Bootstrap
         private static void InstallMetaHub(Scene scene, GameRuntimeServices runtimeServices,
             GlobalCanvasLayer globalCanvasLayer, ContentAssetRegistry contentRegistry)
         {
-            if (FindInScene<MetaHubShell>(scene) != null)
-                return;
+            MetaHubUiBindings bindings = FindInScene<MetaHubUiBindings>(scene);
+            MetaHubShell existingShell = FindInScene<MetaHubShell>(scene);
+            GameObject root;
 
-            GameObject root = InstantiateUiPrefab(contentRegistry, UiPrefabIds.MetaHub,
-                "MetaHubUI");
-            SceneManager.MoveGameObjectToScene(root, scene);
+            if (bindings != null)
+            {
+                root = bindings.gameObject;
+            }
+            else if (existingShell != null)
+            {
+                root = existingShell.gameObject;
+            }
+            else
+            {
+                root = InstantiateUiPrefab(contentRegistry, UiPrefabIds.MetaHub,
+                    "MetaHubUI");
+                SceneManager.MoveGameObjectToScene(root, scene);
+            }
+
             var shell = root.GetComponent<MetaHubShell>() ?? root.AddComponent<MetaHubShell>();
             shell.Initialize(runtimeServices, globalCanvasLayer);
         }
