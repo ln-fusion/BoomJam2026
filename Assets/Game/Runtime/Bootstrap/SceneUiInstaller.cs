@@ -40,7 +40,7 @@ namespace Game.Bootstrap
                 InstallStory(scene, runtimeServices);
         }
 
-        /// <summary>安装开始菜单 View/Presenter。</summary>
+        /// <summary>优先复用场景内的开始菜单 UI，缺失时创建，并初始化 View/Presenter。</summary>
         /// <param name="scene">开始菜单场景。</param>
         /// <param name="runtimeServices">运行时服务容器。</param>
         /// <param name="globalCanvasLayer">全局 UI 层。</param>
@@ -48,12 +48,19 @@ namespace Game.Bootstrap
         private static void InstallStartMenu(Scene scene, GameRuntimeServices runtimeServices,
             GlobalCanvasLayer globalCanvasLayer, ContentAssetRegistry contentRegistry)
         {
-            if (FindInScene<StartMenuPresenter>(scene) != null)
-                return;
+            StartMenuUiBindings bindings = FindInScene<StartMenuUiBindings>(scene);
+            GameObject root;
 
-            GameObject root = InstantiateUiPrefab(contentRegistry, UiPrefabIds.StartMenu,
-                "StartMenuUI");
-            SceneManager.MoveGameObjectToScene(root, scene);
+            if (bindings != null)
+            {
+                root = bindings.gameObject;
+            }
+            else
+            {
+                root = InstantiateUiPrefab(contentRegistry, UiPrefabIds.StartMenu,
+                    "StartMenuUI");
+                SceneManager.MoveGameObjectToScene(root, scene);
+            }
             var view = root.GetComponent<StartMenuView>() ?? root.AddComponent<StartMenuView>();
             var presenter = root.GetComponent<StartMenuPresenter>() ?? root.AddComponent<StartMenuPresenter>();
             presenter.Initialize(view, runtimeServices, globalCanvasLayer);
