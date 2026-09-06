@@ -11,7 +11,7 @@ namespace Game.Bootstrap
     public static class SceneUiInstaller
     {
         /// <summary>
-        /// 为开始菜单或 MetaHub 场景创建 View/Presenter 根对象；重复触发时保持幂等。
+        /// 安装功能场景 UI，并向 Gameplay 场景已有的返回按钮注入服务。
         /// </summary>
         /// <param name="scene">刚激活的功能场景。</param>
         /// <param name="runtimeServices">Bootstrap 创建的运行时服务容器。</param>
@@ -38,6 +38,14 @@ namespace Game.Bootstrap
 
             if (scene.name == SceneNames.Story)
                 InstallStory(scene, runtimeServices);
+            if (scene.name == SceneNames.Gameplay)
+            {
+                var returnButton = FindInScene<GameplayReturnButton>(scene);
+                if (returnButton != null)
+                    returnButton.Initialize(runtimeServices.Flow, globalCanvasLayer);
+                else
+                    Debug.LogWarning("Gameplay 场景缺少返回地图按钮。请检查已保存的场景。");
+            }
         }
 
         /// <summary>优先复用场景内的开始菜单 UI，缺失时创建，并初始化 View/Presenter。</summary>
@@ -99,6 +107,7 @@ namespace Game.Bootstrap
 
         /// <summary>安装 C09 剧情白盒表现器。</summary>
         /// <param name="scene">剧情场景。</param>
+        /// <param name="runtimeServices">传给剧情表现器的运行时服务。</param>
         private static void InstallStory(Scene scene, GameRuntimeServices runtimeServices)
         {
             if (FindInScene<StoryScenePresenter>(scene) != null)

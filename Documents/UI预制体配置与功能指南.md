@@ -38,6 +38,22 @@
 - 页面按钮只改变页面显隐并异步保存最后页面。
 - `Settings` 打开全局设置弹窗；时钟由运行时每秒刷新。
 
+### 地图白盒的状态与资料卡配置
+
+当前地图使用 `OfficialTestMapCatalog.CreateProvider()` 的测试内容。`MetaHubShell` 的 Inspector 字段 **Map Id** 默认是 `official.map.test_01`，该地图包含 `official.level.test_01_01` 到 `official.level.test_01_05`。节点按内容的 `SortOrder` 排序，对应 `MapNode_1` 到 `MapNode_5`，不使用按钮文字作为关卡 ID。
+
+- 修改关卡 ID、数量、顺序、名称 Key 和前置条件：编辑 `Assets/Game/Runtime/Content/OfficialTestMapCatalog.cs`。默认首关无前置，后续关卡要求上一关完成；`UnlockRequirement.Mode` 的 `All` 表示全部前置完成，`Any` 表示任一前置完成，前置列表是 `RequiredLevelIds`。
+- 修改关卡名称：配置对应 `DisplayNameKey` 的本地化文本；缺少翻译时显示稳定 Key。节点状态和资料卡提示目前使用中文白盒文字，集中在 `MetaHubShell.MapStateText`、`RenderLevelCard` 中，尚未接入多语言表。
+- 修改布局：在 `MetaHubUI.prefab` 中调整 Rect Transform、字体和颜色。保留节点连续命名 `MapNode_1`、`MapNode_2` 等，以及 `MapPageView/LevelCard/Details`、`Start`。新增节点需要同时增加内容记录和预制体按钮。
+- 节点状态包括“未解锁、当前关卡、已解锁、已完成”。未解锁节点和没有对应内容的多余节点隐藏；只有当前关卡、已解锁和已完成节点显示并允许选择，进入请求期间暂时禁用交互。隐藏通过停用按钮对象实现，保留节点原位置和排序映射；刷新后满足解锁条件的节点重新显示。若当前选择已失效或变为未解锁，则清空资料卡选择并禁用开始按钮。
+- 初始化、打开地图、点击节点和切换语言时，使用当前档案重新生成进度快照并计算状态。选中后显示名称、状态和最佳成绩；没有选中时显示“请选择关卡”。没有实现逐帧监听外部进度变更。
+
+资料卡开始按钮已连接现有 `EnterLevelAsync`：点击时重新校验解锁状态，等待进入期间禁用节点和开始按钮，并阻止重复请求。无需在 Inspector 的 OnClick 中重复绑定。当前流程在本次应用运行中首次进入某个 LevelId 时先播放测试剧情，剧情结束或跳过后进入已有 `04_Gameplay`；同一 LevelId 后续直接进入 Gameplay。该记录仅在内存中，不代表通关或持久化的剧情完成进度。
+
+`04_Gameplay` 当前是无实际玩法的占位场景，已保存 `GameplayCanvas/ReturnToMap` 返回按钮。`SceneUiInstaller` 向按钮上的 `GameplayReturnButton` 注入服务后启用按钮；点击复用 `OpenMetaHubAsync(MetaPageId.Map, ...)` 返回地图，不记录通关或解锁。修改位置和尺寸时调整场景中按钮的 Rect Transform，修改文字时编辑其 Label；无需添加 Inspector OnClick。单独运行 Gameplay 未注入服务时按钮保持禁用。
+
+通关完成事实写入存档和实时解锁通知仍待后续接入。运行时应从 `00_Bootstrap` 开始，单独运行 MetaHub 不会自动加载档案或注入服务。验证入口时，从地图选择已解锁节点并点击开始，完成测试剧情或跳过后，确认已进入 `04_Gameplay`，再点击返回地图。
+
 ### SettingsModalUI（`ui.settings-modal`）
 
 `SettingsPanel` 下必须保留 `Title`、`ui.master_volume`、`ui.music_volume`、`ui.sfx_volume` 三个 Slider 及同名 `Label`，以及 `Language`、`Resolution`、`Fullscreen`、`Feedback`、`RestoreDefaults`、`Cancel`、`Apply`。

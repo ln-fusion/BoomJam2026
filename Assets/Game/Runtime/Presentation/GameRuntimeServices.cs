@@ -5,6 +5,7 @@ using Game.Contracts;
 using Game.Contracts.Persistence;
 using Game.Contracts.Progression;
 using Game.Foundation;
+using Game.Progression;
 
 namespace Game.Presentation
 {
@@ -27,8 +28,11 @@ namespace Game.Presentation
         public IAudioService Audio { get; }
         /// <summary>当前档案生命周期服务。</summary>
         public IProfileLifecycleService ProfileLifecycle { get; }
-        /// <summary>当前只读进度查询。</summary>
-        public IProgressQuery ProgressQuery { get; }
+        private readonly IProgressQuery _initialProgressQuery;
+
+        /// <summary>从当前档案创建只读进度快照；档案尚未加载时使用注入的默认查询。</summary>
+        public IProgressQuery ProgressQuery => CurrentProfile == null
+            ? _initialProgressQuery : new ProfileProgressQuery(CurrentProfile);
         /// <summary>当前系统时钟。</summary>
         public IClock Clock { get; }
         /// <summary>当前已加载的单一玩家档案；首次开始前为空。</summary>
@@ -57,7 +61,7 @@ namespace Game.Presentation
             Audio = audio ?? throw new ArgumentNullException(nameof(audio));
             ProfileLifecycle = profileLifecycle ??
                 throw new ArgumentNullException(nameof(profileLifecycle));
-            ProgressQuery = progressQuery ?? throw new ArgumentNullException(nameof(progressQuery));
+            _initialProgressQuery = progressQuery ?? throw new ArgumentNullException(nameof(progressQuery));
             Clock = clock ?? throw new ArgumentNullException(nameof(clock));
             _saveProfileAsync = saveProfileAsync ??
                 throw new ArgumentNullException(nameof(saveProfileAsync));

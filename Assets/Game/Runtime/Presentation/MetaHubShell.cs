@@ -1,11 +1,16 @@
 using System;
 using System.Globalization;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Game.Contracts;
+using Game.Contracts.Meta;
+using Game.Content;
+using Game.Meta;
 using Game.Foundation;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Events;
 
 namespace Game.Presentation
 {
@@ -30,6 +35,17 @@ namespace Game.Presentation
         private CancellationTokenSource _lifetime;
         private bool _initialized;
 
+        [SerializeField, Tooltip("白盒地图稳定 ID；节点按该地图的 SortOrder 顺序绑定。")]
+        private string mapId = "official.map.test_01";
+        private readonly List<Button> _mapButtons = new List<Button>();
+        private readonly List<UnityAction> _mapActions = new List<UnityAction>();
+        private IMetaMapQuery _mapQuery;
+        private IReadOnlyList<LevelNodeViewModel> _mapNodes;
+        private Text _levelDetails;
+        private Button _levelStart;
+        private LevelId _selectedLevelId;
+        private bool _enteringLevel;
+
         /// <summary>注入运行时服务并构建壳层。</summary>
         /// <param name="runtimeServices">Bootstrap 创建的运行时服务容器。</param>
         /// <param name="globalCanvasLayer">全局 UI 层。</param>
@@ -48,6 +64,7 @@ namespace Game.Presentation
             _router = new MetaPageRouter();
             _router.PageChanged += OnPageChanged;
             BuildView();
+            BindMapView();
             if (_localizationService != null)
                 _localizationService.LocaleChanged += OnLocaleChanged;
 
@@ -78,6 +95,11 @@ namespace Game.Presentation
         /// <summary>销毁时取消路由、Locale 订阅和页面存档异步操作。</summary>
         private void OnDestroy()
         {
+            if (_levelStart != null)
+                _levelStart.onClick.RemoveListener(OnLevelStartRequested);
+            for (int index = 0; index < _mapButtons.Count; index++)
+                if (_mapButtons[index] != null)
+                    _mapButtons[index].onClick.RemoveListener(_mapActions[index]);
             if (_router != null)
                 _router.PageChanged -= OnPageChanged;
             if (_localizationService != null)
@@ -98,7 +120,154 @@ namespace Game.Presentation
                 _nicknameText.text = viewModel.Nickname;
             if (_router != null)
                 _router.Navigate(viewModel.Page);
-            UpdatePageText(viewModel.Page);
+            OnPageChanged(viewModel.Page);
+        }
+
+        /// <summary>绑定已有地图按钮与资料卡，初始化拖动内容；不改动预制体布局。</summary>
+        private void BindMapView()
+        {
+            Transform card = _mapPage.transform.Find("LevelCard");
+            _levelDetails = card == null ? null : FindText(card, "Details");
+            _levelStart = card == null ? null : FindButton(card, "Start");
+            if (_levelStart != null)
+                _levelStart.onClick.AddListener(OnLevelStartRequested);
+            var controller = _mapPage.GetComponentInChildren<MetaMapInteractionController>(true);
+            if (controller != null)
+                controller.BuildPreview();
+
+            for (int index = 0; ; index++)
+            {
+                Button button = FindButton(_mapPage.transform, "MapNode_" + (index + 1));
+                if (button == null)
+                    break;
+                int nodeIndex = index;
+                UnityAction action = () => SelectMapNode(nodeIndex);
+                _mapButtons.Add(button);
+                _mapActions.Add(action);
+                button.onClick.AddListener(action);
+            }
+            if (_mapButtons.Count == 0 || _levelDetails == null || _levelStart == null)
+                Debug.LogWarning("地图白盒缺少 MapNode_N 或 LevelCard/Details、Start，请检查预制体层级。", this);
+            RefreshMapView();
+        }
+
+        /// <summary>从当前档案重新计算节点状态，隐藏未解锁或未配置节点；初始化、打开地图和选择节点时刷新。</summary>
+        private void RefreshMapView()
+        {
+            if (_runtimeServices == null)
+                return;
+            _mapQuery = new MetaMapQuery(new OfficialContentService(
+                OfficialTestMapCatalog.CreateProvider()), _runtimeServices.ProgressQuery);
+            _mapNodes = _mapQuery.GetLevels(new MapId(mapId));
+            for (int index = 0; index < _mapButtons.Count; index++)
+            {
+                Button button = _mapButtons[index];
+                bool available = index < _mapNodes.Count;
+                bool visible = available && _mapNodes[index].IsInteractable;
+                button.gameObject.SetActive(visible);
+                button.interactable = visible && !_enteringLevel;
+                Text label = button.GetComponentInChildren<Text>(true);
+                if (label != null)
+                    label.text = available
+                        ? Text(_mapNodes[index].DisplayNameKey) + "\n" + MapStateText(_mapNodes[index].State)
+                        : "未配置关卡";
+            }
+            RenderLevelCard();
+        }
+
+        /// <summary>选择当前排序下已解锁的节点；拒绝未解锁节点的选择请求。</summary>
+        /// <param name="index">从零开始的节点序号。</param>
+        private void SelectMapNode(int index)
+        {
+            if (_enteringLevel)
+                return;
+            RefreshMapView();
+            if (_mapNodes == null || index < 0 || index >= _mapNodes.Count ||
+                !_mapNodes[index].IsInteractable)
+                return;
+            _selectedLevelId = _mapNodes[index].LevelId;
+            RenderLevelCard();
+        }
+
+        /// <summary>显示选中关卡的名称、状态与成绩；清除已失效或未解锁的选择，进入期间禁用开始按钮。</summary>
+        private void RenderLevelCard()
+        {
+            LevelCardViewModel card = _selectedLevelId == null || _mapQuery == null
+                ? null : _mapQuery.GetLevelCard(_selectedLevelId);
+            if (card == null || !card.Node.IsInteractable)
+            {
+                _selectedLevelId = null;
+                card = null;
+            }
+            if (_levelStart != null)
+                _levelStart.interactable = !_enteringLevel && card != null && card.Node.IsInteractable;
+            if (_levelDetails == null)
+                return;
+            if (card == null)
+            {
+                _levelDetails.text = "请选择关卡";
+                return;
+            }
+            string score = card.BestScore == null ? "暂无成绩"
+                : card.BestScore.ElapsedTicks + " ticks";
+            _levelDetails.text = Text(card.Node.DisplayNameKey) + "\n状态：" +
+                MapStateText(card.Node.State) + "\n最佳成绩：" + score;
+        }
+
+        /// <summary>响应资料卡开始请求；已有进入请求时忽略重复点击。</summary>
+        private void OnLevelStartRequested()
+        {
+            if (!_enteringLevel && _runtimeServices != null && _selectedLevelId != null)
+                _ = EnterSelectedLevelAsync();
+        }
+
+        /// <summary>重新校验当前关卡的解锁状态并交给现有流程服务；使用独立于被卸载地图的取消令牌，异常时显示反馈。</summary>
+        /// <returns>进入请求结束时完成的任务；场景是否加载成功仍由流程服务记录。</returns>
+        private async Task EnterSelectedLevelAsync()
+        {
+            _enteringLevel = true;
+            try
+            {
+                RefreshMapView();
+                LevelCardViewModel card = _mapQuery.GetLevelCard(_selectedLevelId);
+                if (card == null || !card.Node.IsInteractable)
+                    return;
+
+                // 地图卸载会取消 _lifetime；导航必须持续到目标场景加载完成。
+                await _runtimeServices.Flow.EnterLevelAsync(card.Node.LevelId, CancellationToken.None);
+            }
+            catch (OperationCanceledException)
+            {
+                // 流程取消后，若地图仍存在则由 finally 恢复交互。
+            }
+            catch (Exception exception)
+            {
+                if (_globalCanvasLayer != null)
+                    _globalCanvasLayer.ShowFeedback(exception.Message);
+                Debug.LogException(exception);
+            }
+            finally
+            {
+                if (this != null)
+                {
+                    _enteringLevel = false;
+                    RefreshMapView();
+                }
+            }
+        }
+
+        /// <summary>取得当前白盒使用的中文节点状态名称。</summary>
+        /// <param name="state">查询计算出的节点状态。</param>
+        /// <returns>用于节点与资料卡的状态文字。</returns>
+        private static string MapStateText(LevelNodeState state)
+        {
+            return state switch
+            {
+                LevelNodeState.Locked => "未解锁",
+                LevelNodeState.Current => "当前关卡",
+                LevelNodeState.Completed => "已完成",
+                _ => "已解锁"
+            };
         }
 
         /// <summary>创建 MetaHub 壳层和四个页面占位。</summary>
@@ -285,12 +454,6 @@ namespace Game.Presentation
                     RectTransform nodeRect = nodeButton.GetComponent<RectTransform>();
                     nodeRect.sizeDelta = new Vector2(180f, 64f);
                     nodeRect.anchoredPosition = new Vector2(-480f + index * 240f, 0f);
-                    int selectedIndex = index;
-                    nodeButton.onClick.AddListener(() =>
-                    {
-                        mapController.FocusNode(selectedIndex);
-                        cardPanel.Show(null);
-                    });
                 }
                 Button storyButton = UiFactory.CreateButton("TestStory", page.transform, "Test Story");
                 RectTransform storyRect = storyButton.GetComponent<RectTransform>();
@@ -325,6 +488,8 @@ namespace Game.Presentation
         private void Navigate(MetaPageId page)
         {
             _router.Navigate(page);
+            if (page == MetaPageId.Map)
+                RefreshMapView();
             _ = PersistPageAsync(page);
         }
 
@@ -361,6 +526,8 @@ namespace Game.Presentation
             _characterPage.SetActive(page == MetaPageId.Character);
             _loungePage.SetActive(page == MetaPageId.Lounge);
             UpdatePageText(page);
+            if (page == MetaPageId.Map)
+                RefreshMapView();
         }
 
         /// <summary>Locale 变化回调。</summary>
@@ -369,6 +536,7 @@ namespace Game.Presentation
         {
             RefreshTexts();
             UpdatePageText(_router.CurrentPage);
+            RefreshMapView();
             if (_clockText != null && _runtimeServices != null)
                 _clockText.text = FormatClock(_runtimeServices.Clock.LocalNow, localeCode);
         }
@@ -458,7 +626,7 @@ namespace Game.Presentation
             if (page == null)
                 return;
 
-            Text label = page.GetComponentInChildren<Text>(true);
+            Text label = page.transform.Find("Placeholder")?.GetComponent<Text>();
             if (label != null)
                 label.text = text;
         }
@@ -491,6 +659,8 @@ namespace Game.Presentation
         /// <summary>创建 MetaHub 模型。</summary>
         /// <param name="page">页面。</param>
         /// <param name="nickname">昵称。</param>
+        /// <param name="chapterPlaceholder">当前章节的占位文字。</param>
+        /// <param name="localTime">用于显示的本地时间；未提供时取当前本地时间。</param>
         public MetaHubViewModel(MetaPageId page, string nickname,
             string chapterPlaceholder = "Chapter 01", DateTimeOffset? localTime = null)
         {
