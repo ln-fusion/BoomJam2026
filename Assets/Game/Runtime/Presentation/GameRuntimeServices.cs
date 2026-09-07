@@ -6,6 +6,9 @@ using Game.Contracts.Persistence;
 using Game.Contracts.Progression;
 using Game.Foundation;
 using Game.Progression;
+using Game.Content;
+using Game.Meta;
+using Newtonsoft.Json;
 
 namespace Game.Presentation
 {
@@ -17,6 +20,75 @@ namespace Game.Presentation
     {
         private readonly Func<ProfileSave, SaveReason, CancellationToken, Task<SaveResult>>
             _saveProfileAsync;
+        private readonly SemaphoreSlim _profileWriteGate = new SemaphoreSlim(1, 1);
+        private LevelId _whiteboxLevel;
+        private string _whiteboxRunId;
+
+        /// <summary>当前选关创建的白盒会话关卡；尚未选关时为空。</summary>
+        internal LevelId WhiteboxLevel => _whiteboxLevel;
+
+        /// <summary>记录当前白盒选关并生成独立提交 ID；不保存或授予完成事实。</summary>
+        /// <param name="levelId">通过解锁检查的关卡 ID。</param>
+        internal void BeginWhiteboxLevel(LevelId levelId)
+        {
+            _whiteboxLevel = levelId ?? throw new ArgumentNullException(nameof(levelId));
+            _whiteboxRunId = Guid.NewGuid().ToString("N");
+        }
+
+        /// <summary>结束白盒会话，防止后续未经过选关的场景使用旧关卡提交。</summary>
+        internal void EndWhiteboxLevel()
+        {
+            _whiteboxLevel = null;
+            _whiteboxRunId = null;
+        }
+
+        /// <summary>模拟当前关卡完成，保存独立档案副本后才发布进度；不生成成绩或剧情完成事实。</summary>
+        /// <param name="cancellationToken">取消等待或存档写入；写入成功后仍发布已持久化的副本。</param>
+        /// <returns>缺少档案、会话或解锁资格时失败；相同提交已保存时成功且不重复写入。</returns>
+        internal async Task<SaveResult> CompleteWhiteboxLevelAsync(CancellationToken cancellationToken)
+        {
+            LevelId level = _whiteboxLevel;
+            string runId = _whiteboxRunId;
+            await _profileWriteGate.WaitAsync(cancellationToken);
+            try
+            {
+                if (CurrentProfile == null || level == null || string.IsNullOrEmpty(runId))
+                    return SaveResult.Failure(new ErrorCode(ErrorCategory.Validation,
+                        "whitebox.session_missing"), "请从地图选择关卡后再模拟通关。");
+                if (CurrentProfile.AppliedCompletionRunIds.Contains(runId))
+                    return SaveResult.Success();
+                var query = new MetaMapQuery(new OfficialContentService(
+                    OfficialTestMapCatalog.CreateProvider()), ProgressQuery);
+                var card = query.GetLevelCard(level);
+                if (card == null || !card.Node.IsInteractable)
+                    return SaveResult.Failure(new ErrorCode(ErrorCategory.Validation,
+                        "whitebox.level_locked"), "当前关卡未解锁，不能提交通关。");
+
+                ProfileSave candidate = JsonConvert.DeserializeObject<ProfileSave>(
+                    JsonConvert.SerializeObject(CurrentProfile));
+                if (!candidate.CompletedLevelIds.Contains(level.Value))
+                    candidate.CompletedLevelIds.Add(level.Value);
+                LevelRecordSave record = candidate.LevelRecords.Find(item =>
+                    item != null && item.LevelId == level.Value);
+                if (record == null)
+                {
+                    record = new LevelRecordSave { LevelId = level.Value };
+                    candidate.LevelRecords.Add(record);
+                }
+                record.Completed = true;
+                candidate.AppliedCompletionRunIds.Add(runId);
+                candidate.LastMetaPageId = "map";
+                SaveResult result = await _saveProfileAsync(candidate, SaveReason.ProgressCommitted,
+                    cancellationToken);
+                if (result.IsSuccess)
+                    CurrentProfile = candidate;
+                return result;
+            }
+            finally
+            {
+                _profileWriteGate.Release();
+            }
+        }
 
         /// <summary>当前应用流程服务。</summary>
         public IGameFlowService Flow { get; }
@@ -81,12 +153,20 @@ namespace Game.Presentation
         public async Task<SaveResult> SaveLastMetaPageAsync(MetaPageId page,
             CancellationToken cancellationToken)
         {
-            if (CurrentProfile == null)
-                return SaveResult.Success();
+            await _profileWriteGate.WaitAsync(cancellationToken);
+            try
+            {
+                if (CurrentProfile == null)
+                    return SaveResult.Success();
 
-            CurrentProfile.LastMetaPageId = ToPersistedPageId(page);
-            return await _saveProfileAsync(CurrentProfile, SaveReason.PageChanged,
-                cancellationToken);
+                CurrentProfile.LastMetaPageId = ToPersistedPageId(page);
+                return await _saveProfileAsync(CurrentProfile, SaveReason.PageChanged,
+                    cancellationToken);
+            }
+            finally
+            {
+                _profileWriteGate.Release();
+            }
         }
 
         /// <summary>把页面枚举转换为存档稳定字符串。</summary>

@@ -5,6 +5,10 @@ using Game.Foundation;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using System.Threading;
+using System.Threading.Tasks;
+using Game.Flow;
+using UnityEngine.SceneManagement;
 
 namespace Game.Presentation
 {
@@ -21,6 +25,41 @@ namespace Game.Presentation
         private SettingsModalPresenter _settingsPresenter;
         private EventSystem _eventSystem;
         private GameRuntimeServices _runtimeServices;
+        private bool _returningToStartMenu;
+
+        /// <summary>当前已注入服务且未加载开始菜单时，允许从设置返回主菜单。</summary>
+        internal bool CanReturnToStartMenu => _runtimeServices != null &&
+            !SceneManager.GetSceneByName(SceneNames.StartMenu).isLoaded && !_returningToStartMenu;
+
+        /// <summary>关闭设置并返回开始菜单；不应用草稿，导航不随弹窗销毁取消。</summary>
+        /// <returns>导航请求结束时完成的任务；异常通过全局反馈显示。</returns>
+        internal async Task ReturnToStartMenuFromSettingsAsync()
+        {
+            if (!CanReturnToStartMenu)
+                return;
+            _returningToStartMenu = true;
+            CloseSettings();
+            SetModalBlocked(false);
+            try
+            {
+                await _runtimeServices.Flow.ReturnToStartMenuAsync(CancellationToken.None);
+                if (SceneManager.GetSceneByName(SceneNames.StartMenu).isLoaded)
+                    _runtimeServices.EndWhiteboxLevel();
+            }
+            catch (OperationCanceledException)
+            {
+                // 导航取消不应用设置或修改关卡进度。
+            }
+            catch (Exception exception)
+            {
+                ShowFeedback(exception.Message);
+                Debug.LogException(exception);
+            }
+            finally
+            {
+                _returningToStartMenu = false;
+            }
+        }
         private ContentAssetRegistry _contentRegistry;
 
         /// <summary>全局反馈文字节点。</summary>

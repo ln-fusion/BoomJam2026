@@ -9,6 +9,7 @@
         "Game.Progression",
         "Game.Flow",
         "Game.Story",
+        "Unity.Newtonsoft.Json",
         "Unity.Localization",
         "Unity.ResourceManager"
     ],

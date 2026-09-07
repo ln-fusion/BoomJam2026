@@ -234,6 +234,7 @@ namespace Game.Presentation
                     return;
 
                 // 地图卸载会取消 _lifetime；导航必须持续到目标场景加载完成。
+                _runtimeServices.BeginWhiteboxLevel(card.Node.LevelId);
                 await _runtimeServices.Flow.EnterLevelAsync(card.Node.LevelId, CancellationToken.None);
             }
             catch (OperationCanceledException)

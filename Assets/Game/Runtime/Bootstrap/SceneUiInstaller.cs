@@ -42,7 +42,7 @@ namespace Game.Bootstrap
             {
                 var returnButton = FindInScene<GameplayReturnButton>(scene);
                 if (returnButton != null)
-                    returnButton.Initialize(runtimeServices.Flow, globalCanvasLayer);
+                    returnButton.Initialize(runtimeServices, globalCanvasLayer);
                 else
                     Debug.LogWarning("Gameplay 场景缺少返回地图按钮。请检查已保存的场景。");
             }
