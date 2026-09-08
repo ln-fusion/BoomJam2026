@@ -28,12 +28,9 @@ namespace Game.Presentation
         {
             if (_runner != null)
                 return;
-            var provider = OfficialTestMapCatalog.CreateProvider();
-            _runner = new StoryRunner(id =>
-            {
-                provider.TryGetStory(id, out StoryDefinition definition);
-                return definition;
-            });
+            var content = runtimeServices?.Content ??
+                new OfficialContentService(OfficialTestMapCatalog.CreateProvider());
+            _runner = new StoryRunner(id => content.GetStory(id));
             GameObject panelObject = new GameObject("StoryDialoguePanel");
             panelObject.transform.SetParent(transform, false);
             _panel = panelObject.AddComponent<StoryDialoguePanel>();

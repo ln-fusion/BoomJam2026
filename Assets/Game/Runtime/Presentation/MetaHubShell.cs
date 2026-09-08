@@ -164,8 +164,7 @@ namespace Game.Presentation
         {
             if (_runtimeServices == null)
                 return;
-            _mapQuery = new MetaMapQuery(new OfficialContentService(
-                OfficialTestMapCatalog.CreateProvider()), _runtimeServices.ProgressQuery);
+            _mapQuery = new MetaMapQuery(_runtimeServices.Content, _runtimeServices.ProgressQuery);
             _mapNodes = _mapQuery.GetLevels(new MapId(mapId));
             for (int index = 0; index < _mapButtons.Count; index++)
             {
@@ -252,7 +251,7 @@ namespace Game.Presentation
                 var card = _mapQuery.GetLevelCard(_selectedLevelId);
                 StoryId story = postlude ? card?.PostludeReplay : card?.PreludeReplay;
                 if (story == null) return;
-                var content = new OfficialContentService(OfficialTestMapCatalog.CreateProvider());
+                var content = _runtimeServices.Content;
                 if (content.GetStory(story) == null)
                     throw new InvalidOperationException("找不到复播剧情：" + story.Value);
                 await _runtimeServices.Flow.PlayStoryAsync(story,

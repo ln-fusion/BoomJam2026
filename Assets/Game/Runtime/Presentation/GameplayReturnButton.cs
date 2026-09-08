@@ -115,7 +115,7 @@ namespace Game.Presentation
                 settingsButton.interactable = false;
             try
             {
-                var content = new OfficialContentService(OfficialTestMapCatalog.CreateProvider());
+                var content = _runtimeServices.Content;
                 string postludeId = content.GetLevel(_runtimeServices.WhiteboxLevel)?.PostludeStoryId;
                 StoryId postlude = string.IsNullOrWhiteSpace(postludeId) ? null : new StoryId(postludeId);
                 if (postlude != null && content.GetStory(postlude) == null)

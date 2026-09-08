@@ -1,0 +1,2130 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d55706bf29d9f9d4c8d62ab114a959a4, type: 3}
+  m_Name: OfficialContentCatalog
+  m_EditorClassIdentifier: 
+  levels:
+  - Header:
+      ContentId: official.level.test_01_01
+      Source: 0
+      FormatVersion: 1
+      ContentRevision: 1
+      MinGameVersion: 
+      MaxTestedGameVersion: 
+      PayloadSha256: 
+    LevelId: official.level.test_01_01
+    MapId: official.map.test_01
+    DisplayNameKey: level.test_01_01
+    SortOrder: 1
+    PreludeStoryId: official.story.prelude.test_01_01
+    PostludeStoryId: official.story.postlude.test_01_01
+    UnlockRequirement:
+      Mode: 0
+      RequiredLevelIds: []
+  - Header:
+      ContentId: official.level.test_01_02
+      Source: 0
+      FormatVersion: 1
+      ContentRevision: 1
+      MinGameVersion: 
+      MaxTestedGameVersion: 
+      PayloadSha256: 
+    LevelId: official.level.test_01_02
+    MapId: official.map.test_01
+    DisplayNameKey: level.test_01_02
+    SortOrder: 2
+    PreludeStoryId: official.story.prelude.test_01_02
+    PostludeStoryId: 
+    UnlockRequirement:
+      Mode: 1
+      RequiredLevelIds:
+      - official.level.test_01_01
+  - Header:
+      ContentId: official.level.test_01_03
+      Source: 0
+      FormatVersion: 1
+      ContentRevision: 1
+      MinGameVersion: 
+      MaxTestedGameVersion: 
+      PayloadSha256: 
+    LevelId: official.level.test_01_03
+    MapId: official.map.test_01
+    DisplayNameKey: level.test_01_03
+    SortOrder: 3
+    PreludeStoryId: official.story.prelude.test_01_03
+    PostludeStoryId: 
+    UnlockRequirement:
+      Mode: 1
+      RequiredLevelIds:
+      - official.level.test_01_02
+  - Header:
+      ContentId: official.level.test_01_04
+      Source: 0
+      FormatVersion: 1
+      ContentRevision: 1
+      MinGameVersion: 
+      MaxTestedGameVersion: 
+      PayloadSha256: 
+    LevelId: official.level.test_01_04
+    MapId: official.map.test_01
+    DisplayNameKey: level.test_01_04
+    SortOrder: 4
+    PreludeStoryId: official.story.prelude.test_01_04
+    PostludeStoryId: 
+    UnlockRequirement:
+      Mode: 1
+      RequiredLevelIds:
+      - official.level.test_01_03
+  - Header:
+      ContentId: official.level.test_01_05
+      Source: 0
+      FormatVersion: 1
+      ContentRevision: 1
+      MinGameVersion: 
+      MaxTestedGameVersion: 
+      PayloadSha256: 
+    LevelId: official.level.test_01_05
+    MapId: official.map.test_01
+    DisplayNameKey: level.test_01_05
+    SortOrder: 5
+    PreludeStoryId: official.story.prelude.test_01_05
+    PostludeStoryId: 
+    UnlockRequirement:
+      Mode: 1
+      RequiredLevelIds:
+      - official.level.test_01_04
+  - Header:
+      ContentId: official.level.test_02_01
+      Source: 0
+      FormatVersion: 1
+      ContentRevision: 1
+      MinGameVersion: 
+      MaxTestedGameVersion: 
+      PayloadSha256: 
+    LevelId: official.level.test_02_01
+    MapId: official.map.test_02
+    DisplayNameKey: level.test_02_01
+    SortOrder: 1
+    PreludeStoryId: official.story.prelude.test_02_01
+    PostludeStoryId: 
+    UnlockRequirement:
+      Mode: 0
+      RequiredLevelIds: []
+  - Header:
+      ContentId: official.level.test_02_02
+      Source: 0
+      FormatVersion: 1
+      ContentRevision: 1
+      MinGameVersion: 
+      MaxTestedGameVersion: 
+      PayloadSha256: 
+    LevelId: official.level.test_02_02
+    MapId: official.map.test_02
+    DisplayNameKey: level.test_02_02
+    SortOrder: 2
+    PreludeStoryId: official.story.prelude.test_02_02
+    PostludeStoryId: 
+    UnlockRequirement:
+      Mode: 1
+      RequiredLevelIds:
+      - official.level.test_02_01
+  - Header:
+      ContentId: official.level.test_02_03
+      Source: 0
+      FormatVersion: 1
+      ContentRevision: 1
+      MinGameVersion: 
+      MaxTestedGameVersion: 
+      PayloadSha256: 
+    LevelId: official.level.test_02_03
+    MapId: official.map.test_02
+    DisplayNameKey: level.test_02_03
+    SortOrder: 3
+    PreludeStoryId: official.story.prelude.test_02_03
+    PostludeStoryId: 
+    UnlockRequirement:
+      Mode: 1
+      RequiredLevelIds:
+      - official.level.test_02_02
+  - Header:
+      ContentId: official.level.test_02_04
+      Source: 0
+      FormatVersion: 1
+      ContentRevision: 1
+      MinGameVersion: 
+      MaxTestedGameVersion: 
+      PayloadSha256: 
+    LevelId: official.level.test_02_04
+    MapId: official.map.test_02
+    DisplayNameKey: level.test_02_04
+    SortOrder: 4
+    PreludeStoryId: official.story.prelude.test_02_04
+    PostludeStoryId: 
+    UnlockRequirement:
+      Mode: 1
+      RequiredLevelIds:
+      - official.level.test_02_03
+  - Header:
+      ContentId: official.level.test_02_05
+      Source: 0
+      FormatVersion: 1
+      ContentRevision: 1
+      MinGameVersion: 
+      MaxTestedGameVersion: 
+      PayloadSha256: 
+    LevelId: official.level.test_02_05
+    MapId: official.map.test_02
+    DisplayNameKey: level.test_02_05
+    SortOrder: 5
+    PreludeStoryId: official.story.prelude.test_02_05
+    PostludeStoryId: 
+    UnlockRequirement:
+      Mode: 1
+      RequiredLevelIds:
+      - official.level.test_02_04
+  - Header:
+      ContentId: official.level.test_03_01
+      Source: 0
+      FormatVersion: 1
+      ContentRevision: 1
+      MinGameVersion: 
+      MaxTestedGameVersion: 
+      PayloadSha256: 
+    LevelId: official.level.test_03_01
+    MapId: official.map.test_03
+    DisplayNameKey: level.test_03_01
+    SortOrder: 1
+    PreludeStoryId: official.story.prelude.test_03_01
+    PostludeStoryId: 
+    UnlockRequirement:
+      Mode: 0
+      RequiredLevelIds: []
+  - Header:
+      ContentId: official.level.test_03_02
+      Source: 0
+      FormatVersion: 1
+      ContentRevision: 1
+      MinGameVersion: 
+      MaxTestedGameVersion: 
+      PayloadSha256: 
+    LevelId: official.level.test_03_02
+    MapId: official.map.test_03
+    DisplayNameKey: level.test_03_02
+    SortOrder: 2
+    PreludeStoryId: official.story.prelude.test_03_02
+    PostludeStoryId: 
+    UnlockRequirement:
+      Mode: 1
+      RequiredLevelIds:
+      - official.level.test_03_01
+  - Header:
+      ContentId: official.level.test_03_03
+      Source: 0
+      FormatVersion: 1
+      ContentRevision: 1
+      MinGameVersion: 
+      MaxTestedGameVersion: 
+      PayloadSha256: 
+    LevelId: official.level.test_03_03
+    MapId: official.map.test_03
+    DisplayNameKey: level.test_03_03
+    SortOrder: 3
+    PreludeStoryId: official.story.prelude.test_03_03
+    PostludeStoryId: 
+    UnlockRequirement:
+      Mode: 1
+      RequiredLevelIds:
+      - official.level.test_03_02
+  - Header:
+      ContentId: official.level.test_03_04
+      Source: 0
+      FormatVersion: 1
+      ContentRevision: 1
+      MinGameVersion: 
+      MaxTestedGameVersion: 
+      PayloadSha256: 
+    LevelId: official.level.test_03_04
+    MapId: official.map.test_03
+    DisplayNameKey: level.test_03_04
+    SortOrder: 4
+    PreludeStoryId: official.story.prelude.test_03_04
+    PostludeStoryId: 
+    UnlockRequirement:
+      Mode: 1
+      RequiredLevelIds:
+      - official.level.test_03_03
+  - Header:
+      ContentId: official.level.test_03_05
+      Source: 0
+      FormatVersion: 1
+      ContentRevision: 1
+      MinGameVersion: 
+      MaxTestedGameVersion: 
+      PayloadSha256: 
+    LevelId: official.level.test_03_05
+    MapId: official.map.test_03
+    DisplayNameKey: level.test_03_05
+    SortOrder: 5
+    PreludeStoryId: official.story.prelude.test_03_05
+    PostludeStoryId: 
+    UnlockRequirement:
+      Mode: 1
+      RequiredLevelIds:
+      - official.level.test_03_04
+  - Header:
+      ContentId: official.level.test_04_01
+      Source: 0
+      FormatVersion: 1
+      ContentRevision: 1
+      MinGameVersion: 
+      MaxTestedGameVersion: 
+      PayloadSha256: 
+    LevelId: official.level.test_04_01
+    MapId: official.map.test_04
+    DisplayNameKey: level.test_04_01
+    SortOrder: 1
+    PreludeStoryId: official.story.prelude.test_04_01
+    PostludeStoryId: 
+    UnlockRequirement:
+      Mode: 0
+      RequiredLevelIds: []
+  - Header:
+      ContentId: official.level.test_04_02
+      Source: 0
+      FormatVersion: 1
+      ContentRevision: 1
+      MinGameVersion: 
+      MaxTestedGameVersion: 
+      PayloadSha256: 
+    LevelId: official.level.test_04_02
+    MapId: official.map.test_04
+    DisplayNameKey: level.test_04_02
+    SortOrder: 2
+    PreludeStoryId: official.story.prelude.test_04_02
+    PostludeStoryId: 
+    UnlockRequirement:
+      Mode: 1
+      RequiredLevelIds:
+      - official.level.test_04_01
+  - Header:
+      ContentId: official.level.test_04_03
+      Source: 0
+      FormatVersion: 1
+      ContentRevision: 1
+      MinGameVersion: 
+      MaxTestedGameVersion: 
+      PayloadSha256: 
+    LevelId: official.level.test_04_03
+    MapId: official.map.test_04
+    DisplayNameKey: level.test_04_03
+    SortOrder: 3
+    PreludeStoryId: official.story.prelude.test_04_03
+    PostludeStoryId: 
+    UnlockRequirement:
+      Mode: 1
+      RequiredLevelIds:
+      - official.level.test_04_02
+  - Header:
+      ContentId: official.level.test_04_04
+      Source: 0
+      FormatVersion: 1
+      ContentRevision: 1
+      MinGameVersion: 
+      MaxTestedGameVersion: 
+      PayloadSha256: 
+    LevelId: official.level.test_04_04
+    MapId: official.map.test_04
+    DisplayNameKey: level.test_04_04
+    SortOrder: 4
+    PreludeStoryId: official.story.prelude.test_04_04
+    PostludeStoryId: 
+    UnlockRequirement:
+      Mode: 1
+      RequiredLevelIds:
+      - official.level.test_04_03
+  - Header:
+      ContentId: official.level.test_04_05
+      Source: 0
+      FormatVersion: 1
+      ContentRevision: 1
+      MinGameVersion: 
+      MaxTestedGameVersion: 
+      PayloadSha256: 
+    LevelId: official.level.test_04_05
+    MapId: official.map.test_04
+    DisplayNameKey: level.test_04_05
+    SortOrder: 5
+    PreludeStoryId: official.story.prelude.test_04_05
+    PostludeStoryId: 
+    UnlockRequirement:
+      Mode: 1
+      RequiredLevelIds:
+      - official.level.test_04_04
+  - Header:
+      ContentId: official.level.test_05_01
+      Source: 0
+      FormatVersion: 1
+      ContentRevision: 1
+      MinGameVersion: 
+      MaxTestedGameVersion: 
+      PayloadSha256: 
+    LevelId: official.level.test_05_01
+    MapId: official.map.test_05
+    DisplayNameKey: level.test_05_01
+    SortOrder: 1
+    PreludeStoryId: official.story.prelude.test_05_01
+    PostludeStoryId: 
+    UnlockRequirement:
+      Mode: 0
+      RequiredLevelIds: []
+  - Header:
+      ContentId: official.level.test_05_02
+      Source: 0
+      FormatVersion: 1
+      ContentRevision: 1
+      MinGameVersion: 
+      MaxTestedGameVersion: 
+      PayloadSha256: 
+    LevelId: official.level.test_05_02
+    MapId: official.map.test_05
+    DisplayNameKey: level.test_05_02
+    SortOrder: 2
+    PreludeStoryId: official.story.prelude.test_05_02
+    PostludeStoryId: 
+    UnlockRequirement:
+      Mode: 1
+      RequiredLevelIds:
+      - official.level.test_05_01
+  - Header:
+      ContentId: official.level.test_05_03
+      Source: 0
+      FormatVersion: 1
+      ContentRevision: 1
+      MinGameVersion: 
+      MaxTestedGameVersion: 
+      PayloadSha256: 
+    LevelId: official.level.test_05_03
+    MapId: official.map.test_05
+    DisplayNameKey: level.test_05_03
+    SortOrder: 3
+    PreludeStoryId: official.story.prelude.test_05_03
+    PostludeStoryId: 
+    UnlockRequirement:
+      Mode: 1
+      RequiredLevelIds:
+      - official.level.test_05_02
+  - Header:
+      ContentId: official.level.test_05_04
+      Source: 0
+      FormatVersion: 1
+      ContentRevision: 1
+      MinGameVersion: 
+      MaxTestedGameVersion: 
+      PayloadSha256: 
+    LevelId: official.level.test_05_04
+    MapId: official.map.test_05
+    DisplayNameKey: level.test_05_04
+    SortOrder: 4
+    PreludeStoryId: official.story.prelude.test_05_04
+    PostludeStoryId: 
+    UnlockRequirement:
+      Mode: 1
+      RequiredLevelIds:
+      - official.level.test_05_03
+  - Header:
+      ContentId: official.level.test_05_05
+      Source: 0
+      FormatVersion: 1
+      ContentRevision: 1
+      MinGameVersion: 
+      MaxTestedGameVersion: 
+      PayloadSha256: 
+    LevelId: official.level.test_05_05
+    MapId: official.map.test_05
+    DisplayNameKey: level.test_05_05
+    SortOrder: 5
+    PreludeStoryId: official.story.prelude.test_05_05
+    PostludeStoryId: 
+    UnlockRequirement:
+      Mode: 1
+      RequiredLevelIds:
+      - official.level.test_05_04
+  - Header:
+      ContentId: official.level.test_06_01
+      Source: 0
+      FormatVersion: 1
+      ContentRevision: 1
+      MinGameVersion: 
+      MaxTestedGameVersion: 
+      PayloadSha256: 
+    LevelId: official.level.test_06_01
+    MapId: official.map.test_06
+    DisplayNameKey: level.test_06_01
+    SortOrder: 1
+    PreludeStoryId: official.story.prelude.test_06_01
+    PostludeStoryId: 
+    UnlockRequirement:
+      Mode: 0
+      RequiredLevelIds: []
+  - Header:
+      ContentId: official.level.test_06_02
+      Source: 0
+      FormatVersion: 1
+      ContentRevision: 1
+      MinGameVersion: 
+      MaxTestedGameVersion: 
+      PayloadSha256: 
+    LevelId: official.level.test_06_02
+    MapId: official.map.test_06
+    DisplayNameKey: level.test_06_02
+    SortOrder: 2
+    PreludeStoryId: official.story.prelude.test_06_02
+    PostludeStoryId: 
+    UnlockRequirement:
+      Mode: 1
+      RequiredLevelIds:
+      - official.level.test_06_01
+  - Header:
+      ContentId: official.level.test_06_03
+      Source: 0
+      FormatVersion: 1
+      ContentRevision: 1
+      MinGameVersion: 
+      MaxTestedGameVersion: 
+      PayloadSha256: 
+    LevelId: official.level.test_06_03
+    MapId: official.map.test_06
+    DisplayNameKey: level.test_06_03
+    SortOrder: 3
+    PreludeStoryId: official.story.prelude.test_06_03
+    PostludeStoryId: 
+    UnlockRequirement:
+      Mode: 1
+      RequiredLevelIds:
+      - official.level.test_06_02
+  - Header:
+      ContentId: official.level.test_06_04
+      Source: 0
+      FormatVersion: 1
+      ContentRevision: 1
+      MinGameVersion: 
+      MaxTestedGameVersion: 
+      PayloadSha256: 
+    LevelId: official.level.test_06_04
+    MapId: official.map.test_06
+    DisplayNameKey: level.test_06_04
+    SortOrder: 4
+    PreludeStoryId: official.story.prelude.test_06_04
+    PostludeStoryId: 
+    UnlockRequirement:
+      Mode: 1
+      RequiredLevelIds:
+      - official.level.test_06_03
+  - Header:
+      ContentId: official.level.test_06_05
+      Source: 0
+      FormatVersion: 1
+      ContentRevision: 1
+      MinGameVersion: 
+      MaxTestedGameVersion: 
+      PayloadSha256: 
+    LevelId: official.level.test_06_05
+    MapId: official.map.test_06
+    DisplayNameKey: level.test_06_05
+    SortOrder: 5
+    PreludeStoryId: official.story.prelude.test_06_05
+    PostludeStoryId: 
+    UnlockRequirement:
+      Mode: 1
+      RequiredLevelIds:
+      - official.level.test_06_04
+  maps:
+  - Header:
+      ContentId: official.map.test_01
+      Source: 0
+      FormatVersion: 1
+      ContentRevision: 1
+      MinGameVersion: 
+      MaxTestedGameVersion: 
+      PayloadSha256: 
+    MapId: official.map.test_01
+    DisplayNameKey: map.test_01
+    SortOrder: 1
+    Levels: []
+  - Header:
+      ContentId: official.map.test_02
+      Source: 0
+      FormatVersion: 1
+      ContentRevision: 1
+      MinGameVersion: 
+      MaxTestedGameVersion: 
+      PayloadSha256: 
+    MapId: official.map.test_02
+    DisplayNameKey: map.test_02
+    SortOrder: 2
+    Levels: []
+  - Header:
+      ContentId: official.map.test_03
+      Source: 0
+      FormatVersion: 1
+      ContentRevision: 1
+      MinGameVersion: 
+      MaxTestedGameVersion: 
+      PayloadSha256: 
+    MapId: official.map.test_03
+    DisplayNameKey: map.test_03
+    SortOrder: 3
+    Levels: []
+  - Header:
+      ContentId: official.map.test_04
+      Source: 0
+      FormatVersion: 1
+      ContentRevision: 1
+      MinGameVersion: 
+      MaxTestedGameVersion: 
+      PayloadSha256: 
+    MapId: official.map.test_04
+    DisplayNameKey: map.test_04
+    SortOrder: 4
+    Levels: []
+  - Header:
+      ContentId: official.map.test_05
+      Source: 0
+      FormatVersion: 1
+      ContentRevision: 1
+      MinGameVersion: 
+      MaxTestedGameVersion: 
+      PayloadSha256: 
+    MapId: official.map.test_05
+    DisplayNameKey: map.test_05
+    SortOrder: 5
+    Levels: []
+  - Header:
+      ContentId: official.map.test_06
+      Source: 0
+      FormatVersion: 1
+      ContentRevision: 1
+      MinGameVersion: 
+      MaxTestedGameVersion: 
+      PayloadSha256: 
+    MapId: official.map.test_06
+    DisplayNameKey: map.test_06
+    SortOrder: 6
+    Levels: []
+  stories:
+  - Header:
+      ContentId: official.story.c06_branch
+      Source: 0
+      FormatVersion: 1
+      ContentRevision: 1
+      MinGameVersion: 
+      MaxTestedGameVersion: 
+      PayloadSha256: 
+    StoryId: official.story.c06_branch
+    StartNodeId: start
+    Nodes:
+    - NodeId: start
+      Type: 0
+      TextKey: story.c06.start
+      NextNodeId: choice
+      Choices: []
+    - NodeId: choice
+      Type: 1
+      TextKey: 
+      NextNodeId: 
+      Choices:
+      - ChoiceId: left
+        TextKey: story.c06.left
+        NextNodeId: left_path
+      - ChoiceId: right
+        TextKey: story.c06.right
+        NextNodeId: right_path
+    - NodeId: left_path
+      Type: 2
+      TextKey: 
+      NextNodeId: merge
+      Choices: []
+    - NodeId: right_path
+      Type: 2
+      TextKey: 
+      NextNodeId: merge
+      Choices: []
+    - NodeId: merge
+      Type: 0
+      TextKey: story.c06.merge
+      NextNodeId: end
+      Choices: []
+    - NodeId: end
+      Type: 3
+      TextKey: 
+      NextNodeId: 
+      Choices: []
+  - Header:
+      ContentId: official.story.prelude.test_01_01
+      Source: 0
+      FormatVersion: 1
+      ContentRevision: 1
+      MinGameVersion: 
+      MaxTestedGameVersion: 
+      PayloadSha256: 
+    StoryId: official.story.prelude.test_01_01
+    StartNodeId: start
+    Nodes:
+    - NodeId: start
+      Type: 0
+      TextKey: story.c06.start
+      NextNodeId: choice
+      Choices: []
+    - NodeId: choice
+      Type: 1
+      TextKey: 
+      NextNodeId: 
+      Choices:
+      - ChoiceId: left
+        TextKey: story.c06.left
+        NextNodeId: left_path
+      - ChoiceId: right
+        TextKey: story.c06.right
+        NextNodeId: right_path
+    - NodeId: left_path
+      Type: 2
+      TextKey: 
+      NextNodeId: merge
+      Choices: []
+    - NodeId: right_path
+      Type: 2
+      TextKey: 
+      NextNodeId: merge
+      Choices: []
+    - NodeId: merge
+      Type: 0
+      TextKey: story.c06.merge
+      NextNodeId: end
+      Choices: []
+    - NodeId: end
+      Type: 3
+      TextKey: 
+      NextNodeId: 
+      Choices: []
+  - Header:
+      ContentId: official.story.postlude.test_01_01
+      Source: 0
+      FormatVersion: 1
+      ContentRevision: 1
+      MinGameVersion: 
+      MaxTestedGameVersion: 
+      PayloadSha256: 
+    StoryId: official.story.postlude.test_01_01
+    StartNodeId: start
+    Nodes:
+    - NodeId: start
+      Type: 0
+      TextKey: story.c06.start
+      NextNodeId: choice
+      Choices: []
+    - NodeId: choice
+      Type: 1
+      TextKey: 
+      NextNodeId: 
+      Choices:
+      - ChoiceId: left
+        TextKey: story.c06.left
+        NextNodeId: left_path
+      - ChoiceId: right
+        TextKey: story.c06.right
+        NextNodeId: right_path
+    - NodeId: left_path
+      Type: 2
+      TextKey: 
+      NextNodeId: merge
+      Choices: []
+    - NodeId: right_path
+      Type: 2
+      TextKey: 
+      NextNodeId: merge
+      Choices: []
+    - NodeId: merge
+      Type: 0
+      TextKey: story.c06.merge
+      NextNodeId: end
+      Choices: []
+    - NodeId: end
+      Type: 3
+      TextKey: 
+      NextNodeId: 
+      Choices: []
+  - Header:
+      ContentId: official.story.prelude.test_01_02
+      Source: 0
+      FormatVersion: 1
+      ContentRevision: 1
+      MinGameVersion: 
+      MaxTestedGameVersion: 
+      PayloadSha256: 
+    StoryId: official.story.prelude.test_01_02
+    StartNodeId: start
+    Nodes:
+    - NodeId: start
+      Type: 0
+      TextKey: story.c06.start
+      NextNodeId: choice
+      Choices: []
+    - NodeId: choice
+      Type: 1
+      TextKey: 
+      NextNodeId: 
+      Choices:
+      - ChoiceId: left
+        TextKey: story.c06.left
+        NextNodeId: left_path
+      - ChoiceId: right
+        TextKey: story.c06.right
+        NextNodeId: right_path
+    - NodeId: left_path
+      Type: 2
+      TextKey: 
+      NextNodeId: merge
+      Choices: []
+    - NodeId: right_path
+      Type: 2
+      TextKey: 
+      NextNodeId: merge
+      Choices: []
+    - NodeId: merge
+      Type: 0
+      TextKey: story.c06.merge
+      NextNodeId: end
+      Choices: []
+    - NodeId: end
+      Type: 3
+      TextKey: 
+      NextNodeId: 
+      Choices: []
+  - Header:
+      ContentId: official.story.prelude.test_01_03
+      Source: 0
+      FormatVersion: 1
+      ContentRevision: 1
+      MinGameVersion: 
+      MaxTestedGameVersion: 
+      PayloadSha256: 
+    StoryId: official.story.prelude.test_01_03
+    StartNodeId: start
+    Nodes:
+    - NodeId: start
+      Type: 0
+      TextKey: story.c06.start
+      NextNodeId: choice
+      Choices: []
+    - NodeId: choice
+      Type: 1
+      TextKey: 
+      NextNodeId: 
+      Choices:
+      - ChoiceId: left
+        TextKey: story.c06.left
+        NextNodeId: left_path
+      - ChoiceId: right
+        TextKey: story.c06.right
+        NextNodeId: right_path
+    - NodeId: left_path
+      Type: 2
+      TextKey: 
+      NextNodeId: merge
+      Choices: []
+    - NodeId: right_path
+      Type: 2
+      TextKey: 
+      NextNodeId: merge
+      Choices: []
+    - NodeId: merge
+      Type: 0
+      TextKey: story.c06.merge
+      NextNodeId: end
+      Choices: []
+    - NodeId: end
+      Type: 3
+      TextKey: 
+      NextNodeId: 
+      Choices: []
+  - Header:
+      ContentId: official.story.prelude.test_01_04
+      Source: 0
+      FormatVersion: 1
+      ContentRevision: 1
+      MinGameVersion: 
+      MaxTestedGameVersion: 
+      PayloadSha256: 
+    StoryId: official.story.prelude.test_01_04
+    StartNodeId: start
+    Nodes:
+    - NodeId: start
+      Type: 0
+      TextKey: story.c06.start
+      NextNodeId: choice
+      Choices: []
+    - NodeId: choice
+      Type: 1
+      TextKey: 
+      NextNodeId: 
+      Choices:
+      - ChoiceId: left
+        TextKey: story.c06.left
+        NextNodeId: left_path
+      - ChoiceId: right
+        TextKey: story.c06.right
+        NextNodeId: right_path
+    - NodeId: left_path
+      Type: 2
+      TextKey: 
+      NextNodeId: merge
+      Choices: []
+    - NodeId: right_path
+      Type: 2
+      TextKey: 
+      NextNodeId: merge
+      Choices: []
+    - NodeId: merge
+      Type: 0
+      TextKey: story.c06.merge
+      NextNodeId: end
+      Choices: []
+    - NodeId: end
+      Type: 3
+      TextKey: 
+      NextNodeId: 
+      Choices: []
+  - Header:
+      ContentId: official.story.prelude.test_01_05
+      Source: 0
+      FormatVersion: 1
+      ContentRevision: 1
+      MinGameVersion: 
+      MaxTestedGameVersion: 
+      PayloadSha256: 
+    StoryId: official.story.prelude.test_01_05
+    StartNodeId: start
+    Nodes:
+    - NodeId: start
+      Type: 0
+      TextKey: story.c06.start
+      NextNodeId: choice
+      Choices: []
+    - NodeId: choice
+      Type: 1
+      TextKey: 
+      NextNodeId: 
+      Choices:
+      - ChoiceId: left
+        TextKey: story.c06.left
+        NextNodeId: left_path
+      - ChoiceId: right
+        TextKey: story.c06.right
+        NextNodeId: right_path
+    - NodeId: left_path
+      Type: 2
+      TextKey: 
+      NextNodeId: merge
+      Choices: []
+    - NodeId: right_path
+      Type: 2
+      TextKey: 
+      NextNodeId: merge
+      Choices: []
+    - NodeId: merge
+      Type: 0
+      TextKey: story.c06.merge
+      NextNodeId: end
+      Choices: []
+    - NodeId: end
+      Type: 3
+      TextKey: 
+      NextNodeId: 
+      Choices: []
+  - Header:
+      ContentId: official.story.prelude.test_02_01
+      Source: 0
+      FormatVersion: 1
+      ContentRevision: 1
+      MinGameVersion: 
+      MaxTestedGameVersion: 
+      PayloadSha256: 
+    StoryId: official.story.prelude.test_02_01
+    StartNodeId: start
+    Nodes:
+    - NodeId: start
+      Type: 0
+      TextKey: story.c06.start
+      NextNodeId: choice
+      Choices: []
+    - NodeId: choice
+      Type: 1
+      TextKey: 
+      NextNodeId: 
+      Choices:
+      - ChoiceId: left
+        TextKey: story.c06.left
+        NextNodeId: left_path
+      - ChoiceId: right
+        TextKey: story.c06.right
+        NextNodeId: right_path
+    - NodeId: left_path
+      Type: 2
+      TextKey: 
+      NextNodeId: merge
+      Choices: []
+    - NodeId: right_path
+      Type: 2
+      TextKey: 
+      NextNodeId: merge
+      Choices: []
+    - NodeId: merge
+      Type: 0
+      TextKey: story.c06.merge
+      NextNodeId: end
+      Choices: []
+    - NodeId: end
+      Type: 3
+      TextKey: 
+      NextNodeId: 
+      Choices: []
+  - Header:
+      ContentId: official.story.prelude.test_02_02
+      Source: 0
+      FormatVersion: 1
+      ContentRevision: 1
+      MinGameVersion: 
+      MaxTestedGameVersion: 
+      PayloadSha256: 
+    StoryId: official.story.prelude.test_02_02
+    StartNodeId: start
+    Nodes:
+    - NodeId: start
+      Type: 0
+      TextKey: story.c06.start
+      NextNodeId: choice
+      Choices: []
+    - NodeId: choice
+      Type: 1
+      TextKey: 
+      NextNodeId: 
+      Choices:
+      - ChoiceId: left
+        TextKey: story.c06.left
+        NextNodeId: left_path
+      - ChoiceId: right
+        TextKey: story.c06.right
+        NextNodeId: right_path
+    - NodeId: left_path
+      Type: 2
+      TextKey: 
+      NextNodeId: merge
+      Choices: []
+    - NodeId: right_path
+      Type: 2
+      TextKey: 
+      NextNodeId: merge
+      Choices: []
+    - NodeId: merge
+      Type: 0
+      TextKey: story.c06.merge
+      NextNodeId: end
+      Choices: []
+    - NodeId: end
+      Type: 3
+      TextKey: 
+      NextNodeId: 
+      Choices: []
+  - Header:
+      ContentId: official.story.prelude.test_02_03
+      Source: 0
+      FormatVersion: 1
+      ContentRevision: 1
+      MinGameVersion: 
+      MaxTestedGameVersion: 
+      PayloadSha256: 
+    StoryId: official.story.prelude.test_02_03
+    StartNodeId: start
+    Nodes:
+    - NodeId: start
+      Type: 0
+      TextKey: story.c06.start
+      NextNodeId: choice
+      Choices: []
+    - NodeId: choice
+      Type: 1
+      TextKey: 
+      NextNodeId: 
+      Choices:
+      - ChoiceId: left
+        TextKey: story.c06.left
+        NextNodeId: left_path
+      - ChoiceId: right
+        TextKey: story.c06.right
+        NextNodeId: right_path
+    - NodeId: left_path
+      Type: 2
+      TextKey: 
+      NextNodeId: merge
+      Choices: []
+    - NodeId: right_path
+      Type: 2
+      TextKey: 
+      NextNodeId: merge
+      Choices: []
+    - NodeId: merge
+      Type: 0
+      TextKey: story.c06.merge
+      NextNodeId: end
+      Choices: []
+    - NodeId: end
+      Type: 3
+      TextKey: 
+      NextNodeId: 
+      Choices: []
+  - Header:
+      ContentId: official.story.prelude.test_02_04
+      Source: 0
+      FormatVersion: 1
+      ContentRevision: 1
+      MinGameVersion: 
+      MaxTestedGameVersion: 
+      PayloadSha256: 
+    StoryId: official.story.prelude.test_02_04
+    StartNodeId: start
+    Nodes:
+    - NodeId: start
+      Type: 0
+      TextKey: story.c06.start
+      NextNodeId: choice
+      Choices: []
+    - NodeId: choice
+      Type: 1
+      TextKey: 
+      NextNodeId: 
+      Choices:
+      - ChoiceId: left
+        TextKey: story.c06.left
+        NextNodeId: left_path
+      - ChoiceId: right
+        TextKey: story.c06.right
+        NextNodeId: right_path
+    - NodeId: left_path
+      Type: 2
+      TextKey: 
+      NextNodeId: merge
+      Choices: []
+    - NodeId: right_path
+      Type: 2
+      TextKey: 
+      NextNodeId: merge
+      Choices: []
+    - NodeId: merge
+      Type: 0
+      TextKey: story.c06.merge
+      NextNodeId: end
+      Choices: []
+    - NodeId: end
+      Type: 3
+      TextKey: 
+      NextNodeId: 
+      Choices: []
+  - Header:
+      ContentId: official.story.prelude.test_02_05
+      Source: 0
+      FormatVersion: 1
+      ContentRevision: 1
+      MinGameVersion: 
+      MaxTestedGameVersion: 
+      PayloadSha256: 
+    StoryId: official.story.prelude.test_02_05
+    StartNodeId: start
+    Nodes:
+    - NodeId: start
+      Type: 0
+      TextKey: story.c06.start
+      NextNodeId: choice
+      Choices: []
+    - NodeId: choice
+      Type: 1
+      TextKey: 
+      NextNodeId: 
+      Choices:
+      - ChoiceId: left
+        TextKey: story.c06.left
+        NextNodeId: left_path
+      - ChoiceId: right
+        TextKey: story.c06.right
+        NextNodeId: right_path
+    - NodeId: left_path
+      Type: 2
+      TextKey: 
+      NextNodeId: merge
+      Choices: []
+    - NodeId: right_path
+      Type: 2
+      TextKey: 
+      NextNodeId: merge
+      Choices: []
+    - NodeId: merge
+      Type: 0
+      TextKey: story.c06.merge
+      NextNodeId: end
+      Choices: []
+    - NodeId: end
+      Type: 3
+      TextKey: 
+      NextNodeId: 
+      Choices: []
+  - Header:
+      ContentId: official.story.prelude.test_03_01
+      Source: 0
+      FormatVersion: 1
+      ContentRevision: 1
+      MinGameVersion: 
+      MaxTestedGameVersion: 
+      PayloadSha256: 
+    StoryId: official.story.prelude.test_03_01
+    StartNodeId: start
+    Nodes:
+    - NodeId: start
+      Type: 0
+      TextKey: story.c06.start
+      NextNodeId: choice
+      Choices: []
+    - NodeId: choice
+      Type: 1
+      TextKey: 
+      NextNodeId: 
+      Choices:
+      - ChoiceId: left
+        TextKey: story.c06.left
+        NextNodeId: left_path
+      - ChoiceId: right
+        TextKey: story.c06.right
+        NextNodeId: right_path
+    - NodeId: left_path
+      Type: 2
+      TextKey: 
+      NextNodeId: merge
+      Choices: []
+    - NodeId: right_path
+      Type: 2
+      TextKey: 
+      NextNodeId: merge
+      Choices: []
+    - NodeId: merge
+      Type: 0
+      TextKey: story.c06.merge
+      NextNodeId: end
+      Choices: []
+    - NodeId: end
+      Type: 3
+      TextKey: 
+      NextNodeId: 
+      Choices: []
+  - Header:
+      ContentId: official.story.prelude.test_03_02
+      Source: 0
+      FormatVersion: 1
+      ContentRevision: 1
+      MinGameVersion: 
+      MaxTestedGameVersion: 
+      PayloadSha256: 
+    StoryId: official.story.prelude.test_03_02
+    StartNodeId: start
+    Nodes:
+    - NodeId: start
+      Type: 0
+      TextKey: story.c06.start
+      NextNodeId: choice
+      Choices: []
+    - NodeId: choice
+      Type: 1
+      TextKey: 
+      NextNodeId: 
+      Choices:
+      - ChoiceId: left
+        TextKey: story.c06.left
+        NextNodeId: left_path
+      - ChoiceId: right
+        TextKey: story.c06.right
+        NextNodeId: right_path
+    - NodeId: left_path
+      Type: 2
+      TextKey: 
+      NextNodeId: merge
+      Choices: []
+    - NodeId: right_path
+      Type: 2
+      TextKey: 
+      NextNodeId: merge
+      Choices: []
+    - NodeId: merge
+      Type: 0
+      TextKey: story.c06.merge
+      NextNodeId: end
+      Choices: []
+    - NodeId: end
+      Type: 3
+      TextKey: 
+      NextNodeId: 
+      Choices: []
+  - Header:
+      ContentId: official.story.prelude.test_03_03
+      Source: 0
+      FormatVersion: 1
+      ContentRevision: 1
+      MinGameVersion: 
+      MaxTestedGameVersion: 
+      PayloadSha256: 
+    StoryId: official.story.prelude.test_03_03
+    StartNodeId: start
+    Nodes:
+    - NodeId: start
+      Type: 0
+      TextKey: story.c06.start
+      NextNodeId: choice
+      Choices: []
+    - NodeId: choice
+      Type: 1
+      TextKey: 
+      NextNodeId: 
+      Choices:
+      - ChoiceId: left
+        TextKey: story.c06.left
+        NextNodeId: left_path
+      - ChoiceId: right
+        TextKey: story.c06.right
+        NextNodeId: right_path
+    - NodeId: left_path
+      Type: 2
+      TextKey: 
+      NextNodeId: merge
+      Choices: []
+    - NodeId: right_path
+      Type: 2
+      TextKey: 
+      NextNodeId: merge
+      Choices: []
+    - NodeId: merge
+      Type: 0
+      TextKey: story.c06.merge
+      NextNodeId: end
+      Choices: []
+    - NodeId: end
+      Type: 3
+      TextKey: 
+      NextNodeId: 
+      Choices: []
+  - Header:
+      ContentId: official.story.prelude.test_03_04
+      Source: 0
+      FormatVersion: 1
+      ContentRevision: 1
+      MinGameVersion: 
+      MaxTestedGameVersion: 
+      PayloadSha256: 
+    StoryId: official.story.prelude.test_03_04
+    StartNodeId: start
+    Nodes:
+    - NodeId: start
+      Type: 0
+      TextKey: story.c06.start
+      NextNodeId: choice
+      Choices: []
+    - NodeId: choice
+      Type: 1
+      TextKey: 
+      NextNodeId: 
+      Choices:
+      - ChoiceId: left
+        TextKey: story.c06.left
+        NextNodeId: left_path
+      - ChoiceId: right
+        TextKey: story.c06.right
+        NextNodeId: right_path
+    - NodeId: left_path
+      Type: 2
+      TextKey: 
+      NextNodeId: merge
+      Choices: []
+    - NodeId: right_path
+      Type: 2
+      TextKey: 
+      NextNodeId: merge
+      Choices: []
+    - NodeId: merge
+      Type: 0
+      TextKey: story.c06.merge
+      NextNodeId: end
+      Choices: []
+    - NodeId: end
+      Type: 3
+      TextKey: 
+      NextNodeId: 
+      Choices: []
+  - Header:
+      ContentId: official.story.prelude.test_03_05
+      Source: 0
+      FormatVersion: 1
+      ContentRevision: 1
+      MinGameVersion: 
+      MaxTestedGameVersion: 
+      PayloadSha256: 
+    StoryId: official.story.prelude.test_03_05
+    StartNodeId: start
+    Nodes:
+    - NodeId: start
+      Type: 0
+      TextKey: story.c06.start
+      NextNodeId: choice
+      Choices: []
+    - NodeId: choice
+      Type: 1
+      TextKey: 
+      NextNodeId: 
+      Choices:
+      - ChoiceId: left
+        TextKey: story.c06.left
+        NextNodeId: left_path
+      - ChoiceId: right
+        TextKey: story.c06.right
+        NextNodeId: right_path
+    - NodeId: left_path
+      Type: 2
+      TextKey: 
+      NextNodeId: merge
+      Choices: []
+    - NodeId: right_path
+      Type: 2
+      TextKey: 
+      NextNodeId: merge
+      Choices: []
+    - NodeId: merge
+      Type: 0
+      TextKey: story.c06.merge
+      NextNodeId: end
+      Choices: []
+    - NodeId: end
+      Type: 3
+      TextKey: 
+      NextNodeId: 
+      Choices: []
+  - Header:
+      ContentId: official.story.prelude.test_04_01
+      Source: 0
+      FormatVersion: 1
+      ContentRevision: 1
+      MinGameVersion: 
+      MaxTestedGameVersion: 
+      PayloadSha256: 
+    StoryId: official.story.prelude.test_04_01
+    StartNodeId: start
+    Nodes:
+    - NodeId: start
+      Type: 0
+      TextKey: story.c06.start
+      NextNodeId: choice
+      Choices: []
+    - NodeId: choice
+      Type: 1
+      TextKey: 
+      NextNodeId: 
+      Choices:
+      - ChoiceId: left
+        TextKey: story.c06.left
+        NextNodeId: left_path
+      - ChoiceId: right
+        TextKey: story.c06.right
+        NextNodeId: right_path
+    - NodeId: left_path
+      Type: 2
+      TextKey: 
+      NextNodeId: merge
+      Choices: []
+    - NodeId: right_path
+      Type: 2
+      TextKey: 
+      NextNodeId: merge
+      Choices: []
+    - NodeId: merge
+      Type: 0
+      TextKey: story.c06.merge
+      NextNodeId: end
+      Choices: []
+    - NodeId: end
+      Type: 3
+      TextKey: 
+      NextNodeId: 
+      Choices: []
+  - Header:
+      ContentId: official.story.prelude.test_04_02
+      Source: 0
+      FormatVersion: 1
+      ContentRevision: 1
+      MinGameVersion: 
+      MaxTestedGameVersion: 
+      PayloadSha256: 
+    StoryId: official.story.prelude.test_04_02
+    StartNodeId: start
+    Nodes:
+    - NodeId: start
+      Type: 0
+      TextKey: story.c06.start
+      NextNodeId: choice
+      Choices: []
+    - NodeId: choice
+      Type: 1
+      TextKey: 
+      NextNodeId: 
+      Choices:
+      - ChoiceId: left
+        TextKey: story.c06.left
+        NextNodeId: left_path
+      - ChoiceId: right
+        TextKey: story.c06.right
+        NextNodeId: right_path
+    - NodeId: left_path
+      Type: 2
+      TextKey: 
+      NextNodeId: merge
+      Choices: []
+    - NodeId: right_path
+      Type: 2
+      TextKey: 
+      NextNodeId: merge
+      Choices: []
+    - NodeId: merge
+      Type: 0
+      TextKey: story.c06.merge
+      NextNodeId: end
+      Choices: []
+    - NodeId: end
+      Type: 3
+      TextKey: 
+      NextNodeId: 
+      Choices: []
+  - Header:
+      ContentId: official.story.prelude.test_04_03
+      Source: 0
+      FormatVersion: 1
+      ContentRevision: 1
+      MinGameVersion: 
+      MaxTestedGameVersion: 
+      PayloadSha256: 
+    StoryId: official.story.prelude.test_04_03
+    StartNodeId: start
+    Nodes:
+    - NodeId: start
+      Type: 0
+      TextKey: story.c06.start
+      NextNodeId: choice
+      Choices: []
+    - NodeId: choice
+      Type: 1
+      TextKey: 
+      NextNodeId: 
+      Choices:
+      - ChoiceId: left
+        TextKey: story.c06.left
+        NextNodeId: left_path
+      - ChoiceId: right
+        TextKey: story.c06.right
+        NextNodeId: right_path
+    - NodeId: left_path
+      Type: 2
+      TextKey: 
+      NextNodeId: merge
+      Choices: []
+    - NodeId: right_path
+      Type: 2
+      TextKey: 
+      NextNodeId: merge
+      Choices: []
+    - NodeId: merge
+      Type: 0
+      TextKey: story.c06.merge
+      NextNodeId: end
+      Choices: []
+    - NodeId: end
+      Type: 3
+      TextKey: 
+      NextNodeId: 
+      Choices: []
+  - Header:
+      ContentId: official.story.prelude.test_04_04
+      Source: 0
+      FormatVersion: 1
+      ContentRevision: 1
+      MinGameVersion: 
+      MaxTestedGameVersion: 
+      PayloadSha256: 
+    StoryId: official.story.prelude.test_04_04
+    StartNodeId: start
+    Nodes:
+    - NodeId: start
+      Type: 0
+      TextKey: story.c06.start
+      NextNodeId: choice
+      Choices: []
+    - NodeId: choice
+      Type: 1
+      TextKey: 
+      NextNodeId: 
+      Choices:
+      - ChoiceId: left
+        TextKey: story.c06.left
+        NextNodeId: left_path
+      - ChoiceId: right
+        TextKey: story.c06.right
+        NextNodeId: right_path
+    - NodeId: left_path
+      Type: 2
+      TextKey: 
+      NextNodeId: merge
+      Choices: []
+    - NodeId: right_path
+      Type: 2
+      TextKey: 
+      NextNodeId: merge
+      Choices: []
+    - NodeId: merge
+      Type: 0
+      TextKey: story.c06.merge
+      NextNodeId: end
+      Choices: []
+    - NodeId: end
+      Type: 3
+      TextKey: 
+      NextNodeId: 
+      Choices: []
+  - Header:
+      ContentId: official.story.prelude.test_04_05
+      Source: 0
+      FormatVersion: 1
+      ContentRevision: 1
+      MinGameVersion: 
+      MaxTestedGameVersion: 
+      PayloadSha256: 
+    StoryId: official.story.prelude.test_04_05
+    StartNodeId: start
+    Nodes:
+    - NodeId: start
+      Type: 0
+      TextKey: story.c06.start
+      NextNodeId: choice
+      Choices: []
+    - NodeId: choice
+      Type: 1
+      TextKey: 
+      NextNodeId: 
+      Choices:
+      - ChoiceId: left
+        TextKey: story.c06.left
+        NextNodeId: left_path
+      - ChoiceId: right
+        TextKey: story.c06.right
+        NextNodeId: right_path
+    - NodeId: left_path
+      Type: 2
+      TextKey: 
+      NextNodeId: merge
+      Choices: []
+    - NodeId: right_path
+      Type: 2
+      TextKey: 
+      NextNodeId: merge
+      Choices: []
+    - NodeId: merge
+      Type: 0
+      TextKey: story.c06.merge
+      NextNodeId: end
+      Choices: []
+    - NodeId: end
+      Type: 3
+      TextKey: 
+      NextNodeId: 
+      Choices: []
+  - Header:
+      ContentId: official.story.prelude.test_05_01
+      Source: 0
+      FormatVersion: 1
+      ContentRevision: 1
+      MinGameVersion: 
+      MaxTestedGameVersion: 
+      PayloadSha256: 
+    StoryId: official.story.prelude.test_05_01
+    StartNodeId: start
+    Nodes:
+    - NodeId: start
+      Type: 0
+      TextKey: story.c06.start
+      NextNodeId: choice
+      Choices: []
+    - NodeId: choice
+      Type: 1
+      TextKey: 
+      NextNodeId: 
+      Choices:
+      - ChoiceId: left
+        TextKey: story.c06.left
+        NextNodeId: left_path
+      - ChoiceId: right
+        TextKey: story.c06.right
+        NextNodeId: right_path
+    - NodeId: left_path
+      Type: 2
+      TextKey: 
+      NextNodeId: merge
+      Choices: []
+    - NodeId: right_path
+      Type: 2
+      TextKey: 
+      NextNodeId: merge
+      Choices: []
+    - NodeId: merge
+      Type: 0
+      TextKey: story.c06.merge
+      NextNodeId: end
+      Choices: []
+    - NodeId: end
+      Type: 3
+      TextKey: 
+      NextNodeId: 
+      Choices: []
+  - Header:
+      ContentId: official.story.prelude.test_05_02
+      Source: 0
+      FormatVersion: 1
+      ContentRevision: 1
+      MinGameVersion: 
+      MaxTestedGameVersion: 
+      PayloadSha256: 
+    StoryId: official.story.prelude.test_05_02
+    StartNodeId: start
+    Nodes:
+    - NodeId: start
+      Type: 0
+      TextKey: story.c06.start
+      NextNodeId: choice
+      Choices: []
+    - NodeId: choice
+      Type: 1
+      TextKey: 
+      NextNodeId: 
+      Choices:
+      - ChoiceId: left
+        TextKey: story.c06.left
+        NextNodeId: left_path
+      - ChoiceId: right
+        TextKey: story.c06.right
+        NextNodeId: right_path
+    - NodeId: left_path
+      Type: 2
+      TextKey: 
+      NextNodeId: merge
+      Choices: []
+    - NodeId: right_path
+      Type: 2
+      TextKey: 
+      NextNodeId: merge
+      Choices: []
+    - NodeId: merge
+      Type: 0
+      TextKey: story.c06.merge
+      NextNodeId: end
+      Choices: []
+    - NodeId: end
+      Type: 3
+      TextKey: 
+      NextNodeId: 
+      Choices: []
+  - Header:
+      ContentId: official.story.prelude.test_05_03
+      Source: 0
+      FormatVersion: 1
+      ContentRevision: 1
+      MinGameVersion: 
+      MaxTestedGameVersion: 
+      PayloadSha256: 
+    StoryId: official.story.prelude.test_05_03
+    StartNodeId: start
+    Nodes:
+    - NodeId: start
+      Type: 0
+      TextKey: story.c06.start
+      NextNodeId: choice
+      Choices: []
+    - NodeId: choice
+      Type: 1
+      TextKey: 
+      NextNodeId: 
+      Choices:
+      - ChoiceId: left
+        TextKey: story.c06.left
+        NextNodeId: left_path
+      - ChoiceId: right
+        TextKey: story.c06.right
+        NextNodeId: right_path
+    - NodeId: left_path
+      Type: 2
+      TextKey: 
+      NextNodeId: merge
+      Choices: []
+    - NodeId: right_path
+      Type: 2
+      TextKey: 
+      NextNodeId: merge
+      Choices: []
+    - NodeId: merge
+      Type: 0
+      TextKey: story.c06.merge
+      NextNodeId: end
+      Choices: []
+    - NodeId: end
+      Type: 3
+      TextKey: 
+      NextNodeId: 
+      Choices: []
+  - Header:
+      ContentId: official.story.prelude.test_05_04
+      Source: 0
+      FormatVersion: 1
+      ContentRevision: 1
+      MinGameVersion: 
+      MaxTestedGameVersion: 
+      PayloadSha256: 
+    StoryId: official.story.prelude.test_05_04
+    StartNodeId: start
+    Nodes:
+    - NodeId: start
+      Type: 0
+      TextKey: story.c06.start
+      NextNodeId: choice
+      Choices: []
+    - NodeId: choice
+      Type: 1
+      TextKey: 
+      NextNodeId: 
+      Choices:
+      - ChoiceId: left
+        TextKey: story.c06.left
+        NextNodeId: left_path
+      - ChoiceId: right
+        TextKey: story.c06.right
+        NextNodeId: right_path
+    - NodeId: left_path
+      Type: 2
+      TextKey: 
+      NextNodeId: merge
+      Choices: []
+    - NodeId: right_path
+      Type: 2
+      TextKey: 
+      NextNodeId: merge
+      Choices: []
+    - NodeId: merge
+      Type: 0
+      TextKey: story.c06.merge
+      NextNodeId: end
+      Choices: []
+    - NodeId: end
+      Type: 3
+      TextKey: 
+      NextNodeId: 
+      Choices: []
+  - Header:
+      ContentId: official.story.prelude.test_05_05
+      Source: 0
+      FormatVersion: 1
+      ContentRevision: 1
+      MinGameVersion: 
+      MaxTestedGameVersion: 
+      PayloadSha256: 
+    StoryId: official.story.prelude.test_05_05
+    StartNodeId: start
+    Nodes:
+    - NodeId: start
+      Type: 0
+      TextKey: story.c06.start
+      NextNodeId: choice
+      Choices: []
+    - NodeId: choice
+      Type: 1
+      TextKey: 
+      NextNodeId: 
+      Choices:
+      - ChoiceId: left
+        TextKey: story.c06.left
+        NextNodeId: left_path
+      - ChoiceId: right
+        TextKey: story.c06.right
+        NextNodeId: right_path
+    - NodeId: left_path
+      Type: 2
+      TextKey: 
+      NextNodeId: merge
+      Choices: []
+    - NodeId: right_path
+      Type: 2
+      TextKey: 
+      NextNodeId: merge
+      Choices: []
+    - NodeId: merge
+      Type: 0
+      TextKey: story.c06.merge
+      NextNodeId: end
+      Choices: []
+    - NodeId: end
+      Type: 3
+      TextKey: 
+      NextNodeId: 
+      Choices: []
+  - Header:
+      ContentId: official.story.prelude.test_06_01
+      Source: 0
+      FormatVersion: 1
+      ContentRevision: 1
+      MinGameVersion: 
+      MaxTestedGameVersion: 
+      PayloadSha256: 
+    StoryId: official.story.prelude.test_06_01
+    StartNodeId: start
+    Nodes:
+    - NodeId: start
+      Type: 0
+      TextKey: story.c06.start
+      NextNodeId: choice
+      Choices: []
+    - NodeId: choice
+      Type: 1
+      TextKey: 
+      NextNodeId: 
+      Choices:
+      - ChoiceId: left
+        TextKey: story.c06.left
+        NextNodeId: left_path
+      - ChoiceId: right
+        TextKey: story.c06.right
+        NextNodeId: right_path
+    - NodeId: left_path
+      Type: 2
+      TextKey: 
+      NextNodeId: merge
+      Choices: []
+    - NodeId: right_path
+      Type: 2
+      TextKey: 
+      NextNodeId: merge
+      Choices: []
+    - NodeId: merge
+      Type: 0
+      TextKey: story.c06.merge
+      NextNodeId: end
+      Choices: []
+    - NodeId: end
+      Type: 3
+      TextKey: 
+      NextNodeId: 
+      Choices: []
+  - Header:
+      ContentId: official.story.prelude.test_06_02
+      Source: 0
+      FormatVersion: 1
+      ContentRevision: 1
+      MinGameVersion: 
+      MaxTestedGameVersion: 
+      PayloadSha256: 
+    StoryId: official.story.prelude.test_06_02
+    StartNodeId: start
+    Nodes:
+    - NodeId: start
+      Type: 0
+      TextKey: story.c06.start
+      NextNodeId: choice
+      Choices: []
+    - NodeId: choice
+      Type: 1
+      TextKey: 
+      NextNodeId: 
+      Choices:
+      - ChoiceId: left
+        TextKey: story.c06.left
+        NextNodeId: left_path
+      - ChoiceId: right
+        TextKey: story.c06.right
+        NextNodeId: right_path
+    - NodeId: left_path
+      Type: 2
+      TextKey: 
+      NextNodeId: merge
+      Choices: []
+    - NodeId: right_path
+      Type: 2
+      TextKey: 
+      NextNodeId: merge
+      Choices: []
+    - NodeId: merge
+      Type: 0
+      TextKey: story.c06.merge
+      NextNodeId: end
+      Choices: []
+    - NodeId: end
+      Type: 3
+      TextKey: 
+      NextNodeId: 
+      Choices: []
+  - Header:
+      ContentId: official.story.prelude.test_06_03
+      Source: 0
+      FormatVersion: 1
+      ContentRevision: 1
+      MinGameVersion: 
+      MaxTestedGameVersion: 
+      PayloadSha256: 
+    StoryId: official.story.prelude.test_06_03
+    StartNodeId: start
+    Nodes:
+    - NodeId: start
+      Type: 0
+      TextKey: story.c06.start
+      NextNodeId: choice
+      Choices: []
+    - NodeId: choice
+      Type: 1
+      TextKey: 
+      NextNodeId: 
+      Choices:
+      - ChoiceId: left
+        TextKey: story.c06.left
+        NextNodeId: left_path
+      - ChoiceId: right
+        TextKey: story.c06.right
+        NextNodeId: right_path
+    - NodeId: left_path
+      Type: 2
+      TextKey: 
+      NextNodeId: merge
+      Choices: []
+    - NodeId: right_path
+      Type: 2
+      TextKey: 
+      NextNodeId: merge
+      Choices: []
+    - NodeId: merge
+      Type: 0
+      TextKey: story.c06.merge
+      NextNodeId: end
+      Choices: []
+    - NodeId: end
+      Type: 3
+      TextKey: 
+      NextNodeId: 
+      Choices: []
+  - Header:
+      ContentId: official.story.prelude.test_06_04
+      Source: 0
+      FormatVersion: 1
+      ContentRevision: 1
+      MinGameVersion: 
+      MaxTestedGameVersion: 
+      PayloadSha256: 
+    StoryId: official.story.prelude.test_06_04
+    StartNodeId: start
+    Nodes:
+    - NodeId: start
+      Type: 0
+      TextKey: story.c06.start
+      NextNodeId: choice
+      Choices: []
+    - NodeId: choice
+      Type: 1
+      TextKey: 
+      NextNodeId: 
+      Choices:
+      - ChoiceId: left
+        TextKey: story.c06.left
+        NextNodeId: left_path
+      - ChoiceId: right
+        TextKey: story.c06.right
+        NextNodeId: right_path
+    - NodeId: left_path
+      Type: 2
+      TextKey: 
+      NextNodeId: merge
+      Choices: []
+    - NodeId: right_path
+      Type: 2
+      TextKey: 
+      NextNodeId: merge
+      Choices: []
+    - NodeId: merge
+      Type: 0
+      TextKey: story.c06.merge
+      NextNodeId: end
+      Choices: []
+    - NodeId: end
+      Type: 3
+      TextKey: 
+      NextNodeId: 
+      Choices: []
+  - Header:
+      ContentId: official.story.prelude.test_06_05
+      Source: 0
+      FormatVersion: 1
+      ContentRevision: 1
+      MinGameVersion: 
+      MaxTestedGameVersion: 
+      PayloadSha256: 
+    StoryId: official.story.prelude.test_06_05
+    StartNodeId: start
+    Nodes:
+    - NodeId: start
+      Type: 0
+      TextKey: story.c06.start
+      NextNodeId: choice
+      Choices: []
+    - NodeId: choice
+      Type: 1
+      TextKey: 
+      NextNodeId: 
+      Choices:
+      - ChoiceId: left
+        TextKey: story.c06.left
+        NextNodeId: left_path
+      - ChoiceId: right
+        TextKey: story.c06.right
+        NextNodeId: right_path
+    - NodeId: left_path
+      Type: 2
+      TextKey: 
+      NextNodeId: merge
+      Choices: []
+    - NodeId: right_path
+      Type: 2
+      TextKey: 
+      NextNodeId: merge
+      Choices: []
+    - NodeId: merge
+      Type: 0
+      TextKey: story.c06.merge
+      NextNodeId: end
+      Choices: []
+    - NodeId: end
+      Type: 3
+      TextKey: 
+      NextNodeId: 
+      Choices: []
+  characters: []
+  archiveEntries: []
+  assetRegistry: {fileID: 11400000, guid: 9b9c3763966a046dd8c2881ec17e5853, type: 2}

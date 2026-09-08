@@ -2,6 +2,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Game.Contracts;
+using Game.Contracts.Content;
 using Game.Contracts.Persistence;
 using Game.Contracts.Progression;
 using Game.Foundation;
@@ -57,8 +58,7 @@ namespace Game.Presentation
                         "whitebox.session_missing"), "请从地图选择关卡后再模拟通关。");
                 if (CurrentProfile.AppliedCompletionRunIds.Contains(runId))
                     return SaveResult.Success();
-                var query = new MetaMapQuery(new OfficialContentService(
-                    OfficialTestMapCatalog.CreateProvider()), ProgressQuery);
+                var query = new MetaMapQuery(Content, ProgressQuery);
                 var card = query.GetLevelCard(level);
                 if (card == null || !card.Node.IsInteractable)
                     return SaveResult.Failure(new ErrorCode(ErrorCategory.Validation,
@@ -144,6 +144,9 @@ namespace Game.Presentation
         /// <summary>当前已加载的单一玩家档案；首次开始前为空。</summary>
         public ProfileSave CurrentProfile { get; private set; }
 
+        /// <summary>当前会话统一使用的地图、关卡和剧情内容源。</summary>
+        public IContentService Content { get; }
+
         /// <summary>
         /// 创建本次应用的运行时服务容器；只能由 Bootstrap 组合根装配具体实现。
         /// </summary>
@@ -155,12 +158,15 @@ namespace Game.Presentation
         /// <param name="progressQuery">进度查询。</param>
         /// <param name="clock">系统时钟。</param>
         /// <param name="saveProfileAsync">档案保存委托。</param>
+        /// <param name="content">已校验的内容服务；省略时仅使用兼容测试目录。</param>
         public GameRuntimeServices(IGameFlowService flow, ISettingsService settings,
             ILocalizationService localization, IAudioService audio,
             IProfileLifecycleService profileLifecycle, IProgressQuery progressQuery,
             IClock clock,
-            Func<ProfileSave, SaveReason, CancellationToken, Task<SaveResult>> saveProfileAsync)
+            Func<ProfileSave, SaveReason, CancellationToken, Task<SaveResult>> saveProfileAsync,
+            IContentService content = null)
         {
+            Content = content ?? new OfficialContentService(OfficialTestMapCatalog.CreateProvider());
             Flow = flow ?? throw new ArgumentNullException(nameof(flow));
             Settings = settings ?? throw new ArgumentNullException(nameof(settings));
             Localization = localization ?? throw new ArgumentNullException(nameof(localization));

@@ -38,6 +38,9 @@ namespace Game.Bootstrap
         [SerializeField]
         private ContentAssetRegistry? contentAssetRegistry;
 
+        [Tooltip("地图、关卡前置条件和关前关后剧情配置。")]
+        [SerializeField] private OfficialContentCatalog? contentCatalog;
+
         private GameFlowService? _flowService;
         private SettingsService? _settingsService;
         private DefaultLocalizationService? _localizationService;
@@ -52,6 +55,18 @@ namespace Game.Bootstrap
         /// <summary>创建组合根服务、全局 Canvas 并启动设置加载和开始菜单导航。</summary>
         private void Start()
         {
+            if (contentCatalog == null)
+            {
+                Debug.LogError("Bootstrap 缺少 Content Catalog，请配置官方内容目录。", this);
+                return;
+            }
+            OfficialContentService whiteboxContent;
+            try { whiteboxContent = contentCatalog.CreateValidatedService(); }
+            catch (ArgumentException exception)
+            {
+                Debug.LogError("内容目录无效：" + exception.Message, this);
+                return;
+            }
             _startupLifetime = new CancellationTokenSource();
             var clock = new SystemClock();
             IGameLogger logger = UnityDebugLogger.Instance;
@@ -73,8 +88,6 @@ namespace Game.Bootstrap
             _settingsService = new SettingsService(_saveRepository, audio, localization,
                 new UnityWindowSettingsApplier(), eventBus);
             var profileLifecycle = new ProfileLifecycleService(_saveRepository, clock);
-            var whiteboxContent = new OfficialContentService(
-                OfficialTestMapCatalog.CreateProvider());
             GameRuntimeServices? runtimeServices = null;
 
             var flowService = new GameFlowService(
@@ -94,7 +107,7 @@ namespace Game.Bootstrap
 
             runtimeServices = new GameRuntimeServices(flowService, _settingsService, localization,
                 audio, profileLifecycle, new EmptyProgressQuery(), clock,
-                _saveRepository.SaveProfileAsync);
+                _saveRepository.SaveProfileAsync, whiteboxContent);
             _runtimeServices = runtimeServices;
             _globalUiRoot = new GameObject("GlobalUi");
             DontDestroyOnLoad(_globalUiRoot);

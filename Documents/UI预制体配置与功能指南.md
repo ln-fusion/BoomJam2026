@@ -40,9 +40,9 @@
 
 ### 地图白盒的状态与资料卡配置
 
-当前地图使用 `OfficialTestMapCatalog.CreateProvider()` 的测试内容。`MetaHubShell` 的 Inspector 字段 **Map Id** 默认是 `official.map.test_01`，该地图包含 `official.level.test_01_01` 到 `official.level.test_01_05`。节点按内容的 `SortOrder` 排序，对应 `MapNode_1` 到 `MapNode_5`，不使用按钮文字作为关卡 ID。
+当前运行时使用 Bootstrap 引用的 `Assets/Game/Content/OfficialContentCatalog.asset`。代码测试目录仅供测试和独立场景兼容预览。`MetaHubShell` 的 Inspector 字段 **Map Id** 默认是 `official.map.test_01`，该地图包含 `official.level.test_01_01` 到 `official.level.test_01_05`。节点按内容的 `SortOrder` 排序，对应 `MapNode_1` 到 `MapNode_5`，不使用按钮文字作为关卡 ID。
 
-- 修改关卡 ID、数量、顺序、名称 Key 和前置条件：编辑 `Assets/Game/Runtime/Content/OfficialTestMapCatalog.cs`。默认首关无前置，后续关卡要求上一关完成；`UnlockRequirement.Mode` 的 `All` 表示全部前置完成，`Any` 表示任一前置完成，前置列表是 `RequiredLevelIds`。
+- 修改关卡 ID、数量、顺序、名称 Key 和前置条件：在 `OfficialContentCatalog.asset` 的 Levels 列表中编辑。默认首关无前置，后续关卡要求上一关完成；`UnlockRequirement.Mode` 的 `All` 表示全部前置完成，`Any` 表示任一前置完成，前置列表是 `RequiredLevelIds`。
 - 修改关卡名称：配置对应 `DisplayNameKey` 的本地化文本；缺少翻译时显示稳定 Key。节点状态和资料卡提示目前使用中文白盒文字，集中在 `MetaHubShell.MapStateText`、`RenderLevelCard` 中，尚未接入多语言表。
 - 修改布局：在 `MetaHubUI.prefab` 中调整 Rect Transform、字体和颜色。保留节点连续命名 `MapNode_1`、`MapNode_2` 等，以及 `MapPageView/LevelCard/Details`、`Start`。新增节点需要同时增加内容记录和预制体按钮。
 - 节点状态包括“未解锁、当前关卡、已解锁、已完成”。未解锁节点和没有对应内容的多余节点隐藏；只有当前关卡、已解锁和已完成节点显示并允许选择，进入请求期间暂时禁用交互。隐藏通过停用按钮对象实现，保留节点原位置和排序映射；刷新后满足解锁条件的节点重新显示。若当前选择已失效或变为未解锁，则清空资料卡选择并禁用开始按钮。
@@ -82,9 +82,9 @@
 
 ### 关后剧情配置（Gameplay 白盒）
 
-在 `Assets/Game/Runtime/Content/OfficialTestMapCatalog.cs` 的关卡定义中设置 `PostludeStoryId`，方式与 `PreludeStoryId` 相同；为空表示没有关后剧情。第一关 `official.level.test_01_01` 已配置 `official.story.postlude.test_01_01`，其余关卡未配置。测试剧情暂时复用现有分支对白内容，关前和关后的剧情 ID 不同，因此完成状态互不影响。
+在 `Assets/Game/Content/OfficialContentCatalog.asset` 的 Levels 关卡定义中设置 `PostludeStoryId`，方式与 `PreludeStoryId` 相同；为空表示没有关后剧情。第一关 `official.level.test_01_01` 已配置 `official.story.postlude.test_01_01`，其余关卡未配置。测试剧情暂时复用现有分支对白内容，关前和关后的剧情 ID 不同，因此完成状态互不影响。
 
-配置 ID 时，需同时在内容提供者中登记对应的 `StoryDefinition`；当前示例通过 `CreateBranchingStory(level.PostludeStoryId)` 登记。只填写一个未登记的 ID 会在提交前提示错误，并留在结果面板。目录配置化后再统一迁移这些引用到可编辑资源。
+配置 ID 时，需同时在内容提供者中登记对应的 `StoryDefinition`；当前在该资源的 Stories 列表登记。只填写一个未登记的 ID 会在提交前提示错误，并留在结果面板。引用已经迁移至可编辑目录，运行时不再从 C# 测试目录生成它们。
 
 成功面板提交后先保存通关进度，保存成功才调用 `PlayStoryAsync`，返回目标为 `StoryReturnTarget.ToMetaPage(MetaPageId.Map)`。剧情结束或跳过复用 `CompletedStoryIds` 写入当前档案，不新增存档文件或格式。重启后再次通关，已经完成的关后剧情不会强制播放；如果播放中退出且尚未保存剧情完成，下次通关提交时仍会播放。失败模拟不触发关后剧情。
 
@@ -96,3 +96,14 @@
 复播权限由 `MetaMapQuery` 合并内容与存档后提供：关前剧情完成或跳过并保存后解锁关前复播；通关保存成功后解锁关后复播，无需先完成关后剧情。未配置或未解锁的入口隐藏，导航期间禁用。两种复播结束均回到 Map，不再次进入 Gameplay，不提交通关进度。
 
 关后自动播放继续使用 `PostludeStoryId` 和 `CompletedStoryIds` 去重；第一关已配置测试关后剧情。已通关旧档也可使用该关的关后复播按钮。重播只记录剧情完成事实，不生成重复通关提交。
+### 官方目录配置操作
+
+1. 在 Project 选择 `Assets/Game/Content/OfficialContentCatalog.asset`。
+2. 展开 **Levels**，第一项是 `official.level.test_01_01`。修改 **Prelude Story Id** 或 **Postlude Story Id** 可分别替换关前、关后剧情；留空表示没有该剧情。
+3. 剧情 ID 必须对应本资源 **Stories** 中登记的 Story Id。当前保留原有三十二段白盒剧情记录，内容仍是测试分支对白；正式剧情编辑器生成文件的自动导入不在本次改动范围。
+4. **Unlock Requirement / Mode** 为 None、All 或 Any；**Required Level Ids** 填前置关卡 ID。使用 All 表示全部完成，Any 表示任一完成。
+5. **Map Id** 决定所属地图，**Sort Order** 决定顺序。Maps 列表配置地图 ID、名称 Key 和顺序；其 Levels 不需要手动维护，运行时从顶层 Levels 重建摘要。当前地图 UI 仍有五个节点，超过五关时需增加预制体节点。
+6. 通过资源 Inspector 上下文菜单执行 **Validate Catalog**。重复 ID、未知地图/剧情/前置关卡、非法剧情和前置环会被拒绝；Bootstrap 启动也执行相同校验，错误时停止启动并在 Console 提示。
+7. 停止运行后修改资源，再从 `00_Bootstrap` 启动验证。运行时不提供热更新。Bootstrap 的 **Content Catalog** 已绑定此资源。
+
+迁移保留原有关卡与剧情稳定 ID，继续使用已有存档事实。已有存档使用的 ID 不宜随意重命名；修改对白但保留剧情 ID 会保留观看记录。地图状态文案和资料卡提示的本地化仍待后续处理。
