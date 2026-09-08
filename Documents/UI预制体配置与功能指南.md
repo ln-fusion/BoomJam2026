@@ -48,15 +48,16 @@
 - 节点状态包括“未解锁、当前关卡、已解锁、已完成”。未解锁节点和没有对应内容的多余节点隐藏；只有当前关卡、已解锁和已完成节点显示并允许选择，进入请求期间暂时禁用交互。隐藏通过停用按钮对象实现，保留节点原位置和排序映射；刷新后满足解锁条件的节点重新显示。若当前选择已失效或变为未解锁，则清空资料卡选择并禁用开始按钮。
 - 初始化、打开地图、点击节点和切换语言时，使用当前档案重新生成进度快照并计算状态。选中后显示名称、状态和最佳成绩；没有选中时显示“请选择关卡”。没有实现逐帧监听外部进度变更。
 
-资料卡开始按钮已连接现有 `EnterLevelAsync`：点击时重新校验解锁状态，等待进入期间禁用节点和开始按钮，并阻止重复请求。无需在 Inspector 的 OnClick 中重复绑定。当前流程在本次应用运行中首次进入某个 LevelId 时先播放测试剧情，剧情结束或跳过后进入已有 `04_Gameplay`；同一 LevelId 后续直接进入 Gameplay。该记录仅在内存中，不代表通关或持久化的剧情完成进度。
+资料卡开始按钮已连接现有 `EnterLevelAsync`：点击时重新校验解锁状态，等待进入期间禁用节点和开始按钮，并阻止重复请求。无需在 Inspector 的 OnClick 中重复绑定。每关通过 `PreludeStoryId` 配置独立关前剧情；剧情结束或跳过后先把剧情完成事实写入当前档案，保存成功后进入已有 `04_Gameplay`。同一关卡后续进入时读取 `CompletedStoryIds` 并直接进入 Gameplay，重启应用后仍然有效。
 
-`04_Gameplay` 当前是无实际玩法的占位场景，已保存 `GameplayCanvas/ReturnToMap` 和 `GameplayCanvas/CompleteLevel` 两个按钮。`SceneUiInstaller` 向 `GameplayReturnButton` 注入服务后启用交互；`Complete Button` 字段引用模拟通关按钮，两个按钮共用防重入状态。修改位置和尺寸时调整场景中按钮的 Rect Transform，修改文字时编辑其 Label；无需添加 Inspector OnClick。单独运行 Gameplay 未注入服务时按钮保持禁用。
+`04_Gameplay` 当前是无实际玩法的占位场景，已保存左上角 `GameplayCanvas/LevelId`、`SimulateSuccess`、`SimulateFailure`、`Settings`，以及默认隐藏的 `SuccessPanel`、`FailurePanel`。`SceneUiInstaller` 向 `GameplayReturnButton` 注入服务后显示当前选关 `LevelId` 并启用交互；字段分别引用关卡文字、模拟按钮、结果面板、面板操作按钮和设置按钮，均由脚本绑定，无需添加 Inspector OnClick。设置弹窗打开时若 Gameplay 正在运行，会保存当前 `Time.timeScale` 并设为 `0`；取消或应用时恢复打开前的值；弹窗左上角按钮在 Gameplay 中显示“返回地图”并前往 MetaHub 地图页，在其他功能场景中仍显示“返回主菜单”。修改位置和尺寸时调整场景中控件的 Rect Transform，修改静态文字时编辑其 Label、Title 或 Message。单独运行 Gameplay 未注入服务时模拟和提交按钮保持禁用。
 
-- **返回地图**：调用 `OpenMetaHubAsync(MetaPageId.Map, ...)`，不写入完成事实。
-- **模拟通关并返回**：使用地图选关时记录的 LevelId 和本次白盒会话提交 ID，重新检查解锁资格，在独立档案副本中更新 `CompletedLevelIds`、对应 `LevelRecords.Completed` 和 `AppliedCompletionRunIds`。使用已有 `SaveReason.ProgressCommitted` 保存成功后才替换当前档案并返回地图；失败留在 Gameplay，保留旧进度并允许重试。页面保存与模拟通关保存串行执行，避免旧页面保存覆盖完成记录。同一提交重复调用不重复写入。
+- **设置中返回地图**：不应用当前设置草稿，恢复暂停前时间速度，调用 `OpenMetaHubAsync(MetaPageId.Map, ...)`，并且不写入完成事实。
+- **模拟成功**：只显示 `SuccessPanel` 并禁用成功、失败模拟入口，不立即写档。点击面板内 `SubmitSuccess` 后，使用地图选关时记录的 LevelId 和本次白盒会话提交 ID，重新检查解锁资格，在独立档案副本中更新 `CompletedLevelIds`、对应 `LevelRecords.Completed` 和 `AppliedCompletionRunIds`。使用已有 `SaveReason.ProgressCommitted` 保存成功后才替换当前档案并返回地图；地图依据完成事实和关卡前置条件显示新解锁的关卡。保存失败时留在 Gameplay，保留旧进度并允许再次提交。
+- **模拟失败**：只显示 `FailurePanel`，不调用通关提交或档案保存。点击 `Retry` 关闭结果面板并恢复两个模拟入口，继续当前白盒关卡。
 - 模拟通关会写入玩家当前档案，但不会伪造最佳成绩、统计或剧情完成记录，也不播放关后剧情。它仅用于白盒验收，尚不是正式 Gameplay 结算事务。没有经地图选关创建会话时，模拟通关按钮不可用。
 
-运行时应从 `00_Bootstrap` 开始。新档选择第一关并进入 Gameplay 后，普通返回仍只显示第一关；模拟通关并返回后，第一关显示“已完成”，第二关出现且可进入，后续未满足条件的关卡继续隐藏。重启后继续档案，第二关仍应显示。解锁完全由地图前置条件和已保存完成事实计算，不直接把“下一关”写入存档。
+运行时应从 `00_Bootstrap` 开始。新档选择第一关并进入 Gameplay 后，从设置返回地图仍只显示第一关；模拟失败并重新尝试也不改变进度。模拟成功后还需点击 `SuccessPanel/SubmitSuccess`，保存成功并返回地图后第一关显示“已完成”，第二关出现且可进入，后续未满足条件的关卡继续隐藏。重启后继续档案，第二关仍应显示。解锁完全由地图前置条件和已保存完成事实计算，不直接把“下一关”写入存档。
 
 ### SettingsModalUI（`ui.settings-modal`）
 
@@ -69,7 +70,7 @@
 - `Template/Viewport` 的 Image 保持不透明，Mask 关闭 **Show Mask Graphic**，以便隐藏遮罩图形并正常裁切选项文字。
 - `Apply` 校验并持久化草稿，成功后关闭；`Cancel` 丢弃草稿；`RestoreDefaults` 只恢复当前草稿。
 
-设置面板左上角的 `SettingsPanel/ReturnToStartMenu` 为返回主菜单按钮。在主菜单中打开设置时隐藏，在其他功能场景显示；点击关闭弹窗并调用已有返回主菜单流程，不应用尚未提交的控件草稿、不记录关卡完成事实。应用设置或恢复默认操作进行中暂时禁用该按钮。位置和尺寸在该节点的 Rect Transform 调整，文字在子节点 Label 修改；当前按钮文案直接保存在预制体中，本地化留待后续文案整理。无需在 Inspector OnClick 中重复接线。
+设置面板左上角复用同一个 `SettingsPanel/ReturnToStartMenu` 按钮。在主菜单中打开设置时隐藏；Gameplay 中运行时文字改为“返回地图”并打开 MetaHub 地图页；其他功能场景中显示“返回主菜单”并调用已有主菜单流程。两种行为都会丢弃尚未应用的设置草稿，且不记录关卡完成事实。应用设置或恢复默认操作进行中暂时禁用该按钮。位置和尺寸在该节点的 Rect Transform 调整；运行时文案由 `SettingsModalPresenter` 根据场景覆盖，本地化留待后续文案整理。无需在 Inspector OnClick 中重复接线。
 
 ## 配置检查
 

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using Game.Content;
+using Game.Contracts;
 using Game.Foundation;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -25,25 +26,36 @@ namespace Game.Presentation
         private SettingsModalPresenter _settingsPresenter;
         private EventSystem _eventSystem;
         private GameRuntimeServices _runtimeServices;
-        private bool _returningToStartMenu;
+        private bool _returningFromSettings;
+        private bool _settingsPausedGameplay;
+        private float _timeScaleBeforeSettings = 1f;
 
-        /// <summary>当前已注入服务且未加载开始菜单时，允许从设置返回主菜单。</summary>
-        internal bool CanReturnToStartMenu => _runtimeServices != null &&
-            !SceneManager.GetSceneByName(SceneNames.StartMenu).isLoaded && !_returningToStartMenu;
+        /// <summary>当前已注入服务且未加载开始菜单时，允许从设置返回地图或主菜单。</summary>
+        internal bool CanReturnFromSettings => _runtimeServices != null &&
+            !SceneManager.GetSceneByName(SceneNames.StartMenu).isLoaded && !_returningFromSettings;
 
-        /// <summary>关闭设置并返回开始菜单；不应用草稿，导航不随弹窗销毁取消。</summary>
+        /// <summary>设置弹窗是否从 Gameplay 打开，此时返回按钮的目标是地图页。</summary>
+        internal bool SettingsReturnsToMap =>
+            SceneManager.GetSceneByName(SceneNames.Gameplay).isLoaded;
+
+        /// <summary>关闭设置并按来源返回地图或开始菜单；不应用草稿。</summary>
         /// <returns>导航请求结束时完成的任务；异常通过全局反馈显示。</returns>
-        internal async Task ReturnToStartMenuFromSettingsAsync()
+        internal async Task ReturnFromSettingsAsync()
         {
-            if (!CanReturnToStartMenu)
+            if (!CanReturnFromSettings)
                 return;
-            _returningToStartMenu = true;
+            bool returnToMap = SettingsReturnsToMap;
+            _returningFromSettings = true;
             CloseSettings();
             SetModalBlocked(false);
             try
             {
-                await _runtimeServices.Flow.ReturnToStartMenuAsync(CancellationToken.None);
-                if (SceneManager.GetSceneByName(SceneNames.StartMenu).isLoaded)
+                if (returnToMap)
+                    await _runtimeServices.Flow.OpenMetaHubAsync(MetaPageId.Map,
+                        CancellationToken.None);
+                else
+                    await _runtimeServices.Flow.ReturnToStartMenuAsync(CancellationToken.None);
+                if (returnToMap || SceneManager.GetSceneByName(SceneNames.StartMenu).isLoaded)
                     _runtimeServices.EndWhiteboxLevel();
             }
             catch (OperationCanceledException)
@@ -57,7 +69,7 @@ namespace Game.Presentation
             }
             finally
             {
-                _returningToStartMenu = false;
+                _returningFromSettings = false;
             }
         }
         private ContentAssetRegistry _contentRegistry;
@@ -95,6 +107,7 @@ namespace Game.Presentation
                 Destroy(_settingsPresenter.gameObject);
             _feedbackHideRoutine = null;
             _settingsPresenter = null;
+            ResumeGameplayAfterSettings();
         }
 
         /// <summary>显示一条不参与鼠标射线检测、并在短暂停留后自动隐藏的全局反馈。</summary>
@@ -146,6 +159,8 @@ namespace Game.Presentation
                 return;
             }
 
+            PauseGameplayForSettings();
+
             GameObject prefab = _contentRegistry == null ? null :
                 new OfficialAssetResolver(_contentRegistry).GetUiPrefab(new UiPrefabId("ui.settings-modal"));
             var gameObject = prefab == null
@@ -164,10 +179,36 @@ namespace Game.Presentation
         public void CloseSettings()
         {
             if (_settingsPresenter == null)
+            {
+                ResumeGameplayAfterSettings();
                 return;
+            }
 
             Destroy(_settingsPresenter.gameObject);
             _settingsPresenter = null;
+            ResumeGameplayAfterSettings();
+        }
+
+        /// <summary>Gameplay 场景打开设置时保存当前时间缩放并暂停游戏。</summary>
+        private void PauseGameplayForSettings()
+        {
+            if (_settingsPausedGameplay ||
+                !SceneManager.GetSceneByName(SceneNames.Gameplay).isLoaded)
+                return;
+
+            _timeScaleBeforeSettings = Time.timeScale;
+            Time.timeScale = 0f;
+            _settingsPausedGameplay = true;
+        }
+
+        /// <summary>设置关闭或全局 UI 销毁时恢复打开设置前的时间缩放。</summary>
+        private void ResumeGameplayAfterSettings()
+        {
+            if (!_settingsPausedGameplay)
+                return;
+
+            Time.timeScale = _timeScaleBeforeSettings;
+            _settingsPausedGameplay = false;
         }
 
         /// <summary>创建全局遮罩和模态层。</summary>

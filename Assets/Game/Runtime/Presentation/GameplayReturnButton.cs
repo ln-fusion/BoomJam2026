@@ -8,16 +8,21 @@ using UnityEngine.UI;
 
 namespace Game.Presentation
 {
-    /// <summary>绑定 Gameplay 的普通返回和模拟通关按钮；仅模拟通关按钮提交完成事实。</summary>
-    [RequireComponent(typeof(Button))]
+    /// <summary>绑定 Gameplay 白盒的关卡标识、成功失败结果和设置入口。</summary>
     public sealed class GameplayReturnButton : MonoBehaviour
     {
-        private Button _button;
         private IGameFlowService _flow;
         private GlobalCanvasLayer _globalCanvas;
         private bool _returning;
         private GameRuntimeServices _runtimeServices;
-        [SerializeField] private Button completeButton;
+        [SerializeField] private Button simulateSuccessButton;
+        [SerializeField] private Button simulateFailureButton;
+        [SerializeField] private GameObject successPanel;
+        [SerializeField] private Button submitSuccessButton;
+        [SerializeField] private GameObject failurePanel;
+        [SerializeField] private Button retryButton;
+        [SerializeField] private Button settingsButton;
+        [SerializeField] private Text levelIdText;
 
         /// <summary>注入已有流程服务并启用按钮；重复初始化不重复订阅事件。</summary>
         /// <param name="runtimeServices">包含返回流程、当前白盒会话和档案保存的服务。</param>
@@ -29,50 +34,93 @@ namespace Game.Presentation
             _runtimeServices = runtimeServices ?? throw new ArgumentNullException(nameof(runtimeServices));
             _flow = runtimeServices.Flow;
             _globalCanvas = globalCanvas;
-            _button = GetComponent<Button>();
-            _button.onClick.AddListener(OnReturnRequested);
-            _button.interactable = true;
-            if (completeButton != null)
+            if (levelIdText != null)
+                levelIdText.text = _runtimeServices.WhiteboxLevel == null
+                    ? "LevelId：未从地图选关"
+                    : "LevelId：" + _runtimeServices.WhiteboxLevel.Value;
+            SetResultPanel(successPanel, false);
+            SetResultPanel(failurePanel, false);
+            if (simulateSuccessButton != null)
             {
-                completeButton.onClick.AddListener(OnCompleteRequested);
-                completeButton.interactable = _runtimeServices.WhiteboxLevel != null;
+                simulateSuccessButton.onClick.AddListener(OnSuccessSimulated);
+                simulateSuccessButton.interactable = _runtimeServices.WhiteboxLevel != null;
+            }
+            if (simulateFailureButton != null)
+            {
+                simulateFailureButton.onClick.AddListener(OnFailureSimulated);
+                simulateFailureButton.interactable = _runtimeServices.WhiteboxLevel != null;
+            }
+            if (submitSuccessButton != null)
+            {
+                submitSuccessButton.onClick.AddListener(OnCompleteRequested);
+                submitSuccessButton.interactable = _runtimeServices.WhiteboxLevel != null;
+            }
+            if (retryButton != null)
+            {
+                retryButton.onClick.AddListener(OnRetryRequested);
+                retryButton.interactable = true;
+            }
+            if (settingsButton != null)
+            {
+                settingsButton.onClick.AddListener(OnSettingsRequested);
+                settingsButton.interactable = true;
             }
         }
 
-        /// <summary>响应返回请求，在当前请求结束前忽略重复点击。</summary>
-        private void OnReturnRequested()
+        /// <summary>模拟玩法成功，只显示成功结果，不在此时写入通关进度。</summary>
+        private void OnSuccessSimulated()
         {
-            if (!_returning && _flow != null)
-                _ = ReturnToMapAsync(false);
+            if (!_returning && _runtimeServices?.WhiteboxLevel != null)
+                ShowResult(successPanel);
         }
 
-        /// <summary>响应模拟通关请求，与普通返回共享防重入状态。</summary>
+        /// <summary>模拟玩法失败，只显示失败结果，不调用通关提交。</summary>
+        private void OnFailureSimulated()
+        {
+            if (!_returning && _runtimeServices?.WhiteboxLevel != null)
+                ShowResult(failurePanel);
+        }
+
+        /// <summary>关闭失败结果并恢复白盒模拟按钮，表示重新开始当前关卡。</summary>
+        private void OnRetryRequested()
+        {
+            if (!_returning)
+                ShowResult(null);
+        }
+
+        /// <summary>响应模拟通关请求，在当前提交结束前忽略重复点击。</summary>
         private void OnCompleteRequested()
         {
             if (!_returning && _runtimeServices != null && _runtimeServices.WhiteboxLevel != null)
-                _ = ReturnToMapAsync(true);
+                _ = CompleteAndReturnToMapAsync();
         }
 
-        /// <summary>可选地先模拟通关并保存，再返回地图；保存失败时留在 Gameplay，不发布完成进度。</summary>
-        /// <param name="complete">是否提交当前白盒会话；普通返回传 false。</param>
+        /// <summary>打开全局设置弹窗；Gameplay 的暂停生命周期由全局 Canvas 统一管理。</summary>
+        private void OnSettingsRequested()
+        {
+            if (!_returning)
+                _globalCanvas?.OpenSettings();
+        }
+
+        /// <summary>模拟通关并保存，再返回地图；保存失败时留在 Gameplay，不发布完成进度。</summary>
         /// <returns>返回请求结束时完成的任务；加载结果由流程服务记录。</returns>
-        private async Task ReturnToMapAsync(bool complete)
+        private async Task CompleteAndReturnToMapAsync()
         {
             _returning = true;
-            _button.interactable = false;
-            if (completeButton != null)
-                completeButton.interactable = false;
+            SetSimulationInteractable(false);
+            if (submitSuccessButton != null)
+                submitSuccessButton.interactable = false;
+            if (settingsButton != null)
+                settingsButton.interactable = false;
             try
             {
-                if (complete)
+                var saved = await _runtimeServices.CompleteWhiteboxLevelAsync(
+                    CancellationToken.None);
+                if (!saved.IsSuccess)
                 {
-                    var saved = await _runtimeServices.CompleteWhiteboxLevelAsync(CancellationToken.None);
-                    if (!saved.IsSuccess)
-                    {
-                        if (_globalCanvas != null)
-                            _globalCanvas.ShowFeedback(saved.Message);
-                        return;
-                    }
+                    if (_globalCanvas != null)
+                        _globalCanvas.ShowFeedback(saved.Message);
+                    return;
                 }
                 await _flow.OpenMetaHubAsync(MetaPageId.Map, CancellationToken.None);
                 if (this == null)
@@ -90,23 +138,62 @@ namespace Game.Presentation
             }
             finally
             {
-                if (this != null && _button != null)
+                if (this != null)
                 {
                     _returning = false;
-                    _button.interactable = true;
-                    if (completeButton != null)
-                        completeButton.interactable = _runtimeServices.WhiteboxLevel != null;
+                    bool resultVisible = successPanel != null && successPanel.activeSelf ||
+                        failurePanel != null && failurePanel.activeSelf;
+                    SetSimulationInteractable(!resultVisible &&
+                        _runtimeServices.WhiteboxLevel != null);
+                    if (submitSuccessButton != null)
+                        submitSuccessButton.interactable = _runtimeServices.WhiteboxLevel != null;
+                    if (settingsButton != null)
+                        settingsButton.interactable = true;
                 }
             }
+        }
+
+        /// <summary>仅显示指定结果面板，并在结果显示期间禁用成功和失败模拟入口。</summary>
+        /// <param name="panel">需要显示的结果面板；为空时关闭全部结果。</param>
+        private void ShowResult(GameObject panel)
+        {
+            SetResultPanel(successPanel, panel == successPanel);
+            SetResultPanel(failurePanel, panel == failurePanel);
+            SetSimulationInteractable(panel == null && _runtimeServices?.WhiteboxLevel != null);
+        }
+
+        /// <summary>切换一个可选结果面板的显示状态。</summary>
+        /// <param name="panel">需要切换的面板。</param>
+        /// <param name="visible">是否显示。</param>
+        private static void SetResultPanel(GameObject panel, bool visible)
+        {
+            if (panel != null)
+                panel.SetActive(visible);
+        }
+
+        /// <summary>统一切换成功和失败模拟按钮的可交互状态。</summary>
+        /// <param name="interactable">按钮是否可交互。</param>
+        private void SetSimulationInteractable(bool interactable)
+        {
+            if (simulateSuccessButton != null)
+                simulateSuccessButton.interactable = interactable;
+            if (simulateFailureButton != null)
+                simulateFailureButton.interactable = interactable;
         }
 
         /// <summary>场景卸载时解除按钮事件订阅。</summary>
         private void OnDestroy()
         {
-            if (_button != null)
-                _button.onClick.RemoveListener(OnReturnRequested);
-            if (completeButton != null)
-                completeButton.onClick.RemoveListener(OnCompleteRequested);
+            if (simulateSuccessButton != null)
+                simulateSuccessButton.onClick.RemoveListener(OnSuccessSimulated);
+            if (simulateFailureButton != null)
+                simulateFailureButton.onClick.RemoveListener(OnFailureSimulated);
+            if (submitSuccessButton != null)
+                submitSuccessButton.onClick.RemoveListener(OnCompleteRequested);
+            if (retryButton != null)
+                retryButton.onClick.RemoveListener(OnRetryRequested);
+            if (settingsButton != null)
+                settingsButton.onClick.RemoveListener(OnSettingsRequested);
         }
     }
 }

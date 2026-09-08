@@ -158,21 +158,23 @@ namespace Game.Presentation
                 UiTextKeys.SfxVolume, value));
         }
 
-        /// <summary>绑定左上角返回主菜单按钮；主菜单中隐藏，不改动已配置的布局或文字。</summary>
+        /// <summary>绑定左上角返回按钮；Gameplay 中返回地图，其他功能场景返回主菜单。</summary>
         private void BindReturnToStartMenu()
         {
             _returnToStartMenu = FindButton(_panel.transform, "ReturnToStartMenu");
             if (_returnToStartMenu == null)
                 return;
-            _returnToStartMenu.gameObject.SetActive(_owner.CanReturnToStartMenu);
+            _returnToStartMenu.gameObject.SetActive(_owner.CanReturnFromSettings);
+            SetButtonLabel("ReturnToStartMenu", _owner.SettingsReturnsToMap
+                ? "返回地图" : "返回主菜单");
             _returnToStartMenu.onClick.AddListener(OnReturnToStartMenu);
         }
 
-        /// <summary>丢弃未应用的控件草稿并请求返回主菜单；设置操作尚未结束时忽略点击。</summary>
+        /// <summary>丢弃未应用的控件草稿并按弹窗来源返回；设置操作尚未结束时忽略点击。</summary>
         private void OnReturnToStartMenu()
         {
             if (!_settingsOperation && _owner != null)
-                _ = _owner.ReturnToStartMenuFromSettingsAsync();
+                _ = _owner.ReturnFromSettingsAsync();
         }
 
         /// <summary>按当前运行环境重建语言与分辨率选项，避免使用导出时的设备数据。</summary>

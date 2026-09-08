@@ -11,7 +11,7 @@ namespace Game.Bootstrap
     public static class SceneUiInstaller
     {
         /// <summary>
-        /// 安装功能场景 UI，并向 Gameplay 场景已有的返回按钮注入服务。
+        /// 安装功能场景 UI，并向 Gameplay 场景已有的白盒控制器注入服务。
         /// </summary>
         /// <param name="scene">刚激活的功能场景。</param>
         /// <param name="runtimeServices">Bootstrap 创建的运行时服务容器。</param>
@@ -40,11 +40,11 @@ namespace Game.Bootstrap
                 InstallStory(scene, runtimeServices);
             if (scene.name == SceneNames.Gameplay)
             {
-                var returnButton = FindInScene<GameplayReturnButton>(scene);
-                if (returnButton != null)
-                    returnButton.Initialize(runtimeServices, globalCanvasLayer);
+                var gameplayController = FindInScene<GameplayReturnButton>(scene);
+                if (gameplayController != null)
+                    gameplayController.Initialize(runtimeServices, globalCanvasLayer);
                 else
-                    Debug.LogWarning("Gameplay 场景缺少返回地图按钮。请检查已保存的场景。");
+                    Debug.LogWarning("Gameplay 场景缺少白盒 UI 控制器。请检查已保存的场景。");
             }
         }
 
