@@ -89,3 +89,10 @@
 成功面板提交后先保存通关进度，保存成功才调用 `PlayStoryAsync`，返回目标为 `StoryReturnTarget.ToMetaPage(MetaPageId.Map)`。剧情结束或跳过复用 `CompletedStoryIds` 写入当前档案，不新增存档文件或格式。重启后再次通关，已经完成的关后剧情不会强制播放；如果播放中退出且尚未保存剧情完成，下次通关提交时仍会播放。失败模拟不触发关后剧情。
 
 验收：第一关模拟成功并提交后进入 Story，完成或跳过后回到 Map；重启并再次通关第一关应直接返回 Map；未配置关后剧情的第二关直接返回 Map。这些新增行为尚待本轮 Unity 人工验收。
+### LevelCard 剧情复播入口
+
+`MetaHubUI.prefab` 的 `LevelCard` 新增 `PreludeReplay`（关前剧情复播）和 `PostludeReplay`（关后剧情复播）。两个按钮由 `MetaHubShell` 自动绑定，无需配置 Inspector OnClick。布局、字体和文字可直接修改预制体节点；资料区域下沿已上移，为复播按钮留出空间。
+
+复播权限由 `MetaMapQuery` 合并内容与存档后提供：关前剧情完成或跳过并保存后解锁关前复播；通关保存成功后解锁关后复播，无需先完成关后剧情。未配置或未解锁的入口隐藏，导航期间禁用。两种复播结束均回到 Map，不再次进入 Gameplay，不提交通关进度。
+
+关后自动播放继续使用 `PostludeStoryId` 和 `CompletedStoryIds` 去重；第一关已配置测试关后剧情。已通关旧档也可使用该关的关后复播按钮。重播只记录剧情完成事实，不生成重复通关提交。

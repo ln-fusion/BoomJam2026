@@ -83,7 +83,14 @@ namespace Game.Meta
             LevelNodeViewModel node = null;
             foreach (LevelNodeViewModel candidate in GetLevels(new MapId(definition.MapId)))
                 if (candidate.LevelId == levelId) { node = candidate; break; }
-            return node == null ? null : new LevelCardViewModel(node, _progress.GetBestScore(levelId));
+            if (node == null) return null;
+            StoryId prelude = string.IsNullOrWhiteSpace(definition.PreludeStoryId)
+                ? null : new StoryId(definition.PreludeStoryId);
+            StoryId postlude = string.IsNullOrWhiteSpace(definition.PostludeStoryId)
+                ? null : new StoryId(definition.PostludeStoryId);
+            return new LevelCardViewModel(node, _progress.GetBestScore(levelId),
+                prelude != null && _progress.IsStoryReplayUnlocked(prelude) ? prelude : null,
+                node.State == LevelNodeState.Completed ? postlude : null);
         }
 
         /// <summary>判断指定关卡是否包含在当前完成事实中。</summary>

@@ -43,6 +43,8 @@ namespace Game.Presentation
         private IReadOnlyList<LevelNodeViewModel> _mapNodes;
         private Text _levelDetails;
         private Button _levelStart;
+        private Button _preludeReplay;
+        private Button _postludeReplay;
         private LevelId _selectedLevelId;
         private bool _enteringLevel;
 
@@ -95,6 +97,8 @@ namespace Game.Presentation
         /// <summary>销毁时取消路由、Locale 订阅和页面存档异步操作。</summary>
         private void OnDestroy()
         {
+            if (_preludeReplay != null) _preludeReplay.onClick.RemoveListener(OnPreludeReplay);
+            if (_postludeReplay != null) _postludeReplay.onClick.RemoveListener(OnPostludeReplay);
             if (_levelStart != null)
                 _levelStart.onClick.RemoveListener(OnLevelStartRequested);
             for (int index = 0; index < _mapButtons.Count; index++)
@@ -129,6 +133,10 @@ namespace Game.Presentation
             Transform card = _mapPage.transform.Find("LevelCard");
             _levelDetails = card == null ? null : FindText(card, "Details");
             _levelStart = card == null ? null : FindButton(card, "Start");
+            _preludeReplay = card == null ? null : FindButton(card, "PreludeReplay");
+            _postludeReplay = card == null ? null : FindButton(card, "PostludeReplay");
+            if (_preludeReplay != null) _preludeReplay.onClick.AddListener(OnPreludeReplay);
+            if (_postludeReplay != null) _postludeReplay.onClick.AddListener(OnPostludeReplay);
             if (_levelStart != null)
                 _levelStart.onClick.AddListener(OnLevelStartRequested);
             var controller = _mapPage.GetComponentInChildren<MetaMapInteractionController>(true);
@@ -201,6 +209,8 @@ namespace Game.Presentation
             }
             if (_levelStart != null)
                 _levelStart.interactable = !_enteringLevel && card != null && card.Node.IsInteractable;
+            RenderReplayButton(_preludeReplay, card?.PreludeReplay);
+            RenderReplayButton(_postludeReplay, card?.PostludeReplay);
             if (_levelDetails == null)
                 return;
             if (card == null)
@@ -212,6 +222,56 @@ namespace Game.Presentation
                 : card.BestScore.ElapsedTicks + " ticks";
             _levelDetails.text = Text(card.Node.DisplayNameKey) + "\n状态：" +
                 MapStateText(card.Node.State) + "\n最佳成绩：" + score;
+        }
+
+        /// <summary>根据查询得到的复播权限切换按钮显隐与导航期间的交互。</summary>
+        /// <param name="button">预制体中的复播按钮。</param>
+        /// <param name="story">已解锁的剧情；为空时隐藏。</param>
+        private void RenderReplayButton(Button button, StoryId story)
+        {
+            if (button == null) return;
+            button.gameObject.SetActive(story != null);
+            button.interactable = story != null && !_enteringLevel;
+        }
+
+        /// <summary>请求复播当前关卡已解锁的关前剧情。</summary>
+        private void OnPreludeReplay() => ReplaySelectedStory(false);
+
+        /// <summary>请求复播当前关卡已解锁的关后剧情。</summary>
+        private void OnPostludeReplay() => ReplaySelectedStory(true);
+
+        /// <summary>重新查询权限并播放剧情，结束返回地图；不创建白盒会话或提交通关。</summary>
+        /// <param name="postlude">是否复播关后剧情。</param>
+        private async void ReplaySelectedStory(bool postlude)
+        {
+            if (_enteringLevel || _runtimeServices == null || _selectedLevelId == null) return;
+            _enteringLevel = true;
+            try
+            {
+                RefreshMapView();
+                var card = _mapQuery.GetLevelCard(_selectedLevelId);
+                StoryId story = postlude ? card?.PostludeReplay : card?.PreludeReplay;
+                if (story == null) return;
+                var content = new OfficialContentService(OfficialTestMapCatalog.CreateProvider());
+                if (content.GetStory(story) == null)
+                    throw new InvalidOperationException("找不到复播剧情：" + story.Value);
+                await _runtimeServices.Flow.PlayStoryAsync(story,
+                    StoryReturnTarget.ToMetaPage(MetaPageId.Map), CancellationToken.None);
+            }
+            catch (OperationCanceledException) { }
+            catch (Exception exception)
+            {
+                _globalCanvasLayer?.ShowFeedback(exception.Message);
+                Debug.LogException(exception);
+            }
+            finally
+            {
+                if (this != null)
+                {
+                    _enteringLevel = false;
+                    RefreshMapView();
+                }
+            }
         }
 
         /// <summary>响应资料卡开始请求；已有进入请求时忽略重复点击。</summary>
