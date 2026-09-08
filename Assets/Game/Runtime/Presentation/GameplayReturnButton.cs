@@ -2,6 +2,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Game.Contracts;
+using Game.Content;
 using Game.Foundation;
 using UnityEngine;
 using UnityEngine.UI;
@@ -102,7 +103,7 @@ namespace Game.Presentation
                 _globalCanvas?.OpenSettings();
         }
 
-        /// <summary>模拟通关并保存，再返回地图；保存失败时留在 Gameplay，不发布完成进度。</summary>
+        /// <summary>校验关后剧情并保存通关，再播放未完成的关后剧情或返回地图；保存失败时留在结果面板。</summary>
         /// <returns>返回请求结束时完成的任务；加载结果由流程服务记录。</returns>
         private async Task CompleteAndReturnToMapAsync()
         {
@@ -114,6 +115,11 @@ namespace Game.Presentation
                 settingsButton.interactable = false;
             try
             {
+                var content = new OfficialContentService(OfficialTestMapCatalog.CreateProvider());
+                string postludeId = content.GetLevel(_runtimeServices.WhiteboxLevel)?.PostludeStoryId;
+                StoryId postlude = string.IsNullOrWhiteSpace(postludeId) ? null : new StoryId(postludeId);
+                if (postlude != null && content.GetStory(postlude) == null)
+                    throw new InvalidOperationException("找不到关后剧情：" + postludeId);
                 var saved = await _runtimeServices.CompleteWhiteboxLevelAsync(
                     CancellationToken.None);
                 if (!saved.IsSuccess)
@@ -122,7 +128,12 @@ namespace Game.Presentation
                         _globalCanvas.ShowFeedback(saved.Message);
                     return;
                 }
-                await _flow.OpenMetaHubAsync(MetaPageId.Map, CancellationToken.None);
+                if (postlude != null &&
+                    !_runtimeServices.CurrentProfile.CompletedStoryIds.Contains(postlude.Value))
+                    await _flow.PlayStoryAsync(postlude,
+                        StoryReturnTarget.ToMetaPage(MetaPageId.Map), CancellationToken.None);
+                else
+                    await _flow.OpenMetaHubAsync(MetaPageId.Map, CancellationToken.None);
                 if (this == null)
                     _runtimeServices.EndWhiteboxLevel();
             }

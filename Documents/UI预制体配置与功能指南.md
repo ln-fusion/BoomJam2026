@@ -53,9 +53,9 @@
 `04_Gameplay` 当前是无实际玩法的占位场景，已保存左上角 `GameplayCanvas/LevelId`、`SimulateSuccess`、`SimulateFailure`、`Settings`，以及默认隐藏的 `SuccessPanel`、`FailurePanel`。`SceneUiInstaller` 向 `GameplayReturnButton` 注入服务后显示当前选关 `LevelId` 并启用交互；字段分别引用关卡文字、模拟按钮、结果面板、面板操作按钮和设置按钮，均由脚本绑定，无需添加 Inspector OnClick。设置弹窗打开时若 Gameplay 正在运行，会保存当前 `Time.timeScale` 并设为 `0`；取消或应用时恢复打开前的值；弹窗左上角按钮在 Gameplay 中显示“返回地图”并前往 MetaHub 地图页，在其他功能场景中仍显示“返回主菜单”。修改位置和尺寸时调整场景中控件的 Rect Transform，修改静态文字时编辑其 Label、Title 或 Message。单独运行 Gameplay 未注入服务时模拟和提交按钮保持禁用。
 
 - **设置中返回地图**：不应用当前设置草稿，恢复暂停前时间速度，调用 `OpenMetaHubAsync(MetaPageId.Map, ...)`，并且不写入完成事实。
-- **模拟成功**：只显示 `SuccessPanel` 并禁用成功、失败模拟入口，不立即写档。点击面板内 `SubmitSuccess` 后，使用地图选关时记录的 LevelId 和本次白盒会话提交 ID，重新检查解锁资格，在独立档案副本中更新 `CompletedLevelIds`、对应 `LevelRecords.Completed` 和 `AppliedCompletionRunIds`。使用已有 `SaveReason.ProgressCommitted` 保存成功后才替换当前档案并返回地图；地图依据完成事实和关卡前置条件显示新解锁的关卡。保存失败时留在 Gameplay，保留旧进度并允许再次提交。
+- **模拟成功**：只显示 `SuccessPanel` 并禁用成功、失败模拟入口，不立即写档。点击面板内 `SubmitSuccess` 后，使用地图选关时记录的 LevelId 和本次白盒会话提交 ID，重新检查解锁资格，在独立档案副本中更新 `CompletedLevelIds`、对应 `LevelRecords.Completed` 和 `AppliedCompletionRunIds`。使用已有 `SaveReason.ProgressCommitted` 保存成功后才替换当前档案，播放尚未完成的已配置关后剧情，结束或跳过后返回地图；没有配置或剧情已完成则直接返回地图。地图依据完成事实和关卡前置条件显示新解锁的关卡。保存失败时留在 Gameplay，保留旧进度并允许再次提交。
 - **模拟失败**：只显示 `FailurePanel`，不调用通关提交或档案保存。点击 `Retry` 关闭结果面板并恢复两个模拟入口，继续当前白盒关卡。
-- 模拟通关会写入玩家当前档案，但不会伪造最佳成绩、统计或剧情完成记录，也不播放关后剧情。它仅用于白盒验收，尚不是正式 Gameplay 结算事务。没有经地图选关创建会话时，模拟通关按钮不可用。
+- 模拟通关会写入玩家当前档案，但不会伪造最佳成绩、统计或剧情完成记录，关后剧情的完成状态由现有剧情流程另行保存。它仅用于白盒验收，尚不是正式 Gameplay 结算事务。没有经地图选关创建会话时，模拟通关按钮不可用。
 
 运行时应从 `00_Bootstrap` 开始。新档选择第一关并进入 Gameplay 后，从设置返回地图仍只显示第一关；模拟失败并重新尝试也不改变进度。模拟成功后还需点击 `SuccessPanel/SubmitSuccess`，保存成功并返回地图后第一关显示“已完成”，第二关出现且可进入，后续未满足条件的关卡继续隐藏。重启后继续档案，第二关仍应显示。解锁完全由地图前置条件和已保存完成事实计算，不直接把“下一关”写入存档。
 
@@ -79,3 +79,13 @@
 校验器会在 Console 列出每个预制体的契约状态。进入验收前，`UiPrefabRoot` 界面类型、稳定 ID 和对应 Bindings 的必需控件清单应全部配置完成。
 
 导出器会把现有占位 uGUI 快照转成 Prefab，用作画师配置正式 UI 资源的基础结构。
+
+### 关后剧情配置（Gameplay 白盒）
+
+在 `Assets/Game/Runtime/Content/OfficialTestMapCatalog.cs` 的关卡定义中设置 `PostludeStoryId`，方式与 `PreludeStoryId` 相同；为空表示没有关后剧情。第一关 `official.level.test_01_01` 已配置 `official.story.postlude.test_01_01`，其余关卡未配置。测试剧情暂时复用现有分支对白内容，关前和关后的剧情 ID 不同，因此完成状态互不影响。
+
+配置 ID 时，需同时在内容提供者中登记对应的 `StoryDefinition`；当前示例通过 `CreateBranchingStory(level.PostludeStoryId)` 登记。只填写一个未登记的 ID 会在提交前提示错误，并留在结果面板。目录配置化后再统一迁移这些引用到可编辑资源。
+
+成功面板提交后先保存通关进度，保存成功才调用 `PlayStoryAsync`，返回目标为 `StoryReturnTarget.ToMetaPage(MetaPageId.Map)`。剧情结束或跳过复用 `CompletedStoryIds` 写入当前档案，不新增存档文件或格式。重启后再次通关，已经完成的关后剧情不会强制播放；如果播放中退出且尚未保存剧情完成，下次通关提交时仍会播放。失败模拟不触发关后剧情。
+
+验收：第一关模拟成功并提交后进入 Story，完成或跳过后回到 Map；重启并再次通关第一关应直接返回 Map；未配置关后剧情的第二关直接返回 Map。这些新增行为尚待本轮 Unity 人工验收。
