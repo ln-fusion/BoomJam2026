@@ -73,19 +73,29 @@ namespace Game.Bootstrap
             _settingsService = new SettingsService(_saveRepository, audio, localization,
                 new UnityWindowSettingsApplier(), eventBus);
             var profileLifecycle = new ProfileLifecycleService(_saveRepository, clock);
+            var whiteboxContent = new OfficialContentService(
+                OfficialTestMapCatalog.CreateProvider());
+            GameRuntimeServices? runtimeServices = null;
 
             var flowService = new GameFlowService(
                 new UnitySceneLoader(),
                 clock,
                 logger,
                 eventBus,
-                startMenuSceneName
+                startMenuSceneName,
+                levelId =>
+                {
+                    string? storyId = whiteboxContent.GetLevel(levelId)?.PreludeStoryId;
+                    return string.IsNullOrWhiteSpace(storyId) ? null : new StoryId(storyId);
+                },
+                storyId => runtimeServices?.ProgressQuery.IsStoryReplayUnlocked(storyId) == true
             );
             _flowService = flowService;
 
-            _runtimeServices = new GameRuntimeServices(flowService, _settingsService, localization,
+            runtimeServices = new GameRuntimeServices(flowService, _settingsService, localization,
                 audio, profileLifecycle, new EmptyProgressQuery(), clock,
                 _saveRepository.SaveProfileAsync);
+            _runtimeServices = runtimeServices;
             _globalUiRoot = new GameObject("GlobalUi");
             DontDestroyOnLoad(_globalUiRoot);
             _globalCanvasLayer = _globalUiRoot.AddComponent<GlobalCanvasLayer>();

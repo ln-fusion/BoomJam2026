@@ -17,6 +17,7 @@ namespace Game.Meta
         /// <summary>创建地图查询。</summary>
         /// <param name="content">官方内容查询服务。</param>
         /// <param name="progress">玩家进度查询服务。</param>
+        /// <param name="unlockEvaluator">可选解锁规则计算器；为空时使用默认实现。</param>
         public MetaMapQuery(IContentService content, IProgressQuery progress,
             IUnlockEvaluator unlockEvaluator = null)
         {
@@ -85,6 +86,9 @@ namespace Game.Meta
             return node == null ? null : new LevelCardViewModel(node, _progress.GetBestScore(levelId));
         }
 
+        /// <summary>判断指定关卡是否包含在当前完成事实中。</summary>
+        /// <param name="levelId">要查询的关卡稳定标识。</param>
+        /// <returns>关卡已经完成时返回 true。</returns>
         private bool IsCompleted(LevelId levelId)
         {
             foreach (LevelId completed in _progress.GetSnapshot().CompletedLevels)

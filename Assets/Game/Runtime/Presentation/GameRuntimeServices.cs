@@ -90,6 +90,40 @@ namespace Game.Presentation
             }
         }
 
+        /// <summary>把剧情完成事实原子写入档案，保存成功后才发布新的内存进度。</summary>
+        /// <param name="storyId">已经完整播放或跳过完成的剧情稳定标识。</param>
+        /// <param name="cancellationToken">取消等待或存档写入的令牌。</param>
+        /// <returns>保存结果；同一剧情已完成时直接成功且不重复写入。</returns>
+        internal async Task<SaveResult> CompleteStoryAsync(StoryId storyId,
+            CancellationToken cancellationToken)
+        {
+            if (storyId == null)
+                throw new ArgumentNullException(nameof(storyId));
+
+            await _profileWriteGate.WaitAsync(cancellationToken);
+            try
+            {
+                if (CurrentProfile == null)
+                    return SaveResult.Failure(new ErrorCode(ErrorCategory.Validation,
+                        "story.profile_missing"), "剧情完成时没有已加载的玩家档案。");
+                if (CurrentProfile.CompletedStoryIds.Contains(storyId.Value))
+                    return SaveResult.Success();
+
+                ProfileSave candidate = JsonConvert.DeserializeObject<ProfileSave>(
+                    JsonConvert.SerializeObject(CurrentProfile));
+                candidate.CompletedStoryIds.Add(storyId.Value);
+                SaveResult result = await _saveProfileAsync(candidate, SaveReason.StoryCommitted,
+                    cancellationToken);
+                if (result.IsSuccess)
+                    CurrentProfile = candidate;
+                return result;
+            }
+            finally
+            {
+                _profileWriteGate.Release();
+            }
+        }
+
         /// <summary>当前应用流程服务。</summary>
         public IGameFlowService Flow { get; }
         /// <summary>当前设置服务。</summary>

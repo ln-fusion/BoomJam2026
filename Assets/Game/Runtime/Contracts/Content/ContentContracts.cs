@@ -70,6 +70,9 @@ namespace Game.Contracts.Content
         /// <summary>同一地图内的显示排序值。</summary>
         public int SortOrder;
 
+        /// <summary>首次进入关卡前播放的剧情稳定标识；为空时直接进入玩法。</summary>
+        public string PreludeStoryId;
+
         /// <summary>Unlock rule evaluated before the level can be entered.</summary>
         public UnlockRequirementData UnlockRequirement;
     }
@@ -131,6 +134,8 @@ namespace Game.Contracts.Content
         public string DisplayNameKey;
         /// <summary>同一地图内的显示排序值。</summary>
         public int SortOrder;
+        /// <summary>首次进入关卡前播放的剧情稳定标识；为空时直接进入玩法。</summary>
+        public string PreludeStoryId;
         /// <summary>Unlock rule copied into the level summary.</summary>
         public UnlockRequirementData UnlockRequirement;
         /// <summary>由完整定义派生的关卡选择摘要。</summary>
@@ -140,6 +145,7 @@ namespace Game.Contracts.Content
             MapId = MapId,
             DisplayNameKey = DisplayNameKey,
             SortOrder = SortOrder,
+            PreludeStoryId = PreludeStoryId,
             UnlockRequirement = UnlockRequirement
         };
     }

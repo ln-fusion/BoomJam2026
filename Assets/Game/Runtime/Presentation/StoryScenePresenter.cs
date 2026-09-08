@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using Game.Content;
 using Game.Contracts;
 using Game.Contracts.Content;
+using Game.Contracts.Persistence;
 using Game.Contracts.Story;
 using Game.Foundation;
 using Game.Story;
@@ -18,8 +20,10 @@ namespace Game.Presentation
         private StoryRunner _runner;
         private GlobalCanvasLayer _globalCanvas;
         private GameRuntimeServices _runtimeServices;
+        private bool _isReturning;
 
-        /// <summary>创建面板、启动测试剧情并显示首个节点。</summary>
+        /// <summary>创建面板、启动当前流程指定的剧情并显示首个节点。</summary>
+        /// <param name="runtimeServices">运行时服务容器；为空时只播放兼容测试剧情且不执行返回流程。</param>
         public void Initialize(GameRuntimeServices runtimeServices = null)
         {
             if (_runner != null)
@@ -36,7 +40,8 @@ namespace Game.Presentation
             _panel.SetSkipAction(Skip);
             _globalCanvas = FindObjectOfType<GlobalCanvasLayer>();
             _runtimeServices = runtimeServices;
-            _runner.Start(new StoryId(TestStoryId));
+            Game.Flow.GameFlowService flow = _runtimeServices?.Flow as Game.Flow.GameFlowService;
+            _runner.Start(flow?.ActiveStoryId ?? new StoryId(TestStoryId));
             RenderCurrentNode();
         }
 
@@ -123,18 +128,45 @@ namespace Game.Presentation
                 RenderCurrentNode();
         }
 
-        /// <summary>剧情结束后按流程返回地图或进入占位关卡。</summary>
-        private void ReturnAfterStory()
+        /// <summary>剧情结束后先保存完成事实，再按流程返回地图或进入占位关卡。</summary>
+        private async void ReturnAfterStory()
         {
-            if (_runtimeServices == null) return;
+            if (_runtimeServices == null || _isReturning) return;
+            _isReturning = true;
             Game.Flow.GameFlowService flow = _runtimeServices.Flow as Game.Flow.GameFlowService;
-            if (flow == null || !flow.LastStoryReturnTarget.HasValue) return;
+            StoryId storyId = flow?.ActiveStoryId;
+            if (flow == null || storyId == null || !flow.LastStoryReturnTarget.HasValue)
+            {
+                _isReturning = false;
+                return;
+            }
+
+            SaveResult saveResult;
+            try
+            {
+                saveResult = await _runtimeServices.CompleteStoryAsync(storyId,
+                    CancellationToken.None);
+            }
+            catch (Exception exception)
+            {
+                Debug.LogException(exception, this);
+                _isReturning = false;
+                return;
+            }
+            if (!saveResult.IsSuccess)
+            {
+                Debug.LogError("Story completion save failed: " + saveResult.Message, this);
+                _isReturning = false;
+                return;
+            }
+
             if (flow.LastStoryReturnTarget.Value.Kind == StoryReturnKind.Level &&
                 flow.LastStoryReturnTarget.Value.Level != null)
-                _ = flow.EnterLevelAsync(flow.LastStoryReturnTarget.Value.Level, System.Threading.CancellationToken.None);
+                await flow.EnterLevelAsync(flow.LastStoryReturnTarget.Value.Level,
+                    CancellationToken.None);
             else if (flow.LastStoryReturnTarget.Value.Kind == StoryReturnKind.MetaPage)
-                _ = flow.OpenMetaHubAsync(flow.LastStoryReturnTarget.Value.MetaPage,
-                    System.Threading.CancellationToken.None);
+                await flow.OpenMetaHubAsync(flow.LastStoryReturnTarget.Value.MetaPage,
+                    CancellationToken.None);
         }
     }
 }

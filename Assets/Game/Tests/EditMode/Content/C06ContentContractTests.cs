@@ -1,4 +1,7 @@
+using System;
+using System.Linq;
 using Game.Content;
+using Game.Contracts.Content;
 using NUnit.Framework;
 
 namespace Game.Tests.EditMode.Content
@@ -14,6 +17,10 @@ namespace Game.Tests.EditMode.Content
             Assert.That(MapContentValidator.TryValidate(provider, out string error), Is.True, error);
             Assert.That(provider.Maps, Has.Count.EqualTo(6));
             Assert.That(provider.Levels, Has.Count.EqualTo(30));
+            Assert.That(provider.Levels, Has.All.Matches<LevelDefinition>(level =>
+                !string.IsNullOrWhiteSpace(level.PreludeStoryId)));
+            Assert.That(provider.Levels.Select(level => level.PreludeStoryId).Distinct(),
+                Has.Count.EqualTo(30));
         }
 
         /// <summary>Ensures the fixture story has a choice branch that converges.</summary>

@@ -51,6 +51,10 @@ namespace Game.Content
             return true;
         }
 
+        /// <summary>设置校验失败信息并返回失败结果。</summary>
+        /// <param name="message">校验失败信息。</param>
+        /// <param name="error">接收校验失败信息。</param>
+        /// <returns>始终返回 false。</returns>
         private static bool Fail(string message, out string error)
         {
             error = message;

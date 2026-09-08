@@ -6,12 +6,16 @@ namespace Game.Content
     /// <summary>Builds deterministic C06 content used by EditMode acceptance tests.</summary>
     public static class OfficialTestMapCatalog
     {
-        /// <summary>Creates six maps with five ordered level nodes each and one branching story.</summary>
-        /// <returns>A provider containing 30 stable test levels and a branching story.</returns>
+        /// <summary>创建六张测试地图、每图五个关卡，以及每关独立记录完成状态的关前剧情。</summary>
+        /// <returns>包含 30 个稳定测试关卡、关前剧情和旧 C06 测试剧情的内容提供者。</returns>
         public static OfficialContentProvider CreateProvider()
         {
             var maps = new List<MapDefinition>();
             var levels = new List<LevelDefinition>();
+            var stories = new List<StoryDefinition>
+            {
+                CreateBranchingStory("official.story.c06_branch")
+            };
             for (int mapIndex = 1; mapIndex <= 6; mapIndex++)
             {
                 string mapId = "official.map.test_" + mapIndex.ToString("00");
@@ -24,11 +28,13 @@ namespace Game.Content
                 for (int levelIndex = 1; levelIndex <= 5; levelIndex++)
                 {
                     string levelId = "official.level.test_" + mapIndex.ToString("00") + "_" + levelIndex.ToString("00");
+                    string preludeStoryId = "official.story.prelude.test_" +
+                        mapIndex.ToString("00") + "_" + levelIndex.ToString("00");
                     var level = new LevelDefinition
                     {
                         Header = Header(levelId), LevelId = levelId, MapId = mapId,
                         DisplayNameKey = "level.test_" + mapIndex.ToString("00") + "_" + levelIndex.ToString("00"),
-                        SortOrder = levelIndex
+                        SortOrder = levelIndex, PreludeStoryId = preludeStoryId
                     };
                     if (levelIndex > 1)
                     {
@@ -40,13 +46,22 @@ namespace Game.Content
                     }
                     levels.Add(level);
                     map.Levels.Add(level.Summary);
+                    stories.Add(CreateBranchingStory(preludeStoryId));
                 }
                 maps.Add(map);
             }
 
-            var story = new StoryDefinition
+            return new OfficialContentProvider(maps, levels, stories);
+        }
+
+        /// <summary>创建使用当前白盒对白内容、但拥有独立完成事实 ID 的分支剧情。</summary>
+        /// <param name="storyId">剧情稳定标识。</param>
+        /// <returns>可由剧情运行器播放的分支剧情定义。</returns>
+        private static StoryDefinition CreateBranchingStory(string storyId)
+        {
+            return new StoryDefinition
             {
-                Header = Header("official.story.c06_branch"), StoryId = "official.story.c06_branch",
+                Header = Header(storyId), StoryId = storyId,
                 Nodes = new List<StoryNodeDefinition>
                 {
                     new StoryNodeDefinition { NodeId = "start", Type = StoryNodeType.Dialogue, TextKey = "story.c06.start", NextNodeId = "choice" },
@@ -65,9 +80,11 @@ namespace Game.Content
                     new StoryNodeDefinition { NodeId = "end", Type = StoryNodeType.End }
                 }
             };
-            return new OfficialContentProvider(maps, levels, new[] { story });
         }
 
+        /// <summary>创建官方测试内容使用的兼容内容头。</summary>
+        /// <param name="id">内容稳定标识。</param>
+        /// <returns>格式版本为 1 的官方内容头。</returns>
         private static ContentHeader Header(string id)
         {
             return new ContentHeader { ContentId = id, Source = ContentSource.Official, FormatVersion = 1 };

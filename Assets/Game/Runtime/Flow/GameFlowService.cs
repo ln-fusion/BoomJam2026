@@ -23,19 +23,24 @@ namespace Game.Flow
         private readonly IGameLogger _logger;
         private readonly IDomainEventBus _eventBus;
         private readonly string _startMenuSceneName;
+        private readonly Func<LevelId, StoryId?> _preludeStoryLookup;
+        private readonly Func<StoryId, bool> _isStoryCompleted;
 
         private CancellationTokenScope? _activeScope;
         private bool _isNavigating;
         private bool _disposed;
         private MetaPageId _lastMetaPage = MetaPageId.Map;
         private StoryReturnTarget? _storyReturnTarget;
-        private readonly HashSet<string> _levelsWithPrelude = new HashSet<string>(StringComparer.Ordinal);
+        private StoryId? _activeStoryId;
 
         /// <summary>当前场景生命周期的取消令牌（场景激活后有效，切换时被取消）.</summary>
         public CancellationToken ActiveSceneToken => _activeScope?.Token ?? CancellationToken.None;
 
         /// <summary>最近一次剧情返回目标（PlayStory 时记录，供返回路由使用）.</summary>
         public StoryReturnTarget? LastStoryReturnTarget => _storyReturnTarget;
+
+        /// <summary>当前剧情场景应播放的剧情；未进入过剧情流程时为空。</summary>
+        public StoryId? ActiveStoryId => _activeStoryId;
 
         /// <summary>诊断用时钟实例.</summary>
         public IClock Clock => _clock;
@@ -48,12 +53,16 @@ namespace Game.Flow
         /// <param name="logger">日志；为 null 时静默</param>
         /// <param name="eventBus">事件总线</param>
         /// <param name="startMenuSceneName">开始菜单场景名，默认 <see cref="SceneNames.StartMenu"/></param>
+        /// <param name="preludeStoryLookup">按关卡查询关前剧情；为空时关卡没有关前剧情。</param>
+        /// <param name="isStoryCompleted">查询剧情完成事实是否已经写入当前档案。</param>
         public GameFlowService(
             ISceneLoader sceneLoader,
             IClock clock,
             IGameLogger? logger,
             IDomainEventBus eventBus,
-            string startMenuSceneName = SceneNames.StartMenu
+            string startMenuSceneName = SceneNames.StartMenu,
+            Func<LevelId, StoryId?>? preludeStoryLookup = null,
+            Func<StoryId, bool>? isStoryCompleted = null
         )
         {
             _sceneLoader = sceneLoader ?? throw new ArgumentNullException(nameof(sceneLoader));
@@ -61,6 +70,8 @@ namespace Game.Flow
             _logger = logger ?? NullLogger.Instance;
             _eventBus = eventBus ?? throw new ArgumentNullException(nameof(eventBus));
             _startMenuSceneName = startMenuSceneName;
+            _preludeStoryLookup = preludeStoryLookup ?? (_ => null);
+            _isStoryCompleted = isStoryCompleted ?? (_ => false);
         }
 
         /// <summary>进入开始菜单场景.</summary>
@@ -82,14 +93,18 @@ namespace Game.Flow
             return NavigateAsync(SceneNames.MetaHub, cancellationToken);
         }
 
-        /// <summary>进入指定关卡（C02 占位：直接进入 Gameplay；关前/关后剧情分支在 C15/C16 落地）.</summary>
-        /// <param name="levelId">目标关卡稳定标识；C02 占位实现尚未按关卡分流。</param>
+        /// <summary>进入指定关卡；尚未完成配置的关前剧情时先播放剧情。</summary>
+        /// <param name="levelId">目标关卡稳定标识。</param>
         /// <param name="cancellationToken">取消导航操作的令牌。</param>
         public Task EnterLevelAsync(LevelId levelId, CancellationToken cancellationToken)
         {
-            if (levelId != null && _levelsWithPrelude.Add(levelId.Value))
-                return PlayStoryAsync(new StoryId("official.story.c06_branch"),
-                    StoryReturnTarget.ToLevel(levelId), cancellationToken);
+            if (levelId != null)
+            {
+                StoryId? prelude = _preludeStoryLookup(levelId);
+                if (prelude != null && !_isStoryCompleted(prelude))
+                    return PlayStoryAsync(prelude, StoryReturnTarget.ToLevel(levelId),
+                        cancellationToken);
+            }
             return NavigateAsync(SceneNames.Gameplay, cancellationToken);
         }
 
@@ -99,6 +114,7 @@ namespace Game.Flow
         /// <param name="cancellationToken">取消导航操作的令牌。</param>
         public Task PlayStoryAsync(StoryId storyId, StoryReturnTarget returnTarget, CancellationToken cancellationToken)
         {
+            _activeStoryId = storyId ?? throw new ArgumentNullException(nameof(storyId));
             _storyReturnTarget = returnTarget;
             return NavigateAsync(SceneNames.Story, cancellationToken);
         }

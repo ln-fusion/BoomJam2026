@@ -42,6 +42,10 @@ namespace Game.Content
             return true;
         }
 
+        /// <summary>设置校验失败信息并返回失败结果。</summary>
+        /// <param name="message">校验失败信息。</param>
+        /// <param name="error">接收校验失败信息。</param>
+        /// <returns>始终返回 false。</returns>
         private static bool Fail(string message, out string error)
         {
             error = message;
@@ -49,6 +53,11 @@ namespace Game.Content
         }
 
         /// <summary>深度优先检测关卡前置依赖环。</summary>
+        /// <param name="levelId">当前检查的关卡稳定标识。</param>
+        /// <param name="provider">提供全部关卡定义的内容源。</param>
+        /// <param name="visiting">当前递归路径中正在访问的关卡集合。</param>
+        /// <param name="visited">已经确认不存在依赖环的关卡集合。</param>
+        /// <returns>发现依赖环时返回 true。</returns>
         private static bool HasCycle(string levelId, OfficialContentProvider provider,
             HashSet<string> visiting, HashSet<string> visited)
         {

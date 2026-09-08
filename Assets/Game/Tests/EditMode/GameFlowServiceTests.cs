@@ -118,6 +118,35 @@ namespace Game.Tests.EditMode
             Assert.That(_loader.LoadedSceneNames, Has.Exactly(1).Matches<string>(n => n == SceneNames.StartMenu));
         }
 
+        /// <summary>验证关前剧情没有完成事实时，进入关卡会先加载剧情场景。</summary>
+        [Test]
+        public void EnterLevel_With_Incomplete_Prelude_Loads_Story()
+        {
+            var storyId = new StoryId("official.story.prelude.test_01_01");
+            using var flow = new GameFlowService(_loader, new FixedClock(), _logger, _eventBus,
+                SceneNames.StartMenu, _ => storyId, _ => false);
+
+            RunAsync(() => flow.EnterLevelAsync(new LevelId("official.level.test_01_01"),
+                CancellationToken.None));
+
+            Assert.That(_loader.LastLoadRequest, Is.EqualTo(SceneNames.Story));
+            Assert.That(flow.ActiveStoryId, Is.EqualTo(storyId));
+        }
+
+        /// <summary>验证关前剧情完成事实已存在时，进入关卡会直接加载玩法场景。</summary>
+        [Test]
+        public void EnterLevel_With_Completed_Prelude_Loads_Gameplay()
+        {
+            var storyId = new StoryId("official.story.prelude.test_01_01");
+            using var flow = new GameFlowService(_loader, new FixedClock(), _logger, _eventBus,
+                SceneNames.StartMenu, _ => storyId, id => id == storyId);
+
+            RunAsync(() => flow.EnterLevelAsync(new LevelId("official.level.test_01_01"),
+                CancellationToken.None));
+
+            Assert.That(_loader.LastLoadRequest, Is.EqualTo(SceneNames.Gameplay));
+        }
+
         /// <summary>在同步测试中执行异步操作并等待结果。</summary>
         /// <param name="operation">要执行的异步操作。</param>
         private static void RunAsync(Func<Task> operation)
