@@ -62,7 +62,6 @@ namespace Game.Flow
         /// <param name="eventBus">事件总线</param>
         /// <param name="startMenuSceneName">开始菜单场景名，默认 <see cref="SceneNames.StartMenu"/></param>
         /// <param name="storyCompletion">剧情完成事务协调器；为 null 时关后流程跳过提交。</param>
-        /// <param name="storyCompletion">剧情完成事务协调器；为 null 时关后流程跳过提交。</param>
         /// <param name="getProfile">获取当前玩家档案的委托；为 null 时关卡完成事实提交被跳过。</param>
         /// <param name="saveProfileAsync">档案保存委托；与 <paramref name="getProfile"/> 同时提供时才生效。</param>
         public GameFlowService(

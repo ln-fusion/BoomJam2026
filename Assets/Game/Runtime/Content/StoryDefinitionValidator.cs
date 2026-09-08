@@ -4,23 +4,23 @@ using Game.Contracts.Content;
 
 namespace Game.Content
 {
-    /// <summary>Validates story node IDs, references, localized keys and choice branches.</summary>
+    /// <summary>校验剧情节点 ID、引用、本地化键与分支选择。</summary>
     public static class StoryDefinitionValidator
     {
-        /// <summary>Validates a story definition and returns a diagnostic message on failure.</summary>
-        /// <param name="definition">Story definition to validate.</param>
-        /// <param name="error">Failure diagnostic, or null when valid.</param>
-        /// <returns>True when the definition is valid.</returns>
+        /// <summary>校验剧情定义，失败时输出诊断消息。</summary>
+        /// <param name="definition">待校验的剧情定义。</param>
+        /// <param name="error">失败诊断；校验通过时为 null。</param>
+        /// <returns>定义有效时返回 true。</returns>
         public static bool TryValidate(StoryDefinition definition, out string error)
         {
             return TryValidate(definition, null, null, out error);
         }
 
-        /// <summary>Validates a story definition with character references.</summary>
-        /// <param name="definition">Story definition to validate.</param>
-        /// <param name="characters">Known characters; optional, enables speaker/appearance checks.</param>
-        /// <param name="error">Failure diagnostic, or null when valid.</param>
-        /// <returns>True when the definition is valid.</returns>
+        /// <summary>校验剧情定义，可带角色引用。</summary>
+        /// <param name="definition">待校验的剧情定义。</param>
+        /// <param name="characters">已知角色；可选，提供时启用说话者/形象校验。</param>
+        /// <param name="error">失败诊断；校验通过时为 null。</param>
+        /// <returns>定义有效时返回 true。</returns>
         public static bool TryValidate(
             StoryDefinition definition,
             IReadOnlyCollection<CharacterDefinition> characters,
@@ -30,14 +30,12 @@ namespace Game.Content
             return TryValidate(definition, characters, null, out error);
         }
 
-        /// <summary>
-        /// Validates a story definition with character references and an asset existence predicate.
-        /// </summary>
-        /// <param name="definition">Story definition to validate.</param>
-        /// <param name="characters">Known characters; optional, enables speaker/appearance checks.</param>
-        /// <param name="assetExists">Asset existence predicate; null skips existence checks.</param>
-        /// <param name="error">Failure diagnostic, or null when valid.</param>
-        /// <returns>True when the definition is valid.</returns>
+        /// <summary>校验剧情定义，可带角色引用与资源存在性谓词。</summary>
+        /// <param name="definition">待校验的剧情定义。</param>
+        /// <param name="characters">已知角色；可选，提供时启用说话者/形象校验。</param>
+        /// <param name="assetExists">资源存在性谓词；为 null 时跳过资源存在性校验。</param>
+        /// <param name="error">失败诊断；校验通过时为 null。</param>
+        /// <returns>定义有效时返回 true。</returns>
         public static bool TryValidate(
             StoryDefinition definition,
             IReadOnlyCollection<CharacterDefinition> characters,
@@ -48,15 +46,13 @@ namespace Game.Content
             return TryValidate(definition, characters, assetExists, null, out error);
         }
 
-        /// <summary>
-        /// Validates a story definition with character references, asset and localization key predicates.
-        /// </summary>
-        /// <param name="definition">Story definition to validate.</param>
-        /// <param name="characters">Known characters; optional, enables speaker/appearance checks.</param>
-        /// <param name="assetExists">Asset existence predicate; null skips existence checks.</param>
-        /// <param name="localizationKeyExists">Localization key existence predicate; null skips key checks.</param>
-        /// <param name="error">Failure diagnostic, or null when valid.</param>
-        /// <returns>True when the definition is valid.</returns>
+        /// <summary>校验剧情定义，可带角色引用、资源存在性与本地化键存在性谓词。</summary>
+        /// <param name="definition">待校验的剧情定义。</param>
+        /// <param name="characters">已知角色；可选，提供时启用说话者/形象校验。</param>
+        /// <param name="assetExists">资源存在性谓词；为 null 时跳过资源存在性校验。</param>
+        /// <param name="localizationKeyExists">本地化键存在性谓词；为 null 时跳过键校验。</param>
+        /// <param name="error">失败诊断；校验通过时为 null。</param>
+        /// <returns>定义有效时返回 true。</returns>
         public static bool TryValidate(
             StoryDefinition definition,
             IReadOnlyCollection<CharacterDefinition> characters,

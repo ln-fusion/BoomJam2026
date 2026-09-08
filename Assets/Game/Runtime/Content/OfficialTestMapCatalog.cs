@@ -4,13 +4,13 @@ using Game.Contracts.Content;
 
 namespace Game.Content
 {
-    /// <summary>Builds deterministic C06 content used by EditMode acceptance tests.</summary>
+    /// <summary>构造 C06 验收测试使用的确定性官方内容目录。</summary>
     public static class OfficialTestMapCatalog
     {
         private static readonly CultureInfo Invariant = CultureInfo.InvariantCulture;
 
-        /// <summary>Creates six maps with five ordered level nodes each and one branching story.</summary>
-        /// <returns>A provider containing 30 stable test levels and a branching story.</returns>
+        /// <summary>创建 6 张地图，每张 5 个有序关卡节点，以及 1 条分支剧情。</summary>
+        /// <returns>包含 30 个稳定测试关卡与 1 条分支剧情的提供者。</returns>
         public static OfficialContentProvider CreateProvider()
         {
             var maps = new List<MapDefinition>();

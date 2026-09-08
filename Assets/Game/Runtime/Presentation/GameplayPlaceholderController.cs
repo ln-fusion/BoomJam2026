@@ -18,7 +18,6 @@ namespace Game.Presentation
     public sealed class GameplayPlaceholderController : MonoBehaviour
     {
         private GameRuntimeServices _runtimeServices;
-        private CancellationTokenSource _lifetime;
         private Text _hintText;
         private bool _initialized;
 
@@ -30,7 +29,6 @@ namespace Game.Presentation
                 return;
             _initialized = true;
             _runtimeServices = runtimeServices ?? throw new ArgumentNullException(nameof(runtimeServices));
-            _lifetime = new CancellationTokenSource();
             BuildView();
         }
 
@@ -73,14 +71,6 @@ namespace Game.Presentation
             // 完成流程是跨场景导航: 会先卸载本 Gameplay 场景。绑定自身场景生命周期的 token
             // 会在 OnDestroy 时反向取消刚发起的卸载/加载 await, 误报"场景加载失败", 故选 None。
             _ = flow.CompleteLevelAsync(flow.CurrentLevelId, CancellationToken.None);
-        }
-
-        /// <summary>销毁时取消挂起的完成流程。</summary>
-        private void OnDestroy()
-        {
-            _lifetime?.Cancel();
-            _lifetime?.Dispose();
-            _lifetime = null;
         }
     }
 }

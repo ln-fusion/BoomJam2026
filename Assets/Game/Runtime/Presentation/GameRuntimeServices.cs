@@ -47,7 +47,7 @@ namespace Game.Presentation
         /// <summary>当前角色形象查询与立绘资源注册表。</summary>
         public ICharacterAppearanceQuery Characters { get; }
 
-        /// <summary>当前立绘资源注册表（与 Characters 同源，避免向下转型）。</summary>
+        /// <summary>当前立绘资源注册表（与 Characters 同源，避免向下转型）；当注入的角色形象查询未实现该接口时为 null。</summary>
         public ICharacterAssetRegistry CharacterAssets { get; }
 
         /// <summary>当前官方资源解析器；可为 null。</summary>
@@ -60,7 +60,7 @@ namespace Game.Presentation
         public IReadOnlyDictionary<string, StoryDefinition> GeneratedStories { get; private set; } =
             new Dictionary<string, StoryDefinition>();
 
-        /// <summary>当前剧情完成事务协调器。</summary>
+        /// <summary>当前剧情完成事务协调器；未注入时为 null，此时剧情完成事实提交被跳过。</summary>
         public IStoryCompletionCoordinator StoryCompletion { get; }
 
         /// <summary>
@@ -74,8 +74,8 @@ namespace Game.Presentation
         /// <param name="progressQuery">进度查询。</param>
         /// <param name="clock">系统时钟。</param>
         /// <param name="saveProfileAsync">档案保存委托。</param>
-        /// <param name="characters">角色形象查询与立绘资源注册表。</param>
-        /// <param name="storyCompletion">剧情完成事务协调器。</param>
+        /// <param name="characters">角色形象查询与立绘资源注册表；为 null 时使用空注册表，<see cref="CharacterAssets"/> 可能为 null。</param>
+        /// <param name="storyCompletion">剧情完成事务协调器；为 null 时剧情完成事实提交被跳过。</param>
         public GameRuntimeServices(
             IGameFlowService flow,
             ISettingsService settings,

@@ -52,8 +52,9 @@ dotnet_diagnostic.CA1859.severity = none       # 性能类型收窄：Unity 仓�
 
 # Unity 事件系统回调（OnBeginDrag/OnDrag/OnScroll/OnPointerClick 等）与 uGUI 工厂入参：
 # 参数由引擎/调用链保证非空，null 校验属冗余模板；CA1062 全量放行会掩盖真实库 API 缺陷，
-# 因此仅对这两个文件级模式关闭（改为文件头 #pragma 代价更高，此处用 severity=none 保持简单）。
+# 因此仅对包含这些回调/工厂的文件做定点关闭，其余文件保持全局 warning。
 # 注意：新写的库 API（非 Unity 回调）仍应做 null 校验。
+[Assets/Game/Runtime/Presentation/{MetaMapInteractionController,StoryDialoguePanel,UiFactory}.cs]
 dotnet_diagnostic.CA1062.severity = none       # Unity 回调入参 & 工厂入参：引擎保证非空，冗余校验噪音大
 
 # Unity YAML / JSON 类文件

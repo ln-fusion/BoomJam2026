@@ -158,7 +158,7 @@ namespace Game.Contracts.Content
         /// <summary>同一地图内的显示排序值。</summary>
         public int SortOrder;
 
-        /// <summary>Unlock rule copied into the level summary.</summary>
+        /// <summary>复制到关卡摘要中的解锁规则。</summary>
         public UnlockRequirementData UnlockRequirement;
 
         /// <summary>部署方案容量上限; 0 表示未配置（C23 生效）。</summary>

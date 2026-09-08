@@ -6,11 +6,13 @@ using Game.Foundation;
 namespace Game.Editor.Level
 {
     /// <summary>
-    /// Editor 环境下的 JSON 安全写入: 临时文件 + 回读校验 + 原子替换。
+    /// Editor 环境的 JSON 安全写入: 临时文件 + 回读校验 + 原子替换。
     /// </summary>
     /// <remarks>
-    /// 与 Persistence 的 AtomicFileWriter 语义一致, 但 Persistence 的 writer 是 internal,
-    /// Editor 程序集无法复用, 故在 Editor.Level 内独立实现。
+    /// 仅在关卡编辑器的 Authoring 工具链中落盘关卡定义使用; 运行时不走此路径,
+    /// 因此不存在"Editor 可用但打包后不可用"的差异。
+    /// 与 Persistence 的 <c>AtomicFileWriter</c> 语义一致, 但后者的 writer 是 internal,
+    /// 且 Editor.Level 不引用 Persistence 程序集, 故在此独立实现。
     /// </remarks>
     internal static class SafeJsonWrite
     {
@@ -57,10 +59,14 @@ namespace Game.Editor.Level
                 {
                     if (File.Exists(previousPath))
                         File.Delete(previousPath);
-                    File.Move(targetPath, previousPath);
+                    // 原子替换: 旧文件作为备份保留在 .prev, 新文件在落位前若失败, 目标文件仍完好。
+                    File.Replace(temporaryPath, targetPath, previousPath);
+                    File.Delete(previousPath);
                 }
-                File.Move(temporaryPath, targetPath);
-                File.Delete(previousPath);
+                else
+                {
+                    File.Move(temporaryPath, targetPath);
+                }
                 return Result.Success();
             }
             catch (Exception ex)

@@ -63,6 +63,8 @@ namespace Game.Flow
                     "No active profile; story completion cannot be committed."
                 );
 
+            // 仅首次成功写入时发布事件；重复提交同一剧情去重，订阅方不会重复响应同一事实。
+            bool committed = false;
             if (string.IsNullOrEmpty(storyId.Value) || !profile.CompletedStoryIds.Contains(storyId.Value))
             {
                 profile.CompletedStoryIds.Add(storyId.Value);
@@ -74,9 +76,11 @@ namespace Game.Flow
                     _logger.LogError(LogContext.Empty, "[StoryCompletion] 剧情完成事实写入失败: " + storyId.Value);
                     return result;
                 }
+                committed = true;
             }
 
-            _eventBus.Publish(new StoryCompletedCommittedEvent(storyId));
+            if (committed)
+                _eventBus.Publish(new StoryCompletedCommittedEvent(storyId));
             return SaveResult.Success();
         }
     }
