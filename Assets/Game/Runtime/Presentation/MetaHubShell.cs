@@ -33,15 +33,13 @@ namespace Game.Presentation
         /// <summary>注入运行时服务并构建壳层。</summary>
         /// <param name="runtimeServices">Bootstrap 创建的运行时服务容器。</param>
         /// <param name="globalCanvasLayer">全局 UI 层。</param>
-        public void Initialize(GameRuntimeServices runtimeServices,
-            GlobalCanvasLayer globalCanvasLayer)
+        public void Initialize(GameRuntimeServices runtimeServices, GlobalCanvasLayer globalCanvasLayer)
         {
             if (_initialized)
                 return;
 
             _initialized = true;
-            _runtimeServices = runtimeServices ??
-                throw new ArgumentNullException(nameof(runtimeServices));
+            _runtimeServices = runtimeServices ?? throw new ArgumentNullException(nameof(runtimeServices));
             _globalCanvasLayer = globalCanvasLayer;
             _lifetime = new CancellationTokenSource();
             _localizationService = _runtimeServices.Localization;
@@ -51,11 +49,19 @@ namespace Game.Presentation
             if (_localizationService != null)
                 _localizationService.LocaleChanged += OnLocaleChanged;
 
-            MetaPageId restoredPage = _router.Restore(_runtimeServices.CurrentProfile == null
-                ? "map" : _runtimeServices.CurrentProfile.LastMetaPageId);
-            Render(new MetaHubViewModel(restoredPage,
-                _runtimeServices.CurrentProfile?.PlayerNickname ?? string.Empty,
-                "Chapter 01", _runtimeServices.Clock.LocalNow));
+            MetaPageId restoredPage = _router.Restore(
+                _runtimeServices.CurrentProfile == null ? "map" : _runtimeServices.CurrentProfile.LastMetaPageId
+            );
+            Render(
+                new MetaHubViewModel(
+                    restoredPage,
+                    _runtimeServices.CurrentProfile?.PlayerNickname ?? string.Empty,
+                    "Chapter 01",
+                    _runtimeServices.Clock.LocalNow
+                )
+            );
+            // 预制体与代码回退两条路径都在最终 _mapPage 上挂测试入口（一次性，受 _initialized 保护）。
+            BuildTestEntryButtons(_mapPage);
         }
 
         /// <summary>在编辑器导出临时预制体时创建默认壳层。</summary>
@@ -71,8 +77,10 @@ namespace Game.Presentation
             if (_clockText == null || _runtimeServices == null)
                 return;
 
-            _clockText.text = FormatClock(_runtimeServices.Clock.LocalNow,
-                _localizationService == null ? null : _localizationService.CurrentLocaleCode);
+            _clockText.text = FormatClock(
+                _runtimeServices.Clock.LocalNow,
+                _localizationService == null ? null : _localizationService.CurrentLocaleCode
+            );
         }
 
         /// <summary>销毁时取消路由、Locale 订阅和页面存档异步操作。</summary>
@@ -98,6 +106,9 @@ namespace Game.Presentation
                 _nicknameText.text = viewModel.Nickname;
             if (_router != null)
                 _router.Navigate(viewModel.Page);
+            // 路由到当前页时 Navigate 可能因页面未变而不触发 PageChanged,
+            // 因此显隐必须在渲染路径无条件应用, 否则预制体中全部激活的页面会叠加显示。
+            ApplyPageVisibility(viewModel.Page);
             UpdatePageText(viewModel.Page);
         }
 
@@ -119,45 +130,68 @@ namespace Game.Presentation
 
             var header = UiFactory.CreatePanel("HeaderView", _canvas.transform, UiTheme.Panel);
             Place(header.rectTransform, new Vector2(0f, 0.88f), Vector2.one);
-            _pageTitle = UiFactory.CreateText("PageTitle", header.transform, string.Empty, 28, UiTheme.Text,
-                TextAnchor.MiddleLeft);
+            _pageTitle = UiFactory.CreateText(
+                "PageTitle",
+                header.transform,
+                string.Empty,
+                28,
+                UiTheme.Text,
+                TextAnchor.MiddleLeft
+            );
             Place(_pageTitle.rectTransform, new Vector2(0.04f, 0.1f), new Vector2(0.42f, 0.9f));
-            _nicknameText = UiFactory.CreateText("Nickname", header.transform, string.Empty, 22,
-                UiTheme.Muted, TextAnchor.MiddleRight);
+            _nicknameText = UiFactory.CreateText(
+                "Nickname",
+                header.transform,
+                string.Empty,
+                22,
+                UiTheme.Muted,
+                TextAnchor.MiddleRight
+            );
             Place(_nicknameText.rectTransform, new Vector2(0.62f, 0.1f), new Vector2(0.82f, 0.9f));
-            _clockText = UiFactory.CreateText("Clock", header.transform, string.Empty, 20,
-                UiTheme.Muted, TextAnchor.MiddleRight);
+            _clockText = UiFactory.CreateText(
+                "Clock",
+                header.transform,
+                string.Empty,
+                20,
+                UiTheme.Muted,
+                TextAnchor.MiddleRight
+            );
             Place(_clockText.rectTransform, new Vector2(0.82f, 0.1f), new Vector2(0.96f, 0.9f));
 
-            var sidebar = UiFactory.CreatePanel("SidebarView", _canvas.transform,
-                new Color(0.055f, 0.075f, 0.12f, 1f));
+            var sidebar = UiFactory.CreatePanel("SidebarView", _canvas.transform, new Color(0.055f, 0.075f, 0.12f, 1f));
             Place(sidebar.rectTransform, new Vector2(0f, 0.12f), new Vector2(0.22f, 0.88f));
-            _sidebarText = UiFactory.CreateText("SidebarInfo", sidebar.transform, string.Empty, 20,
-                UiTheme.Muted, TextAnchor.UpperLeft);
+            _sidebarText = UiFactory.CreateText(
+                "SidebarInfo",
+                sidebar.transform,
+                string.Empty,
+                20,
+                UiTheme.Muted,
+                TextAnchor.UpperLeft
+            );
             Place(_sidebarText.rectTransform, new Vector2(0.12f, 0.12f), new Vector2(0.88f, 0.88f));
 
-            var content = UiFactory.CreatePanel("PageContainer", _canvas.transform,
-                new Color(0.07f, 0.09f, 0.14f, 1f));
+            var content = UiFactory.CreatePanel("PageContainer", _canvas.transform, new Color(0.07f, 0.09f, 0.14f, 1f));
             Place(content.rectTransform, new Vector2(0.24f, 0.12f), new Vector2(1f, 0.88f));
             _mapPage = CreatePage("MapPageView", content.transform, UiTextKeys.PageMap);
             _archivePage = CreatePage("ArchivePageView", content.transform, UiTextKeys.PageArchive);
             _characterPage = CreatePage("CharacterPageView", content.transform, UiTextKeys.PageCharacter);
-            _loungePage = CreatePage("LoungePlaceholderView", content.transform,
-                UiTextKeys.LoungeUnavailable);
+            _loungePage = CreatePage("LoungePlaceholderView", content.transform, UiTextKeys.LoungeUnavailable);
 
             var footer = UiFactory.CreatePanel("FooterView", _canvas.transform, UiTheme.Panel);
             Place(footer.rectTransform, Vector2.zero, new Vector2(1f, 0.1f));
-            AddNavigationButton(footer.transform, "Map", MetaPageId.Map, 0.04f, 0.22f,
-                UiTextKeys.MetaMap);
-            AddNavigationButton(footer.transform, "Archive", MetaPageId.Archive, 0.25f, 0.43f,
-                UiTextKeys.MetaArchive);
-            AddNavigationButton(footer.transform, "Character", MetaPageId.Character, 0.46f, 0.64f,
-                UiTextKeys.MetaCharacter);
-            AddNavigationButton(footer.transform, "Lounge", MetaPageId.Lounge, 0.67f, 0.85f,
-                UiTextKeys.MetaLounge);
+            AddNavigationButton(footer.transform, "Map", MetaPageId.Map, 0.04f, 0.22f, UiTextKeys.MetaMap);
+            AddNavigationButton(footer.transform, "Archive", MetaPageId.Archive, 0.25f, 0.43f, UiTextKeys.MetaArchive);
+            AddNavigationButton(
+                footer.transform,
+                "Character",
+                MetaPageId.Character,
+                0.46f,
+                0.64f,
+                UiTextKeys.MetaCharacter
+            );
+            AddNavigationButton(footer.transform, "Lounge", MetaPageId.Lounge, 0.67f, 0.85f, UiTextKeys.MetaLounge);
             Button settings = UiFactory.CreateButton("Settings", footer.transform, string.Empty);
-            Place(settings.GetComponent<RectTransform>(), new Vector2(0.87f, 0.1f),
-                new Vector2(0.98f, 0.9f));
+            Place(settings.GetComponent<RectTransform>(), new Vector2(0.87f, 0.1f), new Vector2(0.98f, 0.9f));
             settings.onClick.AddListener(() => _globalCanvasLayer?.OpenSettings());
             RefreshTexts();
         }
@@ -195,10 +229,22 @@ namespace Game.Presentation
             Button character = FindButton(footer, "Character");
             Button lounge = FindButton(footer, "Lounge");
             Button settings = FindButton(footer, "Settings");
-            if (_canvas == null || _pageTitle == null || _nicknameText == null || _clockText == null ||
-                _sidebarText == null || _mapPage == null || _archivePage == null ||
-                _characterPage == null || _loungePage == null || map == null || archive == null ||
-                character == null || lounge == null || settings == null)
+            if (
+                _canvas == null
+                || _pageTitle == null
+                || _nicknameText == null
+                || _clockText == null
+                || _sidebarText == null
+                || _mapPage == null
+                || _archivePage == null
+                || _characterPage == null
+                || _loungePage == null
+                || map == null
+                || archive == null
+                || character == null
+                || lounge == null
+                || settings == null
+            )
                 return false;
 
             map.onClick.AddListener(() => Navigate(MetaPageId.Map));
@@ -268,8 +314,7 @@ namespace Game.Presentation
             page.transform.SetParent(parent, false);
             var rect = page.GetComponent<RectTransform>();
             UiFactory.Stretch(rect, Vector2.zero);
-            var text = UiFactory.CreateText("Placeholder", page.transform, Text(textKey), 32,
-                UiTheme.Muted);
+            var text = UiFactory.CreateText("Placeholder", page.transform, Text(textKey), 32, UiTheme.Muted);
             UiFactory.Stretch(text.rectTransform, new Vector2(32f, 32f));
             text.raycastTarget = false;
             if (name == "MapPageView")
@@ -280,8 +325,11 @@ namespace Game.Presentation
                 cardPanel.BuildPreview();
                 for (int index = 0; index < 5; index++)
                 {
-                    Button nodeButton = UiFactory.CreateButton("MapNode_" + (index + 1),
-                        mapController.Content, "Node " + (index + 1));
+                    Button nodeButton = UiFactory.CreateButton(
+                        "MapNode_" + (index + 1),
+                        mapController.Content,
+                        "Node " + (index + 1)
+                    );
                     RectTransform nodeRect = nodeButton.GetComponent<RectTransform>();
                     nodeRect.sizeDelta = new Vector2(180f, 64f);
                     nodeRect.anchoredPosition = new Vector2(-480f + index * 240f, 0f);
@@ -292,16 +340,37 @@ namespace Game.Presentation
                         cardPanel.Show(null);
                     });
                 }
-                Button storyButton = UiFactory.CreateButton("TestStory", page.transform, "Test Story");
-                RectTransform storyRect = storyButton.GetComponent<RectTransform>();
-                storyRect.anchorMin = new Vector2(0.04f, 0.84f);
-                storyRect.anchorMax = new Vector2(0.24f, 0.94f);
-                storyButton.onClick.AddListener(() =>
-                    _ = _runtimeServices.Flow.PlayStoryAsync(
-                        new StoryId("official.story.c06_branch"),
-                        StoryReturnTarget.ToMetaPage(MetaPageId.Map), CancellationToken.None));
             }
             return page;
+        }
+
+        /// <summary>在地图页生成测试入口按钮：播放测试剧情与走占位关卡流程。</summary>
+        /// <param name="mapPage">地图页容器；为 null 时不生成。</param>
+        private void BuildTestEntryButtons(GameObject mapPage)
+        {
+            if (mapPage == null)
+                return;
+            Button storyButton = UiFactory.CreateButton("TestStory", mapPage.transform, "Test Story");
+            RectTransform storyRect = storyButton.GetComponent<RectTransform>();
+            storyRect.anchorMin = new Vector2(0.04f, 0.84f);
+            storyRect.anchorMax = new Vector2(0.24f, 0.94f);
+            storyButton.onClick.AddListener(() =>
+                _ = _runtimeServices.Flow.PlayStoryAsync(
+                    new StoryId("official.story.c06_branch"),
+                    StoryReturnTarget.ToMetaPage(MetaPageId.Map),
+                    CancellationToken.None
+                )
+            );
+            Button levelButton = UiFactory.CreateButton("TestLevel", mapPage.transform, "Test Level");
+            RectTransform levelRect = levelButton.GetComponent<RectTransform>();
+            levelRect.anchorMin = new Vector2(0.04f, 0.72f);
+            levelRect.anchorMax = new Vector2(0.24f, 0.82f);
+            levelButton.onClick.AddListener(() =>
+                _ = _runtimeServices.Flow.EnterLevelAsync(
+                    new LevelId("official.level.test_01_01"),
+                    CancellationToken.None
+                )
+            );
         }
 
         /// <summary>添加底部页面导航按钮。</summary>
@@ -311,12 +380,17 @@ namespace Game.Presentation
         /// <param name="minX">归一化左侧。</param>
         /// <param name="maxX">归一化右侧。</param>
         /// <param name="textKey">按钮文本键。</param>
-        private void AddNavigationButton(Transform parent, string name, MetaPageId page,
-            float minX, float maxX, string textKey)
+        private void AddNavigationButton(
+            Transform parent,
+            string name,
+            MetaPageId page,
+            float minX,
+            float maxX,
+            string textKey
+        )
         {
             Button button = UiFactory.CreateButton(name, parent, Text(textKey));
-            Place(button.GetComponent<RectTransform>(), new Vector2(minX, 0.1f),
-                new Vector2(maxX, 0.9f));
+            Place(button.GetComponent<RectTransform>(), new Vector2(minX, 0.1f), new Vector2(maxX, 0.9f));
             button.onClick.AddListener(() => Navigate(page));
         }
 
@@ -337,8 +411,7 @@ namespace Game.Presentation
                 if (_runtimeServices == null)
                     return;
 
-                CancellationToken cancellationToken = _lifetime == null
-                    ? CancellationToken.None : _lifetime.Token;
+                CancellationToken cancellationToken = _lifetime == null ? CancellationToken.None : _lifetime.Token;
                 await _runtimeServices.SaveLastMetaPageAsync(page, cancellationToken);
             }
             catch (OperationCanceledException)
@@ -356,11 +429,22 @@ namespace Game.Presentation
         /// <param name="page">当前页面。</param>
         private void OnPageChanged(MetaPageId page)
         {
-            _mapPage.SetActive(page == MetaPageId.Map);
-            _archivePage.SetActive(page == MetaPageId.Archive);
-            _characterPage.SetActive(page == MetaPageId.Character);
-            _loungePage.SetActive(page == MetaPageId.Lounge);
+            ApplyPageVisibility(page);
             UpdatePageText(page);
+        }
+
+        /// <summary>只点亮目标页面，其余页面隐藏。</summary>
+        /// <param name="page">需要显示的页面。</param>
+        private void ApplyPageVisibility(MetaPageId page)
+        {
+            if (_mapPage != null)
+                _mapPage.SetActive(page == MetaPageId.Map);
+            if (_archivePage != null)
+                _archivePage.SetActive(page == MetaPageId.Archive);
+            if (_characterPage != null)
+                _characterPage.SetActive(page == MetaPageId.Character);
+            if (_loungePage != null)
+                _loungePage.SetActive(page == MetaPageId.Lounge);
         }
 
         /// <summary>Locale 变化回调。</summary>
@@ -399,8 +483,14 @@ namespace Game.Presentation
         private void RefreshTexts()
         {
             if (_sidebarText != null)
-                _sidebarText.text = Text(UiTextKeys.MetaMap) + "\n\n" + Text(UiTextKeys.MetaArchive)
-                    + "\n" + Text(UiTextKeys.MetaCharacter) + "\n" + Text(UiTextKeys.MetaLounge);
+                _sidebarText.text =
+                    Text(UiTextKeys.MetaMap)
+                    + "\n\n"
+                    + Text(UiTextKeys.MetaArchive)
+                    + "\n"
+                    + Text(UiTextKeys.MetaCharacter)
+                    + "\n"
+                    + Text(UiTextKeys.MetaLounge);
 
             SetButtonText("Map", Text(UiTextKeys.MetaMap));
             SetButtonText("Archive", Text(UiTextKeys.MetaArchive));
@@ -425,7 +515,7 @@ namespace Game.Presentation
                 MetaPageId.Archive => Text(UiTextKeys.MetaArchive),
                 MetaPageId.Character => Text(UiTextKeys.MetaCharacter),
                 MetaPageId.Lounge => Text(UiTextKeys.MetaLounge),
-                _ => Text(UiTextKeys.MetaMap)
+                _ => Text(UiTextKeys.MetaMap),
             };
         }
 
@@ -481,18 +571,25 @@ namespace Game.Presentation
     {
         /// <summary>当前页面。</summary>
         public MetaPageId Page { get; }
+
         /// <summary>玩家昵称。</summary>
         public string Nickname { get; }
+
         /// <summary>Current chapter placeholder shown until chapter content is available.</summary>
         public string ChapterPlaceholder { get; }
+
         /// <summary>Local time supplied by the application clock.</summary>
         public DateTimeOffset LocalTime { get; }
 
         /// <summary>创建 MetaHub 模型。</summary>
         /// <param name="page">页面。</param>
         /// <param name="nickname">昵称。</param>
-        public MetaHubViewModel(MetaPageId page, string nickname,
-            string chapterPlaceholder = "Chapter 01", DateTimeOffset? localTime = null)
+        public MetaHubViewModel(
+            MetaPageId page,
+            string nickname,
+            string chapterPlaceholder = "Chapter 01",
+            DateTimeOffset? localTime = null
+        )
         {
             Page = page;
             Nickname = nickname ?? string.Empty;

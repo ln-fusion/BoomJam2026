@@ -2,14 +2,15 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Game.Content;
 using Game.Contracts;
 using Game.Contracts.Persistence;
-using Game.Content;
 using Game.Flow;
 using Game.Foundation;
 using Game.Persistence;
-using Game.Progression;
 using Game.Presentation;
+using Game.Progression;
+using Game.Story;
 using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.SceneManagement;
@@ -48,6 +49,7 @@ namespace Game.Bootstrap
         private GameObject? _audioRoot;
         private CancellationTokenSource? _startupLifetime;
         private GameRuntimeServices? _runtimeServices;
+        private IDisposable? _sceneActivatedSubscription;
 
         /// <summary>创建组合根服务、全局 Canvas 并启动设置加载和开始菜单导航。</summary>
         private void Start()
@@ -70,27 +72,72 @@ namespace Game.Bootstrap
             musicSource.outputAudioMixerGroup = musicGroup;
             sfxSource.outputAudioMixerGroup = sfxGroup;
             var audio = new UnityAudioService(audioMixer, null, musicSource, sfxSource);
-            _settingsService = new SettingsService(_saveRepository, audio, localization,
-                new UnityWindowSettingsApplier(), eventBus);
+            _settingsService = new SettingsService(
+                _saveRepository,
+                audio,
+                localization,
+                new UnityWindowSettingsApplier(),
+                eventBus
+            );
             var profileLifecycle = new ProfileLifecycleService(_saveRepository, clock);
+
+            var storyCompletion = new StoryCompletionCoordinator(
+                () => _runtimeServices?.CurrentProfile,
+                _saveRepository.SaveProfileAsync,
+                eventBus,
+                logger
+            );
+            var characters = new DefaultCharacterAssetRegistry(
+                OfficialTestMapCatalog.CreateCharacters(),
+                contentAssetRegistry == null ? null : new OfficialAssetResolver(contentAssetRegistry),
+                logger
+            );
 
             var flowService = new GameFlowService(
                 new UnitySceneLoader(),
                 clock,
                 logger,
                 eventBus,
-                startMenuSceneName
+                startMenuSceneName,
+                storyCompletion,
+                () => _runtimeServices?.CurrentProfile,
+                _saveRepository.SaveProfileAsync
             );
             _flowService = flowService;
 
-            _runtimeServices = new GameRuntimeServices(flowService, _settingsService, localization,
-                audio, profileLifecycle, new EmptyProgressQuery(), clock,
-                _saveRepository.SaveProfileAsync);
+            _runtimeServices = new GameRuntimeServices(
+                flowService,
+                _settingsService,
+                localization,
+                audio,
+                profileLifecycle,
+                new EmptyProgressQuery(),
+                clock,
+                _saveRepository.SaveProfileAsync,
+                characters,
+                storyCompletion
+            );
+            _runtimeServices.SetAssetResolver(
+                contentAssetRegistry == null ? null : new OfficialAssetResolver(contentAssetRegistry)
+            );
+            if (contentAssetRegistry != null)
+            {
+                GameObject storyPrefab = new OfficialAssetResolver(contentAssetRegistry).GetUiPrefab(
+                    new UiPrefabId(UiPrefabIds.StoryPanel)
+                );
+                _runtimeServices.SetStoryPrefab(storyPrefab);
+            }
+            _runtimeServices.SetGeneratedStories(GeneratedStoryLoader.LoadAll());
             _globalUiRoot = new GameObject("GlobalUi");
             DontDestroyOnLoad(_globalUiRoot);
             _globalCanvasLayer = _globalUiRoot.AddComponent<GlobalCanvasLayer>();
             _globalCanvasLayer.Initialize(_runtimeServices, contentAssetRegistry);
             SceneManager.sceneLoaded += OnSceneLoaded;
+
+            // 兜底安装：导航成功（哪怕场景已在场景列表中）也会发布 SceneActivatedEvent，
+            // 保证 Editor 中"已打开的功能场景"继承进 PlayMode 时（sceneLoaded 不触发）UI 仍被安装。
+            _sceneActivatedSubscription = eventBus.Subscribe<SceneActivatedEvent>(OnSceneActivated);
+            InstallUiForLoadedFeatureScenes();
 
             _ = RunStartupAsync(flowService, _settingsService, localization, _startupLifetime.Token);
         }
@@ -100,18 +147,19 @@ namespace Game.Bootstrap
         /// <param name="settingsService">设置服务。</param>
         /// <param name="localizationService">负责预加载 String Table 的本地化服务。</param>
         /// <param name="cancellationToken">启动生命周期令牌。</param>
-        private static async Task RunStartupAsync(GameFlowService flowService,
-            SettingsService settingsService, DefaultLocalizationService localizationService,
-            CancellationToken cancellationToken)
+        private static async Task RunStartupAsync(
+            GameFlowService flowService,
+            SettingsService settingsService,
+            DefaultLocalizationService localizationService,
+            CancellationToken cancellationToken
+        )
         {
             try
             {
-                Result localizationResult = await localizationService.InitializeAsync(
-                    cancellationToken);
+                Result localizationResult = await localizationService.InitializeAsync(cancellationToken);
                 if (!localizationResult.IsSuccess)
                 {
-                    Debug.LogError("Localization initialization failed: " +
-                        localizationResult.Message);
+                    Debug.LogError("Localization initialization failed: " + localizationResult.Message);
                     return;
                 }
 
@@ -138,14 +186,42 @@ namespace Game.Bootstrap
         private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
             if (_runtimeServices != null && _globalCanvasLayer != null)
-                SceneUiInstaller.Install(scene, _runtimeServices, _globalCanvasLayer,
-                    contentAssetRegistry);
+                SceneUiInstaller.Install(scene, _runtimeServices, _globalCanvasLayer, contentAssetRegistry);
+        }
+
+        /// <summary>游戏流程发布场景激活事件后兜底安装 UI（幂等）。</summary>
+        /// <param name="sceneEvent">场景激活事件。</param>
+        private void OnSceneActivated(SceneActivatedEvent sceneEvent)
+        {
+            var scene = SceneManager.GetSceneByName(sceneEvent.SceneName);
+            if (_runtimeServices != null && _globalCanvasLayer != null && scene.IsValid() && scene.isLoaded)
+                SceneUiInstaller.Install(scene, _runtimeServices, _globalCanvasLayer, contentAssetRegistry);
+        }
+
+        /// <summary>
+        /// 启动时扫描已加载的功能场景并安装 UI。
+        /// Editor 中若功能场景已被打开（继承进 PlayMode），sceneLoaded 不会触发，
+        /// 此扫描保证这些场景的 UI 仍被安装。
+        /// </summary>
+        private void InstallUiForLoadedFeatureScenes()
+        {
+            if (_runtimeServices == null || _globalCanvasLayer == null)
+                return;
+
+            for (var i = 0; i < SceneManager.sceneCount; i++)
+            {
+                var scene = SceneManager.GetSceneAt(i);
+                if (scene.isLoaded && scene.name != SceneNames.Bootstrap)
+                    SceneUiInstaller.Install(scene, _runtimeServices, _globalCanvasLayer, contentAssetRegistry);
+            }
         }
 
         /// <summary>销毁组合根时释放服务、取消启动并清理全局 UI。</summary>
         private void OnDestroy()
         {
             SceneManager.sceneLoaded -= OnSceneLoaded;
+            _sceneActivatedSubscription?.Dispose();
+            _sceneActivatedSubscription = null;
             _startupLifetime?.Cancel();
             _startupLifetime?.Dispose();
             _flowService?.Dispose();

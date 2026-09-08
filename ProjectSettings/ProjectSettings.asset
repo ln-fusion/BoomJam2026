@@ -254,7 +254,7 @@ PlayerSettings:
   shaderPrecisionModel: 0
   clonedFromGUID: 10ad67313f4034357812315f3c407484
   templatePackageId: com.unity.template.2d@7.0.4
-  templateDefaultScene: Assets/Scenes/SampleScene.unity
+  templateDefaultScene: Assets/Scenes/00_Bootstrap.unity
   useCustomMainManifest: 0
   useCustomLauncherManifest: 0
   useCustomMainGradleTemplate: 0

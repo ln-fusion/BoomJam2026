@@ -9,11 +9,14 @@ namespace Game.Story
     /// <summary>Executes C07 story nodes without any UI dependency.</summary>
     public sealed class StoryRunner : IStoryService
     {
-        private static readonly ErrorCode ContentError =
-            new ErrorCode(ErrorCategory.Content, "story.invalid_transition");
+        private static readonly ErrorCode ContentError = new ErrorCode(
+            ErrorCategory.Content,
+            "story.invalid_transition"
+        );
         private readonly Func<StoryId, StoryDefinition> _storyLookup;
-        private readonly Dictionary<string, StoryNodeDefinition> _nodes =
-            new Dictionary<string, StoryNodeDefinition>(StringComparer.Ordinal);
+        private readonly Dictionary<string, StoryNodeDefinition> _nodes = new Dictionary<string, StoryNodeDefinition>(
+            StringComparer.Ordinal
+        );
         private readonly List<StoryNodeId> _visited = new List<StoryNodeId>();
         private StoryDefinition _definition;
         private StorySession _session;
@@ -63,6 +66,14 @@ namespace Game.Story
                     return Result.Failure(ContentError, "Choice requires Choose.");
                 case StoryNodeType.Dialogue:
                 case StoryNodeType.Goto:
+                case StoryNodeType.ShowCharacter:
+                case StoryNodeType.ShowCg:
+                case StoryNodeType.SetBackground:
+                case StoryNodeType.HideCharacter:
+                case StoryNodeType.MoveCharacter:
+                case StoryNodeType.PlayAudio:
+                case StoryNodeType.ScreenEffect:
+                case StoryNodeType.Wait:
                     return MoveTo(node.NextNodeId);
                 default:
                     return Result.Failure(ContentError, "Unknown story node type.");
@@ -72,17 +83,20 @@ namespace Game.Story
         /// <inheritdoc/>
         public Result Skip()
         {
-            if (!CanOperate()) return Result.Failure(ContentError, "No active story session.");
+            if (!CanOperate())
+                return Result.Failure(ContentError, "No active story session.");
             while (!_session.IsCompleted)
             {
                 StoryNodeDefinition node = CurrentNode();
-                if (node.Type == StoryNodeType.Choice &&
-                    (node.Choices == null || node.Choices.Count == 0 || node.Choices[0] == null))
+                if (
+                    node.Type == StoryNodeType.Choice
+                    && (node.Choices == null || node.Choices.Count == 0 || node.Choices[0] == null)
+                )
                     return Result.Failure(ContentError, "Choice has no selectable branch.");
-                Result result = node.Type == StoryNodeType.Choice
-                    ? Choose(new ChoiceId(node.Choices[0].ChoiceId))
-                    : Advance();
-                if (!result.IsSuccess) return result;
+                Result result =
+                    node.Type == StoryNodeType.Choice ? Choose(new ChoiceId(node.Choices[0].ChoiceId)) : Advance();
+                if (!result.IsSuccess)
+                    return result;
             }
             return Result.Success();
         }
@@ -100,8 +114,7 @@ namespace Game.Story
             if (node.Type != StoryNodeType.Choice || node.Choices == null)
                 return Result.Failure(ContentError, "Current node is not a choice.");
             foreach (StoryChoiceDefinition choice in node.Choices)
-                if (choice != null && string.Equals(choice.ChoiceId, choiceId.Value,
-                    StringComparison.Ordinal))
+                if (choice != null && string.Equals(choice.ChoiceId, choiceId.Value, StringComparison.Ordinal))
                     return MoveTo(choice.NextNodeId);
             return Result.Failure(ContentError, "Choice does not belong to current node.");
         }
@@ -111,8 +124,12 @@ namespace Game.Story
         {
             return _session == null
                 ? null
-                : new StorySnapshot(_session.StoryId, CurrentNode(), _session.IsCompleted,
-                    new List<StoryNodeId>(_visited).AsReadOnly());
+                : new StorySnapshot(
+                    _session.StoryId,
+                    CurrentNode(),
+                    _session.IsCompleted,
+                    new List<StoryNodeId>(_visited).AsReadOnly()
+                );
         }
 
         private bool CanOperate() => _session != null && _definition != null;
@@ -132,8 +149,11 @@ namespace Game.Story
         {
             error = null;
             _nodes.Clear();
-            if (definition.Nodes == null || definition.Nodes.Count == 0 ||
-                string.IsNullOrWhiteSpace(definition.StartNodeId))
+            if (
+                definition.Nodes == null
+                || definition.Nodes.Count == 0
+                || string.IsNullOrWhiteSpace(definition.StartNodeId)
+            )
             {
                 error = "Story requires nodes and a start node.";
                 return false;
@@ -141,8 +161,7 @@ namespace Game.Story
 
             foreach (StoryNodeDefinition node in definition.Nodes)
             {
-                if (node == null || string.IsNullOrWhiteSpace(node.NodeId) ||
-                    !_nodes.TryAdd(node.NodeId, node))
+                if (node == null || string.IsNullOrWhiteSpace(node.NodeId) || !_nodes.TryAdd(node.NodeId, node))
                 {
                     error = "Story contains a missing or duplicate node ID.";
                     return false;

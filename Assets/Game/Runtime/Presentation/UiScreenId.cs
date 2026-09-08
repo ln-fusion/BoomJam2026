@@ -5,9 +5,14 @@ namespace Game.Presentation
     {
         /// <summary>开始菜单。</summary>
         StartMenu,
+
         /// <summary>设置弹窗。</summary>
         SettingsModal,
+
         /// <summary>MetaHub 主壳。</summary>
-        MetaHub
+        MetaHub,
+
+        /// <summary>剧情对白面板。</summary>
+        StoryPanel,
     }
 }

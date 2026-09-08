@@ -8,7 +8,8 @@
         "Game.Presentation",
         "Game.Persistence",
         "Game.Progression",
-        "Game.Content"
+        "Game.Content",
+        "Game.Story"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

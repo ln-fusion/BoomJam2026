@@ -26,21 +26,42 @@ namespace Game.Editor.Presentation
 
             var exported = new List<ExportedPrefab>
             {
-                Export("StartMenuUI", UiPrefabIds.StartMenu, root =>
-                {
-                    root.AddComponent<StartMenuView>().BuildPreview();
-                    AddMarker(root, UiScreenId.StartMenu);
-                }),
-                Export("MetaHubUI", UiPrefabIds.MetaHub, root =>
-                {
-                    root.AddComponent<MetaHubShell>().BuildPreview();
-                    AddMarker(root, UiScreenId.MetaHub);
-                }),
-                Export("SettingsModalUI", UiPrefabIds.SettingsModal, root =>
-                {
-                    root.AddComponent<SettingsModalPresenter>().BuildPreview();
-                    AddMarker(root, UiScreenId.SettingsModal);
-                })
+                Export(
+                    "StartMenuUI",
+                    UiPrefabIds.StartMenu,
+                    root =>
+                    {
+                        root.AddComponent<StartMenuView>().BuildPreview();
+                        AddMarker(root, UiScreenId.StartMenu);
+                    }
+                ),
+                Export(
+                    "MetaHubUI",
+                    UiPrefabIds.MetaHub,
+                    root =>
+                    {
+                        root.AddComponent<MetaHubShell>().BuildPreview();
+                        AddMarker(root, UiScreenId.MetaHub);
+                    }
+                ),
+                Export(
+                    "SettingsModalUI",
+                    UiPrefabIds.SettingsModal,
+                    root =>
+                    {
+                        root.AddComponent<SettingsModalPresenter>().BuildPreview();
+                        AddMarker(root, UiScreenId.SettingsModal);
+                    }
+                ),
+                Export(
+                    "StoryPanelUI",
+                    UiPrefabIds.StoryPanel,
+                    root =>
+                    {
+                        root.AddComponent<StoryDialoguePanel>().BuildPreview();
+                        AddMarker(root, UiScreenId.StoryPanel);
+                    }
+                ),
             };
 
             ContentAssetRegistry registry = LoadOrCreateRegistry();
@@ -100,6 +121,8 @@ namespace Game.Editor.Presentation
                 ConfigureStartMenuBindings(root);
             else if (screenId == UiScreenId.SettingsModal)
                 ConfigureSettingsBindings(root);
+            else if (screenId == UiScreenId.StoryPanel)
+                ConfigureStoryPanelBindings(root);
             else
                 ConfigureMetaHubBindings(root);
         }
@@ -123,6 +146,9 @@ namespace Game.Editor.Presentation
                         break;
                     case UiScreenId.MetaHub:
                         complete &= root.GetComponent<MetaHubUiBindings>()?.IsComplete == true;
+                        break;
+                    case UiScreenId.StoryPanel:
+                        complete &= root.GetComponent<StoryUiBindings>()?.IsComplete == true;
                         break;
                 }
             }
@@ -181,9 +207,33 @@ namespace Game.Editor.Presentation
             bindings.LoungePage = FindObject(root, "LoungePlaceholderView");
             bindings.NavigationButtons = new[]
             {
-                Find<Button>(root, "Map"), Find<Button>(root, "Archive"),
-                Find<Button>(root, "Character"), Find<Button>(root, "Lounge")
+                Find<Button>(root, "Map"),
+                Find<Button>(root, "Archive"),
+                Find<Button>(root, "Character"),
+                Find<Button>(root, "Lounge"),
             };
+            EditorUtility.SetDirty(bindings);
+        }
+
+        /// <summary>写入剧情面板的控件契约引用。</summary>
+        /// <param name="root">预制体根节点。</param>
+        private static void ConfigureStoryPanelBindings(GameObject root)
+        {
+            var bindings = root.AddComponent<StoryUiBindings>();
+            bindings.Background = Find<Image>(root, "Background");
+            bindings.CgLayer = Find<Image>(root, "CgLayer");
+            bindings.EffectLayer = Find<Image>(root, "Effect");
+            bindings.PortraitLeft = Find<Image>(root, "PortraitLeft");
+            bindings.PortraitCenter = Find<Image>(root, "PortraitCenter");
+            bindings.PortraitRight = Find<Image>(root, "PortraitRight");
+            bindings.Speaker = Find<Text>(root, "Speaker");
+            bindings.Body = Find<Text>(root, "Body");
+            bindings.ChoicesRoot = FindObject(root, "Choices");
+            bindings.ContinueButton = Find<Button>(root, "Continue");
+            bindings.SkipButton = Find<Button>(root, "Skip");
+            bindings.HistoryButton = Find<Button>(root, "History");
+            bindings.HistoryView = FindObject(root, "HistoryView");
+            bindings.HistoryText = Find<Text>(root, "HistoryText");
             EditorUtility.SetDirty(bindings);
         }
 
@@ -231,7 +281,8 @@ namespace Game.Editor.Presentation
         /// <param name="root">查找根节点。</param>
         /// <param name="name">节点名称。</param>
         /// <returns>找到的组件；否则为 null。</returns>
-        private static T Find<T>(GameObject root, string name) where T : Component
+        private static T Find<T>(GameObject root, string name)
+            where T : Component
         {
             return FindObject(root, name)?.GetComponent<T>();
         }
@@ -250,9 +301,15 @@ namespace Game.Editor.Presentation
         {
             /// <summary>创建记录。</summary>
             /// <param name="id">稳定 ID。</param><param name="asset">预制体资源。</param>
-            public ExportedPrefab(string id, GameObject asset) { Id = id; Asset = asset; }
+            public ExportedPrefab(string id, GameObject asset)
+            {
+                Id = id;
+                Asset = asset;
+            }
+
             /// <summary>稳定 ID。</summary>
             public string Id { get; }
+
             /// <summary>预制体资源。</summary>
             public GameObject Asset { get; }
         }
