@@ -74,13 +74,23 @@ namespace Game.Contracts.Meta
         /// <summary>玩家最佳成绩；没有成绩时为 null。</summary>
         public BestScoreView BestScore { get; }
 
+        /// <summary>允许复播的关前剧情；未配置或尚未保存剧情完成事实时为空。</summary>
+        public StoryId PreludeReplay { get; }
+        /// <summary>允许复播的关后剧情；未配置或关卡尚未通关时为空。</summary>
+        public StoryId PostludeReplay { get; }
+
         /// <summary>创建关卡详情模型。</summary>
         /// <param name="node">关卡节点。</param>
         /// <param name="bestScore">最佳成绩，可为 null。</param>
-        public LevelCardViewModel(LevelNodeViewModel node, BestScoreView bestScore)
+        /// <param name="preludeReplay">已解锁的关前复播 ID，可为空。</param>
+        /// <param name="postludeReplay">已解锁的关后复播 ID，可为空。</param>
+        public LevelCardViewModel(LevelNodeViewModel node, BestScoreView bestScore,
+            StoryId preludeReplay = null, StoryId postludeReplay = null)
         {
             Node = node ?? throw new ArgumentNullException(nameof(node));
             BestScore = bestScore;
+            PreludeReplay = preludeReplay;
+            PostludeReplay = postludeReplay;
         }
     }
 

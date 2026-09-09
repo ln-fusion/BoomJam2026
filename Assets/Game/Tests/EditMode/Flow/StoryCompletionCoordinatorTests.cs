@@ -105,6 +105,7 @@ namespace Game.Tests.EditMode.Flow
 
         /// <summary>在同步测试中执行异步操作并等待结果。</summary>
         /// <param name="operation">要执行的异步操作。</param>
+        /// <typeparam name="T">异步操作的结果类型。</typeparam>
         private static T RunAsync<T>(Func<Task<T>> operation)
         {
             return Task.Run(operation).GetAwaiter().GetResult();

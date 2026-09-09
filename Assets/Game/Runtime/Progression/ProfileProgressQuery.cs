@@ -47,6 +47,9 @@ namespace Game.Progression
             return null;
         }
 
+        /// <summary>把档案 DTO 转换为不再受后续写入影响的进度快照。</summary>
+        /// <param name="profile">当前档案；为空时生成空快照。</param>
+        /// <returns>从档案字段复制得到的只读进度快照。</returns>
         private static ProgressSnapshot BuildSnapshot(ProfileSave profile)
         {
             var completedLevels = new List<LevelId>();

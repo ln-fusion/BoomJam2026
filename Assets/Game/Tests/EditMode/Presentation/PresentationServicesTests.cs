@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Game.Contracts;
 using Game.Contracts.Persistence;
+using Game.Content;
 using Game.Foundation;
 using Game.Persistence;
 using Game.Presentation;
@@ -97,6 +98,14 @@ namespace Game.Tests.EditMode.Presentation
 
             foreach (string key in UiTextKeys.All)
                 Assert.That(sourceKeys, Does.Contain(key), "Missing source key: " + key);
+
+            OfficialContentProvider provider = OfficialTestMapCatalog.CreateProvider();
+            foreach (var map in provider.Maps)
+                Assert.That(sourceKeys, Does.Contain(map.DisplayNameKey),
+                    "Missing map display key: " + map.DisplayNameKey);
+            foreach (var level in provider.Levels)
+                Assert.That(sourceKeys, Does.Contain(level.DisplayNameKey),
+                    "Missing level display key: " + level.DisplayNameKey);
         }
 
         /// <summary>验证四个页面可以切换，休息室存档恢复时回退地图。</summary>

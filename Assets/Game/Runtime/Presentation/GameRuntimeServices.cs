@@ -9,6 +9,10 @@ using Game.Contracts.Progression;
 using Game.Foundation;
 using Game.Story;
 using UnityEngine;
+using Game.Progression;
+using Game.Content;
+using Game.Meta;
+using Newtonsoft.Json;
 
 namespace Game.Presentation
 {
@@ -18,7 +22,114 @@ namespace Game.Presentation
     /// </summary>
     public sealed class GameRuntimeServices
     {
-        private readonly Func<ProfileSave, SaveReason, CancellationToken, Task<SaveResult>> _saveProfileAsync;
+        private readonly Func<ProfileSave, SaveReason, CancellationToken, Task<SaveResult>>
+            _saveProfileAsync;
+        private readonly SemaphoreSlim _profileWriteGate = new SemaphoreSlim(1, 1);
+        private LevelId _whiteboxLevel;
+        private string _whiteboxRunId;
+        private readonly IDomainEventBus _eventBus;
+
+        /// <summary>当前选关创建的白盒会话关卡；尚未选关时为空。</summary>
+        internal LevelId WhiteboxLevel => _whiteboxLevel;
+
+        /// <summary>记录当前白盒选关并生成独立提交 ID；不保存或授予完成事实。</summary>
+        /// <param name="levelId">通过解锁检查的关卡 ID。</param>
+        internal void BeginWhiteboxLevel(LevelId levelId)
+        {
+            _whiteboxLevel = levelId ?? throw new ArgumentNullException(nameof(levelId));
+            _whiteboxRunId = Guid.NewGuid().ToString("N");
+        }
+
+        /// <summary>结束白盒会话，防止后续未经过选关的场景使用旧关卡提交。</summary>
+        internal void EndWhiteboxLevel()
+        {
+            _whiteboxLevel = null;
+            _whiteboxRunId = null;
+        }
+
+        /// <summary>模拟当前关卡完成，保存独立档案副本后才发布进度；不生成成绩或剧情完成事实。</summary>
+        /// <param name="cancellationToken">取消等待或存档写入；写入成功后仍发布已持久化的副本。</param>
+        /// <returns>缺少档案、会话或解锁资格时失败；相同提交已保存时成功且不重复写入。</returns>
+        internal async Task<SaveResult> CompleteWhiteboxLevelAsync(CancellationToken cancellationToken)
+        {
+            LevelId level = _whiteboxLevel;
+            string runId = _whiteboxRunId;
+            await _profileWriteGate.WaitAsync(cancellationToken);
+            try
+            {
+                if (CurrentProfile == null || level == null || string.IsNullOrEmpty(runId))
+                    return SaveResult.Failure(new ErrorCode(ErrorCategory.Validation,
+                        "whitebox.session_missing"), "请从地图选择关卡后再模拟通关。");
+                if (CurrentProfile.AppliedCompletionRunIds.Contains(runId))
+                    return SaveResult.Success();
+                var query = new MetaMapQuery(Content, ProgressQuery);
+                var card = query.GetLevelCard(level);
+                if (card == null || !card.Node.IsInteractable)
+                    return SaveResult.Failure(new ErrorCode(ErrorCategory.Validation,
+                        "whitebox.level_locked"), "当前关卡未解锁，不能提交通关。");
+
+                ProfileSave candidate = JsonConvert.DeserializeObject<ProfileSave>(
+                    JsonConvert.SerializeObject(CurrentProfile));
+                if (!candidate.CompletedLevelIds.Contains(level.Value))
+                    candidate.CompletedLevelIds.Add(level.Value);
+                LevelRecordSave record = candidate.LevelRecords.Find(item =>
+                    item != null && item.LevelId == level.Value);
+                if (record == null)
+                {
+                    record = new LevelRecordSave { LevelId = level.Value };
+                    candidate.LevelRecords.Add(record);
+                }
+                record.Completed = true;
+                candidate.AppliedCompletionRunIds.Add(runId);
+                candidate.LastMetaPageId = "map";
+                SaveResult result = await _saveProfileAsync(candidate, SaveReason.ProgressCommitted,
+                    cancellationToken);
+                if (result.IsSuccess)
+                    CurrentProfile = candidate;
+                return result;
+            }
+            finally
+            {
+                _profileWriteGate.Release();
+            }
+        }
+
+        /// <summary>把剧情完成事实原子写入档案，保存成功后才发布新的内存进度。</summary>
+        /// <param name="storyId">已经完整播放或跳过完成的剧情稳定标识。</param>
+        /// <param name="cancellationToken">取消等待或存档写入的令牌。</param>
+        /// <returns>保存结果；同一剧情已完成时直接成功且不重复写入。</returns>
+        internal async Task<SaveResult> CompleteStoryAsync(StoryId storyId,
+            CancellationToken cancellationToken)
+        {
+            if (storyId == null)
+                throw new ArgumentNullException(nameof(storyId));
+
+            await _profileWriteGate.WaitAsync(cancellationToken);
+            try
+            {
+                if (CurrentProfile == null)
+                    return SaveResult.Failure(new ErrorCode(ErrorCategory.Validation,
+                        "story.profile_missing"), "剧情完成时没有已加载的玩家档案。");
+                if (CurrentProfile.CompletedStoryIds.Contains(storyId.Value))
+                    return SaveResult.Success();
+
+                ProfileSave candidate = JsonConvert.DeserializeObject<ProfileSave>(
+                    JsonConvert.SerializeObject(CurrentProfile));
+                candidate.CompletedStoryIds.Add(storyId.Value);
+                SaveResult result = await _saveProfileAsync(candidate, SaveReason.StoryCommitted,
+                    cancellationToken);
+                if (result.IsSuccess)
+                {
+                    CurrentProfile = candidate;
+                    _eventBus?.Publish(new StoryCompletedCommittedEvent(storyId));
+                }
+                return result;
+            }
+            finally
+            {
+                _profileWriteGate.Release();
+            }
+        }
 
         /// <summary>当前应用流程服务。</summary>
         public IGameFlowService Flow { get; }
@@ -34,10 +145,11 @@ namespace Game.Presentation
 
         /// <summary>当前档案生命周期服务。</summary>
         public IProfileLifecycleService ProfileLifecycle { get; }
+        private readonly IProgressQuery _initialProgressQuery;
 
-        /// <summary>当前只读进度查询。</summary>
-        public IProgressQuery ProgressQuery { get; }
-
+        /// <summary>从当前档案创建只读进度快照；档案尚未加载时使用注入的默认查询。</summary>
+        public IProgressQuery ProgressQuery => CurrentProfile == null
+            ? _initialProgressQuery : new ProfileProgressQuery(CurrentProfile);
         /// <summary>当前系统时钟。</summary>
         public IClock Clock { get; }
 
@@ -62,6 +174,8 @@ namespace Game.Presentation
 
         /// <summary>当前剧情完成事务协调器；未注入时为 null，此时剧情完成事实提交被跳过。</summary>
         public IStoryCompletionCoordinator StoryCompletion { get; }
+        /// <summary>当前会话统一使用的地图、关卡和剧情内容源。</summary>
+        public IContentService Content { get; }
 
         /// <summary>
         /// 创建本次应用的运行时服务容器；只能由 Bootstrap 组合根装配具体实现。
@@ -76,6 +190,8 @@ namespace Game.Presentation
         /// <param name="saveProfileAsync">档案保存委托。</param>
         /// <param name="characters">角色形象查询与立绘资源注册表；为 null 时使用空注册表，<see cref="CharacterAssets"/> 可能为 null。</param>
         /// <param name="storyCompletion">剧情完成事务协调器；为 null 时剧情完成事实提交被跳过。</param>
+        /// <param name="content">当前地图、关卡与剧情目录；为空时使用测试目录。</param>
+        /// <param name="eventBus">剧情保存成功后发布完成事件；为空时不发布。</param>
         public GameRuntimeServices(
             IGameFlowService flow,
             ISettingsService settings,
@@ -86,21 +202,33 @@ namespace Game.Presentation
             IClock clock,
             Func<ProfileSave, SaveReason, CancellationToken, Task<SaveResult>> saveProfileAsync,
             ICharacterAppearanceQuery characters = null,
-            IStoryCompletionCoordinator storyCompletion = null
+            IStoryCompletionCoordinator storyCompletion = null,
+            IContentService content = null,
+            IDomainEventBus eventBus = null
         )
         {
+            Content = content ?? new OfficialContentService(OfficialTestMapCatalog.CreateProvider());
             Flow = flow ?? throw new ArgumentNullException(nameof(flow));
             Settings = settings ?? throw new ArgumentNullException(nameof(settings));
             Localization = localization ?? throw new ArgumentNullException(nameof(localization));
             Audio = audio ?? throw new ArgumentNullException(nameof(audio));
-            ProfileLifecycle = profileLifecycle ?? throw new ArgumentNullException(nameof(profileLifecycle));
-            ProgressQuery = progressQuery ?? throw new ArgumentNullException(nameof(progressQuery));
+            ProfileLifecycle = profileLifecycle ??
+                throw new ArgumentNullException(nameof(profileLifecycle));
+            _initialProgressQuery = progressQuery ?? throw new ArgumentNullException(nameof(progressQuery));
             Clock = clock ?? throw new ArgumentNullException(nameof(clock));
             _saveProfileAsync = saveProfileAsync ?? throw new ArgumentNullException(nameof(saveProfileAsync));
             Characters = characters ?? new DefaultCharacterAssetRegistry(null);
             CharacterAssets = Characters as ICharacterAssetRegistry;
             StoryCompletion = storyCompletion;
+            _eventBus = eventBus;
         }
+
+        /// <summary>兼容旧剧情表现器的保存入口，复用串行写档与完成事件发布。</summary>
+        /// <param name="storyId">已完成的剧情稳定标识。</param>
+        /// <param name="cancellationToken">取消等待或写入的令牌。</param>
+        /// <returns>保存结果；失败时不发布完成事实。</returns>
+        public Task<SaveResult> SaveStoryCompletedAsync(StoryId storyId, CancellationToken cancellationToken)
+            => CompleteStoryAsync(storyId, cancellationToken);
 
         /// <summary>把官方资源解析器注入演出资源源。</summary>
         /// <param name="assetResolver">官方资源解析器；可为 null。</param>
@@ -136,24 +264,20 @@ namespace Game.Presentation
         /// <returns>保存结果；尚未创建档案时返回成功且不写文件。</returns>
         public async Task<SaveResult> SaveLastMetaPageAsync(MetaPageId page, CancellationToken cancellationToken)
         {
-            if (CurrentProfile == null)
-                return SaveResult.Success();
+            await _profileWriteGate.WaitAsync(cancellationToken);
+            try
+            {
+                if (CurrentProfile == null)
+                    return SaveResult.Success();
 
-            CurrentProfile.LastMetaPageId = ToPersistedPageId(page);
-            return await _saveProfileAsync(CurrentProfile, SaveReason.PageChanged, cancellationToken);
-        }
-
-        /// <summary>提交剧情完成事实；委托给剧情完成事务协调器。</summary>
-        /// <param name="storyId">已完成的剧情稳定标识。</param>
-        /// <param name="cancellationToken">取消令牌。</param>
-        /// <returns>写入结果；失败时不得继续流程跳转。</returns>
-        public Task<SaveResult> SaveStoryCompletedAsync(StoryId storyId, CancellationToken cancellationToken)
-        {
-            return StoryCompletion == null
-                ? Task.FromResult(
-                    SaveResult.Failure(ErrorCode.SaveFailed, "Story completion coordinator is not available.")
-                )
-                : StoryCompletion.CommitCompletedAsync(storyId, cancellationToken);
+                CurrentProfile.LastMetaPageId = ToPersistedPageId(page);
+                return await _saveProfileAsync(CurrentProfile, SaveReason.PageChanged,
+                    cancellationToken);
+            }
+            finally
+            {
+                _profileWriteGate.Release();
+            }
         }
 
         /// <summary>把页面枚举转换为存档稳定字符串。</summary>

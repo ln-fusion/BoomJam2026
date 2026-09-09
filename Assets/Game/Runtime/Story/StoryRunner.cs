@@ -132,10 +132,17 @@ namespace Game.Story
                 );
         }
 
+        /// <summary>判断当前是否存在可操作的剧情会话和定义。</summary>
+        /// <returns>剧情会话与定义均存在时返回 true。</returns>
         private bool CanOperate() => _session != null && _definition != null;
 
+        /// <summary>取得当前会话节点的定义。</summary>
+        /// <returns>当前节点定义。</returns>
         private StoryNodeDefinition CurrentNode() => _nodes[_session.CurrentNodeId.Value];
 
+        /// <summary>把会话移动到指定节点并记录访问历史。</summary>
+        /// <param name="nodeId">目标节点稳定标识。</param>
+        /// <returns>目标存在时成功，否则返回内容错误。</returns>
         private Result MoveTo(string nodeId)
         {
             if (string.IsNullOrWhiteSpace(nodeId) || !_nodes.ContainsKey(nodeId))
@@ -145,6 +152,10 @@ namespace Game.Story
             return Result.Success();
         }
 
+        /// <summary>校验剧情入口与节点标识，并建立节点索引。</summary>
+        /// <param name="definition">准备运行的剧情定义。</param>
+        /// <param name="error">校验失败信息；成功时为空。</param>
+        /// <returns>定义可建立完整节点索引时返回 true。</returns>
         private bool TryBuildNodeIndex(StoryDefinition definition, out string error)
         {
             error = null;

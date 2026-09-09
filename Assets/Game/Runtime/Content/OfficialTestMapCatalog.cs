@@ -9,12 +9,16 @@ namespace Game.Content
     {
         private static readonly CultureInfo Invariant = CultureInfo.InvariantCulture;
 
-        /// <summary>创建 6 张地图，每张 5 个有序关卡节点，以及 1 条分支剧情。</summary>
-        /// <returns>包含 30 个稳定测试关卡与 1 条分支剧情的提供者。</returns>
+        /// <summary>创建六张测试地图、每图五个关卡和各关独立的关前、关后测试剧情。</summary>
+        /// <returns>包含 30 个稳定测试关卡、关前关后剧情和旧 C06 测试剧情的内容提供者。</returns>
         public static OfficialContentProvider CreateProvider()
         {
             var maps = new List<MapDefinition>();
             var levels = new List<LevelDefinition>();
+            var stories = new List<StoryDefinition>
+            {
+                CreateBranchingStory("official.story.c06_branch")
+            };
             for (int mapIndex = 1; mapIndex <= 6; mapIndex++)
             {
                 string mapId = "official.map.test_" + mapIndex.ToString("00", Invariant);
@@ -27,22 +31,16 @@ namespace Game.Content
                 };
                 for (int levelIndex = 1; levelIndex <= 5; levelIndex++)
                 {
-                    string levelId =
-                        "official.level.test_"
-                        + mapIndex.ToString("00", Invariant)
-                        + "_"
-                        + levelIndex.ToString("00", Invariant);
+                    string levelId = "official.level.test_" + mapIndex.ToString("00") + "_" + levelIndex.ToString("00");
+                    string preludeStoryId = "official.story.prelude.test_" +
+                        mapIndex.ToString("00") + "_" + levelIndex.ToString("00");
                     var level = new LevelDefinition
                     {
-                        Header = Header(levelId),
-                        LevelId = levelId,
-                        MapId = mapId,
-                        DisplayNameKey =
-                            "level.test_"
-                            + mapIndex.ToString("00", Invariant)
-                            + "_"
-                            + levelIndex.ToString("00", Invariant),
-                        SortOrder = levelIndex,
+                        Header = Header(levelId), LevelId = levelId, MapId = mapId,
+                        DisplayNameKey = "level.test_" + mapIndex.ToString("00") + "_" + levelIndex.ToString("00"),
+                        SortOrder = levelIndex, PreludeStoryId = preludeStoryId,
+                        PostludeStoryId = "official.story.postlude.test_" +
+                            mapIndex.ToString("00") + "_" + levelIndex.ToString("00")
                     };
                     if (levelIndex > 1)
                     {
@@ -60,14 +58,24 @@ namespace Game.Content
                     }
                     levels.Add(level);
                     map.Levels.Add(level.Summary);
+                    stories.Add(CreateBranchingStory(preludeStoryId));
+                    if (!string.IsNullOrWhiteSpace(level.PostludeStoryId))
+                        stories.Add(CreateBranchingStory(level.PostludeStoryId));
                 }
                 maps.Add(map);
             }
 
-            var story = new StoryDefinition
+            return new OfficialContentProvider(maps, levels, stories);
+        }
+
+        /// <summary>创建使用当前白盒对白内容、但拥有独立完成事实 ID 的分支剧情。</summary>
+        /// <param name="storyId">剧情稳定标识。</param>
+        /// <returns>可由剧情运行器播放的分支剧情定义。</returns>
+        private static StoryDefinition CreateBranchingStory(string storyId)
+        {
+            return new StoryDefinition
             {
-                Header = Header("official.story.c06_branch"),
-                StoryId = "official.story.c06_branch",
+                Header = Header(storyId), StoryId = storyId,
                 Nodes = new List<StoryNodeDefinition>
                 {
                     new StoryNodeDefinition
@@ -124,7 +132,6 @@ namespace Game.Content
                     new StoryNodeDefinition { NodeId = "end", Type = StoryNodeType.End },
                 },
             };
-            return new OfficialContentProvider(maps, levels, new[] { story });
         }
 
         /// <summary>创建包含 hani 角色的测试角色定义集合。</summary>
@@ -146,6 +153,9 @@ namespace Game.Content
             };
         }
 
+        /// <summary>创建官方测试内容使用的兼容内容头。</summary>
+        /// <param name="id">内容稳定标识。</param>
+        /// <returns>格式版本为 1 的官方内容头。</returns>
         private static ContentHeader Header(string id)
         {
             return new ContentHeader

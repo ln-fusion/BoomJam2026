@@ -84,6 +84,12 @@ namespace Game.Contracts.Content
         /// <summary>同一地图内的显示排序值。</summary>
         public int SortOrder;
 
+        /// <summary>首次进入关卡前播放的剧情稳定标识；为空时直接进入玩法。</summary>
+        public string PreludeStoryId;
+
+        /// <summary>通关提交后播放的剧情稳定标识；为空或剧情已完成时直接返回地图。</summary>
+        public string PostludeStoryId;
+
         /// <summary>Unlock rule evaluated before the level can be entered.</summary>
         public UnlockRequirementData UnlockRequirement;
     }
@@ -157,8 +163,11 @@ namespace Game.Contracts.Content
 
         /// <summary>同一地图内的显示排序值。</summary>
         public int SortOrder;
-
-        /// <summary>复制到关卡摘要中的解锁规则。</summary>
+        /// <summary>首次进入关卡前播放的剧情稳定标识；为空时直接进入玩法。</summary>
+        public string PreludeStoryId;
+        /// <summary>通关提交后播放的剧情稳定标识；为空或剧情已完成时直接返回地图。</summary>
+        public string PostludeStoryId;
+        /// <summary>Unlock rule copied into the level summary.</summary>
         public UnlockRequirementData UnlockRequirement;
 
         /// <summary>部署方案容量上限; 0 表示未配置（C23 生效）。</summary>
@@ -200,6 +209,12 @@ namespace Game.Contracts.Content
         /// <summary>关卡结束后播放的剧情稳定 ID; 为空表示不播放。</summary>
         public string PostStoryId;
 
+        /// <summary>实际关前剧情引用；优先使用目录字段，否则兼容编辑器运行数据字段。</summary>
+        public string ResolvedPreludeStoryId => string.IsNullOrWhiteSpace(PreludeStoryId) ? PreStoryId : PreludeStoryId;
+
+        /// <summary>实际关后剧情引用；优先使用目录字段，否则兼容编辑器运行数据字段。</summary>
+        public string ResolvedPostludeStoryId => string.IsNullOrWhiteSpace(PostludeStoryId) ? PostStoryId : PostludeStoryId;
+
         /// <summary>由完整定义派生的关卡选择摘要。</summary>
         public LevelSummary Summary =>
             new LevelSummary
@@ -208,6 +223,8 @@ namespace Game.Contracts.Content
                 MapId = MapId,
                 DisplayNameKey = DisplayNameKey,
                 SortOrder = SortOrder,
+                PreludeStoryId = ResolvedPreludeStoryId,
+                PostludeStoryId = ResolvedPostludeStoryId,
                 UnlockRequirement = UnlockRequirement,
             };
     }

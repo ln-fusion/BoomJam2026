@@ -13,7 +13,7 @@ namespace Game.Presentation
     /// C16 占位关卡控制器：提供"完成关卡"按钮驱动占位完成到关后剧情的流程。
     /// </summary>
     /// <remarks>
-    /// 在正式 Gameplay HUD（C25）落地前由 <see cref="SceneUiInstaller"/> 安装到 04_Gameplay 场景。
+    /// 保留供旧白盒场景兼容；当前场景使用 <see cref="GameplayReturnButton"/>，不再自动安装此控制器。
     /// </remarks>
     public sealed class GameplayPlaceholderController : MonoBehaviour
     {

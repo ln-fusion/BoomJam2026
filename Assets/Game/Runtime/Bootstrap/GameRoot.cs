@@ -39,6 +39,9 @@ namespace Game.Bootstrap
         [SerializeField]
         private ContentAssetRegistry? contentAssetRegistry;
 
+        [Tooltip("地图、关卡前置条件和关前关后剧情配置。")]
+        [SerializeField] private OfficialContentCatalog? contentCatalog;
+
         private GameFlowService? _flowService;
         private SettingsService? _settingsService;
         private DefaultLocalizationService? _localizationService;
@@ -54,6 +57,19 @@ namespace Game.Bootstrap
         /// <summary>创建组合根服务、全局 Canvas 并启动设置加载和开始菜单导航。</summary>
         private void Start()
         {
+            if (contentCatalog == null)
+            {
+                Debug.LogError("Bootstrap 缺少 Content Catalog，请配置官方内容目录。", this);
+                return;
+            }
+            OfficialContentService whiteboxContent;
+            var generatedStories = GeneratedStoryLoader.LoadAll();
+            try { whiteboxContent = contentCatalog.CreateValidatedService(generatedStories); }
+            catch (ArgumentException exception)
+            {
+                Debug.LogError("内容目录无效：" + exception.Message, this);
+                return;
+            }
             _startupLifetime = new CancellationTokenSource();
             var clock = new SystemClock();
             IGameLogger logger = UnityDebugLogger.Instance;
@@ -101,7 +117,14 @@ namespace Game.Bootstrap
                 startMenuSceneName,
                 storyCompletion,
                 () => _runtimeServices?.CurrentProfile,
-                _saveRepository.SaveProfileAsync
+                _saveRepository.SaveProfileAsync,
+                preludeStoryLookup: levelId =>
+                {
+                    var level = whiteboxContent.GetLevel(levelId);
+                    string? id = level?.ResolvedPreludeStoryId;
+                    return string.IsNullOrWhiteSpace(id) ? null : new StoryId(id);
+                },
+                isStoryCompleted: id => _runtimeServices?.ProgressQuery.IsStoryReplayUnlocked(id) == true
             );
             _flowService = flowService;
 
@@ -115,7 +138,9 @@ namespace Game.Bootstrap
                 clock,
                 _saveRepository.SaveProfileAsync,
                 characters,
-                storyCompletion
+                storyCompletion,
+                whiteboxContent,
+                eventBus
             );
             _runtimeServices.SetAssetResolver(
                 contentAssetRegistry == null ? null : new OfficialAssetResolver(contentAssetRegistry)
@@ -127,7 +152,7 @@ namespace Game.Bootstrap
                 );
                 _runtimeServices.SetStoryPrefab(storyPrefab);
             }
-            _runtimeServices.SetGeneratedStories(GeneratedStoryLoader.LoadAll());
+            _runtimeServices.SetGeneratedStories(generatedStories);
             _globalUiRoot = new GameObject("GlobalUi");
             DontDestroyOnLoad(_globalUiRoot);
             _globalCanvasLayer = _globalUiRoot.AddComponent<GlobalCanvasLayer>();

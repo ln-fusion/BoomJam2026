@@ -179,12 +179,20 @@ namespace Game.Content
             return true;
         }
 
+        /// <summary>设置校验失败信息并返回失败结果。</summary>
+        /// <param name="message">校验失败信息。</param>
+        /// <param name="error">接收校验失败信息。</param>
+        /// <returns>始终返回 false。</returns>
         private static bool Fail(string message, out string error)
         {
             error = message;
             return false;
         }
 
+        /// <summary>按稳定标识查找角色定义。</summary>
+        /// <param name="characters">待查询的角色集合。</param>
+        /// <param name="characterId">角色稳定标识。</param>
+        /// <returns>匹配定义；不存在时返回 null。</returns>
         private static CharacterDefinition FindCharacter(
             IReadOnlyCollection<CharacterDefinition> characters,
             string characterId
@@ -196,6 +204,10 @@ namespace Game.Content
             return null;
         }
 
+        /// <summary>判断角色是否声明指定形象。</summary>
+        /// <param name="character">角色定义。</param>
+        /// <param name="appearanceId">待检查的形象标识。</param>
+        /// <returns>形象属于该角色时返回 true。</returns>
         private static bool HasAppearance(CharacterDefinition character, string appearanceId)
         {
             if (character.AppearanceIds == null)

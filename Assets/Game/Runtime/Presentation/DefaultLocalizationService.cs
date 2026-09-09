@@ -602,6 +602,30 @@ namespace Game.Presentation
         public const string PageArchive = "meta.page_archive";
         /// <summary>人员页占位提示。</summary>
         public const string PageCharacter = "meta.page_character";
+        /// <summary>地图节点未解锁状态。</summary>
+        public const string MapStateLocked = "meta.map_state_locked";
+        /// <summary>地图节点当前关卡状态。</summary>
+        public const string MapStateCurrent = "meta.map_state_current";
+        /// <summary>地图节点已解锁状态。</summary>
+        public const string MapStateUnlocked = "meta.map_state_unlocked";
+        /// <summary>地图节点已完成状态。</summary>
+        public const string MapStateCompleted = "meta.map_state_completed";
+        /// <summary>地图节点没有对应内容时的提示。</summary>
+        public const string MapLevelUnconfigured = "meta.map_level_unconfigured";
+        /// <summary>资料卡尚未选择关卡时的提示。</summary>
+        public const string LevelSelectPrompt = "meta.level_select_prompt";
+        /// <summary>资料卡没有成绩时的提示。</summary>
+        public const string LevelNoScore = "meta.level_no_score";
+        /// <summary>资料卡 Tick 成绩格式。</summary>
+        public const string LevelScoreTicks = "meta.level_score_ticks";
+        /// <summary>资料卡名称、状态和成绩的组合格式。</summary>
+        public const string LevelCardFormat = "meta.level_card_format";
+        /// <summary>资料卡开始按钮。</summary>
+        public const string LevelStart = "meta.level_start";
+        /// <summary>资料卡关前剧情复播按钮。</summary>
+        public const string PreludeReplay = "meta.prelude_replay";
+        /// <summary>资料卡关后剧情复播按钮。</summary>
+        public const string PostludeReplay = "meta.postlude_replay";
         /// <summary>昵称为空提示。</summary>
         public const string NicknameRequired = "ui.nickname_required";
 
@@ -612,7 +636,10 @@ namespace Game.Presentation
             RestoreDefaults, MasterVolume, MusicVolume, SfxVolume, Language, Resolution,
             Fullscreen, Nickname, Confirm, FeedbackReady, FeedbackLoading, FeedbackSaved,
             FeedbackQuitEditor, MetaMap, MetaArchive, MetaCharacter, MetaLounge,
-            LoungeUnavailable, PageMap, PageArchive, PageCharacter, NicknameRequired
+            LoungeUnavailable, PageMap, PageArchive, PageCharacter, MapStateLocked,
+            MapStateCurrent, MapStateUnlocked, MapStateCompleted, MapLevelUnconfigured,
+            LevelSelectPrompt, LevelNoScore, LevelScoreTicks, LevelCardFormat, LevelStart,
+            PreludeReplay, PostludeReplay, NicknameRequired
         });
     }
 }

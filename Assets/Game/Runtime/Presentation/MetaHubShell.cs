@@ -1,11 +1,16 @@
 using System;
 using System.Globalization;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Game.Contracts;
+using Game.Contracts.Meta;
+using Game.Content;
+using Game.Meta;
 using Game.Foundation;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Events;
 
 namespace Game.Presentation
 {
@@ -30,6 +35,19 @@ namespace Game.Presentation
         private CancellationTokenSource _lifetime;
         private bool _initialized;
 
+        [SerializeField, Tooltip("白盒地图稳定 ID；节点按该地图的 SortOrder 顺序绑定。")]
+        private string mapId = "official.map.test_01";
+        private readonly List<Button> _mapButtons = new List<Button>();
+        private readonly List<UnityAction> _mapActions = new List<UnityAction>();
+        private IMetaMapQuery _mapQuery;
+        private IReadOnlyList<LevelNodeViewModel> _mapNodes;
+        private Text _levelDetails;
+        private Button _levelStart;
+        private Button _preludeReplay;
+        private Button _postludeReplay;
+        private LevelId _selectedLevelId;
+        private bool _enteringLevel;
+
         /// <summary>注入运行时服务并构建壳层。</summary>
         /// <param name="runtimeServices">Bootstrap 创建的运行时服务容器。</param>
         /// <param name="globalCanvasLayer">全局 UI 层。</param>
@@ -46,6 +64,7 @@ namespace Game.Presentation
             _router = new MetaPageRouter();
             _router.PageChanged += OnPageChanged;
             BuildView();
+            BindMapView();
             if (_localizationService != null)
                 _localizationService.LocaleChanged += OnLocaleChanged;
 
@@ -86,6 +105,13 @@ namespace Game.Presentation
         /// <summary>销毁时取消路由、Locale 订阅和页面存档异步操作。</summary>
         private void OnDestroy()
         {
+            if (_preludeReplay != null) _preludeReplay.onClick.RemoveListener(OnPreludeReplay);
+            if (_postludeReplay != null) _postludeReplay.onClick.RemoveListener(OnPostludeReplay);
+            if (_levelStart != null)
+                _levelStart.onClick.RemoveListener(OnLevelStartRequested);
+            for (int index = 0; index < _mapButtons.Count; index++)
+                if (_mapButtons[index] != null)
+                    _mapButtons[index].onClick.RemoveListener(_mapActions[index]);
             if (_router != null)
                 _router.PageChanged -= OnPageChanged;
             if (_localizationService != null)
@@ -106,10 +132,211 @@ namespace Game.Presentation
                 _nicknameText.text = viewModel.Nickname;
             if (_router != null)
                 _router.Navigate(viewModel.Page);
-            // 路由到当前页时 Navigate 可能因页面未变而不触发 PageChanged,
-            // 因此显隐必须在渲染路径无条件应用, 否则预制体中全部激活的页面会叠加显示。
-            ApplyPageVisibility(viewModel.Page);
-            UpdatePageText(viewModel.Page);
+            OnPageChanged(viewModel.Page);
+        }
+
+        /// <summary>绑定已有地图按钮与资料卡，初始化拖动内容；不改动预制体布局。</summary>
+        private void BindMapView()
+        {
+            Transform card = _mapPage.transform.Find("LevelCard");
+            _levelDetails = card == null ? null : FindText(card, "Details");
+            _levelStart = card == null ? null : FindButton(card, "Start");
+            _preludeReplay = card == null ? null : FindButton(card, "PreludeReplay");
+            _postludeReplay = card == null ? null : FindButton(card, "PostludeReplay");
+            if (_preludeReplay != null) _preludeReplay.onClick.AddListener(OnPreludeReplay);
+            if (_postludeReplay != null) _postludeReplay.onClick.AddListener(OnPostludeReplay);
+            if (_levelStart != null)
+                _levelStart.onClick.AddListener(OnLevelStartRequested);
+            var controller = _mapPage.GetComponentInChildren<MetaMapInteractionController>(true);
+            if (controller != null)
+                controller.BuildPreview();
+
+            for (int index = 0; ; index++)
+            {
+                Button button = FindButton(_mapPage.transform, "MapNode_" + (index + 1));
+                if (button == null)
+                    break;
+                int nodeIndex = index;
+                UnityAction action = () => SelectMapNode(nodeIndex);
+                _mapButtons.Add(button);
+                _mapActions.Add(action);
+                button.onClick.AddListener(action);
+            }
+            if (_mapButtons.Count == 0 || _levelDetails == null || _levelStart == null)
+                Debug.LogWarning("地图白盒缺少 MapNode_N 或 LevelCard/Details、Start，请检查预制体层级。", this);
+            RefreshTexts();
+            RefreshMapView();
+        }
+
+        /// <summary>从当前档案重新计算节点状态，隐藏未解锁或未配置节点；初始化、打开地图和选择节点时刷新。</summary>
+        private void RefreshMapView()
+        {
+            if (_runtimeServices == null)
+                return;
+            _mapQuery = new MetaMapQuery(_runtimeServices.Content, _runtimeServices.ProgressQuery);
+            _mapNodes = _mapQuery.GetLevels(new MapId(mapId));
+            for (int index = 0; index < _mapButtons.Count; index++)
+            {
+                Button button = _mapButtons[index];
+                bool available = index < _mapNodes.Count;
+                bool visible = available && _mapNodes[index].IsInteractable;
+                button.gameObject.SetActive(visible);
+                button.interactable = visible && !_enteringLevel;
+                Text label = button.GetComponentInChildren<Text>(true);
+                if (label != null)
+                    label.text = available
+                        ? Text(_mapNodes[index].DisplayNameKey) + "\n" + MapStateText(_mapNodes[index].State)
+                        : Text(UiTextKeys.MapLevelUnconfigured);
+            }
+            RenderLevelCard();
+        }
+
+        /// <summary>选择当前排序下已解锁的节点；拒绝未解锁节点的选择请求。</summary>
+        /// <param name="index">从零开始的节点序号。</param>
+        private void SelectMapNode(int index)
+        {
+            if (_enteringLevel)
+                return;
+            RefreshMapView();
+            if (_mapNodes == null || index < 0 || index >= _mapNodes.Count ||
+                !_mapNodes[index].IsInteractable)
+                return;
+            _selectedLevelId = _mapNodes[index].LevelId;
+            RenderLevelCard();
+        }
+
+        /// <summary>显示选中关卡的名称、状态与成绩；清除已失效或未解锁的选择，进入期间禁用开始按钮。</summary>
+        private void RenderLevelCard()
+        {
+            LevelCardViewModel card = _selectedLevelId == null || _mapQuery == null
+                ? null : _mapQuery.GetLevelCard(_selectedLevelId);
+            if (card == null || !card.Node.IsInteractable)
+            {
+                _selectedLevelId = null;
+                card = null;
+            }
+            if (_levelStart != null)
+                _levelStart.interactable = !_enteringLevel && card != null && card.Node.IsInteractable;
+            RenderReplayButton(_preludeReplay, card?.PreludeReplay);
+            RenderReplayButton(_postludeReplay, card?.PostludeReplay);
+            if (_levelDetails == null)
+                return;
+            if (card == null)
+            {
+                _levelDetails.text = Text(UiTextKeys.LevelSelectPrompt);
+                return;
+            }
+            string score = card.BestScore == null ? Text(UiTextKeys.LevelNoScore)
+                : Text(UiTextKeys.LevelScoreTicks, card.BestScore.ElapsedTicks);
+            _levelDetails.text = Text(UiTextKeys.LevelCardFormat,
+                Text(card.Node.DisplayNameKey), MapStateText(card.Node.State), score);
+        }
+
+        /// <summary>根据查询得到的复播权限切换按钮显隐与导航期间的交互。</summary>
+        /// <param name="button">预制体中的复播按钮。</param>
+        /// <param name="story">已解锁的剧情；为空时隐藏。</param>
+        private void RenderReplayButton(Button button, StoryId story)
+        {
+            if (button == null) return;
+            button.gameObject.SetActive(story != null);
+            button.interactable = story != null && !_enteringLevel;
+        }
+
+        /// <summary>请求复播当前关卡已解锁的关前剧情。</summary>
+        private void OnPreludeReplay() => ReplaySelectedStory(false);
+
+        /// <summary>请求复播当前关卡已解锁的关后剧情。</summary>
+        private void OnPostludeReplay() => ReplaySelectedStory(true);
+
+        /// <summary>重新查询权限并播放剧情，结束返回地图；不创建白盒会话或提交通关。</summary>
+        /// <param name="postlude">是否复播关后剧情。</param>
+        private async void ReplaySelectedStory(bool postlude)
+        {
+            if (_enteringLevel || _runtimeServices == null || _selectedLevelId == null) return;
+            _enteringLevel = true;
+            try
+            {
+                RefreshMapView();
+                var card = _mapQuery.GetLevelCard(_selectedLevelId);
+                StoryId story = postlude ? card?.PostludeReplay : card?.PreludeReplay;
+                if (story == null) return;
+                var content = _runtimeServices.Content;
+                if (content.GetStory(story) == null)
+                    throw new InvalidOperationException("找不到复播剧情：" + story.Value);
+                await _runtimeServices.Flow.PlayStoryAsync(story,
+                    StoryReturnTarget.ToMetaPage(MetaPageId.Map), CancellationToken.None);
+            }
+            catch (OperationCanceledException) { }
+            catch (Exception exception)
+            {
+                _globalCanvasLayer?.ShowFeedback(exception.Message);
+                Debug.LogException(exception);
+            }
+            finally
+            {
+                if (this != null)
+                {
+                    _enteringLevel = false;
+                    RefreshMapView();
+                }
+            }
+        }
+
+        /// <summary>响应资料卡开始请求；已有进入请求时忽略重复点击。</summary>
+        private void OnLevelStartRequested()
+        {
+            if (!_enteringLevel && _runtimeServices != null && _selectedLevelId != null)
+                _ = EnterSelectedLevelAsync();
+        }
+
+        /// <summary>重新校验当前关卡的解锁状态并交给现有流程服务；使用独立于被卸载地图的取消令牌，异常时显示反馈。</summary>
+        /// <returns>进入请求结束时完成的任务；场景是否加载成功仍由流程服务记录。</returns>
+        private async Task EnterSelectedLevelAsync()
+        {
+            _enteringLevel = true;
+            try
+            {
+                RefreshMapView();
+                LevelCardViewModel card = _mapQuery.GetLevelCard(_selectedLevelId);
+                if (card == null || !card.Node.IsInteractable)
+                    return;
+
+                // 地图卸载会取消 _lifetime；导航必须持续到目标场景加载完成。
+                _runtimeServices.BeginWhiteboxLevel(card.Node.LevelId);
+                await _runtimeServices.Flow.EnterLevelAsync(card.Node.LevelId, CancellationToken.None);
+            }
+            catch (OperationCanceledException)
+            {
+                // 流程取消后，若地图仍存在则由 finally 恢复交互。
+            }
+            catch (Exception exception)
+            {
+                if (_globalCanvasLayer != null)
+                    _globalCanvasLayer.ShowFeedback(exception.Message);
+                Debug.LogException(exception);
+            }
+            finally
+            {
+                if (this != null)
+                {
+                    _enteringLevel = false;
+                    RefreshMapView();
+                }
+            }
+        }
+
+        /// <summary>按当前 Locale 取得节点状态名称。</summary>
+        /// <param name="state">查询计算出的节点状态。</param>
+        /// <returns>用于节点与资料卡的状态文字。</returns>
+        private string MapStateText(LevelNodeState state)
+        {
+            return state switch
+            {
+                LevelNodeState.Locked => Text(UiTextKeys.MapStateLocked),
+                LevelNodeState.Current => Text(UiTextKeys.MapStateCurrent),
+                LevelNodeState.Completed => Text(UiTextKeys.MapStateCompleted),
+                _ => Text(UiTextKeys.MapStateUnlocked)
+            };
         }
 
         /// <summary>创建 MetaHub 壳层和四个页面占位。</summary>
@@ -333,12 +560,6 @@ namespace Game.Presentation
                     RectTransform nodeRect = nodeButton.GetComponent<RectTransform>();
                     nodeRect.sizeDelta = new Vector2(180f, 64f);
                     nodeRect.anchoredPosition = new Vector2(-480f + index * 240f, 0f);
-                    int selectedIndex = index;
-                    nodeButton.onClick.AddListener(() =>
-                    {
-                        mapController.FocusNode(selectedIndex);
-                        cardPanel.Show(null);
-                    });
                 }
             }
             return page;
@@ -399,6 +620,8 @@ namespace Game.Presentation
         private void Navigate(MetaPageId page)
         {
             _router.Navigate(page);
+            if (page == MetaPageId.Map)
+                RefreshMapView();
             _ = PersistPageAsync(page);
         }
 
@@ -431,6 +654,8 @@ namespace Game.Presentation
         {
             ApplyPageVisibility(page);
             UpdatePageText(page);
+            if (page == MetaPageId.Map)
+                RefreshMapView();
         }
 
         /// <summary>只点亮目标页面，其余页面隐藏。</summary>
@@ -453,6 +678,7 @@ namespace Game.Presentation
         {
             RefreshTexts();
             UpdatePageText(_router.CurrentPage);
+            RefreshMapView();
             if (_clockText != null && _runtimeServices != null)
                 _clockText.text = FormatClock(_runtimeServices.Clock.LocalNow, localeCode);
         }
@@ -497,6 +723,9 @@ namespace Game.Presentation
             SetButtonText("Character", Text(UiTextKeys.MetaCharacter));
             SetButtonText("Lounge", Text(UiTextKeys.MetaLounge));
             SetButtonText("Settings", Text(UiTextKeys.Settings));
+            SetButtonText(_levelStart, Text(UiTextKeys.LevelStart));
+            SetButtonText(_preludeReplay, Text(UiTextKeys.PreludeReplay));
+            SetButtonText(_postludeReplay, Text(UiTextKeys.PostludeReplay));
             SetPagePlaceholder(_mapPage, Text(UiTextKeys.PageMap));
             SetPagePlaceholder(_archivePage, Text(UiTextKeys.PageArchive));
             SetPagePlaceholder(_characterPage, Text(UiTextKeys.PageCharacter));
@@ -521,12 +750,13 @@ namespace Game.Presentation
 
         /// <summary>读取当前本地化文本。</summary>
         /// <param name="key">稳定键字符串。</param>
-        /// <returns>本地化文本。</returns>
-        private string Text(string key)
+        /// <param name="arguments">可选格式化参数。</param>
+        /// <returns>本地化并完成参数替换的文本。</returns>
+        private string Text(string key, params object[] arguments)
         {
             return _localizationService == null
                 ? key
-                : _localizationService.Get(new Game.Foundation.LocalizationKey(key));
+                : _localizationService.Get(new Game.Foundation.LocalizationKey(key), arguments);
         }
 
         /// <summary>设置指定按钮文本。</summary>
@@ -540,6 +770,16 @@ namespace Game.Presentation
                 label.text = text;
         }
 
+        /// <summary>设置已绑定按钮及其隐藏子节点中的文本。</summary>
+        /// <param name="button">目标按钮；为空时忽略。</param>
+        /// <param name="text">本地化文本。</param>
+        private static void SetButtonText(Button button, string text)
+        {
+            Text label = button == null ? null : button.GetComponentInChildren<Text>(true);
+            if (label != null)
+                label.text = text;
+        }
+
         /// <summary>更新页面占位文本，确保切换 Locale 后当前内容立即刷新。</summary>
         /// <param name="page">页面对象。</param>
         /// <param name="text">占位文本。</param>
@@ -548,7 +788,7 @@ namespace Game.Presentation
             if (page == null)
                 return;
 
-            Text label = page.GetComponentInChildren<Text>(true);
+            Text label = page.transform.Find("Placeholder")?.GetComponent<Text>();
             if (label != null)
                 label.text = text;
         }
@@ -584,12 +824,10 @@ namespace Game.Presentation
         /// <summary>创建 MetaHub 模型。</summary>
         /// <param name="page">页面。</param>
         /// <param name="nickname">昵称。</param>
-        public MetaHubViewModel(
-            MetaPageId page,
-            string nickname,
-            string chapterPlaceholder = "Chapter 01",
-            DateTimeOffset? localTime = null
-        )
+        /// <param name="chapterPlaceholder">当前章节的占位文字。</param>
+        /// <param name="localTime">用于显示的本地时间；未提供时取当前本地时间。</param>
+        public MetaHubViewModel(MetaPageId page, string nickname,
+            string chapterPlaceholder = "Chapter 01", DateTimeOffset? localTime = null)
         {
             Page = page;
             Nickname = nickname ?? string.Empty;

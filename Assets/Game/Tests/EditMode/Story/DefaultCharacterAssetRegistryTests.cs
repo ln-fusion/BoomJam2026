@@ -91,6 +91,8 @@ namespace Game.Tests.EditMode.Story
         {
             private readonly Sprite _sprite;
 
+            /// <summary>创建返回固定精灵的测试资源解析器。</summary>
+            /// <param name="sprite">需要返回的精灵。</param>
             public StubAssetResolver(Sprite sprite) => _sprite = sprite;
 
             /// <inheritdoc/>
