@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Game.Contracts;
@@ -6,6 +7,8 @@ using Game.Contracts.Content;
 using Game.Contracts.Persistence;
 using Game.Contracts.Progression;
 using Game.Foundation;
+using Game.Story;
+using UnityEngine;
 using Game.Progression;
 using Game.Content;
 using Game.Meta;
@@ -24,6 +27,7 @@ namespace Game.Presentation
         private readonly SemaphoreSlim _profileWriteGate = new SemaphoreSlim(1, 1);
         private LevelId _whiteboxLevel;
         private string _whiteboxRunId;
+        private readonly IDomainEventBus _eventBus;
 
         /// <summary>当前选关创建的白盒会话关卡；尚未选关时为空。</summary>
         internal LevelId WhiteboxLevel => _whiteboxLevel;
@@ -115,7 +119,10 @@ namespace Game.Presentation
                 SaveResult result = await _saveProfileAsync(candidate, SaveReason.StoryCommitted,
                     cancellationToken);
                 if (result.IsSuccess)
+                {
                     CurrentProfile = candidate;
+                    _eventBus?.Publish(new StoryCompletedCommittedEvent(storyId));
+                }
                 return result;
             }
             finally
@@ -126,12 +133,16 @@ namespace Game.Presentation
 
         /// <summary>当前应用流程服务。</summary>
         public IGameFlowService Flow { get; }
+
         /// <summary>当前设置服务。</summary>
         public ISettingsService Settings { get; }
+
         /// <summary>当前本地化服务。</summary>
         public ILocalizationService Localization { get; }
+
         /// <summary>当前音频服务。</summary>
         public IAudioService Audio { get; }
+
         /// <summary>当前档案生命周期服务。</summary>
         public IProfileLifecycleService ProfileLifecycle { get; }
         private readonly IProgressQuery _initialProgressQuery;
@@ -141,9 +152,28 @@ namespace Game.Presentation
             ? _initialProgressQuery : new ProfileProgressQuery(CurrentProfile);
         /// <summary>当前系统时钟。</summary>
         public IClock Clock { get; }
+
         /// <summary>当前已加载的单一玩家档案；首次开始前为空。</summary>
         public ProfileSave CurrentProfile { get; private set; }
 
+        /// <summary>当前角色形象查询与立绘资源注册表。</summary>
+        public ICharacterAppearanceQuery Characters { get; }
+
+        /// <summary>当前立绘资源注册表（与 Characters 同源，避免向下转型）；当注入的角色形象查询未实现该接口时为 null。</summary>
+        public ICharacterAssetRegistry CharacterAssets { get; }
+
+        /// <summary>当前官方资源解析器；可为 null。</summary>
+        public IAssetResolver Assets { get; private set; }
+
+        /// <summary>剧情面板预制体资源；可为 null 时回退代码生成。</summary>
+        public GameObject StoryPrefab { get; private set; }
+
+        /// <summary>编辑器编译产出的 Generated 剧情集合；加载时优先于测试剧情。</summary>
+        public IReadOnlyDictionary<string, StoryDefinition> GeneratedStories { get; private set; } =
+            new Dictionary<string, StoryDefinition>();
+
+        /// <summary>当前剧情完成事务协调器；未注入时为 null，此时剧情完成事实提交被跳过。</summary>
+        public IStoryCompletionCoordinator StoryCompletion { get; }
         /// <summary>当前会话统一使用的地图、关卡和剧情内容源。</summary>
         public IContentService Content { get; }
 
@@ -158,13 +188,24 @@ namespace Game.Presentation
         /// <param name="progressQuery">进度查询。</param>
         /// <param name="clock">系统时钟。</param>
         /// <param name="saveProfileAsync">档案保存委托。</param>
-        /// <param name="content">已校验的内容服务；省略时仅使用兼容测试目录。</param>
-        public GameRuntimeServices(IGameFlowService flow, ISettingsService settings,
-            ILocalizationService localization, IAudioService audio,
-            IProfileLifecycleService profileLifecycle, IProgressQuery progressQuery,
+        /// <param name="characters">角色形象查询与立绘资源注册表；为 null 时使用空注册表，<see cref="CharacterAssets"/> 可能为 null。</param>
+        /// <param name="storyCompletion">剧情完成事务协调器；为 null 时剧情完成事实提交被跳过。</param>
+        /// <param name="content">当前地图、关卡与剧情目录；为空时使用测试目录。</param>
+        /// <param name="eventBus">剧情保存成功后发布完成事件；为空时不发布。</param>
+        public GameRuntimeServices(
+            IGameFlowService flow,
+            ISettingsService settings,
+            ILocalizationService localization,
+            IAudioService audio,
+            IProfileLifecycleService profileLifecycle,
+            IProgressQuery progressQuery,
             IClock clock,
             Func<ProfileSave, SaveReason, CancellationToken, Task<SaveResult>> saveProfileAsync,
-            IContentService content = null)
+            ICharacterAppearanceQuery characters = null,
+            IStoryCompletionCoordinator storyCompletion = null,
+            IContentService content = null,
+            IDomainEventBus eventBus = null
+        )
         {
             Content = content ?? new OfficialContentService(OfficialTestMapCatalog.CreateProvider());
             Flow = flow ?? throw new ArgumentNullException(nameof(flow));
@@ -175,8 +216,39 @@ namespace Game.Presentation
                 throw new ArgumentNullException(nameof(profileLifecycle));
             _initialProgressQuery = progressQuery ?? throw new ArgumentNullException(nameof(progressQuery));
             Clock = clock ?? throw new ArgumentNullException(nameof(clock));
-            _saveProfileAsync = saveProfileAsync ??
-                throw new ArgumentNullException(nameof(saveProfileAsync));
+            _saveProfileAsync = saveProfileAsync ?? throw new ArgumentNullException(nameof(saveProfileAsync));
+            Characters = characters ?? new DefaultCharacterAssetRegistry(null);
+            CharacterAssets = Characters as ICharacterAssetRegistry;
+            StoryCompletion = storyCompletion;
+            _eventBus = eventBus;
+        }
+
+        /// <summary>兼容旧剧情表现器的保存入口，复用串行写档与完成事件发布。</summary>
+        /// <param name="storyId">已完成的剧情稳定标识。</param>
+        /// <param name="cancellationToken">取消等待或写入的令牌。</param>
+        /// <returns>保存结果；失败时不发布完成事实。</returns>
+        public Task<SaveResult> SaveStoryCompletedAsync(StoryId storyId, CancellationToken cancellationToken)
+            => CompleteStoryAsync(storyId, cancellationToken);
+
+        /// <summary>把官方资源解析器注入演出资源源。</summary>
+        /// <param name="assetResolver">官方资源解析器；可为 null。</param>
+        public void SetAssetResolver(IAssetResolver assetResolver)
+        {
+            Assets = assetResolver;
+        }
+
+        /// <summary>设置剧情面板预制体资源；为 null 时回退代码生成。</summary>
+        /// <param name="prefab">剧情面板预制体。</param>
+        public void SetStoryPrefab(GameObject prefab)
+        {
+            StoryPrefab = prefab;
+        }
+
+        /// <summary>注入编辑器编译产出的 Generated 剧情集合。</summary>
+        /// <param name="stories">按 StoryId 索引的剧情定义。</param>
+        public void SetGeneratedStories(IReadOnlyDictionary<string, StoryDefinition> stories)
+        {
+            GeneratedStories = stories ?? new Dictionary<string, StoryDefinition>();
         }
 
         /// <summary>设置当前档案引用，供开始菜单和 MetaHub 读取。</summary>
@@ -190,8 +262,7 @@ namespace Game.Presentation
         /// <param name="page">最后打开的页面。</param>
         /// <param name="cancellationToken">取消令牌。</param>
         /// <returns>保存结果；尚未创建档案时返回成功且不写文件。</returns>
-        public async Task<SaveResult> SaveLastMetaPageAsync(MetaPageId page,
-            CancellationToken cancellationToken)
+        public async Task<SaveResult> SaveLastMetaPageAsync(MetaPageId page, CancellationToken cancellationToken)
         {
             await _profileWriteGate.WaitAsync(cancellationToken);
             try
@@ -219,7 +290,7 @@ namespace Game.Presentation
                 MetaPageId.Archive => "archive",
                 MetaPageId.Character => "character",
                 MetaPageId.Lounge => "lounge",
-                _ => "map"
+                _ => "map",
             };
         }
     }
@@ -255,9 +326,7 @@ namespace Game.Presentation
         public MetaPageId CurrentPage => _currentPage;
 
         /// <summary>创建默认位于地图页的路由器。</summary>
-        public MetaPageRouter()
-        {
-        }
+        public MetaPageRouter() { }
 
         /// <summary>切换页面并通知订阅者。</summary>
         /// <param name="page">目标页面。</param>
@@ -282,7 +351,7 @@ namespace Game.Presentation
                 "archive" => MetaPageId.Archive,
                 "character" => MetaPageId.Character,
                 "lounge" => MetaPageId.Map,
-                _ => MetaPageId.Map
+                _ => MetaPageId.Map,
             };
             Navigate(page);
             return _currentPage;

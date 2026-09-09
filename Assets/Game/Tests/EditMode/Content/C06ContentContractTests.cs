@@ -9,6 +9,39 @@ namespace Game.Tests.EditMode.Content
     /// <summary>Validates the deterministic C06 map and branching story fixtures.</summary>
     public sealed class C06ContentContractTests
     {
+        /// <summary>验证生成剧情参与引用校验，并兼容编辑器的关前关后字段。</summary>
+        [Test]
+        public void GeneratedStoriesAndEditorReferencesRemainConnected()
+        {
+            var source = UnityEditor.AssetDatabase.LoadAssetAtPath<OfficialContentCatalog>(
+                "Assets/Game/Content/OfficialContentCatalog.asset");
+            var copy = UnityEngine.Object.Instantiate(source);
+            try
+            {
+                var story = UnityEngine.JsonUtility.FromJson<StoryDefinition>(
+                    UnityEngine.JsonUtility.ToJson(copy.Stories[0]));
+                story.StoryId = "official.story.generated.merge_test";
+                story.Header.ContentId = story.StoryId;
+                var level = copy.Levels[0];
+                level.PreludeStoryId = null;
+                level.PostludeStoryId = null;
+                level.PreStoryId = story.StoryId;
+                level.PostStoryId = story.StoryId;
+                var generated = new System.Collections.Generic.Dictionary<string, StoryDefinition>
+                { [story.StoryId] = story };
+                var content = copy.CreateValidatedService(generated);
+                Assert.That(content.GetStory(new Game.Foundation.StoryId(story.StoryId)), Is.SameAs(story));
+                Assert.That(level.Summary.PreludeStoryId, Is.EqualTo(story.StoryId));
+                Assert.That(level.Summary.PostludeStoryId, Is.EqualTo(story.StoryId));
+                var profile = new Game.Contracts.Persistence.ProfileSave();
+                profile.CompletedLevelIds.Add(level.LevelId);
+                var card = new Game.Meta.MetaMapQuery(content, new Game.Progression.ProfileProgressQuery(profile))
+                    .GetLevelCard(new Game.Foundation.LevelId(level.LevelId));
+                Assert.That(card.PostludeReplay.Value, Is.EqualTo(story.StoryId));
+            }
+            finally { UnityEngine.Object.DestroyImmediate(copy); }
+        }
+
         /// <summary>验证实际目录资产保留三十关映射、关后剧情和地图摘要，并支持资源修改生效。</summary>
         [Test]
         public void AuthoredCatalogBuildsAndUsesEditedReferences()

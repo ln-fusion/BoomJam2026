@@ -1,0 +1,19 @@
+{
+    "name": "Game.Editor.Level",
+    "rootNamespace": "Game.Editor.Level",
+    "references": [
+        "Game.Foundation",
+        "Game.Contracts"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

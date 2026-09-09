@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Game.Contracts;
+using Game.Contracts.Persistence;
+using Game.Contracts.Progression;
 using Game.Foundation;
 
 namespace Game.Flow
@@ -23,6 +25,9 @@ namespace Game.Flow
         private readonly IGameLogger _logger;
         private readonly IDomainEventBus _eventBus;
         private readonly string _startMenuSceneName;
+        private readonly IStoryCompletionCoordinator? _storyCompletion;
+        private readonly Func<ProfileSave?>? _getProfile;
+        private readonly Func<ProfileSave, SaveReason, CancellationToken, Task<SaveResult>>? _saveProfileAsync;
         private readonly Func<LevelId, StoryId?> _preludeStoryLookup;
         private readonly Func<StoryId, bool> _isStoryCompleted;
 
@@ -31,6 +36,9 @@ namespace Game.Flow
         private bool _disposed;
         private MetaPageId _lastMetaPage = MetaPageId.Map;
         private StoryReturnTarget? _storyReturnTarget;
+        private LevelId? _currentLevel;
+        private StoryId? _currentStoryId;
+        private const string TestStoryId = "official.story.c06_branch";
         private StoryId? _activeStoryId;
 
         /// <summary>当前场景生命周期的取消令牌（场景激活后有效，切换时被取消）.</summary>
@@ -39,6 +47,11 @@ namespace Game.Flow
         /// <summary>最近一次剧情返回目标（PlayStory 时记录，供返回路由使用）.</summary>
         public StoryReturnTarget? LastStoryReturnTarget => _storyReturnTarget;
 
+        /// <summary>最近一次进入的关卡稳定标识（关后流程返回地图前均有值）.</summary>
+        public LevelId? CurrentLevelId => _currentLevel;
+
+        /// <summary>最近一次播放的剧情稳定标识；为 null 时表示未播放剧情。</summary>
+        public StoryId? CurrentStoryId => _currentStoryId;
         /// <summary>当前剧情场景应播放的剧情；未进入过剧情流程时为空。</summary>
         public StoryId? ActiveStoryId => _activeStoryId;
 
@@ -53,6 +66,9 @@ namespace Game.Flow
         /// <param name="logger">日志；为 null 时静默</param>
         /// <param name="eventBus">事件总线</param>
         /// <param name="startMenuSceneName">开始菜单场景名，默认 <see cref="SceneNames.StartMenu"/></param>
+        /// <param name="storyCompletion">剧情完成事务协调器；为 null 时关后流程跳过提交。</param>
+        /// <param name="getProfile">获取当前玩家档案的委托；为 null 时关卡完成事实提交被跳过。</param>
+        /// <param name="saveProfileAsync">档案保存委托；与 <paramref name="getProfile"/> 同时提供时才生效。</param>
         /// <param name="preludeStoryLookup">按关卡查询关前剧情；为空时关卡没有关前剧情。</param>
         /// <param name="isStoryCompleted">查询剧情完成事实是否已经写入当前档案。</param>
         public GameFlowService(
@@ -61,6 +77,9 @@ namespace Game.Flow
             IGameLogger? logger,
             IDomainEventBus eventBus,
             string startMenuSceneName = SceneNames.StartMenu,
+            IStoryCompletionCoordinator? storyCompletion = null,
+            Func<ProfileSave?>? getProfile = null,
+            Func<ProfileSave, SaveReason, CancellationToken, Task<SaveResult>>? saveProfileAsync = null,
             Func<LevelId, StoryId?>? preludeStoryLookup = null,
             Func<StoryId, bool>? isStoryCompleted = null
         )
@@ -70,8 +89,11 @@ namespace Game.Flow
             _logger = logger ?? NullLogger.Instance;
             _eventBus = eventBus ?? throw new ArgumentNullException(nameof(eventBus));
             _startMenuSceneName = startMenuSceneName;
-            _preludeStoryLookup = preludeStoryLookup ?? (_ => null);
-            _isStoryCompleted = isStoryCompleted ?? (_ => false);
+            _storyCompletion = storyCompletion;
+            _getProfile = getProfile;
+            _saveProfileAsync = saveProfileAsync;
+            _preludeStoryLookup = preludeStoryLookup ?? (_ => storyCompletion == null ? null : new StoryId(TestStoryId));
+            _isStoryCompleted = isStoryCompleted ?? (id => storyCompletion?.IsCompleted(id) == true);
         }
 
         /// <summary>进入开始菜单场景.</summary>
@@ -98,6 +120,7 @@ namespace Game.Flow
         /// <param name="cancellationToken">取消导航操作的令牌。</param>
         public Task EnterLevelAsync(LevelId levelId, CancellationToken cancellationToken)
         {
+            _currentLevel = levelId;
             if (levelId != null)
             {
                 StoryId? prelude = _preludeStoryLookup(levelId);
@@ -108,6 +131,80 @@ namespace Game.Flow
             return NavigateAsync(SceneNames.Gameplay, cancellationToken);
         }
 
+        /// <summary>
+        /// 占位关卡完成后提交剧情完成事实并播放关后剧情，结束后返回地图。
+        /// </summary>
+        /// <param name="levelId">已完成的关卡稳定标识。</param>
+        /// <param name="cancellationToken">取消导航操作的令牌。</param>
+        public async Task CompleteLevelAsync(LevelId levelId, CancellationToken cancellationToken)
+        {
+            if (_storyCompletion != null)
+            {
+                var storyId = new StoryId(TestStoryId);
+                SaveResult result = await _storyCompletion.CommitCompletedAsync(storyId, cancellationToken);
+                if (!result.IsSuccess)
+                {
+                    _logger.LogError(
+                        LogContext.Empty,
+                        "[GameFlowService] 关后流程被阻断: 完成事实提交失败 " + result.Message
+                    );
+                    return;
+                }
+            }
+            if (levelId != null && _getProfile != null && _saveProfileAsync != null)
+            {
+                SaveResult levelFact = await CommitLevelFactAsync(levelId, cancellationToken);
+                if (!levelFact.IsSuccess)
+                {
+                    _logger.LogError(
+                        LogContext.Empty,
+                        "[GameFlowService] 关后流程被阻断: 关卡完成事实提交失败 " + levelFact.Message
+                    );
+                    return;
+                }
+            }
+
+            // C16 占位：关后剧情复用测试剧情；正式 PostStoryId 在关卡数据契约阶段接入。
+            await PlayStoryAsync(
+                new StoryId(TestStoryId),
+                StoryReturnTarget.ToMetaPage(MetaPageId.Map),
+                cancellationToken
+            );
+        }
+
+        /// <summary>
+        /// 提交关卡完成事实：写入 CompletedLevelIds 并以 ProgressCommitted 原因保存。
+        /// 写档失败时回滚内存追加，确保重试时仍会再次尝试。
+        /// </summary>
+        /// <param name="levelId">已完成的关卡稳定标识。</param>
+        /// <param name="cancellationToken">取消令牌。</param>
+        /// <returns>保存结果；失败时调用方不得继续跳转流程。</returns>
+        private async Task<SaveResult> CommitLevelFactAsync(LevelId levelId, CancellationToken cancellationToken)
+        {
+            ProfileSave? profile = _getProfile?.Invoke();
+            if (profile == null)
+                return SaveResult.Failure(
+                    ErrorCode.SaveFailed,
+                    "No active profile; level completion cannot be committed."
+                );
+            if (levelId == null || string.IsNullOrWhiteSpace(levelId.Value))
+            {
+                return SaveResult.Failure(ErrorCode.InvalidArgument, "Level ID is required for completion.");
+            }
+
+            bool added = !profile.CompletedLevelIds.Contains(levelId.Value);
+            if (added)
+                profile.CompletedLevelIds.Add(levelId.Value);
+            SaveResult result = await _saveProfileAsync!(profile, SaveReason.ProgressCommitted, cancellationToken);
+            if (!result.IsSuccess)
+            {
+                if (added)
+                    profile.CompletedLevelIds.Remove(levelId.Value);
+                _logger.LogError(LogContext.Empty, "[GameFlowService] 关卡完成事实写入失败: " + levelId.Value);
+            }
+            return result;
+        }
+
         /// <summary>播放剧情并记录返回目标.</summary>
         /// <param name="storyId">目标剧情稳定标识；C02 占位实现尚未按剧情分流。</param>
         /// <param name="returnTarget">剧情播放结束后使用的返回目标。</param>
@@ -116,6 +213,7 @@ namespace Game.Flow
         {
             _activeStoryId = storyId ?? throw new ArgumentNullException(nameof(storyId));
             _storyReturnTarget = returnTarget;
+            _currentStoryId = storyId;
             return NavigateAsync(SceneNames.Story, cancellationToken);
         }
 

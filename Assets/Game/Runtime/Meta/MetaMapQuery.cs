@@ -84,10 +84,10 @@ namespace Game.Meta
             foreach (LevelNodeViewModel candidate in GetLevels(new MapId(definition.MapId)))
                 if (candidate.LevelId == levelId) { node = candidate; break; }
             if (node == null) return null;
-            StoryId prelude = string.IsNullOrWhiteSpace(definition.PreludeStoryId)
-                ? null : new StoryId(definition.PreludeStoryId);
-            StoryId postlude = string.IsNullOrWhiteSpace(definition.PostludeStoryId)
-                ? null : new StoryId(definition.PostludeStoryId);
+            StoryId prelude = string.IsNullOrWhiteSpace(definition.ResolvedPreludeStoryId)
+                ? null : new StoryId(definition.ResolvedPreludeStoryId);
+            StoryId postlude = string.IsNullOrWhiteSpace(definition.ResolvedPostludeStoryId)
+                ? null : new StoryId(definition.ResolvedPostludeStoryId);
             return new LevelCardViewModel(node, _progress.GetBestScore(levelId),
                 prelude != null && _progress.IsStoryReplayUnlocked(prelude) ? prelude : null,
                 node.State == LevelNodeState.Completed ? postlude : null);

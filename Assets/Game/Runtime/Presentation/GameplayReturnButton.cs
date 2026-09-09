@@ -118,7 +118,7 @@ namespace Game.Presentation
                 var content = _runtimeServices.Content;
                 bool firstCompletion = !_runtimeServices.CurrentProfile.CompletedLevelIds.Contains(
                     _runtimeServices.WhiteboxLevel.Value);
-                string postludeId = content.GetLevel(_runtimeServices.WhiteboxLevel)?.PostludeStoryId;
+                string postludeId = content.GetLevel(_runtimeServices.WhiteboxLevel)?.ResolvedPostludeStoryId;
                 StoryId postlude = string.IsNullOrWhiteSpace(postludeId) ? null : new StoryId(postludeId);
                 if (postlude != null && content.GetStory(postlude) == null)
                     throw new InvalidOperationException("找不到关后剧情：" + postludeId);

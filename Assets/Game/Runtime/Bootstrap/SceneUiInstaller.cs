@@ -1,5 +1,5 @@
-using Game.Flow;
 using Game.Content;
+using Game.Flow;
 using Game.Foundation;
 using Game.Presentation;
 using UnityEngine;
@@ -17,11 +17,14 @@ namespace Game.Bootstrap
         /// <param name="runtimeServices">Bootstrap 创建的运行时服务容器。</param>
         /// <param name="globalCanvasLayer">跨场景全局 UI 层。</param>
         /// <param name="contentRegistry">可选官方 UI 预制体 Registry。</param>
-        public static void Install(Scene scene, GameRuntimeServices runtimeServices,
-            GlobalCanvasLayer globalCanvasLayer, ContentAssetRegistry contentRegistry = null)
+        public static void Install(
+            Scene scene,
+            GameRuntimeServices runtimeServices,
+            GlobalCanvasLayer globalCanvasLayer,
+            ContentAssetRegistry contentRegistry = null
+        )
         {
-            if (!scene.IsValid() || !scene.isLoaded || runtimeServices == null ||
-                globalCanvasLayer == null)
+            if (!scene.IsValid() || !scene.isLoaded || runtimeServices == null || globalCanvasLayer == null)
                 return;
 
             if (scene.name == SceneNames.StartMenu)
@@ -53,8 +56,12 @@ namespace Game.Bootstrap
         /// <param name="runtimeServices">运行时服务容器。</param>
         /// <param name="globalCanvasLayer">全局 UI 层。</param>
         /// <param name="contentRegistry">可选官方 UI 预制体 Registry。</param>
-        private static void InstallStartMenu(Scene scene, GameRuntimeServices runtimeServices,
-            GlobalCanvasLayer globalCanvasLayer, ContentAssetRegistry contentRegistry)
+        private static void InstallStartMenu(
+            Scene scene,
+            GameRuntimeServices runtimeServices,
+            GlobalCanvasLayer globalCanvasLayer,
+            ContentAssetRegistry contentRegistry
+        )
         {
             StartMenuUiBindings bindings = FindInScene<StartMenuUiBindings>(scene);
             GameObject root;
@@ -79,8 +86,12 @@ namespace Game.Bootstrap
         /// <param name="runtimeServices">运行时服务容器。</param>
         /// <param name="globalCanvasLayer">全局 UI 层。</param>
         /// <param name="contentRegistry">可选官方 UI 预制体 Registry。</param>
-        private static void InstallMetaHub(Scene scene, GameRuntimeServices runtimeServices,
-            GlobalCanvasLayer globalCanvasLayer, ContentAssetRegistry contentRegistry)
+        private static void InstallMetaHub(
+            Scene scene,
+            GameRuntimeServices runtimeServices,
+            GlobalCanvasLayer globalCanvasLayer,
+            ContentAssetRegistry contentRegistry
+        )
         {
             MetaHubUiBindings bindings = FindInScene<MetaHubUiBindings>(scene);
             MetaHubShell existingShell = FindInScene<MetaHubShell>(scene);
@@ -122,8 +133,7 @@ namespace Game.Bootstrap
         /// <param name="id">UI 预制体稳定 ID。</param>
         /// <param name="fallbackName">回退根节点名称。</param>
         /// <returns>可移动到功能场景的实例根节点。</returns>
-        private static GameObject InstantiateUiPrefab(ContentAssetRegistry registry, string id,
-            string fallbackName)
+        private static GameObject InstantiateUiPrefab(ContentAssetRegistry registry, string id, string fallbackName)
         {
             if (registry != null)
             {
@@ -139,7 +149,8 @@ namespace Game.Bootstrap
         /// <typeparam name="T">组件类型。</typeparam>
         /// <param name="scene">目标场景。</param>
         /// <returns>找到的组件；不存在时为 null。</returns>
-        private static T FindInScene<T>(Scene scene) where T : Component
+        private static T FindInScene<T>(Scene scene)
+            where T : Component
         {
             foreach (GameObject root in scene.GetRootGameObjects())
             {
@@ -157,9 +168,14 @@ namespace Game.Bootstrap
     {
         /// <summary>开始菜单预制体。</summary>
         public const string StartMenu = "ui.start-menu";
+
         /// <summary>MetaHub 预制体。</summary>
         public const string MetaHub = "ui.meta-hub";
+
         /// <summary>设置弹窗预制体。</summary>
         public const string SettingsModal = "ui.settings-modal";
+
+        /// <summary>剧情对白面板预制体。</summary>
+        public const string StoryPanel = "ui.story-panel";
     }
 }

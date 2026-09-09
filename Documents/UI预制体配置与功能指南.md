@@ -91,7 +91,7 @@
 验收：第一关模拟成功并提交后进入 Story，完成或跳过后回到 Map；重启并再次通关第一关应直接返回 Map；第二关及后续关卡首次通关也进入 Story，重复通关直接返回 Map。这些新增行为尚待本轮 Unity 人工验收。
 ### LevelCard 剧情复播入口
 
-`MetaHubUI.prefab` 的 `LevelCard` 新增 `PreludeReplay`（关前剧情复播）和 `PostludeReplay`（关后剧情复播）。两个按钮由 `MetaHubShell` 自动绑定，无需配置 Inspector OnClick。布局、字体和文字可直接修改预制体节点；资料区域下沿已上移，为复播按钮留出空间。
+`MetaHubUI.prefab` 的 `LevelCard` 新增 `PreludeReplay`（关前剧情复播）和 `PostludeReplay`（关后剧情复播）。两个按钮由 `MetaHubShell` 自动绑定，无需配置 Inspector OnClick。布局和字体可直接修改预制体节点，按钮文字通过本地化表维护；资料区域下沿已上移，为复播按钮留出空间。
 
 复播权限由 `MetaMapQuery` 合并内容与存档后提供：关前剧情完成或跳过并保存后解锁关前复播；通关保存成功后解锁关后复播，无需先完成关后剧情。未配置或未解锁的入口隐藏，导航期间禁用。两种复播结束均回到 Map，不再次进入 Gameplay，不提交通关进度。
 
@@ -100,10 +100,17 @@
 
 1. 在 Project 选择 `Assets/Game/Content/OfficialContentCatalog.asset`。
 2. 展开 **Levels**，第一项是 `official.level.test_01_01`。修改 **Prelude Story Id** 或 **Postlude Story Id** 可分别替换关前、关后剧情；留空表示没有该剧情。
-3. 剧情 ID 必须对应本资源 **Stories** 中登记的 Story Id。当前保留原有三十二段白盒剧情记录，内容仍是测试分支对白；正式剧情编辑器生成文件的自动导入不在本次改动范围。
+3. 剧情 ID 必须对应本资源 **Stories** 或 `Assets/Game/Resources/StoryRuntime` 中的生成剧情。目录包含六十一段白盒剧情；启动和 Validate Catalog 时先合并生成剧情，同 ID 的生成剧情优先，再校验引用。剧情编辑器 Compile 产物可通过此入口播放。
 4. **Unlock Requirement / Mode** 为 None、All 或 Any；**Required Level Ids** 填前置关卡 ID。使用 All 表示全部完成，Any 表示任一完成。
 5. **Map Id** 决定所属地图，**Sort Order** 决定顺序。Maps 列表配置地图 ID、名称 Key 和顺序；其 Levels 不需要手动维护，运行时从顶层 Levels 重建摘要。当前地图 UI 仍有五个节点，超过五关时需增加预制体节点。
 6. 通过资源 Inspector 上下文菜单执行 **Validate Catalog**。重复 ID、未知地图/剧情/前置关卡、非法剧情和前置环会被拒绝；Bootstrap 启动也执行相同校验，错误时停止启动并在 Console 提示。
 7. 停止运行后修改资源，再从 `00_Bootstrap` 启动验证。运行时不提供热更新。Bootstrap 的 **Content Catalog** 已绑定此资源。
 
 迁移保留原有关卡与剧情稳定 ID，继续使用已有存档事实。已有存档使用的 ID 不宜随意重命名；修改对白但保留剧情 ID 会保留观看记录。地图状态、资料卡格式和关卡名称均由 `Assets/Localization/UI.csv` 维护。
+
+### 合并后的剧情与 Gameplay 接入
+
+- 保留主分支剧情面板的本地化、立绘、背景、音频和演出节点；剧情 Text Key 通过本地化服务解析。
+- 关卡目录的 PreludeStoryId/PostludeStoryId 优先；为空时兼容 C19 运行数据的 PreStoryId/PostStoryId。两套字段都为空才表示没有剧情。
+- 当前 Gameplay 使用已有 GameplayReturnButton 成功/失败面板，不再同时安装旧 GameplayPlaceholderController。
+- 剧情完成沿用串行写档，保存成功后发布 StoryCompletedCommittedEvent；失败不授予完成事实。
