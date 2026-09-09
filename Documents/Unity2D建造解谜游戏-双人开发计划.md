@@ -566,9 +566,9 @@ ICharacterAppearanceQuery
 
 **负责人：程序 B。** 安排在 C18 白盒流程联调完成后、C19 开始前收尾；不阻塞本轮白盒联调，在正式制作地图内容前完成。
 
-- [ ] **地图与关卡目录配置化。** 当前地图页使用 `OfficialTestMapCatalog.CreateProvider()` 在 C# 中生成测试地图、关卡顺序和前置条件。复用现有内容契约与加载入口，改由可编辑资源提供地图目录和关卡元数据；测试目录保留供测试使用。此项不包含 Gameplay 关卡布局编辑器，不改变存档格式。
+- [x] **地图与关卡目录配置化。** 当前运行时通过 `OfficialContentCatalog.asset` 提供地图目录、关卡顺序、剧情引用和前置条件；`OfficialTestMapCatalog` 仅保留供自动化测试使用。此项不包含 Gameplay 关卡布局编辑器，不改变存档格式。
   - 验收：新增或修改地图、关卡稳定 ID、显示名称 Key、顺序及 All/Any 前置条件无需修改 C#；配置可加载，重复 ID、未知前置引用及循环依赖能被校验拦截，地图状态按配置正确计算。
-- [ ] **地图与资料卡文案本地化。** 将 `MetaHubShell.MapStateText`、`RenderLevelCard` 及相关地图提示中的硬编码文案移入现有本地化表，资料卡使用带参数的文本格式；关卡名称继续通过 `DisplayNameKey` 查询，布局由预制体维护。
+- [x] **地图与资料卡文案本地化。** `MetaHubShell.MapStateText`、`RenderLevelCard`、剧情复播按钮及相关地图提示已移入现有本地化表，资料卡使用带参数的文本格式；关卡名称继续通过 `DisplayNameKey` 查询，布局由预制体维护。
   - 验收：修改状态、提示及成绩显示格式无需修改 C#；切换语言后节点和已选资料卡正确刷新，缺失翻译时显示稳定 Key，保留当前选择和按钮可用状态。
 
 ---

@@ -22,6 +22,12 @@ namespace Game.Tests.EditMode.Content
                 var content = copy.CreateValidatedService();
                 Assert.That(content.GetMaps(), Has.Count.EqualTo(6));
                 Assert.That(copy.Levels, Has.Count.EqualTo(30));
+                Assert.That(copy.Levels.Select(level => level.PostludeStoryId).Distinct(), Has.Count.EqualTo(30));
+                foreach (var level in copy.Levels)
+                {
+                    Assert.That(level.PostludeStoryId, Is.Not.Null.And.Not.Empty);
+                    Assert.That(content.GetStory(new Game.Foundation.StoryId(level.PostludeStoryId)), Is.Not.Null);
+                }
                 var first = copy.Levels[0];
                 first.PostludeStoryId = first.PreludeStoryId;
                 first.SortOrder = 99;
@@ -62,7 +68,7 @@ namespace Game.Tests.EditMode.Content
             finally { UnityEngine.Object.DestroyImmediate(copy); }
         }
 
-        /// <summary>验证第一关的关后剧情可播放、摘要保留引用，且不会与关前剧情共享完成标识。</summary>
+        /// <summary>验证所有关卡的关后剧情可播放、摘要保留引用，且不会与关前剧情共享完成标识。</summary>
         [Test]
         public void FirstLevel_PostludeIsValidAndDistinctFromPrelude()
         {
@@ -74,8 +80,16 @@ namespace Game.Tests.EditMode.Content
             Assert.That(provider.TryGetStory(new Game.Foundation.StoryId(first.PostludeStoryId),
                 out StoryDefinition story), Is.True);
             Assert.That(StoryDefinitionValidator.TryValidate(story, out string error), Is.True, error);
-            Assert.That(provider.Levels.Where(level => level != first)
-                .All(level => string.IsNullOrEmpty(level.PostludeStoryId)), Is.True);
+            Assert.That(provider.Levels.Select(level => level.PostludeStoryId).Distinct(), Has.Count.EqualTo(30));
+            foreach (var level in provider.Levels)
+            {
+                Assert.That(level.PostludeStoryId, Is.Not.Null.And.Not.Empty);
+                Assert.That(level.PostludeStoryId, Is.Not.EqualTo(level.PreludeStoryId));
+                Assert.That(level.Summary.PostludeStoryId, Is.EqualTo(level.PostludeStoryId));
+                Assert.That(provider.TryGetStory(new Game.Foundation.StoryId(level.PostludeStoryId),
+                    out var postlude), Is.True);
+                Assert.That(StoryDefinitionValidator.TryValidate(postlude, out error), Is.True, error);
+            }
         }
 
         /// <summary>Ensures six maps and thirty ordered levels pass stable ID validation.</summary>

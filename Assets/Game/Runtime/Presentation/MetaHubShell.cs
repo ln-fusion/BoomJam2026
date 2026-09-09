@@ -156,6 +156,7 @@ namespace Game.Presentation
             }
             if (_mapButtons.Count == 0 || _levelDetails == null || _levelStart == null)
                 Debug.LogWarning("地图白盒缺少 MapNode_N 或 LevelCard/Details、Start，请检查预制体层级。", this);
+            RefreshTexts();
             RefreshMapView();
         }
 
@@ -177,7 +178,7 @@ namespace Game.Presentation
                 if (label != null)
                     label.text = available
                         ? Text(_mapNodes[index].DisplayNameKey) + "\n" + MapStateText(_mapNodes[index].State)
-                        : "未配置关卡";
+                        : Text(UiTextKeys.MapLevelUnconfigured);
             }
             RenderLevelCard();
         }
@@ -214,13 +215,13 @@ namespace Game.Presentation
                 return;
             if (card == null)
             {
-                _levelDetails.text = "请选择关卡";
+                _levelDetails.text = Text(UiTextKeys.LevelSelectPrompt);
                 return;
             }
-            string score = card.BestScore == null ? "暂无成绩"
-                : card.BestScore.ElapsedTicks + " ticks";
-            _levelDetails.text = Text(card.Node.DisplayNameKey) + "\n状态：" +
-                MapStateText(card.Node.State) + "\n最佳成绩：" + score;
+            string score = card.BestScore == null ? Text(UiTextKeys.LevelNoScore)
+                : Text(UiTextKeys.LevelScoreTicks, card.BestScore.ElapsedTicks);
+            _levelDetails.text = Text(UiTextKeys.LevelCardFormat,
+                Text(card.Node.DisplayNameKey), MapStateText(card.Node.State), score);
         }
 
         /// <summary>根据查询得到的复播权限切换按钮显隐与导航期间的交互。</summary>
@@ -316,17 +317,17 @@ namespace Game.Presentation
             }
         }
 
-        /// <summary>取得当前白盒使用的中文节点状态名称。</summary>
+        /// <summary>按当前 Locale 取得节点状态名称。</summary>
         /// <param name="state">查询计算出的节点状态。</param>
         /// <returns>用于节点与资料卡的状态文字。</returns>
-        private static string MapStateText(LevelNodeState state)
+        private string MapStateText(LevelNodeState state)
         {
             return state switch
             {
-                LevelNodeState.Locked => "未解锁",
-                LevelNodeState.Current => "当前关卡",
-                LevelNodeState.Completed => "已完成",
-                _ => "已解锁"
+                LevelNodeState.Locked => Text(UiTextKeys.MapStateLocked),
+                LevelNodeState.Current => Text(UiTextKeys.MapStateCurrent),
+                LevelNodeState.Completed => Text(UiTextKeys.MapStateCompleted),
+                _ => Text(UiTextKeys.MapStateUnlocked)
             };
         }
 
@@ -635,6 +636,9 @@ namespace Game.Presentation
             SetButtonText("Character", Text(UiTextKeys.MetaCharacter));
             SetButtonText("Lounge", Text(UiTextKeys.MetaLounge));
             SetButtonText("Settings", Text(UiTextKeys.Settings));
+            SetButtonText(_levelStart, Text(UiTextKeys.LevelStart));
+            SetButtonText(_preludeReplay, Text(UiTextKeys.PreludeReplay));
+            SetButtonText(_postludeReplay, Text(UiTextKeys.PostludeReplay));
             SetPagePlaceholder(_mapPage, Text(UiTextKeys.PageMap));
             SetPagePlaceholder(_archivePage, Text(UiTextKeys.PageArchive));
             SetPagePlaceholder(_characterPage, Text(UiTextKeys.PageCharacter));
@@ -659,12 +663,13 @@ namespace Game.Presentation
 
         /// <summary>读取当前本地化文本。</summary>
         /// <param name="key">稳定键字符串。</param>
-        /// <returns>本地化文本。</returns>
-        private string Text(string key)
+        /// <param name="arguments">可选格式化参数。</param>
+        /// <returns>本地化并完成参数替换的文本。</returns>
+        private string Text(string key, params object[] arguments)
         {
             return _localizationService == null
                 ? key
-                : _localizationService.Get(new Game.Foundation.LocalizationKey(key));
+                : _localizationService.Get(new Game.Foundation.LocalizationKey(key), arguments);
         }
 
         /// <summary>设置指定按钮文本。</summary>
@@ -674,6 +679,16 @@ namespace Game.Presentation
         {
             Transform button = _canvas == null ? null : _canvas.transform.Find("FooterView/" + buttonName);
             Text label = button == null ? null : button.GetComponentInChildren<Text>();
+            if (label != null)
+                label.text = text;
+        }
+
+        /// <summary>设置已绑定按钮及其隐藏子节点中的文本。</summary>
+        /// <param name="button">目标按钮；为空时忽略。</param>
+        /// <param name="text">本地化文本。</param>
+        private static void SetButtonText(Button button, string text)
+        {
+            Text label = button == null ? null : button.GetComponentInChildren<Text>(true);
             if (label != null)
                 label.text = text;
         }

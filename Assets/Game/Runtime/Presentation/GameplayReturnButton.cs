@@ -103,7 +103,7 @@ namespace Game.Presentation
                 _globalCanvas?.OpenSettings();
         }
 
-        /// <summary>校验关后剧情并保存通关，再播放未完成的关后剧情或返回地图；保存失败时留在结果面板。</summary>
+        /// <summary>首次通关保存成功后播放已配置关后剧情，重复通关直接返回地图；保存失败时留在结果面板。</summary>
         /// <returns>返回请求结束时完成的任务；加载结果由流程服务记录。</returns>
         private async Task CompleteAndReturnToMapAsync()
         {
@@ -116,6 +116,8 @@ namespace Game.Presentation
             try
             {
                 var content = _runtimeServices.Content;
+                bool firstCompletion = !_runtimeServices.CurrentProfile.CompletedLevelIds.Contains(
+                    _runtimeServices.WhiteboxLevel.Value);
                 string postludeId = content.GetLevel(_runtimeServices.WhiteboxLevel)?.PostludeStoryId;
                 StoryId postlude = string.IsNullOrWhiteSpace(postludeId) ? null : new StoryId(postludeId);
                 if (postlude != null && content.GetStory(postlude) == null)
@@ -128,8 +130,7 @@ namespace Game.Presentation
                         _globalCanvas.ShowFeedback(saved.Message);
                     return;
                 }
-                if (postlude != null &&
-                    !_runtimeServices.CurrentProfile.CompletedStoryIds.Contains(postlude.Value))
+                if (postlude != null && firstCompletion)
                     await _flow.PlayStoryAsync(postlude,
                         StoryReturnTarget.ToMetaPage(MetaPageId.Map), CancellationToken.None);
                 else

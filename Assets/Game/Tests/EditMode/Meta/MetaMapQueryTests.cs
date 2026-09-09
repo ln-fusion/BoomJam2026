@@ -12,6 +12,24 @@ namespace Game.Tests.EditMode.Meta
     /// <summary>验证 C09 地图查询合并内容和进度后的节点状态。</summary>
     public sealed class MetaMapQueryTests
     {
+        /// <summary>验证全部三十关逐个通关时才解锁对应关后复播，未通关时保持隐藏。</summary>
+        [Test]
+        public void AllLevelsUnlockTheirOwnPostludeAfterCompletion()
+        {
+            var provider = OfficialTestMapCatalog.CreateProvider();
+            var content = new OfficialContentService(provider);
+            var profile = new ProfileSave();
+            foreach (var level in provider.Levels)
+            {
+                var id = new LevelId(level.LevelId);
+                var before = new MetaMapQuery(content, new ProfileProgressQuery(profile)).GetLevelCard(id);
+                Assert.That(before.PostludeReplay, Is.Null, level.LevelId);
+                profile.CompletedLevelIds.Add(level.LevelId);
+                var after = new MetaMapQuery(content, new ProfileProgressQuery(profile)).GetLevelCard(id);
+                Assert.That(after.PostludeReplay?.Value, Is.EqualTo(level.PostludeStoryId), level.LevelId);
+            }
+        }
+
         /// <summary>验证关前复播依据剧情完成、关后复播和下一关依据通关，且无需完成关后剧情。</summary>
         [Test]
         public void ReplayPermissionsUseSeparateCompletionFacts()

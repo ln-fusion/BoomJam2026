@@ -6,7 +6,7 @@ namespace Game.Content
     /// <summary>Builds deterministic C06 content used by EditMode acceptance tests.</summary>
     public static class OfficialTestMapCatalog
     {
-        /// <summary>创建六张测试地图、每图五个关卡、各关关前剧情和第一关的测试关后剧情。</summary>
+        /// <summary>创建六张测试地图、每图五个关卡和各关独立的关前、关后测试剧情。</summary>
         /// <returns>包含 30 个稳定测试关卡、关前关后剧情和旧 C06 测试剧情的内容提供者。</returns>
         public static OfficialContentProvider CreateProvider()
         {
@@ -35,8 +35,8 @@ namespace Game.Content
                         Header = Header(levelId), LevelId = levelId, MapId = mapId,
                         DisplayNameKey = "level.test_" + mapIndex.ToString("00") + "_" + levelIndex.ToString("00"),
                         SortOrder = levelIndex, PreludeStoryId = preludeStoryId,
-                        PostludeStoryId = mapIndex == 1 && levelIndex == 1
-                            ? "official.story.postlude.test_01_01" : null
+                        PostludeStoryId = "official.story.postlude.test_" +
+                            mapIndex.ToString("00") + "_" + levelIndex.ToString("00")
                     };
                     if (levelIndex > 1)
                     {
