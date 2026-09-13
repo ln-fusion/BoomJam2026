@@ -189,6 +189,10 @@ namespace Game.Content
             return false;
         }
 
+        /// <summary>按稳定标识查找角色定义。</summary>
+        /// <param name="characters">可用角色集合。</param>
+        /// <param name="characterId">角色稳定标识。</param>
+        /// <returns>匹配的角色；未找到时为空。</returns>
         private static CharacterDefinition FindCharacter(
             IReadOnlyCollection<CharacterDefinition> characters,
             string characterId
@@ -200,6 +204,10 @@ namespace Game.Content
             return null;
         }
 
+        /// <summary>检查角色是否声明指定形象。</summary>
+        /// <param name="character">角色定义。</param>
+        /// <param name="appearanceId">形象稳定标识。</param>
+        /// <returns>存在相同标识时返回 true。</returns>
         private static bool HasAppearance(CharacterDefinition character, string appearanceId)
         {
             if (character.AppearanceIds == null)

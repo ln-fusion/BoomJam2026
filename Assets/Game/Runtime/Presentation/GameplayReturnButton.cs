@@ -115,26 +115,7 @@ namespace Game.Presentation
                 settingsButton.interactable = false;
             try
             {
-                var content = _runtimeServices.Content;
-                bool firstCompletion = !_runtimeServices.CurrentProfile.CompletedLevelIds.Contains(
-                    _runtimeServices.WhiteboxLevel.Value);
-                string postludeId = content.GetLevel(_runtimeServices.WhiteboxLevel)?.PostludeStoryId;
-                StoryId postlude = string.IsNullOrWhiteSpace(postludeId) ? null : new StoryId(postludeId);
-                if (postlude != null && content.GetStory(postlude) == null)
-                    throw new InvalidOperationException("找不到关后剧情：" + postludeId);
-                var saved = await _runtimeServices.CompleteWhiteboxLevelAsync(
-                    CancellationToken.None);
-                if (!saved.IsSuccess)
-                {
-                    if (_globalCanvas != null)
-                        _globalCanvas.ShowFeedback(saved.Message);
-                    return;
-                }
-                if (postlude != null && firstCompletion)
-                    await _flow.PlayStoryAsync(postlude,
-                        StoryReturnTarget.ToMetaPage(MetaPageId.Map), CancellationToken.None);
-                else
-                    await _flow.OpenMetaHubAsync(MetaPageId.Map, CancellationToken.None);
+                await _flow.CompleteLevelAsync(_runtimeServices.WhiteboxLevel, CancellationToken.None);
                 if (this == null)
                     _runtimeServices.EndWhiteboxLevel();
             }

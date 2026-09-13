@@ -420,8 +420,8 @@ public sealed class LevelDefinition
     public List<ConditionData> SuccessConditions;
     public List<ConditionData> FailureConditions;
     public UnlockRequirementData UnlockRequirement;
-    public string PreStoryId;
-    public string PostStoryId;
+    public string PreludeStoryId;
+    public string PostludeStoryId;
 }
 
 [Serializable]
@@ -1713,17 +1713,19 @@ LevelCard Start
 -> Gameplay Scene
 ```
 
-剧情完成：
+剧情完成（当前已实现）：
 
 ```text
-StoryRunner End
--> StoryCompletionCoordinator
--> Progression.ApplyStoryCompleted
--> UnlockEvaluator
--> SaveProfile atomically
--> StoryCompletedCommittedEvent
+StoryRunner 完成（到达 End 或跳过完成）
+-> StoryScenePresenter
+-> GameRuntimeServices.SaveStoryCompletedAsync
+-> CompleteStoryAsync：共用档案写入锁，检查 CompletedStoryIds 去重
+-> 保存包含完成记录的档案副本
+-> 保存成功后替换当前档案，并首次发布 StoryCompletedCommittedEvent
 -> GameFlow 按 StoryReturnTarget 返回
 ```
+
+保存失败时不更新当前档案、不发布完成事件，且调用方阻断返回跳转。剧情复播权限由 `ProfileProgressQuery` 与 `MetaMapQuery` 根据存档事实查询。原设计中的独立 `Progression.ApplyStoryCompleted` 和 `UnlockEvaluator` 提交链尚未接入此路径；当前统一使用运行时服务的保存入口。
 
 ---
 

@@ -39,6 +39,37 @@ namespace Game.Tests.PlayMode
             Assert.That(GameObject.Find("ModalCanvas"), Is.Not.Null);
             Assert.That(GameObject.FindObjectOfType<StartMenuView>(), Is.Not.Null);
             Assert.That(GameObject.FindObjectOfType<StartMenuPresenter>(), Is.Not.Null);
+            Assert.That(Object.FindObjectsOfType<StartMenuPresenter>(), Has.Length.EqualTo(1),
+                "sceneLoaded 和场景激活事件不能重复安装开始菜单。");
+        }
+
+        /// <summary>验证 Gameplay 复用原有白盒 UI，设置入口可暂停，缺少选关会话时禁用模拟提交。</summary>
+        [UnityTest]
+        public IEnumerator Gameplay_UsesExistingUiAndSettingsPause()
+        {
+            yield return SceneManager.LoadSceneAsync("00_Bootstrap", LoadSceneMode.Single);
+            yield return new WaitForSeconds(1.5f);
+            yield return SceneManager.LoadSceneAsync("04_Gameplay", LoadSceneMode.Additive);
+            yield return null;
+            var controllers = Object.FindObjectsOfType<GameplayReturnButton>();
+            Assert.That(controllers, Has.Length.EqualTo(1));
+            var type = typeof(GameplayReturnButton);
+            const System.Reflection.BindingFlags flags = System.Reflection.BindingFlags.Instance |
+                System.Reflection.BindingFlags.NonPublic;
+            var levelText = (Text)type.GetField("levelIdText", flags).GetValue(controllers[0]);
+            Assert.That(levelText.text, Does.Contain("未从地图选关"));
+            var success = (Button)type.GetField("simulateSuccessButton", flags).GetValue(controllers[0]);
+            Assert.That(success.interactable, Is.False);
+            var settings = (Button)type.GetField("settingsButton", flags).GetValue(controllers[0]);
+            float timeScale = Time.timeScale;
+            try
+            {
+                settings.onClick.Invoke();
+                Assert.That(Time.timeScale, Is.Zero);
+                Object.FindObjectOfType<GlobalCanvasLayer>().CloseSettings();
+                Assert.That(Time.timeScale, Is.EqualTo(timeScale));
+            }
+            finally { Time.timeScale = timeScale; }
         }
 
         /// <summary>全局反馈必须忽略鼠标射线，并在停留时间结束后自行隐藏。</summary>

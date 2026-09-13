@@ -44,6 +44,7 @@
 
 - 修改关卡 ID、数量、顺序、名称 Key 和前置条件：在 `OfficialContentCatalog.asset` 的 Levels 列表中编辑。默认首关无前置，后续关卡要求上一关完成；`UnlockRequirement.Mode` 的 `All` 表示全部前置完成，`Any` 表示任一前置完成，前置列表是 `RequiredLevelIds`。
 - 修改关卡名称：配置对应 `DisplayNameKey` 的本地化文本；缺少翻译时显示稳定 Key。节点状态、资料卡格式、成绩提示和剧情复播按钮均通过 `Assets/Localization/UI.csv` 配置，执行 **Boom Jam → Localization → Import UI CSV** 后更新运行时 String Table。
+- 资料卡内容与按钮状态统一由 `MetaHubShell.RenderLevelCard` 更新；修改显示字段或条件时维护该方法。`LevelCardPanel.BuildPreview` 仅负责缺少可用预制体时创建默认控件，旧的 `Show` 渲染方法已移除。正常界面的尺寸和布局在 `MetaHubUI` 预制体中调整。
 - 修改布局：在 `MetaHubUI.prefab` 中调整 Rect Transform、字体和颜色。保留节点连续命名 `MapNode_1`、`MapNode_2` 等，以及 `MapPageView/LevelCard/Details`、`Start`。新增节点需要同时增加内容记录和预制体按钮。
 - 节点状态包括“未解锁、当前关卡、已解锁、已完成”。未解锁节点和没有对应内容的多余节点隐藏；只有当前关卡、已解锁和已完成节点显示并允许选择，进入请求期间暂时禁用交互。隐藏通过停用按钮对象实现，保留节点原位置和排序映射；刷新后满足解锁条件的节点重新显示。若当前选择已失效或变为未解锁，则清空资料卡选择并禁用开始按钮。
 - 初始化、打开地图、点击节点和切换语言时，使用当前档案重新生成进度快照并计算状态。选中后显示名称、状态和最佳成绩；没有选中时显示“请选择关卡”。没有实现逐帧监听外部进度变更。
@@ -84,7 +85,7 @@
 
 在 `Assets/Game/Content/OfficialContentCatalog.asset` 的 Levels 关卡定义中设置 `PostludeStoryId`，方式与 `PreludeStoryId` 相同；为空表示没有关后剧情。三十关均已配置独立的 `official.story.postlude.test_XX_YY`，与关卡编号一一对应。测试剧情暂时复用现有分支对白内容，关前和关后的剧情 ID 不同，因此完成状态互不影响。
 
-配置 ID 时，需同时在内容提供者中登记对应的 `StoryDefinition`；当前在该资源的 Stories 列表登记。只填写一个未登记的 ID 会在提交前提示错误，并留在结果面板。引用已经迁移至可编辑目录，运行时不再从 C# 测试目录生成它们。
+配置 ID 时，需在本资源 Stories 列表登记对应的 `StoryDefinition`，或通过剧情编辑器导出到 `Assets/Game/Resources/StoryRuntime/`。Bootstrap 先合并导出剧情再校验关卡引用；导出文件与目录的剧情 ID 相同时使用导出版本。未知剧情 ID 会在启动校验时报告错误。
 
 成功面板提交后先保存通关进度，保存成功才调用 `PlayStoryAsync`，返回目标为 `StoryReturnTarget.ToMetaPage(MetaPageId.Map)`。剧情结束或跳过复用 `CompletedStoryIds` 写入当前档案，不新增存档文件或格式。自动播放依据本次提交前的 `CompletedLevelIds`：首次通关播放，重复通关直接回地图。播放中退出后，通关事实已保存，之后可在资料卡手动复播；再次通关不会自动播放。失败模拟不触发关后剧情。
 
@@ -99,11 +100,19 @@
 ### 官方目录配置操作
 
 1. 在 Project 选择 `Assets/Game/Content/OfficialContentCatalog.asset`。
-2. 展开 **Levels**，第一项是 `official.level.test_01_01`。修改 **Prelude Story Id** 或 **Postlude Story Id** 可分别替换关前、关后剧情；留空表示没有该剧情。
-3. 剧情 ID 必须对应本资源 **Stories** 中登记的 Story Id。当前保留原有三十二段白盒剧情记录，内容仍是测试分支对白；正式剧情编辑器生成文件的自动导入不在本次改动范围。
+2. 展开 **Levels**，第一项是 `official.level.test_01_01`。关前剧情只配置 **Prelude Story Id**，关后剧情只配置 **Postlude Story Id**；对应字段留空即表示没有该类剧情。旧的 **Pre Story Id**／**Post Story Id** 已合并到这两个字段，Unity 读取旧字段名时通过序列化兼容标记迁移，运行时不再有两组字段的优先级判断。
+3. 剧情 ID 必须对应本资源 **Stories** 或剧情编辑器导出的 Story Id。三十关的关前和关后剧情仍使用独立 ID；修改同 ID 的对白不清除已有观看记录。导出 JSON 在 Bootstrap 启动时并入同一内容服务，地图、复播、首次进关和首次通关共同读取此服务。
 4. **Unlock Requirement / Mode** 为 None、All 或 Any；**Required Level Ids** 填前置关卡 ID。使用 All 表示全部完成，Any 表示任一完成。
 5. **Map Id** 决定所属地图，**Sort Order** 决定顺序。Maps 列表配置地图 ID、名称 Key 和顺序；其 Levels 不需要手动维护，运行时从顶层 Levels 重建摘要。当前地图 UI 仍有五个节点，超过五关时需增加预制体节点。
 6. 通过资源 Inspector 上下文菜单执行 **Validate Catalog**。重复 ID、未知地图/剧情/前置关卡、非法剧情和前置环会被拒绝；Bootstrap 启动也执行相同校验，错误时停止启动并在 Console 提示。
 7. 停止运行后修改资源，再从 `00_Bootstrap` 启动验证。运行时不提供热更新。Bootstrap 的 **Content Catalog** 已绑定此资源。
 
 迁移保留原有关卡与剧情稳定 ID，继续使用已有存档事实。已有存档使用的 ID 不宜随意重命名；修改对白但保留剧情 ID 会保留观看记录。地图状态、资料卡格式和关卡名称均由 `Assets/Localization/UI.csv` 维护。
+
+### 合并后维护入口
+
+- Gameplay 只初始化场景已有的 `GameplayReturnButton`；旧的 `Complete Level` 整屏占位界面脚本已删除。模拟成功／失败、结果提交、当前关卡标识和设置入口继续由现有白盒界面负责。开始菜单也会复用已有绑定器或 Presenter，避免场景加载事件与激活事件重复生成 UI。
+- 成功面板调用 `IGameFlowService.CompleteLevelAsync`，由 Bootstrap 委托到 `GameRuntimeServices.CompleteLevelAndReturnAsync`。该入口统一检查会话、保存通关事实，并决定首次播放关后剧情或直接返回地图；流程服务不再另外写入测试剧情完成事实。
+- 剧情结束调用 `SaveStoryCompletedAsync`，与页面保存和白盒通关共用档案写入锁。保存副本成功后才替换当前档案，剧情首次提交成功发布一次 `StoryCompletedCommittedEvent`，重复复播不重复发布。继续使用已有 Profile 存档，不增加剧情专用存档文件。
+- 剧情完成保存统一维护在 `GameRuntimeServices.CompleteStoryAsync`；旧的独立协调器及接口已移除。对应测试在 `PresentationServicesTests`，覆盖成功与重复提交、保存失败后重试、缺少档案及重新加载后保留记录。
+- 修改剧情播放顺序与返回目标时检查上述统一入口；修改外观仍编辑场景与预制体，按钮的 Inspector OnClick 不需要重复绑定。

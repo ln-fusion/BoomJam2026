@@ -1,16 +1,15 @@
-using Game.Contracts.Meta;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace Game.Presentation
 {
-    /// <summary>C11 关卡资料卡白盒视图，展示状态、成绩和操作占位。</summary>
+    /// <summary>创建代码回退界面的资料卡控件，内容与交互由 <see cref="MetaHubShell"/> 绑定。</summary>
     public sealed class LevelCardPanel : MonoBehaviour
     {
         private Text _text;
         private Button _start;
 
-        /// <summary>创建资料卡控件。</summary>
+        /// <summary>创建默认资料卡布局和禁用的操作按钮；已创建时直接返回。</summary>
         public void BuildPreview()
         {
             if (_text != null) return;
@@ -50,21 +49,5 @@ namespace Game.Presentation
             button.interactable = false;
         }
 
-        /// <summary>显示关卡资料卡。</summary>
-        /// <param name="card">关卡卡片模型。</param>
-        public void Show(LevelCardViewModel card)
-        {
-            BuildPreview();
-            if (card == null)
-            {
-                _text.text = "Select a level";
-                _start.interactable = false;
-                return;
-            }
-            string score = card.BestScore == null ? "-" : card.BestScore.ElapsedTicks + " ticks";
-            _text.text = card.Node.DisplayNameKey + "\nState: " + card.Node.State +
-                "\nBest: " + score;
-            _start.interactable = card.Node.IsInteractable;
-        }
     }
 }

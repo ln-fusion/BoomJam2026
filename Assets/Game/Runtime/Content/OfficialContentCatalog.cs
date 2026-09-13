@@ -34,9 +34,11 @@ namespace Game.Content
         public ContentAssetRegistry AssetRegistry => assetRegistry;
 
         /// <summary>从可编辑目录创建并校验运行时副本；地图内关卡摘要由关卡的所属地图统一生成。</summary>
+        /// <param name="generatedStories">编辑器导出的剧情；相同 ID 覆盖目录对白，新增 ID 可被关卡引用。</param>
         /// <returns>通过 ID、前置依赖及剧情引用校验的内容服务。</returns>
         /// <exception cref="ArgumentException">目录存在重复 ID、未知引用、非法剧情或前置依赖环。</exception>
-        public OfficialContentService CreateValidatedService()
+        public OfficialContentService CreateValidatedService(
+            IReadOnlyDictionary<string, StoryDefinition> generatedStories = null)
         {
             var runtimeMaps = new List<MapDefinition>();
             foreach (var map in maps)
@@ -45,7 +47,21 @@ namespace Game.Content
                 runtimeMaps.Add(new MapDefinition { Header = map.Header, MapId = map.MapId,
                     DisplayNameKey = map.DisplayNameKey, SortOrder = map.SortOrder });
             }
-            var provider = new OfficialContentProvider(runtimeMaps, levels, stories);
+            var runtimeStories = new Dictionary<string, StoryDefinition>(StringComparer.Ordinal);
+            foreach (var story in stories)
+            {
+                if (story == null || string.IsNullOrWhiteSpace(story.StoryId) ||
+                    !runtimeStories.TryAdd(story.StoryId, story))
+                    throw new ArgumentException("目录剧情 ID 缺失或重复。");
+            }
+            if (generatedStories != null)
+                foreach (var pair in generatedStories)
+                {
+                    if (pair.Value == null || pair.Key != pair.Value.StoryId)
+                        throw new ArgumentException("导出剧情 ID 与索引不一致。");
+                    runtimeStories[pair.Key] = pair.Value;
+                }
+            var provider = new OfficialContentProvider(runtimeMaps, levels, runtimeStories.Values);
             foreach (var level in levels)
             {
                 if (!provider.TryGetMap(new MapId(level.MapId), out var map))
@@ -60,7 +76,7 @@ namespace Game.Content
             }
             if (!MapContentValidator.TryValidate(provider, out var error))
                 throw new ArgumentException(error);
-            foreach (var story in stories)
+            foreach (var story in runtimeStories.Values)
                 if (!StoryDefinitionValidator.TryValidate(story, out error))
                     throw new ArgumentException("剧情校验失败：" + story.StoryId + "：" + error);
             return new OfficialContentService(provider, characters, archiveEntries);
@@ -80,7 +96,7 @@ namespace Game.Content
         [ContextMenu("Validate Catalog")]
         private void ValidateCatalog()
         {
-            try { CreateValidatedService(); Debug.Log("内容目录校验通过。", this); }
+            try { CreateValidatedService(GeneratedStoryLoader.LoadAll()); Debug.Log("内容目录校验通过。", this); }
             catch (ArgumentException exception) { Debug.LogError(exception.Message, this); }
         }
     }
