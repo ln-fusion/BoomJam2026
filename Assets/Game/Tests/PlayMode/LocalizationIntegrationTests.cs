@@ -26,6 +26,9 @@ namespace Game.Tests.PlayMode
             Assert.That(service.CurrentLocaleCode, Is.EqualTo(DefaultLocalizationService.DefaultLocale));
             Assert.That(service.Get(new LocalizationKey(UiTextKeys.StartGame)),
                 Is.EqualTo("开始游戏"));
+            Assert.That(service.Get(new LocalizationKey(UiTextKeys.LevelCardFormat),
+                    "测试关卡", "已完成", "120 ticks"),
+                Is.EqualTo("测试关卡\n状态：已完成\n最佳成绩：120 ticks"));
 
             System.Threading.Tasks.Task<Result> switchTask = service.SetLocaleAsync(
                 "en-US", CancellationToken.None);
@@ -36,6 +39,11 @@ namespace Game.Tests.PlayMode
             Assert.That(service.CurrentLocaleCode, Is.EqualTo("en-US"));
             Assert.That(service.Get(new LocalizationKey(UiTextKeys.StartGame)),
                 Is.EqualTo("Start Game"));
+            Assert.That(service.Get(new LocalizationKey(UiTextKeys.MapStateCompleted)),
+                Is.EqualTo("Completed"));
+            Assert.That(service.Get(new LocalizationKey(UiTextKeys.LevelCardFormat),
+                    "Test Level", "Completed", "120 ticks"),
+                Is.EqualTo("Test Level\nStatus: Completed\nBest: 120 ticks"));
 
             service.Dispose();
             Assert.That(service.IsInitialized, Is.False);

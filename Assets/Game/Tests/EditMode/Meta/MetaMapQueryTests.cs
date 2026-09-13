@@ -12,6 +12,47 @@ namespace Game.Tests.EditMode.Meta
     /// <summary>验证 C09 地图查询合并内容和进度后的节点状态。</summary>
     public sealed class MetaMapQueryTests
     {
+        /// <summary>验证全部三十关逐个通关时才解锁对应关后复播，未通关时保持隐藏。</summary>
+        [Test]
+        public void AllLevelsUnlockTheirOwnPostludeAfterCompletion()
+        {
+            var provider = OfficialTestMapCatalog.CreateProvider();
+            var content = new OfficialContentService(provider);
+            var profile = new ProfileSave();
+            foreach (var level in provider.Levels)
+            {
+                var id = new LevelId(level.LevelId);
+                var before = new MetaMapQuery(content, new ProfileProgressQuery(profile)).GetLevelCard(id);
+                Assert.That(before.PostludeReplay, Is.Null, level.LevelId);
+                profile.CompletedLevelIds.Add(level.LevelId);
+                var after = new MetaMapQuery(content, new ProfileProgressQuery(profile)).GetLevelCard(id);
+                Assert.That(after.PostludeReplay?.Value, Is.EqualTo(level.PostludeStoryId), level.LevelId);
+            }
+        }
+
+        /// <summary>验证关前复播依据剧情完成、关后复播和下一关依据通关，且无需完成关后剧情。</summary>
+        [Test]
+        public void ReplayPermissionsUseSeparateCompletionFacts()
+        {
+            var content = new OfficialContentService(OfficialTestMapCatalog.CreateProvider());
+            var id = new LevelId("official.level.test_01_01");
+            var profile = new ProfileSave();
+            var card = new MetaMapQuery(content, new ProfileProgressQuery(profile)).GetLevelCard(id);
+            Assert.That(card.PreludeReplay, Is.Null);
+            Assert.That(card.PostludeReplay, Is.Null);
+            profile.CompletedStoryIds.Add(content.GetLevel(id).PreludeStoryId);
+            card = new MetaMapQuery(content, new ProfileProgressQuery(profile)).GetLevelCard(id);
+            Assert.That(card.PreludeReplay, Is.Not.Null);
+            Assert.That(card.PostludeReplay, Is.Null);
+            profile.CompletedLevelIds.Add(id.Value);
+            var query = new MetaMapQuery(content, new ProfileProgressQuery(profile));
+            card = query.GetLevelCard(id);
+            Assert.That(card.PostludeReplay.Value, Is.EqualTo(content.GetLevel(id).PostludeStoryId));
+            Assert.That(profile.CompletedStoryIds, Does.Not.Contain(card.PostludeReplay.Value));
+            Assert.That(query.GetLevelCard(new LevelId("official.level.test_01_02")).Node.IsInteractable, Is.True);
+            Assert.That(query.GetLevelCard(new LevelId("official.level.test_01_02")).PostludeReplay, Is.Null);
+        }
+
         /// <summary>空存档应产生六张地图和每张五个节点。</summary>
         [Test]
         public void EmptyProfileBuildsAllMapTabsAndFirstCurrent()

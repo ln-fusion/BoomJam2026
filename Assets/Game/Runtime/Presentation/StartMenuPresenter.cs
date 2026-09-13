@@ -21,13 +21,16 @@ namespace Game.Presentation
         private bool _waitingForNickname;
         private bool _nicknameSubmissionInFlight;
 
-        /// <summary>注入 View、运行时服务和全局 UI，并开始订阅按钮事件。</summary>
+        /// <summary>首次初始化时注入依赖、订阅按钮事件并刷新档案状态；后续调用不执行操作。</summary>
         /// <param name="view">开始界面 View。</param>
         /// <param name="runtimeServices">Bootstrap 创建的运行时服务容器。</param>
         /// <param name="globalCanvasLayer">全局 UI 层。</param>
         public void Initialize(StartMenuView view, GameRuntimeServices runtimeServices,
             GlobalCanvasLayer globalCanvasLayer)
         {
+            if (_lifetime != null)
+                return;
+
             _view = view ?? throw new ArgumentNullException(nameof(view));
             _runtimeServices = runtimeServices ??
                 throw new ArgumentNullException(nameof(runtimeServices));

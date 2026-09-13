@@ -35,7 +35,7 @@
 - 运行时入口是 `ISaveRepository`，默认实现为 `JsonSaveRepository`；没有名为 `SaveSystem` 的类型。
 - 设置和玩家档案分别写入 `settings.json`、`profile.json`。设计稿早期使用的 `SaveSystem`、`SettingsRepository` 和 `ProgressRepository` 仍是方案名称，不对应当前类。
 - `SettingsService.ApplyAsync` 在点击 Apply 时应用并保存设置，不是每次拖动滑块都写盘。
-- `ProfileLifecycleService` 负责新档案和继续游戏的启动判断；通关进度服务尚未接入。
+- `ProfileLifecycleService` 负责新档案和继续游戏的启动判断。白盒阶段已由 `GameRuntimeServices.CompleteWhiteboxLevelAsync` 复用档案保存委托提交模拟关卡完成：保存独立副本成功后才更新当前进度，使用既有完成关卡、关卡记录和提交 ID 字段；不生成成绩、统计或剧情完成事实。正式 Gameplay 通关事务仍未接入。
 
 下面的章节保留方案层面的取舍，新增实现时应先更新接口和测试，再回写本文件。
 

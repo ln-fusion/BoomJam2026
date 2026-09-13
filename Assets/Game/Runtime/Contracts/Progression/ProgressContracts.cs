@@ -89,6 +89,7 @@ namespace Game.Contracts.Progression
         /// </summary>
         /// <param name="completedLevels">已经完成的关卡集合。</param>
         /// <param name="completedStories">已经完成的剧情集合。</param>
+        /// <param name="levels">可选的逐关进度与最佳成绩集合。</param>
         public ProgressSnapshot(IReadOnlyCollection<LevelId> completedLevels,
             IReadOnlyCollection<StoryId> completedStories,
             IReadOnlyList<LevelProgressView> levels = null)

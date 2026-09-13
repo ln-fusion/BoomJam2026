@@ -22,26 +22,18 @@ namespace Game.Presentation
         private GlobalCanvasLayer _globalCanvas;
         private GameRuntimeServices _runtimeServices;
         private ILocalizationService _localization;
+        private bool _isReturning;
 
-        /// <summary>创建面板、启动测试剧情并显示首个节点。</summary>
+        /// <summary>创建面板、启动当前流程指定的剧情并显示首个节点。</summary>
+        /// <param name="runtimeServices">运行时服务容器；为空时只播放兼容测试剧情且不执行返回流程。</param>
         public void Initialize(GameRuntimeServices runtimeServices = null)
         {
             if (_runner != null)
                 return;
-            var provider = OfficialTestMapCatalog.CreateProvider();
-            _runner = new StoryRunner(id =>
-            {
-                // Generated 剧情优先, 其后才是官方测试目录中的剧情。
-                if (_runtimeServices != null)
-                {
-                    if (_runtimeServices.GeneratedStories.TryGetValue(id.Value, out StoryDefinition generated))
-                        return generated;
-                    if (provider.TryGetStory(id, out StoryDefinition official))
-                        return official;
-                }
-                provider.TryGetStory(id, out StoryDefinition definition);
-                return definition;
-            });
+            _runtimeServices = runtimeServices;
+            var content = runtimeServices?.Content ??
+                new OfficialContentService(OfficialTestMapCatalog.CreateProvider());
+            _runner = new StoryRunner(id => content.GetStory(id));
             GameObject panelObject = new GameObject("StoryDialoguePanel");
             panelObject.transform.SetParent(transform, false);
             _panel = panelObject.AddComponent<StoryDialoguePanel>();
@@ -266,7 +258,7 @@ namespace Game.Presentation
         /// <summary>剧情结束后提交完成事实，再按流程返回地图或进入占位关卡。</summary>
         private void ReturnAfterStory()
         {
-            if (_runtimeServices == null)
+            if (_runtimeServices == null || _isReturning)
                 return;
             Game.Flow.GameFlowService flow = _runtimeServices.Flow as Game.Flow.GameFlowService;
             if (flow == null || !flow.LastStoryReturnTarget.HasValue)
@@ -278,25 +270,36 @@ namespace Game.Presentation
         /// <param name="flow">应用流程服务。</param>
         private async Task CompleteAndReturnAsync(Game.Flow.GameFlowService flow)
         {
-            StorySnapshot finished = _runner.GetSnapshot();
-            if (finished != null && finished.IsCompleted)
+            _isReturning = true;
+            try
             {
-                SaveResult commit = await _runtimeServices.SaveStoryCompletedAsync(
-                    finished.StoryId,
-                    CancellationToken.None
-                );
-                if (!commit.IsSuccess)
+                StorySnapshot finished = _runner.GetSnapshot();
+                if (finished != null && finished.IsCompleted)
                 {
-                    Debug.LogError("剧情完成事实提交失败, 返回跳转被阻断: " + commit.Message, this);
-                    return;
+                    SaveResult commit = await _runtimeServices.SaveStoryCompletedAsync(
+                        finished.StoryId,
+                        CancellationToken.None
+                    );
+                    if (!commit.IsSuccess)
+                    {
+                        Debug.LogError("剧情完成事实提交失败, 返回跳转被阻断: " + commit.Message, this);
+                        return;
+                    }
                 }
-            }
 
-            StoryReturnTarget target = flow.LastStoryReturnTarget.Value;
-            if (target.Kind == StoryReturnKind.Level && target.Level != null)
-                await flow.EnterLevelAsync(target.Level, CancellationToken.None);
-            else if (target.Kind == StoryReturnKind.MetaPage)
-                await flow.OpenMetaHubAsync(target.MetaPage, CancellationToken.None);
+                StoryReturnTarget target = flow.LastStoryReturnTarget.Value;
+                if (target.Kind == StoryReturnKind.Level && target.Level != null)
+                    await flow.EnterLevelAsync(target.Level, CancellationToken.None);
+                else if (target.Kind == StoryReturnKind.MetaPage)
+                    await flow.OpenMetaHubAsync(target.MetaPage, CancellationToken.None);
+            }
+            catch (OperationCanceledException) { }
+            catch (Exception exception)
+            {
+                Debug.LogException(exception);
+                _globalCanvas?.ShowFeedback(exception.Message);
+            }
+            finally { _isReturning = false; }
         }
     }
 }

@@ -19,75 +19,75 @@ MonoBehaviour:
     m_Items: []
   m_TableData:
   - m_Id: 967827456
-    m_Localized: Boom Jam 2026
+    m_Localized: "Boom Jam 2026"
     m_Metadata:
       m_Items: []
   - m_Id: 984604672
-    m_Localized: Start Game
+    m_Localized: "Start Game"
     m_Metadata:
       m_Items: []
   - m_Id: 988798976
-    m_Localized: Continue
+    m_Localized: "Continue"
     m_Metadata:
       m_Items: []
   - m_Id: 988798977
-    m_Localized: Settings
+    m_Localized: "Settings"
     m_Metadata:
       m_Items: []
   - m_Id: 988798978
-    m_Localized: Quit
+    m_Localized: "Quit"
     m_Metadata:
       m_Items: []
   - m_Id: 988798979
-    m_Localized: Settings
+    m_Localized: "Settings"
     m_Metadata:
       m_Items: []
   - m_Id: 988798980
-    m_Localized: Apply
+    m_Localized: "Apply"
     m_Metadata:
       m_Items: []
   - m_Id: 988798981
-    m_Localized: Cancel
+    m_Localized: "Cancel"
     m_Metadata:
       m_Items: []
   - m_Id: 992993280
-    m_Localized: Restore Defaults
+    m_Localized: "Restore Defaults"
     m_Metadata:
       m_Items: []
   - m_Id: 992993281
-    m_Localized: Master Volume
+    m_Localized: "Master Volume"
     m_Metadata:
       m_Items: []
   - m_Id: 992993282
-    m_Localized: Music Volume
+    m_Localized: "Music Volume"
     m_Metadata:
       m_Items: []
   - m_Id: 992993283
-    m_Localized: SFX Volume
+    m_Localized: "SFX Volume"
     m_Metadata:
       m_Items: []
   - m_Id: 992993284
-    m_Localized: Language
+    m_Localized: "Language"
     m_Metadata:
       m_Items: []
   - m_Id: 992993285
-    m_Localized: Resolution
+    m_Localized: "Resolution"
     m_Metadata:
       m_Items: []
   - m_Id: 992993286
-    m_Localized: Fullscreen
+    m_Localized: "Fullscreen"
     m_Metadata:
       m_Items: []
   - m_Id: 992993287
-    m_Localized: Nickname
+    m_Localized: "Nickname"
     m_Metadata:
       m_Items: []
   - m_Id: 992993288
-    m_Localized: Confirm
+    m_Localized: "Confirm"
     m_Metadata:
       m_Items: []
   - m_Id: 992993289
-    m_Localized: Choose an action
+    m_Localized: "Choose an action"
     m_Metadata:
       m_Items: []
   - m_Id: 992993290
@@ -95,47 +95,239 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 992993291
-    m_Localized: Settings saved
+    m_Localized: "Settings saved"
     m_Metadata:
       m_Items: []
   - m_Id: 992993292
-    m_Localized: Quit simulated in the Editor
+    m_Localized: "Quit simulated in the Editor"
     m_Metadata:
       m_Items: []
   - m_Id: 992993293
-    m_Localized: Map
+    m_Localized: "Map"
     m_Metadata:
       m_Items: []
   - m_Id: 997187584
-    m_Localized: Archive
+    m_Localized: "Archive"
     m_Metadata:
       m_Items: []
   - m_Id: 997187585
-    m_Localized: Characters
+    m_Localized: "Characters"
     m_Metadata:
       m_Items: []
   - m_Id: 997187586
-    m_Localized: Lounge
+    m_Localized: "Lounge"
     m_Metadata:
       m_Items: []
   - m_Id: 997187587
-    m_Localized: Not available yet
+    m_Localized: "Not available yet"
     m_Metadata:
       m_Items: []
   - m_Id: 997187588
-    m_Localized: Map page placeholder
+    m_Localized: "Map page placeholder"
     m_Metadata:
       m_Items: []
   - m_Id: 997187589
-    m_Localized: Archive page placeholder
+    m_Localized: "Archive page placeholder"
     m_Metadata:
       m_Items: []
   - m_Id: 997187590
-    m_Localized: Character page placeholder
+    m_Localized: "Character page placeholder"
     m_Metadata:
       m_Items: []
   - m_Id: 997187591
-    m_Localized: Enter a nickname to continue
+    m_Localized: "Enter a nickname to continue"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 997187592
+    m_Localized: "Locked"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 997187593
+    m_Localized: "Current Level"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 997187594
+    m_Localized: "Unlocked"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 997187595
+    m_Localized: "Completed"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 997187596
+    m_Localized: "Unconfigured Level"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 997187597
+    m_Localized: "Select a level"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 997187598
+    m_Localized: "No score"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 997187599
+    m_Localized: "{0} ticks"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 997187600
+    m_Localized: "{0}\nStatus: {1}\nBest: {2}"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 997187601
+    m_Localized: "Start"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 997187602
+    m_Localized: "Replay Prelude"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 997187603
+    m_Localized: "Replay Postlude"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 997187604
+    m_Localized: "Test Map 01"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 997187605
+    m_Localized: "Test Map 02"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 997187606
+    m_Localized: "Test Map 03"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 997187607
+    m_Localized: "Test Map 04"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 997187608
+    m_Localized: "Test Map 05"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 997187609
+    m_Localized: "Test Map 06"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 997187610
+    m_Localized: "Test Level 01-01"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 997187611
+    m_Localized: "Test Level 01-02"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 997187612
+    m_Localized: "Test Level 01-03"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 997187613
+    m_Localized: "Test Level 01-04"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 997187614
+    m_Localized: "Test Level 01-05"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 997187615
+    m_Localized: "Test Level 02-01"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 997187616
+    m_Localized: "Test Level 02-02"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 997187617
+    m_Localized: "Test Level 02-03"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 997187618
+    m_Localized: "Test Level 02-04"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 997187619
+    m_Localized: "Test Level 02-05"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 997187620
+    m_Localized: "Test Level 03-01"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 997187621
+    m_Localized: "Test Level 03-02"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 997187622
+    m_Localized: "Test Level 03-03"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 997187623
+    m_Localized: "Test Level 03-04"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 997187624
+    m_Localized: "Test Level 03-05"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 997187625
+    m_Localized: "Test Level 04-01"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 997187626
+    m_Localized: "Test Level 04-02"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 997187627
+    m_Localized: "Test Level 04-03"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 997187628
+    m_Localized: "Test Level 04-04"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 997187629
+    m_Localized: "Test Level 04-05"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 997187630
+    m_Localized: "Test Level 05-01"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 997187631
+    m_Localized: "Test Level 05-02"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 997187632
+    m_Localized: "Test Level 05-03"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 997187633
+    m_Localized: "Test Level 05-04"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 997187634
+    m_Localized: "Test Level 05-05"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 997187635
+    m_Localized: "Test Level 06-01"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 997187636
+    m_Localized: "Test Level 06-02"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 997187637
+    m_Localized: "Test Level 06-03"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 997187638
+    m_Localized: "Test Level 06-04"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 997187639
+    m_Localized: "Test Level 06-05"
     m_Metadata:
       m_Items: []
   references:

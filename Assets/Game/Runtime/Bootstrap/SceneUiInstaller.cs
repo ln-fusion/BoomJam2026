@@ -11,7 +11,7 @@ namespace Game.Bootstrap
     public static class SceneUiInstaller
     {
         /// <summary>
-        /// 为开始菜单或 MetaHub 场景创建 View/Presenter 根对象；重复触发时保持幂等。
+        /// 安装功能场景 UI，并向 Gameplay 场景已有的白盒控制器注入服务。
         /// </summary>
         /// <param name="scene">刚激活的功能场景。</param>
         /// <param name="runtimeServices">Bootstrap 创建的运行时服务容器。</param>
@@ -43,22 +43,20 @@ namespace Game.Bootstrap
                 InstallStory(scene, runtimeServices);
 
             if (scene.name == SceneNames.Gameplay)
-                InstallGameplay(scene, runtimeServices);
+                InstallGameplay(scene, runtimeServices, globalCanvasLayer);
         }
 
-        /// <summary>安装 C16 占位关卡完成控制器。</summary>
+        /// <summary>初始化玩法场景已有的成功、失败和设置入口，不创建第二套占位界面。</summary>
         /// <param name="scene">玩法场景。</param>
         /// <param name="runtimeServices">运行时服务容器。</param>
-        private static void InstallGameplay(Scene scene, GameRuntimeServices runtimeServices)
+        /// <param name="globalCanvasLayer">设置与反馈使用的全局 UI。</param>
+        private static void InstallGameplay(Scene scene, GameRuntimeServices runtimeServices,
+            GlobalCanvasLayer globalCanvasLayer)
         {
-            if (FindInScene<GameplayPlaceholderController>(scene) != null)
-                return;
-            var root = new GameObject("GameplayUI");
-            SceneManager.MoveGameObjectToScene(root, scene);
-            root.AddComponent<GameplayPlaceholderController>().Initialize(runtimeServices);
+            FindInScene<GameplayReturnButton>(scene)?.Initialize(runtimeServices, globalCanvasLayer);
         }
 
-        /// <summary>安装开始菜单 View/Presenter。</summary>
+        /// <summary>优先复用场景内的开始菜单 UI，缺失时创建，并初始化 View/Presenter。</summary>
         /// <param name="scene">开始菜单场景。</param>
         /// <param name="runtimeServices">运行时服务容器。</param>
         /// <param name="globalCanvasLayer">全局 UI 层。</param>
@@ -70,17 +68,25 @@ namespace Game.Bootstrap
             ContentAssetRegistry contentRegistry
         )
         {
-            if (FindInScene<StartMenuPresenter>(scene) != null)
-                return;
+            StartMenuUiBindings bindings = FindInScene<StartMenuUiBindings>(scene);
+            StartMenuPresenter existingPresenter = FindInScene<StartMenuPresenter>(scene);
+            GameObject root;
 
-            GameObject root = InstantiateUiPrefab(contentRegistry, UiPrefabIds.StartMenu, "StartMenuUI");
-            SceneManager.MoveGameObjectToScene(root, scene);
+            if (bindings != null)
+                root = bindings.gameObject;
+            else if (existingPresenter != null)
+                root = existingPresenter.gameObject;
+            else
+            {
+                root = InstantiateUiPrefab(contentRegistry, UiPrefabIds.StartMenu, "StartMenuUI");
+                SceneManager.MoveGameObjectToScene(root, scene);
+            }
             var view = root.GetComponent<StartMenuView>() ?? root.AddComponent<StartMenuView>();
             var presenter = root.GetComponent<StartMenuPresenter>() ?? root.AddComponent<StartMenuPresenter>();
             presenter.Initialize(view, runtimeServices, globalCanvasLayer);
         }
 
-        /// <summary>安装 MetaHubShell。</summary>
+        /// <summary>优先复用场景内的 MetaHub UI，缺失时创建，并初始化主界面壳。</summary>
         /// <param name="scene">MetaHub 场景。</param>
         /// <param name="runtimeServices">运行时服务容器。</param>
         /// <param name="globalCanvasLayer">全局 UI 层。</param>
@@ -92,17 +98,32 @@ namespace Game.Bootstrap
             ContentAssetRegistry contentRegistry
         )
         {
-            if (FindInScene<MetaHubShell>(scene) != null)
-                return;
+            MetaHubUiBindings bindings = FindInScene<MetaHubUiBindings>(scene);
+            MetaHubShell existingShell = FindInScene<MetaHubShell>(scene);
+            GameObject root;
 
-            GameObject root = InstantiateUiPrefab(contentRegistry, UiPrefabIds.MetaHub, "MetaHubUI");
-            SceneManager.MoveGameObjectToScene(root, scene);
+            if (bindings != null)
+            {
+                root = bindings.gameObject;
+            }
+            else if (existingShell != null)
+            {
+                root = existingShell.gameObject;
+            }
+            else
+            {
+                root = InstantiateUiPrefab(contentRegistry, UiPrefabIds.MetaHub,
+                    "MetaHubUI");
+                SceneManager.MoveGameObjectToScene(root, scene);
+            }
+
             var shell = root.GetComponent<MetaHubShell>() ?? root.AddComponent<MetaHubShell>();
             shell.Initialize(runtimeServices, globalCanvasLayer);
         }
 
         /// <summary>安装 C09 剧情白盒表现器。</summary>
         /// <param name="scene">剧情场景。</param>
+        /// <param name="runtimeServices">传给剧情表现器的运行时服务。</param>
         private static void InstallStory(Scene scene, GameRuntimeServices runtimeServices)
         {
             if (FindInScene<StoryScenePresenter>(scene) != null)

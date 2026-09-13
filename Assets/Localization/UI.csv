@@ -29,3 +29,55 @@ meta.page_map,,地图页面占位,Map page placeholder
 meta.page_archive,,档案页面占位,Archive page placeholder
 meta.page_character,,人员页面占位,Character page placeholder
 ui.nickname_required,,请输入昵称后继续,Enter a nickname to continue
+meta.map_state_locked,,未解锁,Locked
+meta.map_state_current,,当前关卡,Current Level
+meta.map_state_unlocked,,已解锁,Unlocked
+meta.map_state_completed,,已完成,Completed
+meta.map_level_unconfigured,,未配置关卡,Unconfigured Level
+meta.level_select_prompt,,请选择关卡,Select a level
+meta.level_no_score,,暂无成绩,No score
+meta.level_score_ticks,,{0} ticks,{0} ticks
+meta.level_card_format,,"{0}
+状态：{1}
+最佳成绩：{2}","{0}
+Status: {1}
+Best: {2}"
+meta.level_start,,开始,Start
+meta.prelude_replay,,关前剧情复播,Replay Prelude
+meta.postlude_replay,,关后剧情复播,Replay Postlude
+map.test_01,,测试地图 01,Test Map 01
+map.test_02,,测试地图 02,Test Map 02
+map.test_03,,测试地图 03,Test Map 03
+map.test_04,,测试地图 04,Test Map 04
+map.test_05,,测试地图 05,Test Map 05
+map.test_06,,测试地图 06,Test Map 06
+level.test_01_01,,测试关卡 01-01,Test Level 01-01
+level.test_01_02,,测试关卡 01-02,Test Level 01-02
+level.test_01_03,,测试关卡 01-03,Test Level 01-03
+level.test_01_04,,测试关卡 01-04,Test Level 01-04
+level.test_01_05,,测试关卡 01-05,Test Level 01-05
+level.test_02_01,,测试关卡 02-01,Test Level 02-01
+level.test_02_02,,测试关卡 02-02,Test Level 02-02
+level.test_02_03,,测试关卡 02-03,Test Level 02-03
+level.test_02_04,,测试关卡 02-04,Test Level 02-04
+level.test_02_05,,测试关卡 02-05,Test Level 02-05
+level.test_03_01,,测试关卡 03-01,Test Level 03-01
+level.test_03_02,,测试关卡 03-02,Test Level 03-02
+level.test_03_03,,测试关卡 03-03,Test Level 03-03
+level.test_03_04,,测试关卡 03-04,Test Level 03-04
+level.test_03_05,,测试关卡 03-05,Test Level 03-05
+level.test_04_01,,测试关卡 04-01,Test Level 04-01
+level.test_04_02,,测试关卡 04-02,Test Level 04-02
+level.test_04_03,,测试关卡 04-03,Test Level 04-03
+level.test_04_04,,测试关卡 04-04,Test Level 04-04
+level.test_04_05,,测试关卡 04-05,Test Level 04-05
+level.test_05_01,,测试关卡 05-01,Test Level 05-01
+level.test_05_02,,测试关卡 05-02,Test Level 05-02
+level.test_05_03,,测试关卡 05-03,Test Level 05-03
+level.test_05_04,,测试关卡 05-04,Test Level 05-04
+level.test_05_05,,测试关卡 05-05,Test Level 05-05
+level.test_06_01,,测试关卡 06-01,Test Level 06-01
+level.test_06_02,,测试关卡 06-02,Test Level 06-02
+level.test_06_03,,测试关卡 06-03,Test Level 06-03
+level.test_06_04,,测试关卡 06-04,Test Level 06-04
+level.test_06_05,,测试关卡 06-05,Test Level 06-05

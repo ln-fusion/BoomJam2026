@@ -26,14 +26,15 @@ namespace Game.Contracts
         /// <param name="cancellationToken">取消导航操作的令牌。</param>
         Task OpenMetaHubAsync(MetaPageId page, CancellationToken cancellationToken);
 
-        /// <summary>进入指定关卡；首次进入播放关前剧情，再次进入直接进入。</summary>
+        /// <summary>进入指定关卡；未完成关前剧情时先播放剧情，否则直接进入 Gameplay。</summary>
         /// <param name="levelId">需要进入的关卡稳定标识。</param>
         /// <param name="cancellationToken">取消导航操作的令牌。</param>
         Task EnterLevelAsync(LevelId levelId, CancellationToken cancellationToken);
 
-        /// <summary>占位关卡完成后提交事实并播放关后剧情。</summary>
+        /// <summary>提交当前玩法会话；首次通关播放配置的关后剧情，重复通关返回地图。</summary>
         /// <param name="levelId">已完成的关卡稳定标识。</param>
         /// <param name="cancellationToken">取消导航操作的令牌。</param>
+        /// <exception cref="System.InvalidOperationException">结算未配置、会话无效或保存失败时抛出，调用方应保留结果界面。</exception>
         Task CompleteLevelAsync(LevelId levelId, CancellationToken cancellationToken);
 
         /// <summary>播放剧情并定义返回目标.</summary>

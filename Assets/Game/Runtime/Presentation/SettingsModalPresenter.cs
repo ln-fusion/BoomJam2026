@@ -32,6 +32,8 @@ namespace Game.Presentation
         private Dropdown _languageDropdown;
         private Dropdown _resolutionDropdown;
         private Toggle _fullscreenToggle;
+        private Button _returnToStartMenu;
+        private bool _settingsOperation;
         private readonly List<ResolutionOption> _resolutionOptions = new List<ResolutionOption>();
 
         /// <summary>注入依赖并构建弹窗。</summary>
@@ -48,6 +50,7 @@ namespace Game.Presentation
                 throw new ArgumentNullException(nameof(localizationService));
             _lifetime = new CancellationTokenSource();
             BuildView();
+            BindReturnToStartMenu();
             _localizationService.LocaleChanged += OnLocaleChanged;
             Render(_settingsService.Current);
             _owner.SetModalBlocked(true);
@@ -66,6 +69,8 @@ namespace Game.Presentation
         /// <summary>释放生命周期和本地化订阅。</summary>
         private void OnDestroy()
         {
+            if (_returnToStartMenu != null)
+                _returnToStartMenu.onClick.RemoveListener(OnReturnToStartMenu);
             if (_localizationService != null)
                 _localizationService.LocaleChanged -= OnLocaleChanged;
             _lifetime?.Cancel();
@@ -94,6 +99,12 @@ namespace Game.Presentation
 
             _title = UiFactory.CreateText("Title", _panel.transform, string.Empty, 34, UiTheme.Text);
             Place(_title.rectTransform, new Vector2(0.08f, 0.87f), new Vector2(0.92f, 0.98f));
+            Button menuButton = UiFactory.CreateButton("ReturnToStartMenu", _panel.transform, "返回主菜单");
+            RectTransform menuRect = menuButton.GetComponent<RectTransform>();
+            menuRect.anchorMin = menuRect.anchorMax = new Vector2(0f, 1f);
+            menuRect.pivot = new Vector2(0f, 1f);
+            menuRect.anchoredPosition = new Vector2(18f, -18f);
+            menuRect.sizeDelta = new Vector2(160f, 48f);
 
             _masterSlider = AddVolumeRow(UiTextKeys.MasterVolume, 0.73f, out _masterLabel);
             _musicSlider = AddVolumeRow(UiTextKeys.MusicVolume, 0.63f, out _musicLabel);
@@ -145,6 +156,25 @@ namespace Game.Presentation
                 UiTextKeys.MusicVolume, value));
             _sfxSlider.onValueChanged.AddListener(value => UpdateVolumeLabel(_sfxLabel,
                 UiTextKeys.SfxVolume, value));
+        }
+
+        /// <summary>绑定左上角返回按钮；Gameplay 中返回地图，其他功能场景返回主菜单。</summary>
+        private void BindReturnToStartMenu()
+        {
+            _returnToStartMenu = FindButton(_panel.transform, "ReturnToStartMenu");
+            if (_returnToStartMenu == null)
+                return;
+            _returnToStartMenu.gameObject.SetActive(_owner.CanReturnFromSettings);
+            SetButtonLabel("ReturnToStartMenu", _owner.SettingsReturnsToMap
+                ? "返回地图" : "返回主菜单");
+            _returnToStartMenu.onClick.AddListener(OnReturnToStartMenu);
+        }
+
+        /// <summary>丢弃未应用的控件草稿并按弹窗来源返回；设置操作尚未结束时忽略点击。</summary>
+        private void OnReturnToStartMenu()
+        {
+            if (!_settingsOperation && _owner != null)
+                _ = _owner.ReturnFromSettingsAsync();
         }
 
         /// <summary>按当前运行环境重建语言与分辨率选项，避免使用导出时的设备数据。</summary>
@@ -326,9 +356,11 @@ namespace Game.Presentation
         /// <summary>应用草稿并在保存成功后关闭弹窗；弹窗销毁时取消保存请求。</summary>
         private async Task ApplyAsync()
         {
-            if (_settingsService == null || _lifetime == null)
+            if (_settingsService == null || _lifetime == null || _settingsOperation)
                 return;
-
+            _settingsOperation = true;
+            if (_returnToStartMenu != null)
+                _returnToStartMenu.interactable = false;
             try
             {
                 SettingsDraft draft = BuildDraft();
@@ -354,14 +386,22 @@ namespace Game.Presentation
                 if (this != null && _feedback != null)
                     _feedback.text = exception.Message;
             }
+            finally
+            {
+                _settingsOperation = false;
+                if (this != null && _returnToStartMenu != null)
+                    _returnToStartMenu.interactable = true;
+            }
         }
 
         /// <summary>恢复默认设置并刷新控件；弹窗销毁时取消恢复请求。</summary>
         private async Task RestoreDefaultsAsync()
         {
-            if (_settingsService == null || _lifetime == null)
+            if (_settingsService == null || _lifetime == null || _settingsOperation)
                 return;
-
+            _settingsOperation = true;
+            if (_returnToStartMenu != null)
+                _returnToStartMenu.interactable = false;
             try
             {
                 Result result = await _settingsService.RestoreDefaultsAsync(_lifetime.Token);
@@ -384,6 +424,12 @@ namespace Game.Presentation
             {
                 if (this != null && _feedback != null)
                     _feedback.text = exception.Message;
+            }
+            finally
+            {
+                _settingsOperation = false;
+                if (this != null && _returnToStartMenu != null)
+                    _returnToStartMenu.interactable = true;
             }
         }
 
