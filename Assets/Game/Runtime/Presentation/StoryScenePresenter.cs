@@ -22,6 +22,8 @@ namespace Game.Presentation
         private GlobalCanvasLayer _globalCanvas;
         private GameRuntimeServices _runtimeServices;
         private ILocalizationService _localization;
+        private IContentService _content;
+        private StoryId _storyId;
         private bool _isReturning;
 
         /// <summary>创建面板、启动当前流程指定的剧情并显示首个节点。</summary>
@@ -31,9 +33,9 @@ namespace Game.Presentation
             if (_runner != null)
                 return;
             _runtimeServices = runtimeServices;
-            var content = runtimeServices?.Content ??
+            _content = runtimeServices?.Content ??
                 new OfficialContentService(OfficialTestMapCatalog.CreateProvider());
-            _runner = new StoryRunner(id => content.GetStory(id));
+            _runner = new StoryRunner(id => _content.GetStory(id));
             GameObject panelObject = new GameObject("StoryDialoguePanel");
             panelObject.transform.SetParent(transform, false);
             _panel = panelObject.AddComponent<StoryDialoguePanel>();
@@ -50,7 +52,10 @@ namespace Game.Presentation
                 _panel.SetStageAssetSource(stageSource);
             }
             StoryId storyId = ResolveStoryId();
+            _storyId = storyId;
             _runner.Start(storyId);
+            // 历史属于当前会话, 在新剧情开始处重置; 剧情结束只清表现, 保留历史供回看。
+            _panel.ResetHistory();
             RenderCurrentNode();
         }
 
@@ -108,7 +113,13 @@ namespace Game.Presentation
             if (node.Type == StoryNodeType.Dialogue)
             {
                 string speakerKey = node.SpeakerKey ?? string.Empty;
-                _panel.AppendHistory(new StoryHistoryEntry(new StoryNodeId(node.NodeId), speakerKey, node.TextKey));
+                _panel.AppendDialogueHistory(
+                    _storyId,
+                    new StoryNodeId(node.NodeId),
+                    node.SpeakerCharacterId,
+                    speakerKey,
+                    node.TextKey
+                );
                 _panel.ShowDialogue(new StoryDialogueView(speakerKey, node.TextKey), ResolvePortrait(node), Advance);
                 return;
             }
@@ -125,13 +136,11 @@ namespace Game.Presentation
                     {
                         foreach (StoryChoiceDefinition definition in node.Choices)
                             if (definition != null && definition.ChoiceId == choice.Value)
-                                _panel.AppendHistory(
-                                    new StoryHistoryEntry(
-                                        new StoryNodeId(node.NodeId),
-                                        string.Empty,
-                                        string.Empty,
-                                        definition.TextKey
-                                    )
+                                _panel.AppendChoiceHistory(
+                                    _storyId,
+                                    new StoryNodeId(node.NodeId),
+                                    choice.Value,
+                                    definition.TextKey
                                 );
                         Choose(choice);
                     }
@@ -245,14 +254,77 @@ namespace Game.Presentation
             RenderCurrentNode();
         }
 
-        /// <summary>执行整段剧情跳过并清理表现。</summary>
+        /// <summary>执行整段剧情跳过, 并把跳过期间实际经过的节点补入历史后清理表现。</summary>
         private void Skip()
         {
+            StorySnapshot before = _runner.GetSnapshot();
             Result result = _runner.Skip();
             if (!result.IsSuccess)
+            {
                 Debug.LogError("Story skip failed: " + result.Message, this);
-            else
-                RenderCurrentNode();
+                return;
+            }
+            AppendSkippedHistory(before);
+            RenderCurrentNode();
+        }
+
+        /// <summary>把整段跳过期间实际经过的节点补入历史, 使跳过与逐节点推进的记录语义一致。</summary>
+        /// <param name="before">跳过前取得的快照; 为空时不补记录。</param>
+        private void AppendSkippedHistory(StorySnapshot before)
+        {
+            if (_panel == null || _content == null)
+                return;
+            StorySnapshot after = _runner.GetSnapshot();
+            if (after?.VisitedNodes == null)
+                return;
+
+            // 跳过前的节点已经由 RenderCurrentNode 记录过; 同一节点重复经过时只保留首次记录。
+            var seen = new HashSet<string>(StringComparer.Ordinal);
+            if (before?.VisitedNodes != null)
+                foreach (StoryNodeId visited in before.VisitedNodes)
+                    if (visited != null)
+                        seen.Add(visited.Value);
+
+            StoryDefinition definition = _content.GetStory(_storyId);
+            foreach (StoryNodeId visited in after.VisitedNodes)
+            {
+                if (visited == null || !seen.Add(visited.Value))
+                    continue;
+                StoryNodeDefinition node = FindNode(definition, visited.Value);
+                if (node == null)
+                    continue;
+                if (node.Type == StoryNodeType.Dialogue)
+                {
+                    _panel.AppendDialogueHistory(
+                        _storyId,
+                        visited,
+                        node.SpeakerCharacterId,
+                        node.SpeakerKey,
+                        node.TextKey
+                    );
+                    continue;
+                }
+                if (node.Type != StoryNodeType.Choice || node.Choices == null || node.Choices.Count == 0)
+                    continue;
+                // StoryRunner.Skip 对选项节点自动取第一个可选项, 此处按同一规则补记所选项。
+                StoryChoiceDefinition chosen = node.Choices[0];
+                if (chosen != null)
+                    _panel.AppendChoiceHistory(_storyId, visited, chosen.ChoiceId, chosen.TextKey);
+            }
+        }
+
+        /// <summary>在剧情定义中按节点标识查找节点。</summary>
+        /// <param name="definition">目标剧情定义; 为空时返回 null。</param>
+        /// <param name="nodeId">节点稳定标识。</param>
+        /// <returns>匹配的节点定义; 未找到时为 null。</returns>
+        private static StoryNodeDefinition FindNode(StoryDefinition definition, string nodeId)
+        {
+            if (definition?.Nodes == null)
+                return null;
+            foreach (StoryNodeDefinition node in definition.Nodes)
+                if (node != null && string.Equals(node.NodeId, nodeId, StringComparison.Ordinal))
+                    return node;
+            return null;
         }
 
         /// <summary>剧情结束后提交完成事实，再按流程返回地图或进入占位关卡。</summary>

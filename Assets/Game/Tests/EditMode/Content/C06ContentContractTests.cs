@@ -1,31 +1,64 @@
 using System;
 using System.Linq;
+using System.Reflection;
 using Game.Content;
 using Game.Contracts.Content;
 using NUnit.Framework;
+using UnityEngine.Serialization;
 
 namespace Game.Tests.EditMode.Content
 {
     /// <summary>Validates the deterministic C06 map and branching story fixtures.</summary>
     public sealed class C06ContentContractTests
     {
-        /// <summary>验证 Unity 读取旧关卡字段名后映射到唯一剧情字段，重新导出仅保留统一字段名。</summary>
+        /// <summary>验证旧关卡剧情字段名的迁移契约仍然存在，且对外只使用统一字段名。</summary>
+        /// <remarks>
+        /// 旧名到统一名的映射由 Unity 序列化系统在加载 .asset 时依据
+        /// <see cref="FormerlySerializedAsAttribute"/> 完成，因此这里用反射守卫该声明不被误删；
+        /// <see cref="UnityEngine.JsonUtility"/> 不解析该特性，不能用它来验证迁移。
+        /// </remarks>
         [Test]
         public void LegacyLevelStoryFieldsMigrateToCanonicalNames()
         {
-            var level = UnityEngine.JsonUtility.FromJson<LevelDefinition>(
-                "{\"PreStoryId\":\"pre.c19\",\"PostStoryId\":\"post.c19\"}");
-            Assert.That(level.Summary.PreludeStoryId, Is.EqualTo("pre.c19"));
-            Assert.That(level.Summary.PostludeStoryId, Is.EqualTo("post.c19"));
+            AssertLegacyName("PreludeStoryId", "PreStoryId");
+            AssertLegacyName("PostludeStoryId", "PostStoryId");
+
+            // 统一字段名是资产与 JSON 唯一的对外名称: 往返必须保留取值且不写出旧名。
+            var level = new LevelDefinition
+            {
+                PreludeStoryId = "pre.c19",
+                PostludeStoryId = "post.c19",
+            };
             string json = UnityEngine.JsonUtility.ToJson(level);
             Assert.That(json, Does.Contain("\"PreludeStoryId\":\"pre.c19\""));
             Assert.That(json, Does.Contain("\"PostludeStoryId\":\"post.c19\""));
             Assert.That(json, Does.Not.Contain("\"PreStoryId\""));
             Assert.That(json, Does.Not.Contain("\"PostStoryId\""));
+
+            LevelDefinition restored = UnityEngine.JsonUtility.FromJson<LevelDefinition>(json);
+            Assert.That(restored.Summary.PreludeStoryId, Is.EqualTo("pre.c19"));
+            Assert.That(restored.Summary.PostludeStoryId, Is.EqualTo("post.c19"));
+
             level.PreludeStoryId = null;
             level.PostludeStoryId = null;
             Assert.That(level.Summary.PreludeStoryId, Is.Null);
             Assert.That(level.Summary.PostludeStoryId, Is.Null);
+        }
+
+        /// <summary>断言关卡定义的指定字段仍声明了期望的旧字段名迁移。</summary>
+        /// <param name="fieldName">统一字段名。</param>
+        /// <param name="legacyName">迁移前的旧字段名。</param>
+        private static void AssertLegacyName(string fieldName, string legacyName)
+        {
+            FieldInfo field = typeof(LevelDefinition).GetField(fieldName);
+            Assert.That(field, Is.Not.Null, fieldName + " 字段必须存在");
+            var attribute = field.GetCustomAttribute<FormerlySerializedAsAttribute>();
+            Assert.That(
+                attribute,
+                Is.Not.Null,
+                fieldName + " 必须保留 FormerlySerializedAs, 否则旧关卡资产会丢失剧情引用"
+            );
+            Assert.That(attribute.oldName, Is.EqualTo(legacyName));
         }
 
         /// <summary>验证导出剧情可替换目录对白，统一剧情字段可引用新增导出剧情并进入摘要与复播查询。</summary>
