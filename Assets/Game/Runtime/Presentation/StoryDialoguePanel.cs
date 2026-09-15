@@ -666,7 +666,11 @@ namespace Game.Presentation
                 text.text = label;
         }
 
-        /// <inheritdoc/>
+        /// <summary>清空当前剧情表现（对白、立绘、CG、效果与选项）, 但保留本会话的历史记录。</summary>
+        /// <remarks>
+        /// 历史属于当前会话的瞬时数据, 由 <see cref="ResetHistory"/> 在剧情开始时重置;
+        /// 这样整段跳过或剧情结束后仍可回看本次实际经过的分支。
+        /// </remarks>
         public void Clear()
         {
             if (_speaker != null)
@@ -692,12 +696,20 @@ namespace Game.Presentation
             }
             _continueAction = null;
             StopTyping();
+            if (_historyView != null)
+                _historyView.SetActive(false);
+            ClearChoices();
+            SyncInteractable();
+        }
+
+        /// <summary>重置本会话的历史记录, 应在剧情开始时调用。</summary>
+        public void ResetHistory()
+        {
             _history.Clear();
             _historySequence = 0;
             if (_historyView != null)
                 _historyView.SetActive(false);
             RefreshHistory();
-            ClearChoices();
             SyncInteractable();
         }
 

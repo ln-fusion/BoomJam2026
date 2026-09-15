@@ -184,9 +184,9 @@ namespace Game.Tests.EditMode.Presentation
             }
         }
 
-        /// <summary>清空剧情后历史覆盖层关闭且内容重置。</summary>
+        /// <summary>清空剧情表现时保留本会话历史, 供剧情结束或整段跳过后回看。</summary>
         [Test]
-        public void Clear_ResetsHistoryOverlay()
+        public void Clear_KeepsHistoryForSession()
         {
             var root = new GameObject("StoryHistoryClearTest", typeof(RectTransform));
             try
@@ -204,16 +204,54 @@ namespace Game.Tests.EditMode.Presentation
 
                 panel.Clear();
 
-                Assert.That(panel.IsHistoryOpen, Is.False, "清空后历史覆盖层应关闭");
+                Assert.That(panel.IsHistoryOpen, Is.False, "清空表现后历史覆盖层应关闭");
                 Assert.That(
                     FindComponent<Text>(root, "HistoryText").text,
-                    Is.Empty,
-                    "清空后历史文本应为空"
+                    Does.Contain("你好"),
+                    "清空表现不应丢弃本会话历史"
                 );
                 Assert.That(
                     FindComponent<Button>(root, "Continue").interactable,
                     Is.True,
-                    "清空后输入阻塞应解除"
+                    "清空表现后输入阻塞应解除"
+                );
+            }
+            finally
+            {
+                UnityEngine.Object.DestroyImmediate(root);
+            }
+        }
+
+        /// <summary>新剧情开始时重置历史, 避免上一次会话的记录残留。</summary>
+        [Test]
+        public void ResetHistory_ClearsRecordedEntries()
+        {
+            var root = new GameObject("StoryHistoryResetTest", typeof(RectTransform));
+            try
+            {
+                var panel = root.AddComponent<StoryDialoguePanel>();
+                panel.SetLocalization(new FakeLocalizationService());
+                panel.AppendDialogueHistory(
+                    StoryId,
+                    new StoryNodeId("start"),
+                    null,
+                    null,
+                    "story.text.hello"
+                );
+                OpenHistory(root, panel);
+
+                panel.ResetHistory();
+
+                Assert.That(panel.IsHistoryOpen, Is.False, "重置后历史覆盖层应关闭");
+                Assert.That(
+                    FindComponent<Text>(root, "HistoryText").text,
+                    Is.Empty,
+                    "重置后历史文本应为空"
+                );
+                Assert.That(
+                    FindComponent<Button>(root, "Continue").interactable,
+                    Is.True,
+                    "重置后输入阻塞应解除"
                 );
             }
             finally
