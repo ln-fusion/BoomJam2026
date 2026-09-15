@@ -22,6 +22,7 @@ namespace Game.Presentation
         private GlobalCanvasLayer _globalCanvas;
         private GameRuntimeServices _runtimeServices;
         private ILocalizationService _localization;
+        private StoryId _storyId;
         private bool _isReturning;
 
         /// <summary>创建面板、启动当前流程指定的剧情并显示首个节点。</summary>
@@ -50,6 +51,7 @@ namespace Game.Presentation
                 _panel.SetStageAssetSource(stageSource);
             }
             StoryId storyId = ResolveStoryId();
+            _storyId = storyId;
             _runner.Start(storyId);
             RenderCurrentNode();
         }
@@ -108,7 +110,13 @@ namespace Game.Presentation
             if (node.Type == StoryNodeType.Dialogue)
             {
                 string speakerKey = node.SpeakerKey ?? string.Empty;
-                _panel.AppendHistory(new StoryHistoryEntry(new StoryNodeId(node.NodeId), speakerKey, node.TextKey));
+                _panel.AppendDialogueHistory(
+                    _storyId,
+                    new StoryNodeId(node.NodeId),
+                    node.SpeakerCharacterId,
+                    speakerKey,
+                    node.TextKey
+                );
                 _panel.ShowDialogue(new StoryDialogueView(speakerKey, node.TextKey), ResolvePortrait(node), Advance);
                 return;
             }
@@ -125,13 +133,11 @@ namespace Game.Presentation
                     {
                         foreach (StoryChoiceDefinition definition in node.Choices)
                             if (definition != null && definition.ChoiceId == choice.Value)
-                                _panel.AppendHistory(
-                                    new StoryHistoryEntry(
-                                        new StoryNodeId(node.NodeId),
-                                        string.Empty,
-                                        string.Empty,
-                                        definition.TextKey
-                                    )
+                                _panel.AppendChoiceHistory(
+                                    _storyId,
+                                    new StoryNodeId(node.NodeId),
+                                    choice.Value,
+                                    definition.TextKey
                                 );
                         Choose(choice);
                     }
