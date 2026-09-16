@@ -1,0 +1,16 @@
+{
+  "Header": { "ContentId": "story.simple_test", "Source": 0, "FormatVersion": 1, "ContentRevision": 1, "MinGameVersion": "", "MaxTestedGameVersion": "", "PayloadSha256": "" },
+  "StoryId": "story.simple_test",
+  "StartNodeId": "start",
+  "Nodes": [
+    { "NodeId": "start", "Type": 0, "TextKey": "story.simple_test.start", "NextNodeId": "choice", "Choices": [] },
+    { "NodeId": "choice", "Type": 1, "TextKey": "story.simple_test.choice", "NextNodeId": "", "Choices": [
+      { "ChoiceId": "inspect", "TextKey": "story.simple_test.inspect", "NextNodeId": "inspect_room" },
+      { "ChoiceId": "leave", "TextKey": "story.simple_test.leave", "NextNodeId": "leave_room" }
+    ] },
+    { "NodeId": "inspect_room", "Type": 0, "TextKey": "story.simple_test.inspect_result", "NextNodeId": "merge", "Choices": [] },
+    { "NodeId": "leave_room", "Type": 0, "TextKey": "story.simple_test.leave_result", "NextNodeId": "merge", "Choices": [] },
+    { "NodeId": "merge", "Type": 0, "TextKey": "story.simple_test.merge", "NextNodeId": "end", "Choices": [] },
+    { "NodeId": "end", "Type": 3, "TextKey": "", "NextNodeId": "", "Choices": [] }
+  ]
+}

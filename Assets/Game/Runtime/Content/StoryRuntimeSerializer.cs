@@ -15,7 +15,7 @@ namespace Game.Content
     public sealed class StoryRuntimeEnvelope
     {
         /// <summary>信封格式版本; 当前运行时只接受 1。</summary>
-        public int FormatVersion = 1;
+        public int FormatVersion = 2;
 
         /// <summary>
         /// 源 authoring 内容按节点稳定排序后序列化的 SHA-256 摘要（前 16 位十六进制）。
@@ -44,7 +44,7 @@ namespace Game.Content
                 throw new ArgumentNullException(nameof(story));
             var envelope = new StoryRuntimeEnvelope
             {
-                FormatVersion = 1,
+                FormatVersion = 2,
                 SourceHash = ComputeSourceHash(story),
                 Story = story,
             };

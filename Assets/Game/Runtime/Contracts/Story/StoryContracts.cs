@@ -10,43 +10,43 @@ namespace Game.Contracts.Story
     {
         /// <summary>节点稳定标识。</summary>
         public StoryNodeId NodeId { get; }
-        /// <summary>说话人本地化键。</summary>
-        public string SpeakerKey { get; }
-        /// <summary>正文本地化键。</summary>
-        public string TextKey { get; }
-        /// <summary>实际选择的选项文本键；非选项节点为空。</summary>
-        public string ChoiceTextKey { get; }
+        /// <summary>实际显示的说话人文本快照。</summary>
+        public string SpeakerText { get; }
+        /// <summary>实际显示的正文文本快照。</summary>
+        public string Text { get; }
+        /// <summary>实际选择的选项文本快照；非选项节点为空。</summary>
+        public string ChoiceText { get; }
 
         /// <summary>创建历史记录。</summary>
         /// <param name="nodeId">实际显示的节点标识。</param>
         /// <param name="speakerKey">说话人键。</param>
         /// <param name="textKey">正文键。</param>
-        /// <param name="choiceTextKey">选项文本键，可为空。</param>
-        public StoryHistoryEntry(StoryNodeId nodeId, string speakerKey, string textKey,
-            string choiceTextKey = null)
+        /// <param name="choiceText">选项文本，可为空。</param>
+        public StoryHistoryEntry(StoryNodeId nodeId, string speakerText, string text,
+            string choiceText = null)
         {
             NodeId = nodeId ?? throw new ArgumentNullException(nameof(nodeId));
-            SpeakerKey = speakerKey ?? string.Empty;
-            TextKey = textKey ?? string.Empty;
-            ChoiceTextKey = choiceTextKey ?? string.Empty;
+            SpeakerText = speakerText ?? string.Empty;
+            Text = text ?? string.Empty;
+            ChoiceText = choiceText ?? string.Empty;
         }
     }
 
     /// <summary>基础对白显示数据。</summary>
     public sealed class StoryDialogueView
     {
-        /// <summary>说话人本地化键，可为空。</summary>
-        public string SpeakerKey { get; }
-        /// <summary>正文本地化键。</summary>
-        public string TextKey { get; }
+        /// <summary>说话人实际文本，可为空。</summary>
+        public string SpeakerText { get; }
+        /// <summary>正文实际文本。</summary>
+        public string Text { get; }
 
         /// <summary>创建对白显示数据。</summary>
         /// <param name="speakerKey">说话人名称键。</param>
         /// <param name="textKey">正文键。</param>
-        public StoryDialogueView(string speakerKey, string textKey)
+        public StoryDialogueView(string speakerText, string text)
         {
-            SpeakerKey = speakerKey ?? string.Empty;
-            TextKey = textKey ?? string.Empty;
+            SpeakerText = speakerText ?? string.Empty;
+            Text = text ?? string.Empty;
         }
     }
 
@@ -55,16 +55,16 @@ namespace Game.Contracts.Story
     {
         /// <summary>选项稳定标识。</summary>
         public ChoiceId ChoiceId { get; }
-        /// <summary>选项本地化键。</summary>
-        public string TextKey { get; }
+        /// <summary>选项实际文本。</summary>
+        public string Text { get; }
 
         /// <summary>创建选项显示数据。</summary>
         /// <param name="choiceId">选项标识。</param>
         /// <param name="textKey">选项文本键。</param>
-        public StoryChoiceView(ChoiceId choiceId, string textKey)
+        public StoryChoiceView(ChoiceId choiceId, string text)
         {
             ChoiceId = choiceId ?? throw new ArgumentNullException(nameof(choiceId));
-            TextKey = textKey ?? string.Empty;
+            Text = text ?? string.Empty;
         }
     }
 

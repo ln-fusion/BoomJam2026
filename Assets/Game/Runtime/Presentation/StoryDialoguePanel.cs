@@ -26,6 +26,9 @@ namespace Game.Presentation
         private Action _skipAction;
         private Button _skipButton;
         private Button _historyButton;
+        private Button _settingsButton;
+        private Button _choiceButtonTemplate;
+        private Action _settingsAction;
         private bool _skipPending;
         private bool _inputBlocked;
         private Coroutine _typingCoroutine;
@@ -33,6 +36,7 @@ namespace Game.Presentation
         private Action _waitSkipAction;
         private string _fullText = string.Empty;
         private readonly List<StoryHistoryEntry> _history = new List<StoryHistoryEntry>();
+        private readonly List<string> _historyDisplay = new List<string>();
         private Text _historyText;
         private GameObject _historyView;
         private ILocalizationService _localization;
@@ -62,6 +66,14 @@ namespace Game.Presentation
             _choicesRoot = bindings.ChoicesRoot;
             _historyView = bindings.HistoryView;
             _historyText = bindings.HistoryText;
+            _settingsButton = bindings.SettingsButton;
+            _choiceButtonTemplate = bindings.ChoiceButtonTemplate;
+            if (_effect != null)
+            {
+                _effect.transform.parent.gameObject.SetActive(true);
+                _effect.color = Color.clear;
+                _effect.raycastTarget = false;
+            }
             _slotImages = new Image[] { bindings.PortraitLeft, bindings.PortraitCenter, bindings.PortraitRight };
             if (_continue != null)
                 _continue.onClick.AddListener(ContinueClicked);
@@ -72,6 +84,10 @@ namespace Game.Presentation
             _historyButton = bindings.HistoryButton;
             if (_historyButton != null)
                 _historyButton.onClick.AddListener(ToggleHistory);
+            if (_settingsButton != null)
+                _settingsButton.onClick.AddListener(OpenSettings);
+            if (_choiceButtonTemplate != null)
+                _choiceButtonTemplate.gameObject.SetActive(false);
         }
 
         /// <summary>单个角色立绘槽位: 图像与当前位置。</summary>
@@ -149,11 +165,17 @@ namespace Game.Presentation
             skipRect.anchorMax = new Vector2(0.68f, 0.18f);
             skipRect.offsetMin = skipRect.offsetMax = Vector2.zero;
             _skipButton.onClick.AddListener(RequestSkip);
-            Button historyButton = UiFactory.CreateButton("History", panel.transform, "History");
-            RectTransform historyRect = historyButton.GetComponent<RectTransform>();
+            _historyButton = UiFactory.CreateButton("History", panel.transform, "History");
+            RectTransform historyRect = _historyButton.GetComponent<RectTransform>();
             historyRect.anchorMin = new Vector2(0.04f, 0.04f);
             historyRect.anchorMax = new Vector2(0.2f, 0.18f);
-            historyButton.onClick.AddListener(ToggleHistory);
+            _historyButton.onClick.AddListener(ToggleHistory);
+            _settingsButton = UiFactory.CreateButton("Settings", panel.transform, "Settings");
+            RectTransform settingsRect = _settingsButton.GetComponent<RectTransform>();
+            settingsRect.anchorMin = new Vector2(0.24f, 0.04f);
+            settingsRect.anchorMax = new Vector2(0.44f, 0.18f);
+            settingsRect.offsetMin = settingsRect.offsetMax = Vector2.zero;
+            _settingsButton.onClick.AddListener(OpenSettings);
             _choicesRoot = new GameObject("Choices", typeof(RectTransform));
             _choicesRoot.transform.SetParent(panel.transform, false);
             var root = (RectTransform)_choicesRoot.transform;
@@ -226,8 +248,8 @@ namespace Game.Presentation
         {
             BuildPreview();
             ClearChoices();
-            _speaker.text = dialogue == null ? string.Empty : Localize(dialogue.SpeakerKey);
-            _fullText = dialogue == null ? string.Empty : Localize(dialogue.TextKey);
+            _speaker.text = dialogue == null ? string.Empty : dialogue.SpeakerText;
+            _fullText = dialogue == null ? string.Empty : dialogue.Text;
             StartTyping(_fullText);
             _continueAction = onContinue;
             _continue.gameObject.SetActive(true);
@@ -388,15 +410,15 @@ namespace Game.Presentation
             return count;
         }
 
-        /// <summary>根据立绘数量调整正文区域: 有立绘时右移留出左/中/右槽位空间。</summary>
+        /// <summary>保留预制体配置的固定正文区域，避免播放时因立绘改变锚点。</summary>
         /// <param name="portraitCount">当前立绘数量。</param>
         private void UpdateBodyLayout(int portraitCount)
         {
-            if (_body == null)
-                return;
-            Vector2 bodyMin = _body.rectTransform.anchorMin;
-            _body.rectTransform.anchorMin =
-                portraitCount > 0 ? new Vector2(0.28f, bodyMin.y) : new Vector2(0.04f, bodyMin.y);
+            // 正式 StoryUI.prefab 使用固定的 DialogueText 区域。运行时不能只修改
+            // anchorMin 而保留 anchorMax，否则出现立绘时会改变正文的锚点区间，
+            // 使文字脱离预制体中已经配置好的文字框。portraitCount 保留在签名中，
+            // 兼容代码生成的白盒布局，但不再覆盖正式预制体的固定位置。
+            _ = portraitCount;
         }
 
         /// <summary>播放屏幕效果：白/红闪 0.4 秒淡出，黑屏维持到下次效果，模糊使用占位半透明。</summary>
@@ -529,6 +551,10 @@ namespace Game.Presentation
         /// <param name="onSkip">跳过回调。</param>
         public void SetSkipAction(Action onSkip) => _skipAction = onSkip;
 
+        /// <summary>设置打开全局设置弹窗时执行的回调。</summary>
+        /// <param name="onSettings">设置按钮点击回调。</param>
+        public void SetSettingsAction(Action onSettings) => _settingsAction = onSettings;
+
         /// <summary>设置剧情输入是否被设置弹窗阻塞。</summary>
         /// <param name="blocked">为 true 时忽略点击、空格和跳过操作。</param>
         public void SetInputBlocked(bool blocked)
@@ -538,6 +564,13 @@ namespace Game.Presentation
                 _skipButton.interactable = !blocked;
             if (_continue != null)
                 _continue.interactable = !blocked;
+            if (_historyButton != null)
+                _historyButton.interactable = !blocked;
+            if (_settingsButton != null)
+                _settingsButton.interactable = !blocked;
+            if (_choicesRoot != null)
+                foreach (Button choice in _choicesRoot.GetComponentsInChildren<Button>(true))
+                    choice.interactable = !blocked;
         }
 
         /// <inheritdoc/>
@@ -562,12 +595,24 @@ namespace Game.Presentation
                 StoryChoiceView choice = choices[i];
                 if (choice == null)
                     continue;
-                Button button = UiFactory.CreateButton(
-                    "Choice_" + choice.ChoiceId.Value,
-                    _choicesRoot.transform,
-                    Localize(choice.TextKey)
-                );
+                Button button;
+                if (_choiceButtonTemplate != null)
+                {
+                    button = Instantiate(_choiceButtonTemplate, _choicesRoot.transform);
+                    button.gameObject.name = "Choice_" + choice.ChoiceId.Value;
+                    button.gameObject.SetActive(true);
+                    SetButtonLabel(button, choice.Text);
+                }
+                else
+                {
+                    button = UiFactory.CreateButton(
+                        "Choice_" + choice.ChoiceId.Value,
+                        _choicesRoot.transform,
+                        choice.Text
+                    );
+                }
                 button.onClick.AddListener(() => _choiceAction?.Invoke(choice.ChoiceId));
+                button.interactable = !_inputBlocked;
                 RectTransform rect = button.GetComponent<RectTransform>();
                 rect.anchorMin = new Vector2(0f, 1f);
                 rect.anchorMax = new Vector2(1f, 1f);
@@ -593,6 +638,13 @@ namespace Game.Presentation
             if (_skipButton != null)
                 SetButtonLabel(_skipButton, "Skip");
             _skipAction?.Invoke();
+        }
+
+        /// <summary>打开全局设置弹窗。</summary>
+        private void OpenSettings()
+        {
+            if (!_inputBlocked)
+                _settingsAction?.Invoke();
         }
 
         /// <summary>更新按钮子文本。</summary>
@@ -632,6 +684,7 @@ namespace Game.Presentation
             _continueAction = null;
             StopTyping();
             _history.Clear();
+            _historyDisplay.Clear();
             if (_historyView != null)
                 _historyView.SetActive(false);
             ClearChoices();
@@ -644,6 +697,17 @@ namespace Game.Presentation
             if (entry == null)
                 return;
             _history.Add(entry);
+            string speaker = entry.SpeakerText;
+            string text = entry.Text;
+            string choice = entry.ChoiceText;
+            var display = new StringBuilder();
+            if (!string.IsNullOrEmpty(speaker))
+                display.Append(speaker).Append(' ');
+            if (!string.IsNullOrEmpty(text))
+                display.Append(text);
+            if (!string.IsNullOrEmpty(entry.ChoiceText))
+                display.Append(" [").Append(choice).Append(']');
+            _historyDisplay.Add(display.ToString());
             RefreshHistory();
         }
 
@@ -714,13 +778,8 @@ namespace Game.Presentation
             if (_historyText == null)
                 return;
             var builder = new StringBuilder();
-            foreach (StoryHistoryEntry entry in _history)
-            {
-                builder.Append(entry.SpeakerKey).Append(' ').Append(entry.TextKey);
-                if (!string.IsNullOrEmpty(entry.ChoiceTextKey))
-                    builder.Append(" [").Append(entry.ChoiceTextKey).Append(']');
-                builder.AppendLine();
-            }
+            foreach (string entry in _historyDisplay)
+                builder.AppendLine(entry);
             _historyText.text = builder.ToString();
         }
 
@@ -730,7 +789,11 @@ namespace Game.Presentation
             if (_choicesRoot == null)
                 return;
             for (int i = _choicesRoot.transform.childCount - 1; i >= 0; i--)
-                Destroy(_choicesRoot.transform.GetChild(i).gameObject);
+            {
+                GameObject child = _choicesRoot.transform.GetChild(i).gameObject;
+                if (_choiceButtonTemplate == null || child != _choiceButtonTemplate.gameObject)
+                    Destroy(child);
+            }
             _choiceAction = null;
         }
     }

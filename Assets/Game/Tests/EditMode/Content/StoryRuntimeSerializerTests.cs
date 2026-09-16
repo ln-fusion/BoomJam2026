@@ -22,7 +22,8 @@ namespace Game.Tests.EditMode.Content
                     {
                         NodeId = "start",
                         Type = StoryNodeType.Dialogue,
-                        TextKey = "story.test.line",
+                        TextZhCn = "测试对白。",
+                        TextEnUs = "Test line.",
                         NextNodeId = "end",
                     },
                 },
@@ -57,7 +58,7 @@ namespace Game.Tests.EditMode.Content
         {
             StoryDefinition story = LinearStory();
             string before = StoryRuntimeSerializer.ComputeSourceHash(story);
-            story.Nodes[1].TextKey = "story.test.line.changed";
+            story.Nodes[1].TextZhCn = "修改后的测试对白。";
             Assert.That(StoryRuntimeSerializer.ComputeSourceHash(story), Is.Not.EqualTo(before));
         }
 

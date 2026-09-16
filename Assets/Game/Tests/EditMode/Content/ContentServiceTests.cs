@@ -32,7 +32,8 @@ namespace Game.Tests.EditMode.Content
                     {
                         NodeId = "start",
                         Type = StoryNodeType.Dialogue,
-                        TextKey = "story.prologue.start",
+                        TextZhCn = "序章开始。",
+                        TextEnUs = "The prologue begins.",
                         NextNodeId = "end"
                     },
                     new StoryNodeDefinition { NodeId = "end", Type = StoryNodeType.End }

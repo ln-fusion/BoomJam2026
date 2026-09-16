@@ -544,10 +544,22 @@ namespace Game.Contracts.Content
         /// <summary>节点类型。</summary>
         public StoryNodeType Type;
 
-        /// <summary>本地化剧情文本键。</summary>
+        /// <summary>中文剧情文本，直接随剧情 JSON 保存。</summary>
+        public string TextZhCn;
+
+        /// <summary>英文剧情文本，直接随剧情 JSON 保存。</summary>
+        public string TextEnUs;
+
+        /// <summary>旧版剧情 Key；仅用于读取尚未迁移的 Catalog 数据。</summary>
         public string TextKey;
 
-        /// <summary>说话人本地化键；C11 以前为占位，C16 起由节点提供。</summary>
+        /// <summary>中文说话人名称，直接随剧情 JSON 保存。</summary>
+        public string SpeakerTextZhCn;
+
+        /// <summary>英文说话人名称，直接随剧情 JSON 保存。</summary>
+        public string SpeakerTextEnUs;
+
+        /// <summary>旧版说话人 Key；仅用于读取尚未迁移的 Catalog 数据。</summary>
         public string SpeakerKey;
 
         /// <summary>说话角色稳定标识；为空时表示无角色。</summary>
@@ -594,7 +606,13 @@ namespace Game.Contracts.Content
         /// <summary>Stable choice identifier.</summary>
         public string ChoiceId;
 
-        /// <summary>Localization key for the choice label.</summary>
+        /// <summary>中文选项文本，直接随剧情 JSON 保存。</summary>
+        public string TextZhCn;
+
+        /// <summary>英文选项文本，直接随剧情 JSON 保存。</summary>
+        public string TextEnUs;
+
+        /// <summary>旧版选项 Key；仅用于读取尚未迁移的 Catalog 数据。</summary>
         public string TextKey;
 
         /// <summary>Target node reached after selecting this choice.</summary>

@@ -1,5 +1,6 @@
 #if UNITY_EDITOR
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using Game.Contracts.Content;
@@ -11,11 +12,23 @@ namespace Game.Editor
     /// <summary>C13-C15 剧情 Authoring 文件编辑与 Runtime 编译窗口。</summary>
     public sealed class StoryAuthoringWindow : EditorWindow
     {
-        private StoryDefinition _definition;
+        [SerializeField] private StoryDefinition _definition;
         private string _json = string.Empty;
         private Vector2 _scroll;
+        private Vector2 _contentScroll;
         private string _path;
         private int _previewNodeIndex = -1;
+        private readonly HashSet<int> _expandedNodes = new HashSet<int>();
+        private bool _showJsonPreview;
+        private StoryNodeType _newNodeType = StoryNodeType.Dialogue;
+        private bool _dirty;
+
+        /// <summary>窗口关闭时提示未保存的剧情编辑。</summary>
+        private void OnDisable()
+        {
+            if (_dirty && _definition != null && EditorUtility.DisplayDialog("Story", "Story has unsaved changes. Save now?", "Save", "Discard"))
+                SaveDefinition();
+        }
 
         /// <summary>打开剧情编辑器窗口。</summary>
         [MenuItem("Game/Story Authoring Window")]
@@ -33,12 +46,18 @@ namespace Game.Editor
                 SaveDefinition();
             if (GUILayout.Button("Compile", GUILayout.Width(80)))
                 CompileDefinition();
+            if (GUILayout.Button("Save & Compile", GUILayout.Width(110)))
+            {
+                SaveDefinition();
+                CompileDefinition();
+            }
             EditorGUILayout.EndHorizontal();
             if (_definition == null)
             {
                 EditorGUILayout.HelpBox("Create or open a story authoring file.", MessageType.Info);
                 return;
             }
+            _contentScroll = EditorGUILayout.BeginScrollView(_contentScroll);
             string storyId = EditorGUILayout.TextField("Story ID", _definition.StoryId);
             string startNode = EditorGUILayout.TextField("Start Node", _definition.StartNodeId);
             _definition.StoryId = storyId;
@@ -48,17 +67,35 @@ namespace Game.Editor
             {
                 StoryNodeDefinition node = _definition.Nodes[i];
                 EditorGUILayout.BeginVertical("box");
+                bool expanded = _expandedNodes.Contains(i);
+                bool nextExpanded = EditorGUILayout.Foldout(
+                    expanded,
+                    string.IsNullOrWhiteSpace(node.NodeId) ? "Unnamed Node" : node.NodeId + "  [" + node.Type + "]",
+                    true
+                );
+                if (nextExpanded) _expandedNodes.Add(i); else _expandedNodes.Remove(i);
+                if (!nextExpanded)
+                {
+                    EditorGUILayout.EndVertical();
+                    continue;
+                }
                 node.NodeId = EditorGUILayout.TextField("Node ID", node.NodeId);
                 node.Type = (StoryNodeType)EditorGUILayout.EnumPopup("Type", node.Type);
                 if (node.Type == StoryNodeType.Dialogue)
-                    node.TextKey = EditorGUILayout.TextField("Text Key", node.TextKey);
+                {
+                    node.TextZhCn = EditorGUILayout.TextField("Dialogue (zh-CN)", node.TextZhCn);
+                    node.TextEnUs = EditorGUILayout.TextField("Dialogue (en-US)", node.TextEnUs);
+                }
                 if (
                     node.Type == StoryNodeType.Dialogue
                     || node.Type == StoryNodeType.ShowCharacter
                     || node.Type == StoryNodeType.HideCharacter
                     || node.Type == StoryNodeType.MoveCharacter
                 )
-                    node.SpeakerKey = EditorGUILayout.TextField("Speaker Key", node.SpeakerKey);
+                {
+                    node.SpeakerTextZhCn = EditorGUILayout.TextField("Speaker (zh-CN)", node.SpeakerTextZhCn);
+                    node.SpeakerTextEnUs = EditorGUILayout.TextField("Speaker (en-US)", node.SpeakerTextEnUs);
+                }
                 if (
                     node.Type == StoryNodeType.Dialogue
                     || node.Type == StoryNodeType.ShowCharacter
@@ -96,7 +133,8 @@ namespace Game.Editor
                     {
                         StoryChoiceDefinition choice = node.Choices[choiceIndex];
                         choice.ChoiceId = EditorGUILayout.TextField("Choice ID", choice.ChoiceId);
-                        choice.TextKey = EditorGUILayout.TextField("Choice Text", choice.TextKey);
+                        choice.TextZhCn = EditorGUILayout.TextField("Choice (zh-CN)", choice.TextZhCn);
+                        choice.TextEnUs = EditorGUILayout.TextField("Choice (en-US)", choice.TextEnUs);
                         choice.NextNodeId = EditorGUILayout.TextField("Choice Target", choice.NextNodeId);
                     }
                     if (GUILayout.Button("Add Choice"))
@@ -105,7 +143,8 @@ namespace Game.Editor
                             new StoryChoiceDefinition
                             {
                                 ChoiceId = "choice_" + node.Choices.Count,
-                                TextKey = "story.choice",
+                                TextZhCn = string.Empty,
+                                TextEnUs = string.Empty,
                                 NextNodeId = _definition.StartNodeId,
                             }
                         );
@@ -115,17 +154,54 @@ namespace Game.Editor
                     _previewNodeIndex = i;
                 if (GUILayout.Button("Remove Node"))
                 {
+                    Undo.RegisterCompleteObjectUndo(this, "Remove story node");
                     _definition.Nodes.RemoveAt(i);
                     i--;
                 }
+                EditorGUILayout.BeginHorizontal();
+                GUI.enabled = i > 0;
+                if (GUILayout.Button("Move Up"))
+                {
+                    Undo.RegisterCompleteObjectUndo(this, "Move story node up");
+                    StoryNodeDefinition previous = _definition.Nodes[i - 1];
+                    _definition.Nodes[i - 1] = node;
+                    _definition.Nodes[i] = previous;
+                }
+                GUI.enabled = i < _definition.Nodes.Count - 1;
+                if (GUILayout.Button("Move Down"))
+                {
+                    Undo.RegisterCompleteObjectUndo(this, "Move story node down");
+                    StoryNodeDefinition next = _definition.Nodes[i + 1];
+                    _definition.Nodes[i + 1] = node;
+                    _definition.Nodes[i] = next;
+                }
+                GUI.enabled = true;
+                if (GUILayout.Button("Duplicate"))
+                {
+                    Undo.RegisterCompleteObjectUndo(this, "Duplicate story node");
+                    StoryNodeDefinition copy = JsonUtility.FromJson<StoryNodeDefinition>(JsonUtility.ToJson(node));
+                    copy.NodeId = node.NodeId + "_copy";
+                    _definition.Nodes.Insert(i + 1, copy);
+                }
+                EditorGUILayout.EndHorizontal();
                 EditorGUILayout.EndVertical();
             }
             DrawAddButtons();
             EditorGUILayout.Space();
             DrawPreview();
-            _scroll = EditorGUILayout.BeginScrollView(_scroll, GUILayout.Height(120));
-            EditorGUILayout.TextArea(_json);
+            _showJsonPreview = EditorGUILayout.Foldout(_showJsonPreview, "Advanced: JSON Preview", true);
+            if (_showJsonPreview)
+            {
+                _scroll = EditorGUILayout.BeginScrollView(_scroll, GUILayout.Height(120));
+                EditorGUILayout.TextArea(_json);
+                EditorGUILayout.EndScrollView();
+            }
             EditorGUILayout.EndScrollView();
+            if (GUI.changed)
+            {
+                _dirty = true;
+                RefreshJson();
+            }
         }
 
         /// <summary>创建带起始对白和结束节点的新剧情。</summary>
@@ -141,128 +217,60 @@ namespace Game.Editor
                     {
                         NodeId = "start",
                         Type = StoryNodeType.Dialogue,
-                        TextKey = "story.new.start",
+                        TextZhCn = string.Empty,
+                        TextEnUs = string.Empty,
                         NextNodeId = "end",
                     },
                     new StoryNodeDefinition { NodeId = "end", Type = StoryNodeType.End },
                 },
             };
             _path = null;
+            _expandedNodes.Clear();
+            _showJsonPreview = false;
             RefreshJson();
         }
 
         /// <summary>绘制各类演出节点的添加按钮。</summary>
         private void DrawAddButtons()
         {
-            if (GUILayout.Button("Add Dialogue Node"))
+            EditorGUILayout.BeginHorizontal();
+            _newNodeType = (StoryNodeType)EditorGUILayout.EnumPopup("New Node", _newNodeType);
+            if (GUILayout.Button("Add Node", GUILayout.Width(100)))
             {
-                _definition.Nodes.Add(
-                    new StoryNodeDefinition
-                    {
-                        NodeId = "node_" + _definition.Nodes.Count,
-                        Type = StoryNodeType.Dialogue,
-                        TextKey = "story.new.text",
-                    }
-                );
+                var node = new StoryNodeDefinition
+                {
+                    NodeId = "node_" + _definition.Nodes.Count,
+                    Type = _newNodeType,
+                    NextNodeId = "end",
+                };
+                if (_newNodeType == StoryNodeType.Dialogue)
+                {
+                    node.TextZhCn = string.Empty;
+                    node.TextEnUs = string.Empty;
+                }
+                if (_newNodeType == StoryNodeType.ShowCharacter ||
+                    _newNodeType == StoryNodeType.HideCharacter ||
+                    _newNodeType == StoryNodeType.MoveCharacter)
+                    node.SpeakerCharacterId = "official.character.hani";
+                if (_newNodeType == StoryNodeType.ShowCg)
+                    node.AssetId = "official.cg.test_01";
+                if (_newNodeType == StoryNodeType.SetBackground)
+                    node.BackgroundId = "official.background.test_01";
+                if (_newNodeType == StoryNodeType.MoveCharacter)
+                    node.CharacterPosition = StoryCharacterPosition.Center;
+                if (_newNodeType == StoryNodeType.PlayAudio)
+                {
+                    node.AudioId = "official.audio.bgm_01";
+                    node.AudioKind = StoryAudioKind.Music;
+                }
+                if (_newNodeType == StoryNodeType.ScreenEffect)
+                    node.EffectType = StoryScreenEffectType.WhiteFlash;
+                if (_newNodeType == StoryNodeType.Wait)
+                    node.WaitSeconds = 1f;
+                _definition.Nodes.Add(node);
+                _expandedNodes.Add(_definition.Nodes.Count - 1);
             }
-            if (GUILayout.Button("Add Show Character Node"))
-            {
-                _definition.Nodes.Add(
-                    new StoryNodeDefinition
-                    {
-                        NodeId = "node_" + _definition.Nodes.Count,
-                        Type = StoryNodeType.ShowCharacter,
-                        SpeakerCharacterId = "official.character.hani",
-                        NextNodeId = "end",
-                    }
-                );
-            }
-            if (GUILayout.Button("Add Show CG Node"))
-            {
-                _definition.Nodes.Add(
-                    new StoryNodeDefinition
-                    {
-                        NodeId = "node_" + _definition.Nodes.Count,
-                        Type = StoryNodeType.ShowCg,
-                        AssetId = "official.cg.test_01",
-                        NextNodeId = "end",
-                    }
-                );
-            }
-            if (GUILayout.Button("Add Set Background Node"))
-            {
-                _definition.Nodes.Add(
-                    new StoryNodeDefinition
-                    {
-                        NodeId = "node_" + _definition.Nodes.Count,
-                        Type = StoryNodeType.SetBackground,
-                        BackgroundId = "official.background.test_01",
-                        NextNodeId = "end",
-                    }
-                );
-            }
-            if (GUILayout.Button("Add Hide Character Node"))
-            {
-                _definition.Nodes.Add(
-                    new StoryNodeDefinition
-                    {
-                        NodeId = "node_" + _definition.Nodes.Count,
-                        Type = StoryNodeType.HideCharacter,
-                        SpeakerCharacterId = "official.character.hani",
-                        NextNodeId = "end",
-                    }
-                );
-            }
-            if (GUILayout.Button("Add Move Character Node"))
-            {
-                _definition.Nodes.Add(
-                    new StoryNodeDefinition
-                    {
-                        NodeId = "node_" + _definition.Nodes.Count,
-                        Type = StoryNodeType.MoveCharacter,
-                        SpeakerCharacterId = "official.character.hani",
-                        CharacterPosition = StoryCharacterPosition.Center,
-                        NextNodeId = "end",
-                    }
-                );
-            }
-            if (GUILayout.Button("Add Play Audio Node"))
-            {
-                _definition.Nodes.Add(
-                    new StoryNodeDefinition
-                    {
-                        NodeId = "node_" + _definition.Nodes.Count,
-                        Type = StoryNodeType.PlayAudio,
-                        AudioId = "official.audio.bgm_01",
-                        AudioKind = StoryAudioKind.Music,
-                        NextNodeId = "end",
-                    }
-                );
-            }
-            if (GUILayout.Button("Add Screen Effect Node"))
-            {
-                _definition.Nodes.Add(
-                    new StoryNodeDefinition
-                    {
-                        NodeId = "node_" + _definition.Nodes.Count,
-                        Type = StoryNodeType.ScreenEffect,
-                        EffectType = StoryScreenEffectType.WhiteFlash,
-                        NextNodeId = "end",
-                    }
-                );
-            }
-            if (GUILayout.Button("Add Wait Node"))
-            {
-                _definition.Nodes.Add(
-                    new StoryNodeDefinition
-                    {
-                        NodeId = "node_" + _definition.Nodes.Count,
-                        Type = StoryNodeType.Wait,
-                        WaitSeconds = 1f,
-                        NextNodeId = "end",
-                    }
-                );
-            }
+            EditorGUILayout.EndHorizontal();
         }
 
         /// <summary>绘制选中节点的轻量摘要预览。</summary>
@@ -280,8 +288,10 @@ namespace Game.Editor
             switch (node.Type)
             {
                 case StoryNodeType.Dialogue:
-                    EditorGUILayout.LabelField("Text Key", node.TextKey);
-                    EditorGUILayout.LabelField("Speaker", node.SpeakerKey);
+                    EditorGUILayout.LabelField("Dialogue (zh-CN)", node.TextZhCn);
+                    EditorGUILayout.LabelField("Dialogue (en-US)", node.TextEnUs);
+                    EditorGUILayout.LabelField("Speaker (zh-CN)", node.SpeakerTextZhCn);
+                    EditorGUILayout.LabelField("Speaker (en-US)", node.SpeakerTextEnUs);
                     break;
                 case StoryNodeType.ShowCharacter:
                     EditorGUILayout.LabelField("Character", node.SpeakerCharacterId);
@@ -332,6 +342,8 @@ namespace Game.Editor
             }
             _definition = candidate;
             _path = path;
+            _expandedNodes.Clear();
+            _showJsonPreview = false;
             RefreshJson();
         }
 
@@ -356,6 +368,7 @@ namespace Game.Editor
                 File.Delete(_path);
             File.Move(temp, _path);
             AssetDatabase.Refresh();
+            _dirty = false;
         }
 
         /// <summary>校验并编译到 Generated，失败时不覆盖旧文件。</summary>

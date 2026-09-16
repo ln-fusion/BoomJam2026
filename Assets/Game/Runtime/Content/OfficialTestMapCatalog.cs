@@ -81,9 +81,11 @@ namespace Game.Content
                     {
                         NodeId = "start",
                         Type = StoryNodeType.Dialogue,
-                        SpeakerKey = "story.speaker.unknown",
+                        SpeakerTextZhCn = "未知角色",
+                        SpeakerTextEnUs = "Unknown",
                         SpeakerCharacterId = "official.character.hani",
-                        TextKey = "story.c06.start",
+                        TextZhCn = "测试剧情开始。",
+                        TextEnUs = "The test story begins.",
                         NextNodeId = "choice",
                     },
                     new StoryNodeDefinition
@@ -95,13 +97,15 @@ namespace Game.Content
                             new StoryChoiceDefinition
                             {
                                 ChoiceId = "left",
-                                TextKey = "story.c06.left",
+                                TextZhCn = "选择左边",
+                                TextEnUs = "Choose left",
                                 NextNodeId = "left_path",
                             },
                             new StoryChoiceDefinition
                             {
                                 ChoiceId = "right",
-                                TextKey = "story.c06.right",
+                                TextZhCn = "选择右边",
+                                TextEnUs = "Choose right",
                                 NextNodeId = "right_path",
                             },
                         },
@@ -122,10 +126,12 @@ namespace Game.Content
                     {
                         NodeId = "merge",
                         Type = StoryNodeType.Dialogue,
-                        SpeakerKey = "story.speaker.unknown",
+                        SpeakerTextZhCn = "未知角色",
+                        SpeakerTextEnUs = "Unknown",
                         SpeakerCharacterId = "official.character.hani",
                         AppearanceOverride = "official.appearance.hani.casual",
-                        TextKey = "story.c06.merge",
+                        TextZhCn = "分支汇合。",
+                        TextEnUs = "The branches merge.",
                         NextNodeId = "end",
                     },
                     new StoryNodeDefinition { NodeId = "end", Type = StoryNodeType.End },

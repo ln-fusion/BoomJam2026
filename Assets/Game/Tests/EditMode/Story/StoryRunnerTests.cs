@@ -21,7 +21,8 @@ namespace Game.Tests.EditMode.Story
                     {
                         NodeId = "start",
                         Type = Game.Contracts.Content.StoryNodeType.Dialogue,
-                        TextKey = "story.c07.start",
+                        TextZhCn = "测试对白。",
+                        TextEnUs = "Test dialogue.",
                         NextNodeId = "end",
                     },
                     new Game.Contracts.Content.StoryNodeDefinition

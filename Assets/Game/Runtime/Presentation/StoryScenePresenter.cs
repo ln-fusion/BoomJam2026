@@ -39,6 +39,7 @@ namespace Game.Presentation
             _panel = panelObject.AddComponent<StoryDialoguePanel>();
             _panel.SetSkipAction(Skip);
             _globalCanvas = FindObjectOfType<GlobalCanvasLayer>();
+            _panel.SetSettingsAction(() => _globalCanvas?.OpenSettings());
             _runtimeServices = runtimeServices;
             _localization = runtimeServices == null ? null : runtimeServices.Localization;
             if (_localization != null)
@@ -70,10 +71,10 @@ namespace Game.Presentation
                 return;
             GameObject instance = Instantiate(prefab, _panel.transform, false);
             StoryUiBindings bindings = instance.GetComponent<StoryUiBindings>();
-            if (bindings == null)
+            if (bindings == null || !bindings.IsComplete)
             {
                 Debug.LogWarning(
-                    "[StoryScenePresenter] ui.story-panel 预制体缺少 StoryUiBindings, 回退代码生成界面。",
+                    "[StoryScenePresenter] ui.story-panel 预制体绑定不完整，回退代码生成界面。",
                     this
                 );
                 Destroy(instance);
@@ -107,9 +108,10 @@ namespace Game.Presentation
             StoryNodeDefinition node = snapshot.CurrentNode;
             if (node.Type == StoryNodeType.Dialogue)
             {
-                string speakerKey = node.SpeakerKey ?? string.Empty;
-                _panel.AppendHistory(new StoryHistoryEntry(new StoryNodeId(node.NodeId), speakerKey, node.TextKey));
-                _panel.ShowDialogue(new StoryDialogueView(speakerKey, node.TextKey), ResolvePortrait(node), Advance);
+                string speaker = SelectStoryText(node.SpeakerTextZhCn, node.SpeakerTextEnUs, node.SpeakerKey, node);
+                string text = SelectStoryText(node.TextZhCn, node.TextEnUs, node.TextKey, node);
+                _panel.AppendHistory(new StoryHistoryEntry(new StoryNodeId(node.NodeId), speaker, text));
+                _panel.ShowDialogue(new StoryDialogueView(speaker, text), ResolvePortrait(node), Advance);
                 return;
             }
             if (node.Type == StoryNodeType.Choice)
@@ -118,7 +120,10 @@ namespace Game.Presentation
                 if (node.Choices != null)
                     foreach (StoryChoiceDefinition choice in node.Choices)
                         if (choice != null && !string.IsNullOrWhiteSpace(choice.ChoiceId))
-                            choices.Add(new StoryChoiceView(new ChoiceId(choice.ChoiceId), choice.TextKey));
+                            choices.Add(new StoryChoiceView(
+                                new ChoiceId(choice.ChoiceId),
+                                SelectStoryText(choice.TextZhCn, choice.TextEnUs, choice.TextKey, node)
+                            ));
                 _panel.ShowChoices(
                     choices.AsReadOnly(),
                     choice =>
@@ -130,7 +135,7 @@ namespace Game.Presentation
                                         new StoryNodeId(node.NodeId),
                                         string.Empty,
                                         string.Empty,
-                                        definition.TextKey
+                                        SelectStoryText(definition.TextZhCn, definition.TextEnUs, definition.TextKey, node)
                                     )
                                 );
                         Choose(choice);
@@ -188,6 +193,25 @@ namespace Game.Presentation
             }
 
             Advance();
+        }
+
+        /// <summary>按当前语言选择剧情文本，并在两种语言都缺失时输出定位日志。</summary>
+        /// <param name="zhCn">中文文本。</param>
+        /// <param name="enUs">英文文本。</param>
+        /// <param name="fallbackKey">旧版本地化 Key，仅用于尚未迁移的内容。</param>
+        /// <param name="node">当前节点，用于错误定位。</param>
+        /// <returns>当前语言文本或可用回退文本。</returns>
+        private string SelectStoryText(string zhCn, string enUs, string fallbackKey, StoryNodeDefinition node)
+        {
+            bool english = string.Equals(_localization?.CurrentLocaleCode, "en-US", StringComparison.OrdinalIgnoreCase);
+            string selected = english && !string.IsNullOrWhiteSpace(enUs) ? enUs : zhCn;
+            if (string.IsNullOrWhiteSpace(selected))
+                selected = enUs;
+            if (string.IsNullOrWhiteSpace(selected) && _localization != null && !string.IsNullOrWhiteSpace(fallbackKey))
+                selected = _localization.Get(new LocalizationKey(fallbackKey));
+            if (string.IsNullOrWhiteSpace(selected))
+                Debug.LogError("Missing story text: " + node.NodeId, this);
+            return selected ?? string.Empty;
         }
 
         /// <summary>解析节点立绘：显式覆盖优先，否则查询角色当前默认形象。</summary>

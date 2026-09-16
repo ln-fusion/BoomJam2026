@@ -34,7 +34,10 @@ namespace Game.Content
                     && !string.IsNullOrWhiteSpace(story.StoryId)
                 )
                 {
-                    result[story.StoryId] = story;
+                    if (StoryDefinitionValidator.TryValidate(story, out string validationError))
+                        result[story.StoryId] = story;
+                    else
+                        Debug.LogWarning("[GeneratedStoryLoader] 跳过无效剧情 " + story.StoryId + ": " + validationError);
                 }
                 else
                 {
