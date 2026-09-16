@@ -85,16 +85,8 @@ namespace Game.Tests.EditMode.Presentation
 
                 OpenHistory(root, panel);
                 Assert.That(panel.IsHistoryOpen, Is.True, "点击 History 按钮后覆盖层应打开");
-                Assert.That(
-                    FindComponent<Button>(root, "Continue").interactable,
-                    Is.False,
-                    "历史打开时应禁用继续按钮"
-                );
-                Assert.That(
-                    FindComponent<Button>(root, "Skip").interactable,
-                    Is.False,
-                    "历史打开时应禁用跳过按钮"
-                );
+                Assert.That(FindComponent<Button>(root, "Continue").interactable, Is.False, "历史打开时应禁用继续按钮");
+                Assert.That(FindComponent<Button>(root, "Skip").interactable, Is.False, "历史打开时应禁用跳过按钮");
 
                 // 打字机未结束时首次点击只补全文本, 第二次点击才推进；
                 // 因此历史打开状态下连续两次点击都不应触发推进回调。
@@ -122,13 +114,7 @@ namespace Game.Tests.EditMode.Presentation
             try
             {
                 var panel = root.AddComponent<StoryDialoguePanel>();
-                panel.AppendDialogueHistory(
-                    StoryId,
-                    new StoryNodeId("start"),
-                    null,
-                    null,
-                    "story.text.hello"
-                );
+                panel.AppendDialogueHistory(StoryId, new StoryNodeId("start"), null, null, "story.text.hello");
 
                 var scroll = FindComponent<ScrollRect>(root, "HistoryView");
                 Assert.That(scroll, Is.Not.Null, "HistoryView 应挂载 ScrollRect");
@@ -141,11 +127,7 @@ namespace Game.Tests.EditMode.Presentation
                     "Content 应就是历史文本"
                 );
                 Assert.That(scroll.content.GetComponent<ContentSizeFitter>(), Is.Not.Null);
-                Assert.That(
-                    FindComponent<RectMask2D>(root, "HistoryViewport"),
-                    Is.Not.Null,
-                    "Viewport 应裁剪超出区域"
-                );
+                Assert.That(FindComponent<RectMask2D>(root, "HistoryViewport"), Is.Not.Null, "Viewport 应裁剪超出区域");
             }
             finally
             {
@@ -163,13 +145,7 @@ namespace Game.Tests.EditMode.Presentation
                 var localization = new FakeLocalizationService();
                 var panel = root.AddComponent<StoryDialoguePanel>();
                 panel.SetLocalization(localization);
-                panel.AppendDialogueHistory(
-                    StoryId,
-                    new StoryNodeId("start"),
-                    null,
-                    null,
-                    "story.text.hello"
-                );
+                panel.AppendDialogueHistory(StoryId, new StoryNodeId("start"), null, null, "story.text.hello");
 
                 RunSync(() => localization.SetLocaleAsync("ja", CancellationToken.None));
                 OpenHistory(root, panel);
@@ -193,13 +169,7 @@ namespace Game.Tests.EditMode.Presentation
             {
                 var panel = root.AddComponent<StoryDialoguePanel>();
                 panel.SetLocalization(new FakeLocalizationService());
-                panel.AppendDialogueHistory(
-                    StoryId,
-                    new StoryNodeId("start"),
-                    null,
-                    null,
-                    "story.text.hello"
-                );
+                panel.AppendDialogueHistory(StoryId, new StoryNodeId("start"), null, null, "story.text.hello");
                 OpenHistory(root, panel);
 
                 panel.Clear();
@@ -210,11 +180,7 @@ namespace Game.Tests.EditMode.Presentation
                     Does.Contain("你好"),
                     "清空表现不应丢弃本会话历史"
                 );
-                Assert.That(
-                    FindComponent<Button>(root, "Continue").interactable,
-                    Is.True,
-                    "清空表现后输入阻塞应解除"
-                );
+                Assert.That(FindComponent<Button>(root, "Continue").interactable, Is.True, "清空表现后输入阻塞应解除");
             }
             finally
             {
@@ -231,28 +197,14 @@ namespace Game.Tests.EditMode.Presentation
             {
                 var panel = root.AddComponent<StoryDialoguePanel>();
                 panel.SetLocalization(new FakeLocalizationService());
-                panel.AppendDialogueHistory(
-                    StoryId,
-                    new StoryNodeId("start"),
-                    null,
-                    null,
-                    "story.text.hello"
-                );
+                panel.AppendDialogueHistory(StoryId, new StoryNodeId("start"), null, null, "story.text.hello");
                 OpenHistory(root, panel);
 
                 panel.ResetHistory();
 
                 Assert.That(panel.IsHistoryOpen, Is.False, "重置后历史覆盖层应关闭");
-                Assert.That(
-                    FindComponent<Text>(root, "HistoryText").text,
-                    Is.Empty,
-                    "重置后历史文本应为空"
-                );
-                Assert.That(
-                    FindComponent<Button>(root, "Continue").interactable,
-                    Is.True,
-                    "重置后输入阻塞应解除"
-                );
+                Assert.That(FindComponent<Text>(root, "HistoryText").text, Is.Empty, "重置后历史文本应为空");
+                Assert.That(FindComponent<Button>(root, "Continue").interactable, Is.True, "重置后输入阻塞应解除");
             }
             finally
             {
@@ -294,24 +246,27 @@ namespace Game.Tests.EditMode.Presentation
         /// <summary>返回按 Locale 分派文本的内存本地化替身, 用于验证文本快照语义。</summary>
         private sealed class FakeLocalizationService : ILocalizationService
         {
-            private static readonly Dictionary<string, string> Empty =
-                new Dictionary<string, string>(StringComparer.Ordinal);
-            private static readonly Dictionary<string, Dictionary<string, string>> Texts =
-                new Dictionary<string, Dictionary<string, string>>(StringComparer.OrdinalIgnoreCase)
+            private static readonly Dictionary<string, string> Empty = new Dictionary<string, string>(
+                StringComparer.Ordinal
+            );
+            private static readonly Dictionary<string, Dictionary<string, string>> Texts = new Dictionary<
+                string,
+                Dictionary<string, string>
+            >(StringComparer.OrdinalIgnoreCase)
+            {
+                ["zh-CN"] = new Dictionary<string, string>(StringComparer.Ordinal)
                 {
-                    ["zh-CN"] = new Dictionary<string, string>(StringComparer.Ordinal)
-                    {
-                        ["story.speaker.hani"] = "Hanī",
-                        ["story.text.hello"] = "你好",
-                        ["story.c06.left"] = "向左",
-                    },
-                    ["ja"] = new Dictionary<string, string>(StringComparer.Ordinal)
-                    {
-                        ["story.speaker.hani"] = "ハニー",
-                        ["story.text.hello"] = "こんにちは",
-                        ["story.c06.left"] = "左へ",
-                    },
-                };
+                    ["story.speaker.hani"] = "Hanī",
+                    ["story.text.hello"] = "你好",
+                    ["story.c06.left"] = "向左",
+                },
+                ["ja"] = new Dictionary<string, string>(StringComparer.Ordinal)
+                {
+                    ["story.speaker.hani"] = "ハニー",
+                    ["story.text.hello"] = "こんにちは",
+                    ["story.c06.left"] = "左へ",
+                },
+            };
 
             private string _currentLocaleCode = "zh-CN";
 
@@ -329,17 +284,13 @@ namespace Game.Tests.EditMode.Presentation
             {
                 cancellationToken.ThrowIfCancellationRequested();
                 if (string.IsNullOrWhiteSpace(localeCode))
-                    return Task.FromResult(
-                        Result.Failure(ErrorCode.LocaleUnsupported, "Locale code is required.")
-                    );
+                    return Task.FromResult(Result.Failure(ErrorCode.LocaleUnsupported, "Locale code is required."));
 
                 string normalizedCode = localeCode.Trim();
                 if (string.Equals(_currentLocaleCode, normalizedCode, StringComparison.OrdinalIgnoreCase))
                     return Task.FromResult(Result.Success());
                 if (!Texts.ContainsKey(normalizedCode))
-                    return Task.FromResult(
-                        Result.Failure(ErrorCode.LocaleUnsupported, "Locale is not supported.")
-                    );
+                    return Task.FromResult(Result.Failure(ErrorCode.LocaleUnsupported, "Locale is not supported."));
 
                 _currentLocaleCode = normalizedCode;
                 LocaleChanged?.Invoke(normalizedCode);
@@ -355,9 +306,7 @@ namespace Game.Tests.EditMode.Presentation
                 string value = key?.Value;
                 if (string.IsNullOrEmpty(value))
                     return string.Empty;
-                Dictionary<string, string> table = Texts.TryGetValue(_currentLocaleCode, out var found)
-                    ? found
-                    : Empty;
+                Dictionary<string, string> table = Texts.TryGetValue(_currentLocaleCode, out var found) ? found : Empty;
                 return table.TryGetValue(value, out string text) ? text : value;
             }
         }
