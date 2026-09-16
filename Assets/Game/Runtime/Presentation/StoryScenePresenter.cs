@@ -33,8 +33,7 @@ namespace Game.Presentation
             if (_runner != null)
                 return;
             _runtimeServices = runtimeServices;
-            _content = runtimeServices?.Content ??
-                new OfficialContentService(OfficialTestMapCatalog.CreateProvider());
+            _content = runtimeServices?.Content ?? new OfficialContentService(OfficialTestMapCatalog.CreateProvider());
             _runner = new StoryRunner(id => _content.GetStory(id));
             GameObject panelObject = new GameObject("StoryDialoguePanel");
             panelObject.transform.SetParent(transform, false);
@@ -371,7 +370,10 @@ namespace Game.Presentation
                 Debug.LogException(exception);
                 _globalCanvas?.ShowFeedback(exception.Message);
             }
-            finally { _isReturning = false; }
+            finally
+            {
+                _isReturning = false;
+            }
         }
     }
 }

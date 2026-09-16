@@ -188,12 +188,7 @@ namespace Game.Presentation
 
             // Viewport 需要自身可接收射线, 否则拖动与滚轮都无法命中; 同时它充当遮挡层,
             // 阻止历史打开时的点击穿透到底下的对白推进区域。
-            var viewport = new GameObject(
-                "HistoryViewport",
-                typeof(RectTransform),
-                typeof(Image),
-                typeof(RectMask2D)
-            );
+            var viewport = new GameObject("HistoryViewport", typeof(RectTransform), typeof(Image), typeof(RectMask2D));
             viewport.transform.SetParent(historyView.transform, false);
             var viewportImage = viewport.GetComponent<Image>();
             viewportImage.color = Color.clear;
@@ -218,8 +213,9 @@ namespace Game.Presentation
             contentRect.pivot = new Vector2(0.5f, 1f);
             contentRect.offsetMin = Vector2.zero;
             contentRect.offsetMax = Vector2.zero;
-            _historyText.gameObject.AddComponent<ContentSizeFitter>().verticalFit =
-                ContentSizeFitter.FitMode.PreferredSize;
+            _historyText.gameObject.AddComponent<ContentSizeFitter>().verticalFit = ContentSizeFitter
+                .FitMode
+                .PreferredSize;
 
             _historyScroll.viewport = viewportRect;
             _historyScroll.content = contentRect;
@@ -730,8 +726,13 @@ namespace Game.Presentation
         /// <param name="speakerCharacterId">说话角色稳定标识；可为空。</param>
         /// <param name="speakerKey">说话人本地化键；可为空。</param>
         /// <param name="textKey">正文本地化键。</param>
-        public void AppendDialogueHistory(StoryId storyId, StoryNodeId nodeId,
-            string speakerCharacterId, string speakerKey, string textKey)
+        public void AppendDialogueHistory(
+            StoryId storyId,
+            StoryNodeId nodeId,
+            string speakerCharacterId,
+            string speakerKey,
+            string textKey
+        )
         {
             CharacterId speakerId = string.IsNullOrWhiteSpace(speakerCharacterId)
                 ? null
@@ -753,8 +754,7 @@ namespace Game.Presentation
         /// <param name="nodeId">选项所在节点标识。</param>
         /// <param name="choiceId">玩家点击的选项稳定标识。</param>
         /// <param name="choiceTextKey">选项文本本地化键。</param>
-        public void AppendChoiceHistory(StoryId storyId, StoryNodeId nodeId, string choiceId,
-            string choiceTextKey)
+        public void AppendChoiceHistory(StoryId storyId, StoryNodeId nodeId, string choiceId, string choiceTextKey)
         {
             if (string.IsNullOrWhiteSpace(choiceId))
                 return;
@@ -776,11 +776,7 @@ namespace Game.Presentation
         {
             if (string.IsNullOrEmpty(key))
                 return LocalizedTextSnapshot.Empty;
-            return new LocalizedTextSnapshot(
-                key,
-                Localize(key),
-                _localization?.CurrentLocaleCode ?? string.Empty
-            );
+            return new LocalizedTextSnapshot(key, Localize(key), _localization?.CurrentLocaleCode ?? string.Empty);
         }
 
         /// <summary>继续按钮点击处理。</summary>
