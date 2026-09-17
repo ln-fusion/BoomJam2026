@@ -5,30 +5,128 @@ using Game.Foundation;
 
 namespace Game.Contracts.Story
 {
+    /// <summary>某次显示时解析完成的文本快照，用于在会话内切换语言后仍按当时所见回放历史。</summary>
+    public sealed class LocalizedTextSnapshot
+    {
+        /// <summary>解析时使用的本地化键；无键时为空字符串。</summary>
+        public string Key { get; }
+        /// <summary>本次实际显示的文本；剧情播放时来自 JSON 语言选择结果。</summary>
+        public string Text { get; }
+        /// <summary>解析时生效的 Locale 代码；未知时为空字符串。</summary>
+        public string LocaleCode { get; }
+
+        /// <summary>不含任何可见文本的空快照，供可为空的字段复用。</summary>
+        public static LocalizedTextSnapshot Empty { get; } = new LocalizedTextSnapshot(
+            string.Empty,
+            string.Empty,
+            string.Empty
+        );
+
+        /// <summary>创建文本快照。</summary>
+        /// <param name="key">本次使用的本地化键。</param>
+        /// <param name="text">本次实际显示的文本。</param>
+        /// <param name="localeCode">解析时生效的 Locale 代码。</param>
+        public LocalizedTextSnapshot(string key, string text, string localeCode)
+        {
+            Key = key ?? string.Empty;
+            Text = text ?? string.Empty;
+            LocaleCode = localeCode ?? string.Empty;
+        }
+
+        /// <summary>是否不含可见文本。</summary>
+        public bool IsEmpty => string.IsNullOrEmpty(Text);
+    }
+
     /// <summary>剧情历史页中的一条实际经过记录。</summary>
     public sealed class StoryHistoryEntry
     {
-        /// <summary>节点稳定标识。</summary>
+        /// <summary>所属会话内的追加序号，从 0 开始递增。</summary>
+        public long Sequence { get; }
+        /// <summary>所属剧情稳定标识。</summary>
+        public StoryId StoryId { get; }
+        /// <summary>实际经过的节点稳定标识。</summary>
         public StoryNodeId NodeId { get; }
-        /// <summary>实际显示的说话人文本快照。</summary>
-        public string SpeakerText { get; }
-        /// <summary>实际显示的正文文本快照。</summary>
-        public string Text { get; }
-        /// <summary>实际选择的选项文本快照；非选项节点为空。</summary>
-        public string ChoiceText { get; }
+        /// <summary>说话角色稳定标识；叙述或选项记录为 null。</summary>
+        public CharacterId SpeakerId { get; }
+        /// <summary>说话人文本快照；无说话人时为空快照。</summary>
+        public LocalizedTextSnapshot Speaker { get; }
+        /// <summary>正文或选项文本快照。</summary>
+        public LocalizedTextSnapshot Text { get; }
+        /// <summary>玩家点击的选项稳定标识；对白记录为 null。</summary>
+        public ChoiceId SelectedChoiceId { get; }
+        /// <summary>是否为玩家点击选项产生的记录。</summary>
+        public bool IsChoice { get; }
 
-        /// <summary>创建历史记录。</summary>
-        /// <param name="nodeId">实际显示的节点标识。</param>
-        /// <param name="speakerKey">说话人键。</param>
-        /// <param name="textKey">正文键。</param>
-        /// <param name="choiceText">选项文本，可为空。</param>
-        public StoryHistoryEntry(StoryNodeId nodeId, string speakerText, string text,
-            string choiceText = null)
+        /// <summary>创建一条剧情历史记录。</summary>
+        /// <param name="sequence">所属会话内的追加序号。</param>
+        /// <param name="storyId">所属剧情稳定标识。</param>
+        /// <param name="nodeId">实际经过的节点标识。</param>
+        /// <param name="speakerId">说话角色；可为 null。</param>
+        /// <param name="speaker">说话人文本快照；为 null 时使用空快照。</param>
+        /// <param name="text">正文文本快照；为 null 时使用空快照。</param>
+        /// <param name="selectedChoiceId">已选选项标识；非选项记录为 null。</param>
+        /// <param name="isChoice">是否为选项记录。</param>
+        /// <exception cref="ArgumentNullException">剧情标识或节点标识为 null 时抛出。</exception>
+        public StoryHistoryEntry(long sequence, StoryId storyId, StoryNodeId nodeId,
+            CharacterId speakerId, LocalizedTextSnapshot speaker, LocalizedTextSnapshot text,
+            ChoiceId selectedChoiceId, bool isChoice)
         {
+            Sequence = sequence;
+            StoryId = storyId ?? throw new ArgumentNullException(nameof(storyId));
             NodeId = nodeId ?? throw new ArgumentNullException(nameof(nodeId));
-            SpeakerText = speakerText ?? string.Empty;
-            Text = text ?? string.Empty;
-            ChoiceText = choiceText ?? string.Empty;
+            SpeakerId = speakerId;
+            Speaker = speaker ?? LocalizedTextSnapshot.Empty;
+            Text = text ?? LocalizedTextSnapshot.Empty;
+            SelectedChoiceId = selectedChoiceId;
+            IsChoice = isChoice;
+        }
+
+        /// <summary>创建一条对白或叙述记录。</summary>
+        /// <param name="sequence">所属会话内的追加序号。</param>
+        /// <param name="storyId">所属剧情稳定标识。</param>
+        /// <param name="nodeId">实际经过的节点标识。</param>
+        /// <param name="speakerId">说话角色；可为 null。</param>
+        /// <param name="speaker">说话人文本快照；可为 null。</param>
+        /// <param name="text">正文文本快照；可为 null。</param>
+        /// <returns>非选项类型的记录。</returns>
+        /// <exception cref="ArgumentNullException">剧情标识或节点标识为 null 时抛出。</exception>
+        public static StoryHistoryEntry ForDialogue(long sequence, StoryId storyId,
+            StoryNodeId nodeId, CharacterId speakerId, LocalizedTextSnapshot speaker,
+            LocalizedTextSnapshot text)
+        {
+            return new StoryHistoryEntry(
+                sequence,
+                storyId,
+                nodeId,
+                speakerId,
+                speaker,
+                text,
+                null,
+                false
+            );
+        }
+
+        /// <summary>创建一条玩家选项记录。</summary>
+        /// <param name="sequence">所属会话内的追加序号。</param>
+        /// <param name="storyId">所属剧情稳定标识。</param>
+        /// <param name="nodeId">选项所在节点标识。</param>
+        /// <param name="selectedChoiceId">玩家点击的选项标识。</param>
+        /// <param name="choiceText">选项文本快照；可为 null。</param>
+        /// <returns>选项类型的记录。</returns>
+        /// <exception cref="ArgumentNullException">剧情标识、节点标识或选项标识为 null 时抛出。</exception>
+        public static StoryHistoryEntry ForChoice(long sequence, StoryId storyId,
+            StoryNodeId nodeId, ChoiceId selectedChoiceId, LocalizedTextSnapshot choiceText)
+        {
+            return new StoryHistoryEntry(
+                sequence,
+                storyId,
+                nodeId,
+                null,
+                LocalizedTextSnapshot.Empty,
+                choiceText,
+                selectedChoiceId ?? throw new ArgumentNullException(nameof(selectedChoiceId)),
+                true
+            );
         }
     }
 
@@ -41,8 +139,8 @@ namespace Game.Contracts.Story
         public string Text { get; }
 
         /// <summary>创建对白显示数据。</summary>
-        /// <param name="speakerKey">说话人名称键。</param>
-        /// <param name="textKey">正文键。</param>
+        /// <param name="speakerText">说话人实际文本。</param>
+        /// <param name="text">正文实际文本。</param>
         public StoryDialogueView(string speakerText, string text)
         {
             SpeakerText = speakerText ?? string.Empty;
@@ -60,7 +158,7 @@ namespace Game.Contracts.Story
 
         /// <summary>创建选项显示数据。</summary>
         /// <param name="choiceId">选项标识。</param>
-        /// <param name="textKey">选项文本键。</param>
+        /// <param name="text">选项实际文本。</param>
         public StoryChoiceView(ChoiceId choiceId, string text)
         {
             ChoiceId = choiceId ?? throw new ArgumentNullException(nameof(choiceId));

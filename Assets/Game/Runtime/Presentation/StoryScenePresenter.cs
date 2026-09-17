@@ -110,7 +110,7 @@ namespace Game.Presentation
             {
                 string speaker = SelectStoryText(node.SpeakerTextZhCn, node.SpeakerTextEnUs, node.SpeakerKey, node);
                 string text = SelectStoryText(node.TextZhCn, node.TextEnUs, node.TextKey, node);
-                _panel.AppendHistory(new StoryHistoryEntry(new StoryNodeId(node.NodeId), speaker, text));
+                _panel.AppendDialogueHistory(_storyId, new StoryNodeId(node.NodeId), node.SpeakerCharacterId, speaker, text);
                 _panel.ShowDialogue(new StoryDialogueView(speaker, text), ResolvePortrait(node), Advance);
                 return;
             }
@@ -130,13 +130,11 @@ namespace Game.Presentation
                     {
                         foreach (StoryChoiceDefinition definition in node.Choices)
                             if (definition != null && definition.ChoiceId == choice.Value)
-                                _panel.AppendHistory(
-                                    new StoryHistoryEntry(
-                                        new StoryNodeId(node.NodeId),
-                                        string.Empty,
-                                        string.Empty,
-                                        SelectStoryText(definition.TextZhCn, definition.TextEnUs, definition.TextKey, node)
-                                    )
+                                _panel.AppendChoiceHistory(
+                                    _storyId,
+                                    new StoryNodeId(node.NodeId),
+                                    choice.Value,
+                                    SelectStoryText(definition.TextZhCn, definition.TextEnUs, definition.TextKey, node)
                                 );
                         Choose(choice);
                     }
@@ -272,11 +270,60 @@ namespace Game.Presentation
         /// <summary>执行整段剧情跳过并清理表现。</summary>
         private void Skip()
         {
+            StorySnapshot before = _runner.GetSnapshot();
             Result result = _runner.Skip();
             if (!result.IsSuccess)
                 Debug.LogError("Story skip failed: " + result.Message, this);
             else
+            {
+                AppendSkippedHistory(before);
                 RenderCurrentNode();
+            }
+        }
+
+        /// <summary>把跳过期间实际访问的对白和默认选项补入历史记录。</summary>
+        /// <param name="before">跳过前的剧情快照。</param>
+        private void AppendSkippedHistory(StorySnapshot before)
+        {
+            StorySnapshot after = _runner.GetSnapshot();
+            if (after?.VisitedNodes == null || _content == null)
+                return;
+            var seen = new HashSet<string>(StringComparer.Ordinal);
+            if (before?.VisitedNodes != null)
+                foreach (StoryNodeId id in before.VisitedNodes)
+                    if (id != null) seen.Add(id.Value);
+            StoryDefinition definition = _content.GetStory(_storyId);
+            foreach (StoryNodeId id in after.VisitedNodes)
+            {
+                if (id == null || !seen.Add(id.Value)) continue;
+                StoryNodeDefinition node = FindNode(definition, id.Value);
+                if (node == null) continue;
+                if (node.Type == StoryNodeType.Dialogue)
+                {
+                    _panel.AppendDialogueHistory(_storyId, id, node.SpeakerCharacterId,
+                        SelectStoryText(node.SpeakerTextZhCn, node.SpeakerTextEnUs, node.SpeakerKey, node),
+                        SelectStoryText(node.TextZhCn, node.TextEnUs, node.TextKey, node));
+                }
+                else if (node.Type == StoryNodeType.Choice && node.Choices != null && node.Choices.Count > 0)
+                {
+                    StoryChoiceDefinition choice = node.Choices[0];
+                    if (choice != null)
+                        _panel.AppendChoiceHistory(_storyId, id, choice.ChoiceId,
+                            SelectStoryText(choice.TextZhCn, choice.TextEnUs, choice.TextKey, node));
+                }
+            }
+        }
+
+        /// <summary>按节点标识查找剧情节点。</summary>
+        /// <param name="definition">剧情定义。</param>
+        /// <param name="nodeId">节点标识。</param>
+        /// <returns>匹配节点，找不到时返回 null。</returns>
+        private static StoryNodeDefinition FindNode(StoryDefinition definition, string nodeId)
+        {
+            if (definition?.Nodes == null) return null;
+            foreach (StoryNodeDefinition node in definition.Nodes)
+                if (node != null && string.Equals(node.NodeId, nodeId, StringComparison.Ordinal)) return node;
+            return null;
         }
 
         /// <summary>剧情结束后提交完成事实，再按流程返回地图或进入占位关卡。</summary>

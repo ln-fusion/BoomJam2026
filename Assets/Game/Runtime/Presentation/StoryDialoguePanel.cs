@@ -36,9 +36,10 @@ namespace Game.Presentation
         private Action _waitSkipAction;
         private string _fullText = string.Empty;
         private readonly List<StoryHistoryEntry> _history = new List<StoryHistoryEntry>();
-        private readonly List<string> _historyDisplay = new List<string>();
         private Text _historyText;
         private GameObject _historyView;
+        private ScrollRect _historyScroll;
+        private long _historySequence;
         private ILocalizationService _localization;
         private string _currentCharacterId;
         private IStoryStageAssetSource _stageAssets;
@@ -66,6 +67,7 @@ namespace Game.Presentation
             _choicesRoot = bindings.ChoicesRoot;
             _historyView = bindings.HistoryView;
             _historyText = bindings.HistoryText;
+            _historyScroll = _historyView == null ? null : _historyView.GetComponentInChildren<ScrollRect>(true);
             _settingsButton = bindings.SettingsButton;
             _choiceButtonTemplate = bindings.ChoiceButtonTemplate;
             if (_effect != null)
@@ -188,19 +190,56 @@ namespace Game.Presentation
                 .gameObject;
             var historyRectView = _historyView.GetComponent<RectTransform>();
             UiFactory.Stretch(historyRectView, new Vector2(0.04f, 0.2f));
+            CreateHistoryScroll(_historyView);
+            _historyView.SetActive(false);
+            // 屏幕效果层（白闪/红闪/黑屏/模糊）必须覆盖 CG 与对话面板,
+            // 否则会被后创建的 CgLayer 和 DialoguePanel 遮挡, 只能压暗背景。
+            _effect.transform.SetAsLastSibling();
+        }
+
+        /// <summary>在历史覆盖层内建立垂直滚动结构, 并把正文文本挂到可增长的 Content 上。</summary>
+        /// <param name="historyView">历史覆盖层根节点。</param>
+        private void CreateHistoryScroll(GameObject historyView)
+        {
+            _historyScroll = historyView.AddComponent<ScrollRect>();
+            _historyScroll.horizontal = false;
+            _historyScroll.vertical = true;
+            _historyScroll.movementType = ScrollRect.MovementType.Clamped;
+            _historyScroll.scrollSensitivity = 30f;
+
+            // Viewport 需要自身可接收射线, 否则拖动与滚轮都无法命中; 同时它充当遮挡层,
+            // 阻止历史打开时的点击穿透到底下的对白推进区域。
+            var viewport = new GameObject("HistoryViewport", typeof(RectTransform), typeof(Image), typeof(RectMask2D));
+            viewport.transform.SetParent(historyView.transform, false);
+            var viewportImage = viewport.GetComponent<Image>();
+            viewportImage.color = Color.clear;
+            var viewportRect = viewport.GetComponent<RectTransform>();
+            UiFactory.Stretch(viewportRect, new Vector2(16f, 16f));
+
+            // 内容文本顶部对齐并以首选高度向上撑开: Text 必须改为 Overflow,
+            // 否则 CreateText 默认的 Truncate 会让 ContentSizeFitter 量不出真实高度。
             _historyText = UiFactory.CreateText(
                 "HistoryText",
-                _historyView.transform,
+                viewport.transform,
                 string.Empty,
                 22,
                 UiTheme.Text,
                 TextAnchor.UpperLeft
             );
-            UiFactory.Stretch(_historyText.rectTransform, new Vector2(16f, 16f));
-            _historyView.SetActive(false);
-            // 屏幕效果层（白闪/红闪/黑屏/模糊）必须覆盖 CG 与对话面板,
-            // 否则会被后创建的 CgLayer 和 DialoguePanel 遮挡, 只能压暗背景。
-            _effect.transform.SetAsLastSibling();
+            _historyText.verticalOverflow = VerticalWrapMode.Overflow;
+            _historyText.raycastTarget = false;
+            var contentRect = _historyText.rectTransform;
+            contentRect.anchorMin = new Vector2(0f, 1f);
+            contentRect.anchorMax = new Vector2(1f, 1f);
+            contentRect.pivot = new Vector2(0.5f, 1f);
+            contentRect.offsetMin = Vector2.zero;
+            contentRect.offsetMax = Vector2.zero;
+            _historyText.gameObject.AddComponent<ContentSizeFitter>().verticalFit = ContentSizeFitter
+                .FitMode
+                .PreferredSize;
+
+            _historyScroll.viewport = viewportRect;
+            _historyScroll.content = contentRect;
         }
 
         /// <summary>创建左/中/右三个立绘槽位并默认隐藏。</summary>
@@ -224,11 +263,17 @@ namespace Game.Presentation
             }
         }
 
-        /// <summary>空格键触发当前对白继续。</summary>
+        /// <summary>空格键触发当前对白继续；历史覆盖层打开时改为只响应 Esc 关闭。</summary>
         private void Update()
         {
             if (_inputBlocked)
                 return;
+            if (IsHistoryOpen)
+            {
+                if (Input.GetKeyDown(KeyCode.Escape))
+                    ToggleHistory();
+                return;
+            }
             if (_continueAction != null && Input.GetKeyDown(KeyCode.Space))
                 ContinueClicked();
         }
@@ -237,7 +282,8 @@ namespace Game.Presentation
         /// <param name="eventData">Unity UI 指针事件。</param>
         public void OnPointerClick(PointerEventData eventData)
         {
-            if (_inputBlocked)
+            // 历史层内的点击会冒泡到本组件所在的根节点, 必须显式拦截, 否则查看历史会误推进剧情。
+            if (_inputBlocked || IsHistoryOpen)
                 return;
             if (_continueAction != null)
                 ContinueClicked();
@@ -555,19 +601,29 @@ namespace Game.Presentation
         /// <param name="onSettings">设置按钮点击回调。</param>
         public void SetSettingsAction(Action onSettings) => _settingsAction = onSettings;
 
+        /// <summary>历史覆盖层当前是否可见。</summary>
+        public bool IsHistoryOpen => _historyView != null && _historyView.activeSelf;
+
         /// <summary>设置剧情输入是否被设置弹窗阻塞。</summary>
         /// <param name="blocked">为 true 时忽略点击、空格和跳过操作。</param>
         public void SetInputBlocked(bool blocked)
         {
             _inputBlocked = blocked;
+            SyncInteractable();
+        }
+
+        /// <summary>根据设置弹窗和历史面板状态同步剧情控件交互。</summary>
+        private void SyncInteractable()
+        {
+            bool blocked = _inputBlocked || IsHistoryOpen;
             if (_skipButton != null)
                 _skipButton.interactable = !blocked;
             if (_continue != null)
                 _continue.interactable = !blocked;
             if (_historyButton != null)
-                _historyButton.interactable = !blocked;
+                _historyButton.interactable = !_inputBlocked;
             if (_settingsButton != null)
-                _settingsButton.interactable = !blocked;
+                _settingsButton.interactable = !_inputBlocked;
             if (_choicesRoot != null)
                 foreach (Button choice in _choicesRoot.GetComponentsInChildren<Button>(true))
                     choice.interactable = !blocked;
@@ -612,7 +668,7 @@ namespace Game.Presentation
                     );
                 }
                 button.onClick.AddListener(() => _choiceAction?.Invoke(choice.ChoiceId));
-                button.interactable = !_inputBlocked;
+                button.interactable = !_inputBlocked && !IsHistoryOpen;
                 RectTransform rect = button.GetComponent<RectTransform>();
                 rect.anchorMin = new Vector2(0f, 1f);
                 rect.anchorMax = new Vector2(1f, 1f);
@@ -625,7 +681,7 @@ namespace Game.Presentation
         /// <summary>首次点击显示跳过确认，第二次点击执行跳过。</summary>
         private void RequestSkip()
         {
-            if (_inputBlocked)
+            if (_inputBlocked || IsHistoryOpen)
                 return;
             if (!_skipPending)
             {
@@ -657,7 +713,7 @@ namespace Game.Presentation
                 text.text = label;
         }
 
-        /// <inheritdoc/>
+        /// <summary>清空剧情表现，但保留本会话历史；新剧情开始时由 ResetHistory 重置。</summary>
         public void Clear()
         {
             if (_speaker != null)
@@ -683,37 +739,100 @@ namespace Game.Presentation
             }
             _continueAction = null;
             StopTyping();
-            _history.Clear();
-            _historyDisplay.Clear();
             if (_historyView != null)
                 _historyView.SetActive(false);
             ClearChoices();
+            SyncInteractable();
         }
 
-        /// <summary>追加一条实际经过的剧情历史。</summary>
+        /// <summary>重置本会话的历史记录, 应在剧情开始时调用。</summary>
+        public void ResetHistory()
+        {
+            _history.Clear();
+            _historySequence = 0;
+            if (_historyView != null)
+                _historyView.SetActive(false);
+            RefreshHistory();
+            SyncInteractable();
+        }
+
+        /// <summary>追加一条已构造完成的剧情历史，序号由调用方决定。</summary>
         /// <param name="entry">历史记录。</param>
         public void AppendHistory(StoryHistoryEntry entry)
         {
             if (entry == null)
                 return;
+            BuildPreview();
             _history.Add(entry);
-            string speaker = entry.SpeakerText;
-            string text = entry.Text;
-            string choice = entry.ChoiceText;
-            var display = new StringBuilder();
-            if (!string.IsNullOrEmpty(speaker))
-                display.Append(speaker).Append(' ');
-            if (!string.IsNullOrEmpty(text))
-                display.Append(text);
-            if (!string.IsNullOrEmpty(entry.ChoiceText))
-                display.Append(" [").Append(choice).Append(']');
-            _historyDisplay.Add(display.ToString());
             RefreshHistory();
+        }
+
+        /// <summary>追加一条对白记录，并在追加时保存 JSON 已选择的说话人与正文文本快照。</summary>
+        /// <param name="storyId">所属剧情稳定标识。</param>
+        /// <param name="nodeId">实际经过的节点标识。</param>
+        /// <param name="speakerCharacterId">说话角色稳定标识；可为空。</param>
+        /// <param name="speakerText">说话人实际文本；可为空。</param>
+        /// <param name="text">正文实际文本。</param>
+        public void AppendDialogueHistory(
+            StoryId storyId,
+            StoryNodeId nodeId,
+            string speakerCharacterId,
+            string speakerText,
+            string text
+        )
+        {
+            CharacterId speakerId = string.IsNullOrWhiteSpace(speakerCharacterId)
+                ? null
+                : new CharacterId(speakerCharacterId);
+            AppendHistory(
+                StoryHistoryEntry.ForDialogue(
+                    _historySequence++,
+                    storyId,
+                    nodeId,
+                    speakerId,
+                    Snapshot(speakerText),
+                    Snapshot(text)
+                )
+            );
+        }
+
+        /// <summary>追加一条玩家选项记录，并在追加时保存 JSON 已选择的选项文本快照。</summary>
+        /// <param name="storyId">所属剧情稳定标识。</param>
+        /// <param name="nodeId">选项所在节点标识。</param>
+        /// <param name="choiceId">玩家点击的选项稳定标识。</param>
+        /// <param name="choiceText">选项实际文本。</param>
+        public void AppendChoiceHistory(StoryId storyId, StoryNodeId nodeId, string choiceId, string choiceText)
+        {
+            if (string.IsNullOrWhiteSpace(choiceId))
+                return;
+            AppendHistory(
+                StoryHistoryEntry.ForChoice(
+                    _historySequence++,
+                    storyId,
+                    nodeId,
+                    new ChoiceId(choiceId),
+                    Snapshot(choiceText)
+                )
+            );
+        }
+
+        /// <summary>为 JSON 实际文本建立不可变快照，不查询本地化表。</summary>
+        /// <param name="text">实际显示文本；为空时返回空快照。</param>
+        /// <returns>保留实际文本与 Locale 的快照。</returns>
+        private LocalizedTextSnapshot Snapshot(string text)
+        {
+            if (string.IsNullOrEmpty(text))
+                return LocalizedTextSnapshot.Empty;
+            // JSON 文本是权威来源；仅在传入值本身是旧 Key 且本地化服务能解析时兼容转换。
+            string resolved = _localization == null ? text : Localize(text);
+            return new LocalizedTextSnapshot(string.Empty, resolved, _localization?.CurrentLocaleCode ?? string.Empty);
         }
 
         /// <summary>继续按钮点击处理。</summary>
         private void ContinueClicked()
         {
+            if (_inputBlocked || IsHistoryOpen)
+                return;
             if (_waitCoroutine != null)
             {
                 // 等待期间点击立即结束等待。
@@ -763,24 +882,51 @@ namespace Game.Presentation
             _typingCoroutine = null;
         }
 
-        /// <summary>切换历史记录覆盖层。</summary>
+        /// <summary>切换历史记录覆盖层, 并同步输入阻塞状态。</summary>
         private void ToggleHistory()
         {
             if (_historyView == null)
                 return;
             _historyView.SetActive(!_historyView.activeSelf);
             RefreshHistory();
+            SyncInteractable();
         }
 
-        /// <summary>刷新历史记录文本。</summary>
+        /// <summary>渲染历史记录文本并滚动到最新一条。</summary>
         private void RefreshHistory()
         {
             if (_historyText == null)
                 return;
             var builder = new StringBuilder();
-            foreach (string entry in _historyDisplay)
-                builder.AppendLine(entry);
+            foreach (StoryHistoryEntry entry in _history)
+            {
+                // 只写快照文本: 历史必须保持玩家当时所见, 不能在语言切换后重新解析键。
+                if (entry.IsChoice)
+                {
+                    if (entry.Text.IsEmpty)
+                        continue;
+                    builder.Append("> ").Append(entry.Text.Text).AppendLine();
+                    continue;
+                }
+                if (entry.Speaker.IsEmpty && entry.Text.IsEmpty)
+                    continue;
+                if (!entry.Speaker.IsEmpty)
+                    builder.Append(entry.Speaker.Text).Append(": ");
+                builder.Append(entry.Text.Text).AppendLine();
+            }
             _historyText.text = builder.ToString();
+            ScrollHistoryToBottom();
+        }
+
+        /// <summary>把历史滚动条定位到最新一条。</summary>
+        private void ScrollHistoryToBottom()
+        {
+            if (_historyScroll == null || !_historyScroll.gameObject.activeInHierarchy)
+                return;
+            // 编辑模式下不强制重建布局, 避免在无渲染循环时产生额外开销。
+            if (Application.isPlaying)
+                Canvas.ForceUpdateCanvases();
+            _historyScroll.verticalNormalizedPosition = 0f;
         }
 
         /// <summary>移除当前选项按钮。</summary>
