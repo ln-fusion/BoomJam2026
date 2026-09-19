@@ -25,8 +25,8 @@ MonoBehaviour:
     MapId: official.map.test_01
     DisplayNameKey: level.test_01_01
     SortOrder: 1
-    PreludeStoryId: story.full_feature_test
-    PostludeStoryId: official.story.postlude.test_01_01
+    PreludeStoryId: story.test_branch
+    PostludeStoryId: story.test_branch
     UnlockRequirement:
       Mode: 0
       RequiredLevelIds: []
@@ -68,8 +68,8 @@ MonoBehaviour:
     MapId: official.map.test_01
     DisplayNameKey: level.test_01_02
     SortOrder: 2
-    PreludeStoryId: official.story.prelude.test_01_02
-    PostludeStoryId: official.story.postlude.test_01_02
+    PreludeStoryId: story.test_branch
+    PostludeStoryId: story.test_branch
     UnlockRequirement:
       Mode: 1
       RequiredLevelIds:
@@ -112,8 +112,8 @@ MonoBehaviour:
     MapId: official.map.test_01
     DisplayNameKey: level.test_01_03
     SortOrder: 3
-    PreludeStoryId: official.story.prelude.test_01_03
-    PostludeStoryId: official.story.postlude.test_01_03
+    PreludeStoryId: story.test_branch
+    PostludeStoryId: story.test_branch
     UnlockRequirement:
       Mode: 1
       RequiredLevelIds:
@@ -156,8 +156,8 @@ MonoBehaviour:
     MapId: official.map.test_01
     DisplayNameKey: level.test_01_04
     SortOrder: 4
-    PreludeStoryId: official.story.prelude.test_01_04
-    PostludeStoryId: official.story.postlude.test_01_04
+    PreludeStoryId: story.test_branch
+    PostludeStoryId: story.test_branch
     UnlockRequirement:
       Mode: 1
       RequiredLevelIds:
@@ -200,8 +200,8 @@ MonoBehaviour:
     MapId: official.map.test_01
     DisplayNameKey: level.test_01_05
     SortOrder: 5
-    PreludeStoryId: official.story.prelude.test_01_05
-    PostludeStoryId: official.story.postlude.test_01_05
+    PreludeStoryId: story.test_branch
+    PostludeStoryId: story.test_branch
     UnlockRequirement:
       Mode: 1
       RequiredLevelIds:
@@ -1414,7 +1414,11 @@ MonoBehaviour:
     Nodes:
     - NodeId: start
       Type: 0
+      TextZhCn: 
+      TextEnUs: 
       TextKey: story.c06.start
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -1430,7 +1434,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: choice
       Type: 1
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -1445,14 +1453,22 @@ MonoBehaviour:
       NextNodeId: 
       Choices:
       - ChoiceId: left
+        TextZhCn: 
+        TextEnUs: 
         TextKey: story.c06.left
         NextNodeId: left_path
       - ChoiceId: right
+        TextZhCn: 
+        TextEnUs: 
         TextKey: story.c06.right
         NextNodeId: right_path
     - NodeId: left_path
       Type: 2
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -1468,7 +1484,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: right_path
       Type: 2
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -1484,7 +1504,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: merge
       Type: 0
+      TextZhCn: 
+      TextEnUs: 
       TextKey: story.c06.merge
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -1500,7 +1524,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: end
       Type: 3
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -1527,7 +1555,11 @@ MonoBehaviour:
     Nodes:
     - NodeId: start
       Type: 0
+      TextZhCn: 
+      TextEnUs: 
       TextKey: story.c06.start
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -1543,7 +1575,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: choice
       Type: 1
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -1558,14 +1594,22 @@ MonoBehaviour:
       NextNodeId: 
       Choices:
       - ChoiceId: left
+        TextZhCn: 
+        TextEnUs: 
         TextKey: story.c06.left
         NextNodeId: left_path
       - ChoiceId: right
+        TextZhCn: 
+        TextEnUs: 
         TextKey: story.c06.right
         NextNodeId: right_path
     - NodeId: left_path
       Type: 2
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -1581,7 +1625,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: right_path
       Type: 2
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -1597,7 +1645,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: merge
       Type: 0
+      TextZhCn: 
+      TextEnUs: 
       TextKey: story.c06.merge
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -1613,7 +1665,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: end
       Type: 3
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -1640,7 +1696,11 @@ MonoBehaviour:
     Nodes:
     - NodeId: start
       Type: 0
+      TextZhCn: 
+      TextEnUs: 
       TextKey: story.c06.start
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -1656,7 +1716,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: choice
       Type: 1
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -1671,14 +1735,22 @@ MonoBehaviour:
       NextNodeId: 
       Choices:
       - ChoiceId: left
+        TextZhCn: 
+        TextEnUs: 
         TextKey: story.c06.left
         NextNodeId: left_path
       - ChoiceId: right
+        TextZhCn: 
+        TextEnUs: 
         TextKey: story.c06.right
         NextNodeId: right_path
     - NodeId: left_path
       Type: 2
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -1694,7 +1766,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: right_path
       Type: 2
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -1710,7 +1786,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: merge
       Type: 0
+      TextZhCn: 
+      TextEnUs: 
       TextKey: story.c06.merge
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -1726,7 +1806,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: end
       Type: 3
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -1753,7 +1837,11 @@ MonoBehaviour:
     Nodes:
     - NodeId: start
       Type: 0
+      TextZhCn: 
+      TextEnUs: 
       TextKey: story.c06.start
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -1769,7 +1857,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: choice
       Type: 1
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -1784,14 +1876,22 @@ MonoBehaviour:
       NextNodeId: 
       Choices:
       - ChoiceId: left
+        TextZhCn: 
+        TextEnUs: 
         TextKey: story.c06.left
         NextNodeId: left_path
       - ChoiceId: right
+        TextZhCn: 
+        TextEnUs: 
         TextKey: story.c06.right
         NextNodeId: right_path
     - NodeId: left_path
       Type: 2
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -1807,7 +1907,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: right_path
       Type: 2
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -1823,7 +1927,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: merge
       Type: 0
+      TextZhCn: 
+      TextEnUs: 
       TextKey: story.c06.merge
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -1839,7 +1947,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: end
       Type: 3
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -1866,7 +1978,11 @@ MonoBehaviour:
     Nodes:
     - NodeId: start
       Type: 0
+      TextZhCn: 
+      TextEnUs: 
       TextKey: story.c06.start
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -1882,7 +1998,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: choice
       Type: 1
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -1897,14 +2017,22 @@ MonoBehaviour:
       NextNodeId: 
       Choices:
       - ChoiceId: left
+        TextZhCn: 
+        TextEnUs: 
         TextKey: story.c06.left
         NextNodeId: left_path
       - ChoiceId: right
+        TextZhCn: 
+        TextEnUs: 
         TextKey: story.c06.right
         NextNodeId: right_path
     - NodeId: left_path
       Type: 2
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -1920,7 +2048,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: right_path
       Type: 2
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -1936,7 +2068,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: merge
       Type: 0
+      TextZhCn: 
+      TextEnUs: 
       TextKey: story.c06.merge
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -1952,7 +2088,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: end
       Type: 3
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -1979,7 +2119,11 @@ MonoBehaviour:
     Nodes:
     - NodeId: start
       Type: 0
+      TextZhCn: 
+      TextEnUs: 
       TextKey: story.c06.start
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -1995,7 +2139,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: choice
       Type: 1
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -2010,14 +2158,22 @@ MonoBehaviour:
       NextNodeId: 
       Choices:
       - ChoiceId: left
+        TextZhCn: 
+        TextEnUs: 
         TextKey: story.c06.left
         NextNodeId: left_path
       - ChoiceId: right
+        TextZhCn: 
+        TextEnUs: 
         TextKey: story.c06.right
         NextNodeId: right_path
     - NodeId: left_path
       Type: 2
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -2033,7 +2189,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: right_path
       Type: 2
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -2049,7 +2209,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: merge
       Type: 0
+      TextZhCn: 
+      TextEnUs: 
       TextKey: story.c06.merge
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -2065,7 +2229,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: end
       Type: 3
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -2092,7 +2260,11 @@ MonoBehaviour:
     Nodes:
     - NodeId: start
       Type: 0
+      TextZhCn: 
+      TextEnUs: 
       TextKey: story.c06.start
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -2108,7 +2280,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: choice
       Type: 1
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -2123,14 +2299,22 @@ MonoBehaviour:
       NextNodeId: 
       Choices:
       - ChoiceId: left
+        TextZhCn: 
+        TextEnUs: 
         TextKey: story.c06.left
         NextNodeId: left_path
       - ChoiceId: right
+        TextZhCn: 
+        TextEnUs: 
         TextKey: story.c06.right
         NextNodeId: right_path
     - NodeId: left_path
       Type: 2
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -2146,7 +2330,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: right_path
       Type: 2
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -2162,7 +2350,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: merge
       Type: 0
+      TextZhCn: 
+      TextEnUs: 
       TextKey: story.c06.merge
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -2178,7 +2370,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: end
       Type: 3
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -2205,7 +2401,11 @@ MonoBehaviour:
     Nodes:
     - NodeId: start
       Type: 0
+      TextZhCn: 
+      TextEnUs: 
       TextKey: story.c06.start
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -2221,7 +2421,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: choice
       Type: 1
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -2236,14 +2440,22 @@ MonoBehaviour:
       NextNodeId: 
       Choices:
       - ChoiceId: left
+        TextZhCn: 
+        TextEnUs: 
         TextKey: story.c06.left
         NextNodeId: left_path
       - ChoiceId: right
+        TextZhCn: 
+        TextEnUs: 
         TextKey: story.c06.right
         NextNodeId: right_path
     - NodeId: left_path
       Type: 2
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -2259,7 +2471,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: right_path
       Type: 2
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -2275,7 +2491,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: merge
       Type: 0
+      TextZhCn: 
+      TextEnUs: 
       TextKey: story.c06.merge
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -2291,7 +2511,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: end
       Type: 3
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -2318,7 +2542,11 @@ MonoBehaviour:
     Nodes:
     - NodeId: start
       Type: 0
+      TextZhCn: 
+      TextEnUs: 
       TextKey: story.c06.start
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -2334,7 +2562,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: choice
       Type: 1
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -2349,14 +2581,22 @@ MonoBehaviour:
       NextNodeId: 
       Choices:
       - ChoiceId: left
+        TextZhCn: 
+        TextEnUs: 
         TextKey: story.c06.left
         NextNodeId: left_path
       - ChoiceId: right
+        TextZhCn: 
+        TextEnUs: 
         TextKey: story.c06.right
         NextNodeId: right_path
     - NodeId: left_path
       Type: 2
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -2372,7 +2612,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: right_path
       Type: 2
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -2388,7 +2632,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: merge
       Type: 0
+      TextZhCn: 
+      TextEnUs: 
       TextKey: story.c06.merge
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -2404,7 +2652,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: end
       Type: 3
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -2431,7 +2683,11 @@ MonoBehaviour:
     Nodes:
     - NodeId: start
       Type: 0
+      TextZhCn: 
+      TextEnUs: 
       TextKey: story.c06.start
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -2447,7 +2703,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: choice
       Type: 1
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -2462,14 +2722,22 @@ MonoBehaviour:
       NextNodeId: 
       Choices:
       - ChoiceId: left
+        TextZhCn: 
+        TextEnUs: 
         TextKey: story.c06.left
         NextNodeId: left_path
       - ChoiceId: right
+        TextZhCn: 
+        TextEnUs: 
         TextKey: story.c06.right
         NextNodeId: right_path
     - NodeId: left_path
       Type: 2
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -2485,7 +2753,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: right_path
       Type: 2
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -2501,7 +2773,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: merge
       Type: 0
+      TextZhCn: 
+      TextEnUs: 
       TextKey: story.c06.merge
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -2517,7 +2793,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: end
       Type: 3
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -2544,7 +2824,11 @@ MonoBehaviour:
     Nodes:
     - NodeId: start
       Type: 0
+      TextZhCn: 
+      TextEnUs: 
       TextKey: story.c06.start
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -2560,7 +2844,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: choice
       Type: 1
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -2575,14 +2863,22 @@ MonoBehaviour:
       NextNodeId: 
       Choices:
       - ChoiceId: left
+        TextZhCn: 
+        TextEnUs: 
         TextKey: story.c06.left
         NextNodeId: left_path
       - ChoiceId: right
+        TextZhCn: 
+        TextEnUs: 
         TextKey: story.c06.right
         NextNodeId: right_path
     - NodeId: left_path
       Type: 2
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -2598,7 +2894,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: right_path
       Type: 2
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -2614,7 +2914,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: merge
       Type: 0
+      TextZhCn: 
+      TextEnUs: 
       TextKey: story.c06.merge
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -2630,7 +2934,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: end
       Type: 3
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -2657,7 +2965,11 @@ MonoBehaviour:
     Nodes:
     - NodeId: start
       Type: 0
+      TextZhCn: 
+      TextEnUs: 
       TextKey: story.c06.start
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -2673,7 +2985,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: choice
       Type: 1
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -2688,14 +3004,22 @@ MonoBehaviour:
       NextNodeId: 
       Choices:
       - ChoiceId: left
+        TextZhCn: 
+        TextEnUs: 
         TextKey: story.c06.left
         NextNodeId: left_path
       - ChoiceId: right
+        TextZhCn: 
+        TextEnUs: 
         TextKey: story.c06.right
         NextNodeId: right_path
     - NodeId: left_path
       Type: 2
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -2711,7 +3035,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: right_path
       Type: 2
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -2727,7 +3055,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: merge
       Type: 0
+      TextZhCn: 
+      TextEnUs: 
       TextKey: story.c06.merge
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -2743,7 +3075,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: end
       Type: 3
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -2770,7 +3106,11 @@ MonoBehaviour:
     Nodes:
     - NodeId: start
       Type: 0
+      TextZhCn: 
+      TextEnUs: 
       TextKey: story.c06.start
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -2786,7 +3126,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: choice
       Type: 1
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -2801,14 +3145,22 @@ MonoBehaviour:
       NextNodeId: 
       Choices:
       - ChoiceId: left
+        TextZhCn: 
+        TextEnUs: 
         TextKey: story.c06.left
         NextNodeId: left_path
       - ChoiceId: right
+        TextZhCn: 
+        TextEnUs: 
         TextKey: story.c06.right
         NextNodeId: right_path
     - NodeId: left_path
       Type: 2
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -2824,7 +3176,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: right_path
       Type: 2
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -2840,7 +3196,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: merge
       Type: 0
+      TextZhCn: 
+      TextEnUs: 
       TextKey: story.c06.merge
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -2856,7 +3216,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: end
       Type: 3
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -2883,7 +3247,11 @@ MonoBehaviour:
     Nodes:
     - NodeId: start
       Type: 0
+      TextZhCn: 
+      TextEnUs: 
       TextKey: story.c06.start
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -2899,7 +3267,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: choice
       Type: 1
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -2914,14 +3286,22 @@ MonoBehaviour:
       NextNodeId: 
       Choices:
       - ChoiceId: left
+        TextZhCn: 
+        TextEnUs: 
         TextKey: story.c06.left
         NextNodeId: left_path
       - ChoiceId: right
+        TextZhCn: 
+        TextEnUs: 
         TextKey: story.c06.right
         NextNodeId: right_path
     - NodeId: left_path
       Type: 2
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -2937,7 +3317,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: right_path
       Type: 2
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -2953,7 +3337,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: merge
       Type: 0
+      TextZhCn: 
+      TextEnUs: 
       TextKey: story.c06.merge
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -2969,7 +3357,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: end
       Type: 3
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -2996,7 +3388,11 @@ MonoBehaviour:
     Nodes:
     - NodeId: start
       Type: 0
+      TextZhCn: 
+      TextEnUs: 
       TextKey: story.c06.start
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -3012,7 +3408,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: choice
       Type: 1
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -3027,14 +3427,22 @@ MonoBehaviour:
       NextNodeId: 
       Choices:
       - ChoiceId: left
+        TextZhCn: 
+        TextEnUs: 
         TextKey: story.c06.left
         NextNodeId: left_path
       - ChoiceId: right
+        TextZhCn: 
+        TextEnUs: 
         TextKey: story.c06.right
         NextNodeId: right_path
     - NodeId: left_path
       Type: 2
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -3050,7 +3458,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: right_path
       Type: 2
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -3066,7 +3478,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: merge
       Type: 0
+      TextZhCn: 
+      TextEnUs: 
       TextKey: story.c06.merge
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -3082,7 +3498,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: end
       Type: 3
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -3109,7 +3529,11 @@ MonoBehaviour:
     Nodes:
     - NodeId: start
       Type: 0
+      TextZhCn: 
+      TextEnUs: 
       TextKey: story.c06.start
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -3125,7 +3549,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: choice
       Type: 1
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -3140,14 +3568,22 @@ MonoBehaviour:
       NextNodeId: 
       Choices:
       - ChoiceId: left
+        TextZhCn: 
+        TextEnUs: 
         TextKey: story.c06.left
         NextNodeId: left_path
       - ChoiceId: right
+        TextZhCn: 
+        TextEnUs: 
         TextKey: story.c06.right
         NextNodeId: right_path
     - NodeId: left_path
       Type: 2
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -3163,7 +3599,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: right_path
       Type: 2
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -3179,7 +3619,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: merge
       Type: 0
+      TextZhCn: 
+      TextEnUs: 
       TextKey: story.c06.merge
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -3195,7 +3639,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: end
       Type: 3
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -3222,7 +3670,11 @@ MonoBehaviour:
     Nodes:
     - NodeId: start
       Type: 0
+      TextZhCn: 
+      TextEnUs: 
       TextKey: story.c06.start
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -3238,7 +3690,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: choice
       Type: 1
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -3253,14 +3709,22 @@ MonoBehaviour:
       NextNodeId: 
       Choices:
       - ChoiceId: left
+        TextZhCn: 
+        TextEnUs: 
         TextKey: story.c06.left
         NextNodeId: left_path
       - ChoiceId: right
+        TextZhCn: 
+        TextEnUs: 
         TextKey: story.c06.right
         NextNodeId: right_path
     - NodeId: left_path
       Type: 2
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -3276,7 +3740,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: right_path
       Type: 2
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -3292,7 +3760,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: merge
       Type: 0
+      TextZhCn: 
+      TextEnUs: 
       TextKey: story.c06.merge
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -3308,7 +3780,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: end
       Type: 3
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -3335,7 +3811,11 @@ MonoBehaviour:
     Nodes:
     - NodeId: start
       Type: 0
+      TextZhCn: 
+      TextEnUs: 
       TextKey: story.c06.start
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -3351,7 +3831,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: choice
       Type: 1
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -3366,14 +3850,22 @@ MonoBehaviour:
       NextNodeId: 
       Choices:
       - ChoiceId: left
+        TextZhCn: 
+        TextEnUs: 
         TextKey: story.c06.left
         NextNodeId: left_path
       - ChoiceId: right
+        TextZhCn: 
+        TextEnUs: 
         TextKey: story.c06.right
         NextNodeId: right_path
     - NodeId: left_path
       Type: 2
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -3389,7 +3881,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: right_path
       Type: 2
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -3405,7 +3901,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: merge
       Type: 0
+      TextZhCn: 
+      TextEnUs: 
       TextKey: story.c06.merge
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -3421,7 +3921,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: end
       Type: 3
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -3448,7 +3952,11 @@ MonoBehaviour:
     Nodes:
     - NodeId: start
       Type: 0
+      TextZhCn: 
+      TextEnUs: 
       TextKey: story.c06.start
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -3464,7 +3972,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: choice
       Type: 1
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -3479,14 +3991,22 @@ MonoBehaviour:
       NextNodeId: 
       Choices:
       - ChoiceId: left
+        TextZhCn: 
+        TextEnUs: 
         TextKey: story.c06.left
         NextNodeId: left_path
       - ChoiceId: right
+        TextZhCn: 
+        TextEnUs: 
         TextKey: story.c06.right
         NextNodeId: right_path
     - NodeId: left_path
       Type: 2
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -3502,7 +4022,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: right_path
       Type: 2
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -3518,7 +4042,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: merge
       Type: 0
+      TextZhCn: 
+      TextEnUs: 
       TextKey: story.c06.merge
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -3534,7 +4062,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: end
       Type: 3
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -3561,7 +4093,11 @@ MonoBehaviour:
     Nodes:
     - NodeId: start
       Type: 0
+      TextZhCn: 
+      TextEnUs: 
       TextKey: story.c06.start
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -3577,7 +4113,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: choice
       Type: 1
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -3592,14 +4132,22 @@ MonoBehaviour:
       NextNodeId: 
       Choices:
       - ChoiceId: left
+        TextZhCn: 
+        TextEnUs: 
         TextKey: story.c06.left
         NextNodeId: left_path
       - ChoiceId: right
+        TextZhCn: 
+        TextEnUs: 
         TextKey: story.c06.right
         NextNodeId: right_path
     - NodeId: left_path
       Type: 2
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -3615,7 +4163,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: right_path
       Type: 2
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -3631,7 +4183,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: merge
       Type: 0
+      TextZhCn: 
+      TextEnUs: 
       TextKey: story.c06.merge
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -3647,7 +4203,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: end
       Type: 3
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -3674,7 +4234,11 @@ MonoBehaviour:
     Nodes:
     - NodeId: start
       Type: 0
+      TextZhCn: 
+      TextEnUs: 
       TextKey: story.c06.start
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -3690,7 +4254,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: choice
       Type: 1
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -3705,14 +4273,22 @@ MonoBehaviour:
       NextNodeId: 
       Choices:
       - ChoiceId: left
+        TextZhCn: 
+        TextEnUs: 
         TextKey: story.c06.left
         NextNodeId: left_path
       - ChoiceId: right
+        TextZhCn: 
+        TextEnUs: 
         TextKey: story.c06.right
         NextNodeId: right_path
     - NodeId: left_path
       Type: 2
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -3728,7 +4304,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: right_path
       Type: 2
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -3744,7 +4324,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: merge
       Type: 0
+      TextZhCn: 
+      TextEnUs: 
       TextKey: story.c06.merge
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -3760,7 +4344,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: end
       Type: 3
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -3787,7 +4375,11 @@ MonoBehaviour:
     Nodes:
     - NodeId: start
       Type: 0
+      TextZhCn: 
+      TextEnUs: 
       TextKey: story.c06.start
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -3803,7 +4395,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: choice
       Type: 1
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -3818,14 +4414,22 @@ MonoBehaviour:
       NextNodeId: 
       Choices:
       - ChoiceId: left
+        TextZhCn: 
+        TextEnUs: 
         TextKey: story.c06.left
         NextNodeId: left_path
       - ChoiceId: right
+        TextZhCn: 
+        TextEnUs: 
         TextKey: story.c06.right
         NextNodeId: right_path
     - NodeId: left_path
       Type: 2
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -3841,7 +4445,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: right_path
       Type: 2
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -3857,7 +4465,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: merge
       Type: 0
+      TextZhCn: 
+      TextEnUs: 
       TextKey: story.c06.merge
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -3873,7 +4485,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: end
       Type: 3
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -3900,7 +4516,11 @@ MonoBehaviour:
     Nodes:
     - NodeId: start
       Type: 0
+      TextZhCn: 
+      TextEnUs: 
       TextKey: story.c06.start
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -3916,7 +4536,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: choice
       Type: 1
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -3931,14 +4555,22 @@ MonoBehaviour:
       NextNodeId: 
       Choices:
       - ChoiceId: left
+        TextZhCn: 
+        TextEnUs: 
         TextKey: story.c06.left
         NextNodeId: left_path
       - ChoiceId: right
+        TextZhCn: 
+        TextEnUs: 
         TextKey: story.c06.right
         NextNodeId: right_path
     - NodeId: left_path
       Type: 2
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -3954,7 +4586,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: right_path
       Type: 2
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -3970,7 +4606,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: merge
       Type: 0
+      TextZhCn: 
+      TextEnUs: 
       TextKey: story.c06.merge
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -3986,7 +4626,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: end
       Type: 3
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -4013,7 +4657,11 @@ MonoBehaviour:
     Nodes:
     - NodeId: start
       Type: 0
+      TextZhCn: 
+      TextEnUs: 
       TextKey: story.c06.start
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -4029,7 +4677,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: choice
       Type: 1
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -4044,14 +4696,22 @@ MonoBehaviour:
       NextNodeId: 
       Choices:
       - ChoiceId: left
+        TextZhCn: 
+        TextEnUs: 
         TextKey: story.c06.left
         NextNodeId: left_path
       - ChoiceId: right
+        TextZhCn: 
+        TextEnUs: 
         TextKey: story.c06.right
         NextNodeId: right_path
     - NodeId: left_path
       Type: 2
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -4067,7 +4727,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: right_path
       Type: 2
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -4083,7 +4747,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: merge
       Type: 0
+      TextZhCn: 
+      TextEnUs: 
       TextKey: story.c06.merge
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -4099,7 +4767,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: end
       Type: 3
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -4126,7 +4798,11 @@ MonoBehaviour:
     Nodes:
     - NodeId: start
       Type: 0
+      TextZhCn: 
+      TextEnUs: 
       TextKey: story.c06.start
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -4142,7 +4818,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: choice
       Type: 1
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -4157,14 +4837,22 @@ MonoBehaviour:
       NextNodeId: 
       Choices:
       - ChoiceId: left
+        TextZhCn: 
+        TextEnUs: 
         TextKey: story.c06.left
         NextNodeId: left_path
       - ChoiceId: right
+        TextZhCn: 
+        TextEnUs: 
         TextKey: story.c06.right
         NextNodeId: right_path
     - NodeId: left_path
       Type: 2
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -4180,7 +4868,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: right_path
       Type: 2
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -4196,7 +4888,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: merge
       Type: 0
+      TextZhCn: 
+      TextEnUs: 
       TextKey: story.c06.merge
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -4212,7 +4908,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: end
       Type: 3
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -4239,7 +4939,11 @@ MonoBehaviour:
     Nodes:
     - NodeId: start
       Type: 0
+      TextZhCn: 
+      TextEnUs: 
       TextKey: story.c06.start
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -4255,7 +4959,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: choice
       Type: 1
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -4270,14 +4978,22 @@ MonoBehaviour:
       NextNodeId: 
       Choices:
       - ChoiceId: left
+        TextZhCn: 
+        TextEnUs: 
         TextKey: story.c06.left
         NextNodeId: left_path
       - ChoiceId: right
+        TextZhCn: 
+        TextEnUs: 
         TextKey: story.c06.right
         NextNodeId: right_path
     - NodeId: left_path
       Type: 2
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -4293,7 +5009,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: right_path
       Type: 2
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -4309,7 +5029,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: merge
       Type: 0
+      TextZhCn: 
+      TextEnUs: 
       TextKey: story.c06.merge
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -4325,7 +5049,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: end
       Type: 3
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -4352,7 +5080,11 @@ MonoBehaviour:
     Nodes:
     - NodeId: start
       Type: 0
+      TextZhCn: 
+      TextEnUs: 
       TextKey: story.c06.start
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -4368,7 +5100,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: choice
       Type: 1
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -4383,14 +5119,22 @@ MonoBehaviour:
       NextNodeId: 
       Choices:
       - ChoiceId: left
+        TextZhCn: 
+        TextEnUs: 
         TextKey: story.c06.left
         NextNodeId: left_path
       - ChoiceId: right
+        TextZhCn: 
+        TextEnUs: 
         TextKey: story.c06.right
         NextNodeId: right_path
     - NodeId: left_path
       Type: 2
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -4406,7 +5150,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: right_path
       Type: 2
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -4422,7 +5170,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: merge
       Type: 0
+      TextZhCn: 
+      TextEnUs: 
       TextKey: story.c06.merge
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -4438,7 +5190,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: end
       Type: 3
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -4465,7 +5221,11 @@ MonoBehaviour:
     Nodes:
     - NodeId: start
       Type: 0
+      TextZhCn: 
+      TextEnUs: 
       TextKey: story.c06.start
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -4481,7 +5241,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: choice
       Type: 1
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -4496,14 +5260,22 @@ MonoBehaviour:
       NextNodeId: 
       Choices:
       - ChoiceId: left
+        TextZhCn: 
+        TextEnUs: 
         TextKey: story.c06.left
         NextNodeId: left_path
       - ChoiceId: right
+        TextZhCn: 
+        TextEnUs: 
         TextKey: story.c06.right
         NextNodeId: right_path
     - NodeId: left_path
       Type: 2
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -4519,7 +5291,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: right_path
       Type: 2
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -4535,7 +5311,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: merge
       Type: 0
+      TextZhCn: 
+      TextEnUs: 
       TextKey: story.c06.merge
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -4551,7 +5331,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: end
       Type: 3
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -4578,7 +5362,11 @@ MonoBehaviour:
     Nodes:
     - NodeId: start
       Type: 0
+      TextZhCn: 
+      TextEnUs: 
       TextKey: story.c06.start
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -4594,7 +5382,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: choice
       Type: 1
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -4609,14 +5401,22 @@ MonoBehaviour:
       NextNodeId: 
       Choices:
       - ChoiceId: left
+        TextZhCn: 
+        TextEnUs: 
         TextKey: story.c06.left
         NextNodeId: left_path
       - ChoiceId: right
+        TextZhCn: 
+        TextEnUs: 
         TextKey: story.c06.right
         NextNodeId: right_path
     - NodeId: left_path
       Type: 2
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -4632,7 +5432,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: right_path
       Type: 2
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -4648,7 +5452,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: merge
       Type: 0
+      TextZhCn: 
+      TextEnUs: 
       TextKey: story.c06.merge
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -4664,7 +5472,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: end
       Type: 3
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -4691,7 +5503,11 @@ MonoBehaviour:
     Nodes:
     - NodeId: start
       Type: 0
+      TextZhCn: 
+      TextEnUs: 
       TextKey: story.c06.start
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -4707,7 +5523,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: choice
       Type: 1
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -4722,14 +5542,22 @@ MonoBehaviour:
       NextNodeId: 
       Choices:
       - ChoiceId: left
+        TextZhCn: 
+        TextEnUs: 
         TextKey: story.c06.left
         NextNodeId: left_path
       - ChoiceId: right
+        TextZhCn: 
+        TextEnUs: 
         TextKey: story.c06.right
         NextNodeId: right_path
     - NodeId: left_path
       Type: 2
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -4745,7 +5573,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: right_path
       Type: 2
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -4761,7 +5593,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: merge
       Type: 0
+      TextZhCn: 
+      TextEnUs: 
       TextKey: story.c06.merge
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -4777,7 +5613,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: end
       Type: 3
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -4804,7 +5644,11 @@ MonoBehaviour:
     Nodes:
     - NodeId: start
       Type: 0
+      TextZhCn: 
+      TextEnUs: 
       TextKey: story.c06.start
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -4820,7 +5664,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: choice
       Type: 1
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -4835,14 +5683,22 @@ MonoBehaviour:
       NextNodeId: 
       Choices:
       - ChoiceId: left
+        TextZhCn: 
+        TextEnUs: 
         TextKey: story.c06.left
         NextNodeId: left_path
       - ChoiceId: right
+        TextZhCn: 
+        TextEnUs: 
         TextKey: story.c06.right
         NextNodeId: right_path
     - NodeId: left_path
       Type: 2
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -4858,7 +5714,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: right_path
       Type: 2
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -4874,7 +5734,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: merge
       Type: 0
+      TextZhCn: 
+      TextEnUs: 
       TextKey: story.c06.merge
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -4890,7 +5754,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: end
       Type: 3
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -4917,7 +5785,11 @@ MonoBehaviour:
     Nodes:
     - NodeId: start
       Type: 0
+      TextZhCn: 
+      TextEnUs: 
       TextKey: story.c06.start
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -4933,7 +5805,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: choice
       Type: 1
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -4948,14 +5824,22 @@ MonoBehaviour:
       NextNodeId: 
       Choices:
       - ChoiceId: left
+        TextZhCn: 
+        TextEnUs: 
         TextKey: story.c06.left
         NextNodeId: left_path
       - ChoiceId: right
+        TextZhCn: 
+        TextEnUs: 
         TextKey: story.c06.right
         NextNodeId: right_path
     - NodeId: left_path
       Type: 2
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -4971,7 +5855,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: right_path
       Type: 2
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -4987,7 +5875,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: merge
       Type: 0
+      TextZhCn: 
+      TextEnUs: 
       TextKey: story.c06.merge
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -5003,7 +5895,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: end
       Type: 3
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -5030,7 +5926,11 @@ MonoBehaviour:
     Nodes:
     - NodeId: start
       Type: 0
+      TextZhCn: 
+      TextEnUs: 
       TextKey: story.c06.start
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -5046,7 +5946,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: choice
       Type: 1
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -5061,14 +5965,22 @@ MonoBehaviour:
       NextNodeId: 
       Choices:
       - ChoiceId: left
+        TextZhCn: 
+        TextEnUs: 
         TextKey: story.c06.left
         NextNodeId: left_path
       - ChoiceId: right
+        TextZhCn: 
+        TextEnUs: 
         TextKey: story.c06.right
         NextNodeId: right_path
     - NodeId: left_path
       Type: 2
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -5084,7 +5996,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: right_path
       Type: 2
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -5100,7 +6016,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: merge
       Type: 0
+      TextZhCn: 
+      TextEnUs: 
       TextKey: story.c06.merge
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -5116,7 +6036,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: end
       Type: 3
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -5143,7 +6067,11 @@ MonoBehaviour:
     Nodes:
     - NodeId: start
       Type: 0
+      TextZhCn: 
+      TextEnUs: 
       TextKey: story.c06.start
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -5159,7 +6087,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: choice
       Type: 1
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -5174,14 +6106,22 @@ MonoBehaviour:
       NextNodeId: 
       Choices:
       - ChoiceId: left
+        TextZhCn: 
+        TextEnUs: 
         TextKey: story.c06.left
         NextNodeId: left_path
       - ChoiceId: right
+        TextZhCn: 
+        TextEnUs: 
         TextKey: story.c06.right
         NextNodeId: right_path
     - NodeId: left_path
       Type: 2
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -5197,7 +6137,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: right_path
       Type: 2
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -5213,7 +6157,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: merge
       Type: 0
+      TextZhCn: 
+      TextEnUs: 
       TextKey: story.c06.merge
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -5229,7 +6177,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: end
       Type: 3
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -5256,7 +6208,11 @@ MonoBehaviour:
     Nodes:
     - NodeId: start
       Type: 0
+      TextZhCn: 
+      TextEnUs: 
       TextKey: story.c06.start
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -5272,7 +6228,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: choice
       Type: 1
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -5287,14 +6247,22 @@ MonoBehaviour:
       NextNodeId: 
       Choices:
       - ChoiceId: left
+        TextZhCn: 
+        TextEnUs: 
         TextKey: story.c06.left
         NextNodeId: left_path
       - ChoiceId: right
+        TextZhCn: 
+        TextEnUs: 
         TextKey: story.c06.right
         NextNodeId: right_path
     - NodeId: left_path
       Type: 2
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -5310,7 +6278,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: right_path
       Type: 2
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -5326,7 +6298,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: merge
       Type: 0
+      TextZhCn: 
+      TextEnUs: 
       TextKey: story.c06.merge
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -5342,7 +6318,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: end
       Type: 3
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -5369,7 +6349,11 @@ MonoBehaviour:
     Nodes:
     - NodeId: start
       Type: 0
+      TextZhCn: 
+      TextEnUs: 
       TextKey: story.c06.start
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -5385,7 +6369,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: choice
       Type: 1
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -5400,14 +6388,22 @@ MonoBehaviour:
       NextNodeId: 
       Choices:
       - ChoiceId: left
+        TextZhCn: 
+        TextEnUs: 
         TextKey: story.c06.left
         NextNodeId: left_path
       - ChoiceId: right
+        TextZhCn: 
+        TextEnUs: 
         TextKey: story.c06.right
         NextNodeId: right_path
     - NodeId: left_path
       Type: 2
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -5423,7 +6419,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: right_path
       Type: 2
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -5439,7 +6439,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: merge
       Type: 0
+      TextZhCn: 
+      TextEnUs: 
       TextKey: story.c06.merge
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -5455,7 +6459,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: end
       Type: 3
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -5482,7 +6490,11 @@ MonoBehaviour:
     Nodes:
     - NodeId: start
       Type: 0
+      TextZhCn: 
+      TextEnUs: 
       TextKey: story.c06.start
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -5498,7 +6510,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: choice
       Type: 1
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -5513,14 +6529,22 @@ MonoBehaviour:
       NextNodeId: 
       Choices:
       - ChoiceId: left
+        TextZhCn: 
+        TextEnUs: 
         TextKey: story.c06.left
         NextNodeId: left_path
       - ChoiceId: right
+        TextZhCn: 
+        TextEnUs: 
         TextKey: story.c06.right
         NextNodeId: right_path
     - NodeId: left_path
       Type: 2
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -5536,7 +6560,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: right_path
       Type: 2
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -5552,7 +6580,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: merge
       Type: 0
+      TextZhCn: 
+      TextEnUs: 
       TextKey: story.c06.merge
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -5568,7 +6600,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: end
       Type: 3
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -5595,7 +6631,11 @@ MonoBehaviour:
     Nodes:
     - NodeId: start
       Type: 0
+      TextZhCn: 
+      TextEnUs: 
       TextKey: story.c06.start
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -5611,7 +6651,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: choice
       Type: 1
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -5626,14 +6670,22 @@ MonoBehaviour:
       NextNodeId: 
       Choices:
       - ChoiceId: left
+        TextZhCn: 
+        TextEnUs: 
         TextKey: story.c06.left
         NextNodeId: left_path
       - ChoiceId: right
+        TextZhCn: 
+        TextEnUs: 
         TextKey: story.c06.right
         NextNodeId: right_path
     - NodeId: left_path
       Type: 2
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -5649,7 +6701,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: right_path
       Type: 2
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -5665,7 +6721,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: merge
       Type: 0
+      TextZhCn: 
+      TextEnUs: 
       TextKey: story.c06.merge
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -5681,7 +6741,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: end
       Type: 3
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -5708,7 +6772,11 @@ MonoBehaviour:
     Nodes:
     - NodeId: start
       Type: 0
+      TextZhCn: 
+      TextEnUs: 
       TextKey: story.c06.start
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -5724,7 +6792,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: choice
       Type: 1
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -5739,14 +6811,22 @@ MonoBehaviour:
       NextNodeId: 
       Choices:
       - ChoiceId: left
+        TextZhCn: 
+        TextEnUs: 
         TextKey: story.c06.left
         NextNodeId: left_path
       - ChoiceId: right
+        TextZhCn: 
+        TextEnUs: 
         TextKey: story.c06.right
         NextNodeId: right_path
     - NodeId: left_path
       Type: 2
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -5762,7 +6842,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: right_path
       Type: 2
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -5778,7 +6862,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: merge
       Type: 0
+      TextZhCn: 
+      TextEnUs: 
       TextKey: story.c06.merge
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -5794,7 +6882,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: end
       Type: 3
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -5821,7 +6913,11 @@ MonoBehaviour:
     Nodes:
     - NodeId: start
       Type: 0
+      TextZhCn: 
+      TextEnUs: 
       TextKey: story.c06.start
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -5837,7 +6933,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: choice
       Type: 1
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -5852,14 +6952,22 @@ MonoBehaviour:
       NextNodeId: 
       Choices:
       - ChoiceId: left
+        TextZhCn: 
+        TextEnUs: 
         TextKey: story.c06.left
         NextNodeId: left_path
       - ChoiceId: right
+        TextZhCn: 
+        TextEnUs: 
         TextKey: story.c06.right
         NextNodeId: right_path
     - NodeId: left_path
       Type: 2
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -5875,7 +6983,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: right_path
       Type: 2
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -5891,7 +7003,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: merge
       Type: 0
+      TextZhCn: 
+      TextEnUs: 
       TextKey: story.c06.merge
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -5907,7 +7023,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: end
       Type: 3
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -5934,7 +7054,11 @@ MonoBehaviour:
     Nodes:
     - NodeId: start
       Type: 0
+      TextZhCn: 
+      TextEnUs: 
       TextKey: story.c06.start
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -5950,7 +7074,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: choice
       Type: 1
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -5965,14 +7093,22 @@ MonoBehaviour:
       NextNodeId: 
       Choices:
       - ChoiceId: left
+        TextZhCn: 
+        TextEnUs: 
         TextKey: story.c06.left
         NextNodeId: left_path
       - ChoiceId: right
+        TextZhCn: 
+        TextEnUs: 
         TextKey: story.c06.right
         NextNodeId: right_path
     - NodeId: left_path
       Type: 2
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -5988,7 +7124,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: right_path
       Type: 2
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -6004,7 +7144,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: merge
       Type: 0
+      TextZhCn: 
+      TextEnUs: 
       TextKey: story.c06.merge
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -6020,7 +7164,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: end
       Type: 3
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -6047,7 +7195,11 @@ MonoBehaviour:
     Nodes:
     - NodeId: start
       Type: 0
+      TextZhCn: 
+      TextEnUs: 
       TextKey: story.c06.start
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -6063,7 +7215,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: choice
       Type: 1
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -6078,14 +7234,22 @@ MonoBehaviour:
       NextNodeId: 
       Choices:
       - ChoiceId: left
+        TextZhCn: 
+        TextEnUs: 
         TextKey: story.c06.left
         NextNodeId: left_path
       - ChoiceId: right
+        TextZhCn: 
+        TextEnUs: 
         TextKey: story.c06.right
         NextNodeId: right_path
     - NodeId: left_path
       Type: 2
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -6101,7 +7265,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: right_path
       Type: 2
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -6117,7 +7285,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: merge
       Type: 0
+      TextZhCn: 
+      TextEnUs: 
       TextKey: story.c06.merge
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -6133,7 +7305,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: end
       Type: 3
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -6160,7 +7336,11 @@ MonoBehaviour:
     Nodes:
     - NodeId: start
       Type: 0
+      TextZhCn: 
+      TextEnUs: 
       TextKey: story.c06.start
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -6176,7 +7356,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: choice
       Type: 1
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -6191,14 +7375,22 @@ MonoBehaviour:
       NextNodeId: 
       Choices:
       - ChoiceId: left
+        TextZhCn: 
+        TextEnUs: 
         TextKey: story.c06.left
         NextNodeId: left_path
       - ChoiceId: right
+        TextZhCn: 
+        TextEnUs: 
         TextKey: story.c06.right
         NextNodeId: right_path
     - NodeId: left_path
       Type: 2
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -6214,7 +7406,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: right_path
       Type: 2
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -6230,7 +7426,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: merge
       Type: 0
+      TextZhCn: 
+      TextEnUs: 
       TextKey: story.c06.merge
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -6246,7 +7446,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: end
       Type: 3
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -6273,7 +7477,11 @@ MonoBehaviour:
     Nodes:
     - NodeId: start
       Type: 0
+      TextZhCn: 
+      TextEnUs: 
       TextKey: story.c06.start
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -6289,7 +7497,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: choice
       Type: 1
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -6304,14 +7516,22 @@ MonoBehaviour:
       NextNodeId: 
       Choices:
       - ChoiceId: left
+        TextZhCn: 
+        TextEnUs: 
         TextKey: story.c06.left
         NextNodeId: left_path
       - ChoiceId: right
+        TextZhCn: 
+        TextEnUs: 
         TextKey: story.c06.right
         NextNodeId: right_path
     - NodeId: left_path
       Type: 2
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -6327,7 +7547,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: right_path
       Type: 2
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -6343,7 +7567,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: merge
       Type: 0
+      TextZhCn: 
+      TextEnUs: 
       TextKey: story.c06.merge
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -6359,7 +7587,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: end
       Type: 3
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -6386,7 +7618,11 @@ MonoBehaviour:
     Nodes:
     - NodeId: start
       Type: 0
+      TextZhCn: 
+      TextEnUs: 
       TextKey: story.c06.start
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -6402,7 +7638,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: choice
       Type: 1
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -6417,14 +7657,22 @@ MonoBehaviour:
       NextNodeId: 
       Choices:
       - ChoiceId: left
+        TextZhCn: 
+        TextEnUs: 
         TextKey: story.c06.left
         NextNodeId: left_path
       - ChoiceId: right
+        TextZhCn: 
+        TextEnUs: 
         TextKey: story.c06.right
         NextNodeId: right_path
     - NodeId: left_path
       Type: 2
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -6440,7 +7688,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: right_path
       Type: 2
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -6456,7 +7708,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: merge
       Type: 0
+      TextZhCn: 
+      TextEnUs: 
       TextKey: story.c06.merge
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -6472,7 +7728,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: end
       Type: 3
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -6499,7 +7759,11 @@ MonoBehaviour:
     Nodes:
     - NodeId: start
       Type: 0
+      TextZhCn: 
+      TextEnUs: 
       TextKey: story.c06.start
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -6515,7 +7779,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: choice
       Type: 1
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -6530,14 +7798,22 @@ MonoBehaviour:
       NextNodeId: 
       Choices:
       - ChoiceId: left
+        TextZhCn: 
+        TextEnUs: 
         TextKey: story.c06.left
         NextNodeId: left_path
       - ChoiceId: right
+        TextZhCn: 
+        TextEnUs: 
         TextKey: story.c06.right
         NextNodeId: right_path
     - NodeId: left_path
       Type: 2
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -6553,7 +7829,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: right_path
       Type: 2
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -6569,7 +7849,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: merge
       Type: 0
+      TextZhCn: 
+      TextEnUs: 
       TextKey: story.c06.merge
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -6585,7 +7869,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: end
       Type: 3
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -6612,7 +7900,11 @@ MonoBehaviour:
     Nodes:
     - NodeId: start
       Type: 0
+      TextZhCn: 
+      TextEnUs: 
       TextKey: story.c06.start
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -6628,7 +7920,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: choice
       Type: 1
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -6643,14 +7939,22 @@ MonoBehaviour:
       NextNodeId: 
       Choices:
       - ChoiceId: left
+        TextZhCn: 
+        TextEnUs: 
         TextKey: story.c06.left
         NextNodeId: left_path
       - ChoiceId: right
+        TextZhCn: 
+        TextEnUs: 
         TextKey: story.c06.right
         NextNodeId: right_path
     - NodeId: left_path
       Type: 2
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -6666,7 +7970,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: right_path
       Type: 2
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -6682,7 +7990,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: merge
       Type: 0
+      TextZhCn: 
+      TextEnUs: 
       TextKey: story.c06.merge
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -6698,7 +8010,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: end
       Type: 3
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -6725,7 +8041,11 @@ MonoBehaviour:
     Nodes:
     - NodeId: start
       Type: 0
+      TextZhCn: 
+      TextEnUs: 
       TextKey: story.c06.start
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -6741,7 +8061,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: choice
       Type: 1
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -6756,14 +8080,22 @@ MonoBehaviour:
       NextNodeId: 
       Choices:
       - ChoiceId: left
+        TextZhCn: 
+        TextEnUs: 
         TextKey: story.c06.left
         NextNodeId: left_path
       - ChoiceId: right
+        TextZhCn: 
+        TextEnUs: 
         TextKey: story.c06.right
         NextNodeId: right_path
     - NodeId: left_path
       Type: 2
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -6779,7 +8111,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: right_path
       Type: 2
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -6795,7 +8131,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: merge
       Type: 0
+      TextZhCn: 
+      TextEnUs: 
       TextKey: story.c06.merge
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -6811,7 +8151,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: end
       Type: 3
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -6838,7 +8182,11 @@ MonoBehaviour:
     Nodes:
     - NodeId: start
       Type: 0
+      TextZhCn: 
+      TextEnUs: 
       TextKey: story.c06.start
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -6854,7 +8202,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: choice
       Type: 1
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -6869,14 +8221,22 @@ MonoBehaviour:
       NextNodeId: 
       Choices:
       - ChoiceId: left
+        TextZhCn: 
+        TextEnUs: 
         TextKey: story.c06.left
         NextNodeId: left_path
       - ChoiceId: right
+        TextZhCn: 
+        TextEnUs: 
         TextKey: story.c06.right
         NextNodeId: right_path
     - NodeId: left_path
       Type: 2
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -6892,7 +8252,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: right_path
       Type: 2
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -6908,7 +8272,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: merge
       Type: 0
+      TextZhCn: 
+      TextEnUs: 
       TextKey: story.c06.merge
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -6924,7 +8292,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: end
       Type: 3
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -6951,7 +8323,11 @@ MonoBehaviour:
     Nodes:
     - NodeId: start
       Type: 0
+      TextZhCn: 
+      TextEnUs: 
       TextKey: story.c06.start
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -6967,7 +8343,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: choice
       Type: 1
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -6982,14 +8362,22 @@ MonoBehaviour:
       NextNodeId: 
       Choices:
       - ChoiceId: left
+        TextZhCn: 
+        TextEnUs: 
         TextKey: story.c06.left
         NextNodeId: left_path
       - ChoiceId: right
+        TextZhCn: 
+        TextEnUs: 
         TextKey: story.c06.right
         NextNodeId: right_path
     - NodeId: left_path
       Type: 2
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -7005,7 +8393,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: right_path
       Type: 2
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -7021,7 +8413,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: merge
       Type: 0
+      TextZhCn: 
+      TextEnUs: 
       TextKey: story.c06.merge
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -7037,7 +8433,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: end
       Type: 3
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -7064,7 +8464,11 @@ MonoBehaviour:
     Nodes:
     - NodeId: start
       Type: 0
+      TextZhCn: 
+      TextEnUs: 
       TextKey: story.c06.start
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -7080,7 +8484,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: choice
       Type: 1
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -7095,14 +8503,22 @@ MonoBehaviour:
       NextNodeId: 
       Choices:
       - ChoiceId: left
+        TextZhCn: 
+        TextEnUs: 
         TextKey: story.c06.left
         NextNodeId: left_path
       - ChoiceId: right
+        TextZhCn: 
+        TextEnUs: 
         TextKey: story.c06.right
         NextNodeId: right_path
     - NodeId: left_path
       Type: 2
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -7118,7 +8534,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: right_path
       Type: 2
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -7134,7 +8554,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: merge
       Type: 0
+      TextZhCn: 
+      TextEnUs: 
       TextKey: story.c06.merge
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -7150,7 +8574,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: end
       Type: 3
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -7177,7 +8605,11 @@ MonoBehaviour:
     Nodes:
     - NodeId: start
       Type: 0
+      TextZhCn: 
+      TextEnUs: 
       TextKey: story.c06.start
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -7193,7 +8625,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: choice
       Type: 1
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -7208,14 +8644,22 @@ MonoBehaviour:
       NextNodeId: 
       Choices:
       - ChoiceId: left
+        TextZhCn: 
+        TextEnUs: 
         TextKey: story.c06.left
         NextNodeId: left_path
       - ChoiceId: right
+        TextZhCn: 
+        TextEnUs: 
         TextKey: story.c06.right
         NextNodeId: right_path
     - NodeId: left_path
       Type: 2
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -7231,7 +8675,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: right_path
       Type: 2
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -7247,7 +8695,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: merge
       Type: 0
+      TextZhCn: 
+      TextEnUs: 
       TextKey: story.c06.merge
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -7263,7 +8715,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: end
       Type: 3
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -7290,7 +8746,11 @@ MonoBehaviour:
     Nodes:
     - NodeId: start
       Type: 0
+      TextZhCn: 
+      TextEnUs: 
       TextKey: story.c06.start
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -7306,7 +8766,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: choice
       Type: 1
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -7321,14 +8785,22 @@ MonoBehaviour:
       NextNodeId: 
       Choices:
       - ChoiceId: left
+        TextZhCn: 
+        TextEnUs: 
         TextKey: story.c06.left
         NextNodeId: left_path
       - ChoiceId: right
+        TextZhCn: 
+        TextEnUs: 
         TextKey: story.c06.right
         NextNodeId: right_path
     - NodeId: left_path
       Type: 2
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -7344,7 +8816,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: right_path
       Type: 2
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -7360,7 +8836,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: merge
       Type: 0
+      TextZhCn: 
+      TextEnUs: 
       TextKey: story.c06.merge
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -7376,7 +8856,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: end
       Type: 3
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -7403,7 +8887,11 @@ MonoBehaviour:
     Nodes:
     - NodeId: start
       Type: 0
+      TextZhCn: 
+      TextEnUs: 
       TextKey: story.c06.start
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -7419,7 +8907,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: choice
       Type: 1
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -7434,14 +8926,22 @@ MonoBehaviour:
       NextNodeId: 
       Choices:
       - ChoiceId: left
+        TextZhCn: 
+        TextEnUs: 
         TextKey: story.c06.left
         NextNodeId: left_path
       - ChoiceId: right
+        TextZhCn: 
+        TextEnUs: 
         TextKey: story.c06.right
         NextNodeId: right_path
     - NodeId: left_path
       Type: 2
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -7457,7 +8957,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: right_path
       Type: 2
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -7473,7 +8977,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: merge
       Type: 0
+      TextZhCn: 
+      TextEnUs: 
       TextKey: story.c06.merge
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -7489,7 +8997,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: end
       Type: 3
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -7516,7 +9028,11 @@ MonoBehaviour:
     Nodes:
     - NodeId: start
       Type: 0
+      TextZhCn: 
+      TextEnUs: 
       TextKey: story.c06.start
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -7532,7 +9048,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: choice
       Type: 1
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -7547,14 +9067,22 @@ MonoBehaviour:
       NextNodeId: 
       Choices:
       - ChoiceId: left
+        TextZhCn: 
+        TextEnUs: 
         TextKey: story.c06.left
         NextNodeId: left_path
       - ChoiceId: right
+        TextZhCn: 
+        TextEnUs: 
         TextKey: story.c06.right
         NextNodeId: right_path
     - NodeId: left_path
       Type: 2
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -7570,7 +9098,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: right_path
       Type: 2
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -7586,7 +9118,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: merge
       Type: 0
+      TextZhCn: 
+      TextEnUs: 
       TextKey: story.c06.merge
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -7602,7 +9138,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: end
       Type: 3
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -7629,7 +9169,11 @@ MonoBehaviour:
     Nodes:
     - NodeId: start
       Type: 0
+      TextZhCn: 
+      TextEnUs: 
       TextKey: story.c06.start
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -7645,7 +9189,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: choice
       Type: 1
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -7660,14 +9208,22 @@ MonoBehaviour:
       NextNodeId: 
       Choices:
       - ChoiceId: left
+        TextZhCn: 
+        TextEnUs: 
         TextKey: story.c06.left
         NextNodeId: left_path
       - ChoiceId: right
+        TextZhCn: 
+        TextEnUs: 
         TextKey: story.c06.right
         NextNodeId: right_path
     - NodeId: left_path
       Type: 2
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -7683,7 +9239,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: right_path
       Type: 2
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -7699,7 +9259,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: merge
       Type: 0
+      TextZhCn: 
+      TextEnUs: 
       TextKey: story.c06.merge
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -7715,7 +9279,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: end
       Type: 3
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -7742,7 +9310,11 @@ MonoBehaviour:
     Nodes:
     - NodeId: start
       Type: 0
+      TextZhCn: 
+      TextEnUs: 
       TextKey: story.c06.start
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -7758,7 +9330,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: choice
       Type: 1
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -7773,14 +9349,22 @@ MonoBehaviour:
       NextNodeId: 
       Choices:
       - ChoiceId: left
+        TextZhCn: 
+        TextEnUs: 
         TextKey: story.c06.left
         NextNodeId: left_path
       - ChoiceId: right
+        TextZhCn: 
+        TextEnUs: 
         TextKey: story.c06.right
         NextNodeId: right_path
     - NodeId: left_path
       Type: 2
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -7796,7 +9380,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: right_path
       Type: 2
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -7812,7 +9400,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: merge
       Type: 0
+      TextZhCn: 
+      TextEnUs: 
       TextKey: story.c06.merge
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -7828,7 +9420,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: end
       Type: 3
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -7855,7 +9451,11 @@ MonoBehaviour:
     Nodes:
     - NodeId: start
       Type: 0
+      TextZhCn: 
+      TextEnUs: 
       TextKey: story.c06.start
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -7871,7 +9471,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: choice
       Type: 1
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -7886,14 +9490,22 @@ MonoBehaviour:
       NextNodeId: 
       Choices:
       - ChoiceId: left
+        TextZhCn: 
+        TextEnUs: 
         TextKey: story.c06.left
         NextNodeId: left_path
       - ChoiceId: right
+        TextZhCn: 
+        TextEnUs: 
         TextKey: story.c06.right
         NextNodeId: right_path
     - NodeId: left_path
       Type: 2
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -7909,7 +9521,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: right_path
       Type: 2
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -7925,7 +9541,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: merge
       Type: 0
+      TextZhCn: 
+      TextEnUs: 
       TextKey: story.c06.merge
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -7941,7 +9561,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: end
       Type: 3
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -7968,7 +9592,11 @@ MonoBehaviour:
     Nodes:
     - NodeId: start
       Type: 0
+      TextZhCn: 
+      TextEnUs: 
       TextKey: story.c06.start
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -7984,7 +9612,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: choice
       Type: 1
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -7999,14 +9631,22 @@ MonoBehaviour:
       NextNodeId: 
       Choices:
       - ChoiceId: left
+        TextZhCn: 
+        TextEnUs: 
         TextKey: story.c06.left
         NextNodeId: left_path
       - ChoiceId: right
+        TextZhCn: 
+        TextEnUs: 
         TextKey: story.c06.right
         NextNodeId: right_path
     - NodeId: left_path
       Type: 2
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -8022,7 +9662,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: right_path
       Type: 2
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -8038,7 +9682,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: merge
       Type: 0
+      TextZhCn: 
+      TextEnUs: 
       TextKey: story.c06.merge
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -8054,7 +9702,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: end
       Type: 3
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -8081,7 +9733,11 @@ MonoBehaviour:
     Nodes:
     - NodeId: start
       Type: 0
+      TextZhCn: 
+      TextEnUs: 
       TextKey: story.c06.start
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -8097,7 +9753,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: choice
       Type: 1
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -8112,14 +9772,22 @@ MonoBehaviour:
       NextNodeId: 
       Choices:
       - ChoiceId: left
+        TextZhCn: 
+        TextEnUs: 
         TextKey: story.c06.left
         NextNodeId: left_path
       - ChoiceId: right
+        TextZhCn: 
+        TextEnUs: 
         TextKey: story.c06.right
         NextNodeId: right_path
     - NodeId: left_path
       Type: 2
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -8135,7 +9803,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: right_path
       Type: 2
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -8151,7 +9823,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: merge
       Type: 0
+      TextZhCn: 
+      TextEnUs: 
       TextKey: story.c06.merge
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -8167,7 +9843,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: end
       Type: 3
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -8194,7 +9874,11 @@ MonoBehaviour:
     Nodes:
     - NodeId: start
       Type: 0
+      TextZhCn: 
+      TextEnUs: 
       TextKey: story.c06.start
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -8210,7 +9894,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: choice
       Type: 1
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -8225,14 +9913,22 @@ MonoBehaviour:
       NextNodeId: 
       Choices:
       - ChoiceId: left
+        TextZhCn: 
+        TextEnUs: 
         TextKey: story.c06.left
         NextNodeId: left_path
       - ChoiceId: right
+        TextZhCn: 
+        TextEnUs: 
         TextKey: story.c06.right
         NextNodeId: right_path
     - NodeId: left_path
       Type: 2
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -8248,7 +9944,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: right_path
       Type: 2
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -8264,7 +9964,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: merge
       Type: 0
+      TextZhCn: 
+      TextEnUs: 
       TextKey: story.c06.merge
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 
@@ -8280,7 +9984,11 @@ MonoBehaviour:
       Choices: []
     - NodeId: end
       Type: 3
+      TextZhCn: 
+      TextEnUs: 
       TextKey: 
+      SpeakerTextZhCn: 
+      SpeakerTextEnUs: 
       SpeakerKey: 
       SpeakerCharacterId: 
       AppearanceOverride: 

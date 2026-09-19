@@ -1,23 +1,63 @@
 {
-  "Header": { "ContentId": "story.full_feature_test", "Source": 0, "FormatVersion": 1, "ContentRevision": 1, "MinGameVersion": "", "MaxTestedGameVersion": "", "PayloadSha256": "" },
-  "StoryId": "story.full_feature_test",
-  "StartNodeId": "start",
-  "Nodes": [
-    { "NodeId": "start", "Type": 6, "BackgroundId": "test.background.room", "NextNodeId": "show_character", "Choices": [] },
-    { "NodeId": "show_character", "Type": 4, "SpeakerCharacterId": "official.character.hani", "AppearanceOverride": "official.appearance.hani.casual", "CharacterPosition": 0, "NextNodeId": "music", "Choices": [] },
-    { "NodeId": "music", "Type": 9, "AudioId": "test.audio.music", "AudioKind": 0, "NextNodeId": "dialogue_1", "Choices": [] },
-    { "NodeId": "dialogue_1", "Type": 0, "SpeakerKey": "story.full_feature_test.speaker", "SpeakerCharacterId": "official.character.hani", "TextKey": "story.full_feature_test.dialogue_1", "NextNodeId": "move", "Choices": [] },
-    { "NodeId": "move", "Type": 8, "SpeakerCharacterId": "official.character.hani", "CharacterPosition": 1, "NextNodeId": "cg", "Choices": [] },
-    { "NodeId": "cg", "Type": 5, "AssetId": "test.cg.reveal", "NextNodeId": "effect", "Choices": [] },
-    { "NodeId": "effect", "Type": 10, "EffectType": 1, "NextNodeId": "sfx", "Choices": [] },
-    { "NodeId": "sfx", "Type": 9, "AudioId": "test.audio.click", "AudioKind": 1, "NextNodeId": "wait", "Choices": [] },
-    { "NodeId": "wait", "Type": 11, "WaitSeconds": 0.5, "NextNodeId": "dialogue_2", "Choices": [] },
-    { "NodeId": "dialogue_2", "Type": 0, "SpeakerKey": "story.full_feature_test.speaker", "SpeakerCharacterId": "official.character.hani", "TextKey": "story.full_feature_test.dialogue_2", "NextNodeId": "choice", "Choices": [] },
-    { "NodeId": "choice", "Type": 1, "TextKey": "story.full_feature_test.choice_prompt", "Choices": [ { "ChoiceId": "inspect", "TextKey": "story.full_feature_test.choice_inspect", "NextNodeId": "inspect" }, { "ChoiceId": "leave", "TextKey": "story.full_feature_test.choice_leave", "NextNodeId": "leave" } ] },
-    { "NodeId": "inspect", "Type": 0, "SpeakerKey": "story.full_feature_test.speaker", "SpeakerCharacterId": "official.character.hani", "TextKey": "story.full_feature_test.inspect", "NextNodeId": "hide", "Choices": [] },
-    { "NodeId": "leave", "Type": 0, "SpeakerKey": "story.full_feature_test.speaker", "SpeakerCharacterId": "official.character.hani", "TextKey": "story.full_feature_test.leave", "NextNodeId": "hide", "Choices": [] },
-    { "NodeId": "hide", "Type": 7, "SpeakerCharacterId": "official.character.hani", "NextNodeId": "dialogue_3", "Choices": [] },
-    { "NodeId": "dialogue_3", "Type": 0, "SpeakerKey": "story.full_feature_test.speaker", "TextKey": "story.full_feature_test.dialogue_3", "NextNodeId": "end", "Choices": [] },
-    { "NodeId": "end", "Type": 3, "Choices": [] }
-  ]
+    "FormatVersion": 2,
+    "SourceHash": "0dbbd8c12807f93d",
+    "Story": {
+        "Header": {
+            "ContentId": "story.full_feature_test",
+            "Source": 0,
+            "FormatVersion": 1,
+            "ContentRevision": 1,
+            "MinGameVersion": "",
+            "MaxTestedGameVersion": "",
+            "PayloadSha256": ""
+        },
+        "StoryId": "story.full_feature_test",
+        "StartNodeId": "start",
+        "Nodes": [
+            {
+                "NodeId": "start",
+                "Type": 0,
+                "TextZhCn": "ZH test start",
+                "TextEnUs": "EN test start",
+                "TextKey": "",
+                "SpeakerTextZhCn": "Speaker",
+                "SpeakerTextEnUs": "Speaker",
+                "SpeakerKey": "",
+                "SpeakerCharacterId": "",
+                "AppearanceOverride": "",
+                "AssetId": "",
+                "BackgroundId": "",
+                "CharacterPosition": 0,
+                "ExpressionId": "",
+                "EffectType": 0,
+                "AudioId": "",
+                "AudioKind": 1,
+                "WaitSeconds": 0.0,
+                "NextNodeId": "end",
+                "Choices": []
+            },
+            {
+                "NodeId": "end",
+                "Type": 3,
+                "TextZhCn": "",
+                "TextEnUs": "",
+                "TextKey": "",
+                "SpeakerTextZhCn": "",
+                "SpeakerTextEnUs": "",
+                "SpeakerKey": "",
+                "SpeakerCharacterId": "",
+                "AppearanceOverride": "",
+                "AssetId": "",
+                "BackgroundId": "",
+                "CharacterPosition": 0,
+                "ExpressionId": "",
+                "EffectType": 0,
+                "AudioId": "",
+                "AudioKind": 1,
+                "WaitSeconds": 0.0,
+                "NextNodeId": "",
+                "Choices": []
+            }
+        ]
+    }
 }

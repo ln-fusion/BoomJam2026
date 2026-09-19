@@ -1,1 +1,63 @@
-{"FormatVersion":2,"SourceHash":"","Story":{"Header":{"ContentId":"story.test_branch","Source":0,"FormatVersion":2,"ContentRevision":1},"StoryId":"story.test_branch","StartNodeId":"start","Nodes":[{"NodeId":"start","Type":0,"SpeakerTextZhCn":"Narrator","SpeakerTextEnUs":"Narrator","TextZhCn":"Choose a branch.","TextEnUs":"Choose a branch.","NextNodeId":"choice","Choices":[]},{"NodeId":"choice","Type":1,"TextZhCn":"Choose left or right.","TextEnUs":"Choose left or right.","Choices":[{"ChoiceId":"left","TextZhCn":"Left","TextEnUs":"Left","NextNodeId":"left_path"},{"ChoiceId":"right","TextZhCn":"Right","TextEnUs":"Right","NextNodeId":"right_path"}]},{"NodeId":"left_path","Type":0,"SpeakerTextZhCn":"Narrator","SpeakerTextEnUs":"Narrator","TextZhCn":"Left branch.","TextEnUs":"Left branch.","NextNodeId":"merge","Choices":[]},{"NodeId":"right_path","Type":0,"SpeakerTextZhCn":"Narrator","SpeakerTextEnUs":"Narrator","TextZhCn":"Right branch.","TextEnUs":"Right branch.","NextNodeId":"merge","Choices":[]},{"NodeId":"merge","Type":2,"NextNodeId":"final","Choices":[]},{"NodeId":"final","Type":0,"SpeakerTextZhCn":"Narrator","SpeakerTextEnUs":"Narrator","TextZhCn":"Branches merged.","TextEnUs":"Branches merged.","NextNodeId":"end","Choices":[]},{"NodeId":"end","Type":3,"Choices":[]}]}}
+{
+    "FormatVersion": 2,
+    "SourceHash": "547bed314ab45038",
+    "Story": {
+        "Header": {
+            "ContentId": "story.test_branch",
+            "Source": 0,
+            "FormatVersion": 1,
+            "ContentRevision": 1,
+            "MinGameVersion": "",
+            "MaxTestedGameVersion": "",
+            "PayloadSha256": ""
+        },
+        "StoryId": "story.test_branch",
+        "StartNodeId": "start",
+        "Nodes": [
+            {
+                "NodeId": "start",
+                "Type": 0,
+                "TextZhCn": "ZH test start",
+                "TextEnUs": "EN test start",
+                "TextKey": "",
+                "SpeakerTextZhCn": "Speaker",
+                "SpeakerTextEnUs": "Speaker",
+                "SpeakerKey": "",
+                "SpeakerCharacterId": "",
+                "AppearanceOverride": "",
+                "AssetId": "",
+                "BackgroundId": "",
+                "CharacterPosition": 0,
+                "ExpressionId": "",
+                "EffectType": 0,
+                "AudioId": "",
+                "AudioKind": 1,
+                "WaitSeconds": 0.0,
+                "NextNodeId": "end",
+                "Choices": []
+            },
+            {
+                "NodeId": "end",
+                "Type": 3,
+                "TextZhCn": "",
+                "TextEnUs": "",
+                "TextKey": "",
+                "SpeakerTextZhCn": "",
+                "SpeakerTextEnUs": "",
+                "SpeakerKey": "",
+                "SpeakerCharacterId": "",
+                "AppearanceOverride": "",
+                "AssetId": "",
+                "BackgroundId": "",
+                "CharacterPosition": 0,
+                "ExpressionId": "",
+                "EffectType": 0,
+                "AudioId": "",
+                "AudioKind": 1,
+                "WaitSeconds": 0.0,
+                "NextNodeId": "",
+                "Choices": []
+            }
+        ]
+    }
+}

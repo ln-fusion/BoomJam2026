@@ -274,7 +274,7 @@ namespace Game.Presentation
                     ToggleHistory();
                 return;
             }
-            if (_continueAction != null && Input.GetKeyDown(KeyCode.Space))
+            if ((_continueAction != null || _waitCoroutine != null) && Input.GetKeyDown(KeyCode.Space))
                 ContinueClicked();
         }
 
@@ -285,7 +285,7 @@ namespace Game.Presentation
             // 历史层内的点击会冒泡到本组件所在的根节点, 必须显式拦截, 否则查看历史会误推进剧情。
             if (_inputBlocked || IsHistoryOpen)
                 return;
-            if (_continueAction != null)
+            if (_continueAction != null || _waitCoroutine != null)
                 ContinueClicked();
         }
 
@@ -341,6 +341,11 @@ namespace Game.Presentation
             _currentCharacterId = characterId;
             if (string.IsNullOrWhiteSpace(characterId))
                 return;
+            if (portrait == null)
+            {
+                Debug.Log("[StoryDialoguePanel] ShowCharacter placeholder for missing portrait: " + characterId, this);
+                return;
+            }
             PortraitSlot slot = GetOrCreateSlot(characterId);
             if (slot == null)
                 return;
@@ -583,19 +588,21 @@ namespace Game.Presentation
             onCompleted?.Invoke();
         }
 
-        /// <summary>把本地化键转换为当前语言文本；无服务时显示键名。</summary>
-        /// <param name="key">本地化键。</param>
-        /// <returns>文本或键名回退。</returns>
-        private string Localize(string key)
-        {
-            if (string.IsNullOrEmpty(key))
-                return string.Empty;
-            return _localization == null ? key : _localization.Get(new LocalizationKey(key));
-        }
-
         /// <summary>设置跳过按钮回调。</summary>
         /// <param name="onSkip">跳过回调。</param>
         public void SetSkipAction(Action onSkip) => _skipAction = onSkip;
+
+        /// <summary>在完成存档失败时提供可见的重试入口。</summary>
+        /// <param name="onRetry">重试保存回调。</param>
+        public void SetRetryAction(Action onRetry)
+        {
+            _continueAction = onRetry;
+            if (_continue != null)
+            {
+                _continue.gameObject.SetActive(true);
+                SetButtonLabel(_continue, "Retry");
+            }
+        }
 
         /// <summary>设置打开全局设置弹窗时执行的回调。</summary>
         /// <param name="onSettings">设置按钮点击回调。</param>
@@ -823,9 +830,8 @@ namespace Game.Presentation
         {
             if (string.IsNullOrEmpty(text))
                 return LocalizedTextSnapshot.Empty;
-            // JSON 文本是权威来源；仅在传入值本身是旧 Key 且本地化服务能解析时兼容转换。
-            string resolved = _localization == null ? text : Localize(text);
-            return new LocalizedTextSnapshot(string.Empty, resolved, _localization?.CurrentLocaleCode ?? string.Empty);
+            // 剧情 JSON 是权威来源；历史记录绝不重新查询 UI.csv 或 String Table。
+            return new LocalizedTextSnapshot(string.Empty, text, _localization?.CurrentLocaleCode ?? string.Empty);
         }
 
         /// <summary>继续按钮点击处理。</summary>

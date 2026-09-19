@@ -1,6 +1,6 @@
 {
     "Header": {
-        "ContentId": "",
+        "ContentId": "story.new",
         "Source": 0,
         "FormatVersion": 1,
         "ContentRevision": 1,
@@ -14,61 +14,45 @@
         {
             "NodeId": "start",
             "Type": 0,
-            "TextKey": "story.new.start",
-            "NextNodeId": "node_2",
+            "TextZhCn": "ZH test start",
+            "TextEnUs": "EN test start",
+            "TextKey": "",
+            "SpeakerTextZhCn": "Speaker",
+            "SpeakerTextEnUs": "Speaker",
+            "SpeakerKey": "",
+            "SpeakerCharacterId": "",
+            "AppearanceOverride": "",
+            "AssetId": "",
+            "BackgroundId": "",
+            "CharacterPosition": 0,
+            "ExpressionId": "",
+            "EffectType": 0,
+            "AudioId": "",
+            "AudioKind": 1,
+            "WaitSeconds": 0.0,
+            "NextNodeId": "end",
             "Choices": []
         },
         {
             "NodeId": "end",
             "Type": 3,
+            "TextZhCn": "",
+            "TextEnUs": "",
             "TextKey": "",
+            "SpeakerTextZhCn": "",
+            "SpeakerTextEnUs": "",
+            "SpeakerKey": "",
+            "SpeakerCharacterId": "",
+            "AppearanceOverride": "",
+            "AssetId": "",
+            "BackgroundId": "",
+            "CharacterPosition": 0,
+            "ExpressionId": "",
+            "EffectType": 0,
+            "AudioId": "",
+            "AudioKind": 1,
+            "WaitSeconds": 0.0,
             "NextNodeId": "",
-            "Choices": []
-        },
-        {
-            "NodeId": "node_2",
-            "Type": 0,
-            "TextKey": "2",
-            "NextNodeId": "node_3",
-            "Choices": []
-        },
-        {
-            "NodeId": "node_3",
-            "Type": 1,
-            "TextKey": "3",
-            "NextNodeId": "",
-            "Choices": [
-                {
-                    "ChoiceId": "choice_0",
-                    "TextKey": "l",
-                    "NextNodeId": "l"
-                },
-                {
-                    "ChoiceId": "choice_1",
-                    "TextKey": "r",
-                    "NextNodeId": "r"
-                }
-            ]
-        },
-        {
-            "NodeId": "l",
-            "Type": 0,
-            "TextKey": "ll",
-            "NextNodeId": "merge",
-            "Choices": []
-        },
-        {
-            "NodeId": "r",
-            "Type": 0,
-            "TextKey": "rr",
-            "NextNodeId": "merge",
-            "Choices": []
-        },
-        {
-            "NodeId": "merge",
-            "Type": 0,
-            "TextKey": "merge",
-            "NextNodeId": "end",
             "Choices": []
         }
     ]

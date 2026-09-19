@@ -362,11 +362,7 @@ namespace Game.Editor
             if (string.IsNullOrEmpty(_path))
                 return;
             RefreshJson();
-            string temp = _path + ".tmp";
-            File.WriteAllText(temp, _json);
-            if (File.Exists(_path))
-                File.Delete(_path);
-            File.Move(temp, _path);
+            AtomicReplace(_path, _json);
             AssetDatabase.Refresh();
             _dirty = false;
         }
@@ -381,7 +377,7 @@ namespace Game.Editor
                     _definition,
                     null,
                     AssetExists,
-                    LocalizationKeyExists,
+                    null,
                     out string error
                 )
             )
@@ -394,14 +390,44 @@ namespace Game.Editor
             string folder = Path.Combine(Application.dataPath, "Game/Resources/StoryRuntime");
             Directory.CreateDirectory(folder);
             string target = Path.Combine(folder, _definition.StoryId + ".story.runtime.json");
-            // 写信封而非裸 JSON: 内含 formatVersion 与源摘要, 读取端兼容旧格式。
+            // 写信封而非裸 JSON: 内含 formatVersion 与源摘要。
             string json = Game.Content.StoryRuntimeSerializer.SerializeEnvelope(_definition);
-            string temp = target + ".tmp";
-            File.WriteAllText(temp, json);
-            if (File.Exists(target))
-                File.Delete(target);
-            File.Move(temp, target);
+            AtomicReplace(target, json);
             AssetDatabase.Refresh();
+        }
+
+        /// <summary>使用临时文件和备份文件原子替换目标内容。</summary>
+        /// <param name="target">目标文件路径。</param>
+        /// <param name="content">待写入文本。</param>
+        private static void AtomicReplace(string target, string content)
+        {
+            string temp = target + ".tmp";
+            string backup = target + ".bak";
+            File.WriteAllText(temp, content);
+            try
+            {
+                if (File.Exists(target))
+                {
+                    File.Replace(temp, target, backup, true);
+                    if (File.Exists(backup))
+                        File.Delete(backup);
+                }
+                else
+                {
+                    File.Move(temp, target);
+                }
+            }
+            catch
+            {
+                if (!File.Exists(target) && File.Exists(backup))
+                    File.Move(backup, target);
+                throw;
+            }
+            finally
+            {
+                if (File.Exists(temp))
+                    File.Delete(temp);
+            }
         }
 
         /// <summary>刷新窗口内 JSON 预览。</summary>

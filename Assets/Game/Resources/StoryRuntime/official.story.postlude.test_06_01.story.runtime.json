@@ -1,6 +1,6 @@
 {
     "FormatVersion": 2,
-    "SourceHash": "9169510c9180aa3d",
+    "SourceHash": "6fb11f1af873da85",
     "Story": {
         "Header": {
             "ContentId": "official.story.postlude.test_06_01",
@@ -17,8 +17,8 @@
             {
                 "NodeId": "start",
                 "Type": 0,
-                "TextZhCn": "",
-                "TextEnUs": "",
+                "TextZhCn": "【待填写剧情文本：story.c06.start】",
+                "TextEnUs": "[Story text pending: story.c06.start]",
                 "TextKey": "",
                 "SpeakerTextZhCn": "",
                 "SpeakerTextEnUs": "",
@@ -59,15 +59,15 @@
                 "Choices": [
                     {
                         "ChoiceId": "left",
-                        "TextZhCn": "",
-                        "TextEnUs": "",
+                        "TextZhCn": "【待填写剧情文本：story.c06.left】",
+                        "TextEnUs": "[Story text pending: story.c06.left]",
                         "TextKey": "",
                         "NextNodeId": "left_path"
                     },
                     {
                         "ChoiceId": "right",
-                        "TextZhCn": "",
-                        "TextEnUs": "",
+                        "TextZhCn": "【待填写剧情文本：story.c06.right】",
+                        "TextEnUs": "[Story text pending: story.c06.right]",
                         "TextKey": "",
                         "NextNodeId": "right_path"
                     }
@@ -120,8 +120,8 @@
             {
                 "NodeId": "merge",
                 "Type": 0,
-                "TextZhCn": "",
-                "TextEnUs": "",
+                "TextZhCn": "【待填写剧情文本：story.c06.merge】",
+                "TextEnUs": "[Story text pending: story.c06.merge]",
                 "TextKey": "",
                 "SpeakerTextZhCn": "",
                 "SpeakerTextEnUs": "",
