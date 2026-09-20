@@ -50,6 +50,12 @@ dotnet_diagnostic.CA1001.severity = none       # 可释放字段：Unity MonoBeh
 dotnet_diagnostic.CA1716.severity = none       # 接口成员 Get：ILocalizationService.Get 是既定契约名（C04），改名为破坏性变更
 dotnet_diagnostic.CA1859.severity = none       # 性能类型收窄：Unity 仓库边界经常刻意保留接口类型（如 IReadOnlyDictionary），避免调用方因内部实现变更而受影响
 
+# CA1822（成员可标记为 static）：.NET 10 SDK 的推荐分析集比 Unity 2022.3 内置 Roslyn 更激进，
+# 会把「暂未使用实例字段的 internal 属性」判为可静态化。Unity 不走 MSBuild 编译，此处仅是工具链差异，
+# 强行静态化会改跨文件调用契约（如 GlobalCanvasLayer.SettingsReturnsToMap 被 SettingsModalPresenter 调用），
+# 属为消除噪音而改公共边界，收益为负。降级为提示，保留 IDE 波浪线。
+dotnet_diagnostic.CA1822.severity = suggestion
+
 # Unity 事件系统回调（OnBeginDrag/OnDrag/OnScroll/OnPointerClick 等）与 uGUI 工厂入参：
 # 参数由引擎/调用链保证非空，null 校验属冗余模板；CA1062 全量放行会掩盖真实库 API 缺陷，
 # 因此仅对包含这些回调/工厂的文件做定点关闭，其余文件保持全局 warning。
@@ -75,7 +81,12 @@ dotnet_diagnostic.CA1822.severity = none   # [UnityTearDown]/[UnitySetUp] 不能
 [*.md]
 trim_trailing_whitespace = false
 
-# EditorWindow/Inspector 的 OnGUI 为引擎反射回调，Roslynator Unity 分析仅覆盖 MonoBehaviour；
-# 对 Editor 目录单独关闭"未使用私有方法"，避免误报（如 StoryAuthoringWindow.OnGUI）。
+# EditorWindow/Inspector 的 OnGUI/CreateGUI 为引擎反射回调，Roslynator Unity 分析仅覆盖 MonoBehaviour；
+# 对 Editor 目录（含子目录）单独关闭"未使用私有方法"，避免误报（如 StoryAuthoringWindow.OnGUI、
+# LevelEditorWindow.CreateGUI、PromptWindow.OnGUI）。
+# 两个 glob 都写：editorconfig 的 `**/` 不匹配零层目录，只写 `**/*.cs` 会漏掉 Editor 根下的文件。
 [Assets/Game/Editor/*.cs]
+dotnet_diagnostic.RCS1213.severity = none
+
+[Assets/Game/Editor/**/*.cs]
 dotnet_diagnostic.RCS1213.severity = none

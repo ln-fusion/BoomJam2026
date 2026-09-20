@@ -8,16 +8,14 @@ namespace Game.Content
     public static class OfficialTestMapCatalog
     {
         private static readonly CultureInfo Invariant = CultureInfo.InvariantCulture;
+
         /// <summary>创建六张测试地图、每图五个关卡和各关独立的关前、关后测试剧情。</summary>
         /// <returns>包含 30 个稳定测试关卡、关前关后剧情和旧 C06 测试剧情的内容提供者。</returns>
         public static OfficialContentProvider CreateProvider()
         {
             var maps = new List<MapDefinition>();
             var levels = new List<LevelDefinition>();
-            var stories = new List<StoryDefinition>
-            {
-                CreateBranchingStory("official.story.c06_branch")
-            };
+            var stories = new List<StoryDefinition> { CreateBranchingStory("official.story.c06_branch") };
             for (int mapIndex = 1; mapIndex <= 6; mapIndex++)
             {
                 string mapId = "official.map.test_" + mapIndex.ToString("00", Invariant);
@@ -30,16 +28,33 @@ namespace Game.Content
                 };
                 for (int levelIndex = 1; levelIndex <= 5; levelIndex++)
                 {
-                    string levelId = "official.level.test_" + mapIndex.ToString("00") + "_" + levelIndex.ToString("00");
-                    string preludeStoryId = "official.story.prelude.test_" +
-                        mapIndex.ToString("00") + "_" + levelIndex.ToString("00");
+                    string levelId =
+                        "official.level.test_"
+                        + mapIndex.ToString("00", Invariant)
+                        + "_"
+                        + levelIndex.ToString("00", Invariant);
+                    string preludeStoryId =
+                        "official.story.prelude.test_"
+                        + mapIndex.ToString("00", Invariant)
+                        + "_"
+                        + levelIndex.ToString("00", Invariant);
                     var level = new LevelDefinition
                     {
-                        Header = Header(levelId), LevelId = levelId, MapId = mapId,
-                        DisplayNameKey = "level.test_" + mapIndex.ToString("00") + "_" + levelIndex.ToString("00"),
-                        SortOrder = levelIndex, PreludeStoryId = preludeStoryId,
-                        PostludeStoryId = "official.story.postlude.test_" +
-                            mapIndex.ToString("00") + "_" + levelIndex.ToString("00")
+                        Header = Header(levelId),
+                        LevelId = levelId,
+                        MapId = mapId,
+                        DisplayNameKey =
+                            "level.test_"
+                            + mapIndex.ToString("00", Invariant)
+                            + "_"
+                            + levelIndex.ToString("00", Invariant),
+                        SortOrder = levelIndex,
+                        PreludeStoryId = preludeStoryId,
+                        PostludeStoryId =
+                            "official.story.postlude.test_"
+                            + mapIndex.ToString("00", Invariant)
+                            + "_"
+                            + levelIndex.ToString("00", Invariant),
                     };
                     if (levelIndex > 1)
                     {
@@ -74,7 +89,8 @@ namespace Game.Content
         {
             return new StoryDefinition
             {
-                Header = Header(storyId), StoryId = storyId,
+                Header = Header(storyId),
+                StoryId = storyId,
                 Nodes = new List<StoryNodeDefinition>
                 {
                     new StoryNodeDefinition
