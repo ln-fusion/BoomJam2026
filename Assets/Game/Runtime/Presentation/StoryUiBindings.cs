@@ -48,6 +48,12 @@ namespace Game.Presentation
         /// <summary>历史文本。</summary>
         public Text HistoryText;
 
+        /// <summary>打开全局设置弹窗的按钮。</summary>
+        public Button SettingsButton;
+
+        /// <summary>运行时复制的选项按钮模板；为空时由代码创建默认按钮。</summary>
+        public Button ChoiceButtonTemplate;
+
         /// <summary>检查剧情面板是否包含全部必需控件。</summary>
         public bool IsComplete =>
             Background != null
@@ -63,6 +69,8 @@ namespace Game.Presentation
             && SkipButton != null
             && HistoryButton != null
             && HistoryView != null
-            && HistoryText != null;
+            && HistoryText != null
+            && SettingsButton != null
+            && ChoiceButtonTemplate != null;
     }
 }

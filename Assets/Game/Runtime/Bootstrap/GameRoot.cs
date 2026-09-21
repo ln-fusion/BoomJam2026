@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Game.Content;
 using Game.Contracts;
+using Game.Contracts.Content;
 using Game.Contracts.Persistence;
 using Game.Flow;
 using Game.Foundation;
@@ -86,7 +87,10 @@ namespace Game.Bootstrap
             AudioMixerGroup? sfxGroup = FindMixerGroup(audioMixer, "SFX");
             musicSource.outputAudioMixerGroup = musicGroup;
             sfxSource.outputAudioMixerGroup = sfxGroup;
-            var audio = new UnityAudioService(audioMixer, null, musicSource, sfxSource);
+            IAssetResolver assetResolver = contentAssetRegistry == null
+                ? null
+                : new OfficialAssetResolver(contentAssetRegistry);
+            var audio = new UnityAudioService(audioMixer, assetResolver, musicSource, sfxSource);
             _settingsService = new SettingsService(
                 _saveRepository,
                 audio,
@@ -97,7 +101,7 @@ namespace Game.Bootstrap
             var profileLifecycle = new ProfileLifecycleService(_saveRepository, clock);
             var characters = new DefaultCharacterAssetRegistry(
                 contentCatalog.Characters.Count > 0 ? contentCatalog.Characters : OfficialTestMapCatalog.CreateCharacters(),
-                contentAssetRegistry == null ? null : new OfficialAssetResolver(contentAssetRegistry),
+                assetResolver,
                 logger
             );
 
@@ -132,7 +136,7 @@ namespace Game.Bootstrap
                 eventBus
             );
             _runtimeServices.SetAssetResolver(
-                contentAssetRegistry == null ? null : new OfficialAssetResolver(contentAssetRegistry)
+                assetResolver
             );
             if (contentAssetRegistry != null)
             {

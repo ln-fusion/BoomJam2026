@@ -10,6 +10,20 @@ namespace Game.Bootstrap
     /// <summary>按固定功能 Scene 安装运行时 uGUI 入口。</summary>
     public static class SceneUiInstaller
     {
+        /// <summary>直接运行剧情场景时安装测试 Presenter；正式 Bootstrap 流程存在时不介入。</summary>
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
+        private static void InstallStandaloneStoryDebug()
+        {
+            Scene scene = SceneManager.GetActiveScene();
+            if (scene.name != SceneNames.Story || Object.FindObjectOfType<GameRoot>() != null
+                || FindInScene<StoryScenePresenter>(scene) != null)
+                return;
+
+            var root = new GameObject("StoryDebugUI");
+            SceneManager.MoveGameObjectToScene(root, scene);
+            root.AddComponent<StoryScenePresenter>().Initialize();
+        }
+
         /// <summary>
         /// 安装功能场景 UI，并向 Gameplay 场景已有的白盒控制器注入服务。
         /// </summary>
@@ -26,6 +40,8 @@ namespace Game.Bootstrap
         {
             if (!scene.IsValid() || !scene.isLoaded || runtimeServices == null || globalCanvasLayer == null)
                 return;
+
+            globalCanvasLayer.EnsureSingleEventSystem();
 
             if (scene.name == SceneNames.StartMenu)
             {

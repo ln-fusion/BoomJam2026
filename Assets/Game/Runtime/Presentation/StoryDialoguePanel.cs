@@ -26,6 +26,9 @@ namespace Game.Presentation
         private Action _skipAction;
         private Button _skipButton;
         private Button _historyButton;
+        private Button _settingsButton;
+        private Button _choiceButtonTemplate;
+        private Action _settingsAction;
         private bool _skipPending;
         private bool _inputBlocked;
         private Coroutine _typingCoroutine;
@@ -64,7 +67,15 @@ namespace Game.Presentation
             _choicesRoot = bindings.ChoicesRoot;
             _historyView = bindings.HistoryView;
             _historyText = bindings.HistoryText;
-            _historyScroll = _historyView == null ? null : _historyView.GetComponent<ScrollRect>();
+            _historyScroll = _historyView == null ? null : _historyView.GetComponentInChildren<ScrollRect>(true);
+            _settingsButton = bindings.SettingsButton;
+            _choiceButtonTemplate = bindings.ChoiceButtonTemplate;
+            if (_effect != null)
+            {
+                _effect.transform.parent.gameObject.SetActive(true);
+                _effect.color = Color.clear;
+                _effect.raycastTarget = false;
+            }
             _slotImages = new Image[] { bindings.PortraitLeft, bindings.PortraitCenter, bindings.PortraitRight };
             if (_continue != null)
                 _continue.onClick.AddListener(ContinueClicked);
@@ -75,6 +86,10 @@ namespace Game.Presentation
             _historyButton = bindings.HistoryButton;
             if (_historyButton != null)
                 _historyButton.onClick.AddListener(ToggleHistory);
+            if (_settingsButton != null)
+                _settingsButton.onClick.AddListener(OpenSettings);
+            if (_choiceButtonTemplate != null)
+                _choiceButtonTemplate.gameObject.SetActive(false);
         }
 
         /// <summary>单个角色立绘槽位: 图像与当前位置。</summary>
@@ -152,11 +167,17 @@ namespace Game.Presentation
             skipRect.anchorMax = new Vector2(0.68f, 0.18f);
             skipRect.offsetMin = skipRect.offsetMax = Vector2.zero;
             _skipButton.onClick.AddListener(RequestSkip);
-            Button historyButton = UiFactory.CreateButton("History", panel.transform, "History");
-            RectTransform historyRect = historyButton.GetComponent<RectTransform>();
+            _historyButton = UiFactory.CreateButton("History", panel.transform, "History");
+            RectTransform historyRect = _historyButton.GetComponent<RectTransform>();
             historyRect.anchorMin = new Vector2(0.04f, 0.04f);
             historyRect.anchorMax = new Vector2(0.2f, 0.18f);
-            historyButton.onClick.AddListener(ToggleHistory);
+            _historyButton.onClick.AddListener(ToggleHistory);
+            _settingsButton = UiFactory.CreateButton("Settings", panel.transform, "Settings");
+            RectTransform settingsRect = _settingsButton.GetComponent<RectTransform>();
+            settingsRect.anchorMin = new Vector2(0.24f, 0.04f);
+            settingsRect.anchorMax = new Vector2(0.44f, 0.18f);
+            settingsRect.offsetMin = settingsRect.offsetMax = Vector2.zero;
+            _settingsButton.onClick.AddListener(OpenSettings);
             _choicesRoot = new GameObject("Choices", typeof(RectTransform));
             _choicesRoot.transform.SetParent(panel.transform, false);
             var root = (RectTransform)_choicesRoot.transform;
@@ -253,7 +274,7 @@ namespace Game.Presentation
                     ToggleHistory();
                 return;
             }
-            if (_continueAction != null && Input.GetKeyDown(KeyCode.Space))
+            if ((_continueAction != null || _waitCoroutine != null) && Input.GetKeyDown(KeyCode.Space))
                 ContinueClicked();
         }
 
@@ -264,7 +285,7 @@ namespace Game.Presentation
             // 历史层内的点击会冒泡到本组件所在的根节点, 必须显式拦截, 否则查看历史会误推进剧情。
             if (_inputBlocked || IsHistoryOpen)
                 return;
-            if (_continueAction != null)
+            if (_continueAction != null || _waitCoroutine != null)
                 ContinueClicked();
         }
 
@@ -273,8 +294,8 @@ namespace Game.Presentation
         {
             BuildPreview();
             ClearChoices();
-            _speaker.text = dialogue == null ? string.Empty : Localize(dialogue.SpeakerKey);
-            _fullText = dialogue == null ? string.Empty : Localize(dialogue.TextKey);
+            _speaker.text = dialogue == null ? string.Empty : dialogue.SpeakerText;
+            _fullText = dialogue == null ? string.Empty : dialogue.Text;
             StartTyping(_fullText);
             _continueAction = onContinue;
             _continue.gameObject.SetActive(true);
@@ -320,6 +341,11 @@ namespace Game.Presentation
             _currentCharacterId = characterId;
             if (string.IsNullOrWhiteSpace(characterId))
                 return;
+            if (portrait == null)
+            {
+                Debug.Log("[StoryDialoguePanel] ShowCharacter placeholder for missing portrait: " + characterId, this);
+                return;
+            }
             PortraitSlot slot = GetOrCreateSlot(characterId);
             if (slot == null)
                 return;
@@ -435,15 +461,15 @@ namespace Game.Presentation
             return count;
         }
 
-        /// <summary>根据立绘数量调整正文区域: 有立绘时右移留出左/中/右槽位空间。</summary>
+        /// <summary>保留预制体配置的固定正文区域，避免播放时因立绘改变锚点。</summary>
         /// <param name="portraitCount">当前立绘数量。</param>
         private void UpdateBodyLayout(int portraitCount)
         {
-            if (_body == null)
-                return;
-            Vector2 bodyMin = _body.rectTransform.anchorMin;
-            _body.rectTransform.anchorMin =
-                portraitCount > 0 ? new Vector2(0.28f, bodyMin.y) : new Vector2(0.04f, bodyMin.y);
+            // 正式 StoryUI.prefab 使用固定的 DialogueText 区域。运行时不能只修改
+            // anchorMin 而保留 anchorMax，否则出现立绘时会改变正文的锚点区间，
+            // 使文字脱离预制体中已经配置好的文字框。portraitCount 保留在签名中，
+            // 兼容代码生成的白盒布局，但不再覆盖正式预制体的固定位置。
+            _ = portraitCount;
         }
 
         /// <summary>播放屏幕效果：白/红闪 0.4 秒淡出，黑屏维持到下次效果，模糊使用占位半透明。</summary>
@@ -562,19 +588,25 @@ namespace Game.Presentation
             onCompleted?.Invoke();
         }
 
-        /// <summary>把本地化键转换为当前语言文本；无服务时显示键名。</summary>
-        /// <param name="key">本地化键。</param>
-        /// <returns>文本或键名回退。</returns>
-        private string Localize(string key)
-        {
-            if (string.IsNullOrEmpty(key))
-                return string.Empty;
-            return _localization == null ? key : _localization.Get(new LocalizationKey(key));
-        }
-
         /// <summary>设置跳过按钮回调。</summary>
         /// <param name="onSkip">跳过回调。</param>
         public void SetSkipAction(Action onSkip) => _skipAction = onSkip;
+
+        /// <summary>在完成存档失败时提供可见的重试入口。</summary>
+        /// <param name="onRetry">重试保存回调。</param>
+        public void SetRetryAction(Action onRetry)
+        {
+            _continueAction = onRetry;
+            if (_continue != null)
+            {
+                _continue.gameObject.SetActive(true);
+                SetButtonLabel(_continue, "Retry");
+            }
+        }
+
+        /// <summary>设置打开全局设置弹窗时执行的回调。</summary>
+        /// <param name="onSettings">设置按钮点击回调。</param>
+        public void SetSettingsAction(Action onSettings) => _settingsAction = onSettings;
 
         /// <summary>历史覆盖层当前是否可见。</summary>
         public bool IsHistoryOpen => _historyView != null && _historyView.activeSelf;
@@ -587,7 +619,7 @@ namespace Game.Presentation
             SyncInteractable();
         }
 
-        /// <summary>按当前阻塞状态同步继续与跳过按钮的可交互性。</summary>
+        /// <summary>根据设置弹窗和历史面板状态同步剧情控件交互。</summary>
         private void SyncInteractable()
         {
             bool blocked = _inputBlocked || IsHistoryOpen;
@@ -595,6 +627,13 @@ namespace Game.Presentation
                 _skipButton.interactable = !blocked;
             if (_continue != null)
                 _continue.interactable = !blocked;
+            if (_historyButton != null)
+                _historyButton.interactable = !_inputBlocked;
+            if (_settingsButton != null)
+                _settingsButton.interactable = !_inputBlocked;
+            if (_choicesRoot != null)
+                foreach (Button choice in _choicesRoot.GetComponentsInChildren<Button>(true))
+                    choice.interactable = !blocked;
         }
 
         /// <inheritdoc/>
@@ -619,12 +658,24 @@ namespace Game.Presentation
                 StoryChoiceView choice = choices[i];
                 if (choice == null)
                     continue;
-                Button button = UiFactory.CreateButton(
-                    "Choice_" + choice.ChoiceId.Value,
-                    _choicesRoot.transform,
-                    Localize(choice.TextKey)
-                );
+                Button button;
+                if (_choiceButtonTemplate != null)
+                {
+                    button = Instantiate(_choiceButtonTemplate, _choicesRoot.transform);
+                    button.gameObject.name = "Choice_" + choice.ChoiceId.Value;
+                    button.gameObject.SetActive(true);
+                    SetButtonLabel(button, choice.Text);
+                }
+                else
+                {
+                    button = UiFactory.CreateButton(
+                        "Choice_" + choice.ChoiceId.Value,
+                        _choicesRoot.transform,
+                        choice.Text
+                    );
+                }
                 button.onClick.AddListener(() => _choiceAction?.Invoke(choice.ChoiceId));
+                button.interactable = !_inputBlocked && !IsHistoryOpen;
                 RectTransform rect = button.GetComponent<RectTransform>();
                 rect.anchorMin = new Vector2(0f, 1f);
                 rect.anchorMax = new Vector2(1f, 1f);
@@ -652,6 +703,13 @@ namespace Game.Presentation
             _skipAction?.Invoke();
         }
 
+        /// <summary>打开全局设置弹窗。</summary>
+        private void OpenSettings()
+        {
+            if (!_inputBlocked)
+                _settingsAction?.Invoke();
+        }
+
         /// <summary>更新按钮子文本。</summary>
         /// <param name="button">目标按钮。</param>
         /// <param name="label">新文本。</param>
@@ -662,11 +720,7 @@ namespace Game.Presentation
                 text.text = label;
         }
 
-        /// <summary>清空当前剧情表现（对白、立绘、CG、效果与选项）, 但保留本会话的历史记录。</summary>
-        /// <remarks>
-        /// 历史属于当前会话的瞬时数据, 由 <see cref="ResetHistory"/> 在剧情开始时重置;
-        /// 这样整段跳过或剧情结束后仍可回看本次实际经过的分支。
-        /// </remarks>
+        /// <summary>清空剧情表现，但保留本会话历史；新剧情开始时由 ResetHistory 重置。</summary>
         public void Clear()
         {
             if (_speaker != null)
@@ -720,18 +774,18 @@ namespace Game.Presentation
             RefreshHistory();
         }
 
-        /// <summary>追加一条对白记录，并在追加时把说话人与正文解析为文本快照。</summary>
+        /// <summary>追加一条对白记录，并在追加时保存 JSON 已选择的说话人与正文文本快照。</summary>
         /// <param name="storyId">所属剧情稳定标识。</param>
         /// <param name="nodeId">实际经过的节点标识。</param>
         /// <param name="speakerCharacterId">说话角色稳定标识；可为空。</param>
-        /// <param name="speakerKey">说话人本地化键；可为空。</param>
-        /// <param name="textKey">正文本地化键。</param>
+        /// <param name="speakerText">说话人实际文本；可为空。</param>
+        /// <param name="text">正文实际文本。</param>
         public void AppendDialogueHistory(
             StoryId storyId,
             StoryNodeId nodeId,
             string speakerCharacterId,
-            string speakerKey,
-            string textKey
+            string speakerText,
+            string text
         )
         {
             CharacterId speakerId = string.IsNullOrWhiteSpace(speakerCharacterId)
@@ -743,18 +797,18 @@ namespace Game.Presentation
                     storyId,
                     nodeId,
                     speakerId,
-                    Snapshot(speakerKey),
-                    Snapshot(textKey)
+                    Snapshot(speakerText),
+                    Snapshot(text)
                 )
             );
         }
 
-        /// <summary>追加一条玩家选项记录，并在追加时把选项文本解析为文本快照。</summary>
+        /// <summary>追加一条玩家选项记录，并在追加时保存 JSON 已选择的选项文本快照。</summary>
         /// <param name="storyId">所属剧情稳定标识。</param>
         /// <param name="nodeId">选项所在节点标识。</param>
         /// <param name="choiceId">玩家点击的选项稳定标识。</param>
-        /// <param name="choiceTextKey">选项文本本地化键。</param>
-        public void AppendChoiceHistory(StoryId storyId, StoryNodeId nodeId, string choiceId, string choiceTextKey)
+        /// <param name="choiceText">选项实际文本。</param>
+        public void AppendChoiceHistory(StoryId storyId, StoryNodeId nodeId, string choiceId, string choiceText)
         {
             if (string.IsNullOrWhiteSpace(choiceId))
                 return;
@@ -764,24 +818,27 @@ namespace Game.Presentation
                     storyId,
                     nodeId,
                     new ChoiceId(choiceId),
-                    Snapshot(choiceTextKey)
+                    Snapshot(choiceText)
                 )
             );
         }
 
-        /// <summary>按当前 Locale 把本地化键解析为不可变文本快照。</summary>
-        /// <param name="key">本地化键；为空时返回空快照。</param>
-        /// <returns>保留键、文本与 Locale 的快照。</returns>
-        private LocalizedTextSnapshot Snapshot(string key)
+        /// <summary>为 JSON 实际文本建立不可变快照，不查询本地化表。</summary>
+        /// <param name="text">实际显示文本；为空时返回空快照。</param>
+        /// <returns>保留实际文本与 Locale 的快照。</returns>
+        private LocalizedTextSnapshot Snapshot(string text)
         {
-            if (string.IsNullOrEmpty(key))
+            if (string.IsNullOrEmpty(text))
                 return LocalizedTextSnapshot.Empty;
-            return new LocalizedTextSnapshot(key, Localize(key), _localization?.CurrentLocaleCode ?? string.Empty);
+            // 剧情 JSON 是权威来源；历史记录绝不重新查询 UI.csv 或 String Table。
+            return new LocalizedTextSnapshot(string.Empty, text, _localization?.CurrentLocaleCode ?? string.Empty);
         }
 
         /// <summary>继续按钮点击处理。</summary>
         private void ContinueClicked()
         {
+            if (_inputBlocked || IsHistoryOpen)
+                return;
             if (_waitCoroutine != null)
             {
                 // 等待期间点击立即结束等待。
@@ -884,7 +941,11 @@ namespace Game.Presentation
             if (_choicesRoot == null)
                 return;
             for (int i = _choicesRoot.transform.childCount - 1; i >= 0; i--)
-                Destroy(_choicesRoot.transform.GetChild(i).gameObject);
+            {
+                GameObject child = _choicesRoot.transform.GetChild(i).gameObject;
+                if (_choiceButtonTemplate == null || child != _choiceButtonTemplate.gameObject)
+                    Destroy(child);
+            }
             _choiceAction = null;
         }
     }

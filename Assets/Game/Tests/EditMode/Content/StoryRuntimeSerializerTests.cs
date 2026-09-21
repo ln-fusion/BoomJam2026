@@ -22,7 +22,8 @@ namespace Game.Tests.EditMode.Content
                     {
                         NodeId = "start",
                         Type = StoryNodeType.Dialogue,
-                        TextKey = "story.test.line",
+                        TextZhCn = "测试对白。",
+                        TextEnUs = "Test line.",
                         NextNodeId = "end",
                     },
                 },
@@ -57,18 +58,26 @@ namespace Game.Tests.EditMode.Content
         {
             StoryDefinition story = LinearStory();
             string before = StoryRuntimeSerializer.ComputeSourceHash(story);
-            story.Nodes[1].TextKey = "story.test.line.changed";
+            story.Nodes[1].TextZhCn = "修改后的测试对白。";
             Assert.That(StoryRuntimeSerializer.ComputeSourceHash(story), Is.Not.EqualTo(before));
         }
 
-        /// <summary>旧版裸 StoryDefinition JSON 仍可回退解析（c06 回归不破）。</summary>
+        /// <summary>裸 StoryDefinition JSON 不属于当前运行时格式，必须在迁移阶段转换。</summary>
         [Test]
-        public void TryDeserialize_FallsBackToBareStoryJson()
+        public void TryDeserialize_RejectsBareStoryJson()
         {
             StoryDefinition story = LinearStory();
             string bareJson = UnityEngine.JsonUtility.ToJson(story, true);
-            Assert.That(StoryRuntimeSerializer.TryDeserialize(bareJson, out StoryDefinition parsed), Is.True);
-            Assert.That(parsed.StoryId, Is.EqualTo(story.StoryId));
+            Assert.That(StoryRuntimeSerializer.TryDeserialize(bareJson, out _), Is.False);
+        }
+
+        /// <summary>源摘要被篡改时拒绝运行时产物，避免结构与信封不一致。</summary>
+        [Test]
+        public void TryDeserialize_RejectsSourceHashMismatch()
+        {
+            string json = StoryRuntimeSerializer.SerializeEnvelope(LinearStory())
+                .Replace("SourceHash", "SourceHashX");
+            Assert.That(StoryRuntimeSerializer.TryDeserialize(json, out _), Is.False);
         }
 
         /// <summary>空白与损坏 JSON 返回失败且不抛异常。</summary>

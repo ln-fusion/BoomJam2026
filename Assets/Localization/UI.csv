@@ -81,3 +81,12 @@ level.test_06_02,,测试关卡 06-02,Test Level 06-02
 level.test_06_03,,测试关卡 06-03,Test Level 06-03
 level.test_06_04,,测试关卡 06-04,Test Level 06-04
 level.test_06_05,,测试关卡 06-05,Test Level 06-05
+story.full_feature_test.speaker,,Hani,Hani
+story.full_feature_test.dialogue_1,,这里是全功能剧情测试的第一句对白。,This is the first dialogue of the full feature story test.
+story.full_feature_test.dialogue_2,,背景、立绘、CG、音效和等待节点已经执行。请选择一个分支。,Background, portrait, CG, audio and wait nodes have executed. Choose a branch.
+story.full_feature_test.choice_prompt,,你要检查房间还是直接离开？,Will you inspect the room or leave immediately?
+story.full_feature_test.choice_inspect,,检查房间,Inspect the room
+story.full_feature_test.choice_leave,,直接离开,Leave immediately
+story.full_feature_test.inspect,,你发现了一条隐藏线索。,You found a hidden clue.
+story.full_feature_test.leave,,你决定暂时不调查。,You decide not to investigate for now.
+story.full_feature_test.dialogue_3,,测试结束：现在可以点击跳过、查看历史和打开设置。,Test complete: you can try Skip, History and Settings now.

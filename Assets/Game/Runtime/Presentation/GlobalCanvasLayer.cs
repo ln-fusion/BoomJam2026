@@ -84,7 +84,7 @@ namespace Game.Presentation
         private void Awake()
         {
             DontDestroyOnLoad(gameObject);
-            EnsureEventSystem();
+            EnsureSingleEventSystem();
             BuildCanvases();
         }
 
@@ -239,16 +239,23 @@ namespace Game.Presentation
         }
 
         /// <summary>创建全局 EventSystem，保证动态 uGUI 在空场景中也可交互。</summary>
-        private void EnsureEventSystem()
+        public void EnsureSingleEventSystem()
         {
-            _eventSystem = FindObjectOfType<EventSystem>();
-            if (_eventSystem != null)
-                return;
+            if (_eventSystem == null)
+            {
+                _eventSystem = FindObjectOfType<EventSystem>();
+                if (_eventSystem == null)
+                {
+                    var eventSystemObject = new GameObject("GlobalEventSystem", typeof(EventSystem),
+                        typeof(StandaloneInputModule));
+                    eventSystemObject.transform.SetParent(transform, false);
+                    _eventSystem = eventSystemObject.GetComponent<EventSystem>();
+                }
+            }
 
-            var eventSystemObject = new GameObject("GlobalEventSystem", typeof(EventSystem),
-                typeof(StandaloneInputModule));
-            eventSystemObject.transform.SetParent(transform, false);
-            _eventSystem = eventSystemObject.GetComponent<EventSystem>();
+            foreach (EventSystem candidate in FindObjectsOfType<EventSystem>())
+                if (candidate != _eventSystem)
+                    Destroy(candidate.gameObject);
         }
 
         /// <summary>设置模态层阻挡状态；由设置 Presenter 调用。</summary>

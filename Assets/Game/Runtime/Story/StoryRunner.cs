@@ -33,11 +33,18 @@ namespace Game.Story
         /// <inheritdoc/>
         public StorySession Start(StoryId storyId)
         {
-            _definition = _storyLookup(storyId);
-            if (_definition == null)
+            if (storyId == null)
+                throw new ArgumentNullException(nameof(storyId));
+            StoryDefinition candidate = _storyLookup(storyId);
+            if (candidate == null)
                 throw new ArgumentException("Story was not found.", nameof(storyId));
-            if (!TryBuildNodeIndex(_definition, out string error))
+            if (!TryBuildNodeIndex(candidate, out var index, out string error))
                 throw new ArgumentException(error, nameof(storyId));
+
+            _definition = candidate;
+            _nodes.Clear();
+            foreach (var pair in index)
+                _nodes.Add(pair.Key, pair.Value);
 
             _visited.Clear();
             _executionSteps = 0;
@@ -53,13 +60,12 @@ namespace Game.Story
                 return Result.Failure(ContentError, "No active story session.");
             if (_session.IsCompleted)
                 return Result.Failure(ContentError, "Story session is already complete.");
-            if (_executionSteps++ >= MaxExecutionSteps)
-                return Result.Failure(ContentError, "Story exceeded the maximum execution step limit.");
-
             StoryNodeDefinition node = CurrentNode();
             switch (node.Type)
             {
                 case StoryNodeType.End:
+                    if (!TryConsumeExecutionStep(out Result limitResult))
+                        return limitResult;
                     _session.Complete();
                     return Result.Success();
                 case StoryNodeType.Choice:
@@ -108,8 +114,6 @@ namespace Game.Story
                 return Result.Failure(ContentError, "No active choice is available.");
             if (_session.IsCompleted)
                 return Result.Failure(ContentError, "Story session is already complete.");
-            if (_executionSteps++ >= MaxExecutionSteps)
-                return Result.Failure(ContentError, "Story exceeded the maximum execution step limit.");
             StoryNodeDefinition node = CurrentNode();
             if (node.Type != StoryNodeType.Choice || node.Choices == null)
                 return Result.Failure(ContentError, "Current node is not a choice.");
@@ -147,19 +151,38 @@ namespace Game.Story
         {
             if (string.IsNullOrWhiteSpace(nodeId) || !_nodes.ContainsKey(nodeId))
                 return Result.Failure(ContentError, "Next story node was not found.");
+            if (!TryConsumeExecutionStep(out Result limitResult))
+                return limitResult;
             _session.MoveTo(new StoryNodeId(nodeId));
             _visited.Add(_session.CurrentNodeId);
             return Result.Success();
         }
 
+        /// <summary>在实际状态变化前消耗一次执行步数。</summary>
+        /// <param name="result">达到上限时返回失败结果。</param>
+        /// <returns>仍可执行时返回 true。</returns>
+        private bool TryConsumeExecutionStep(out Result result)
+        {
+            if (_executionSteps >= MaxExecutionSteps)
+            {
+                result = Result.Failure(ContentError, "Story exceeded the maximum execution step limit.");
+                return false;
+            }
+            _executionSteps++;
+            result = Result.Success();
+            return true;
+        }
+
         /// <summary>校验剧情入口与节点标识，并建立节点索引。</summary>
         /// <param name="definition">准备运行的剧情定义。</param>
+        /// <param name="index">独立构建的候选索引；失败时不得使用。</param>
         /// <param name="error">校验失败信息；成功时为空。</param>
         /// <returns>定义可建立完整节点索引时返回 true。</returns>
-        private bool TryBuildNodeIndex(StoryDefinition definition, out string error)
+        private static bool TryBuildNodeIndex(StoryDefinition definition,
+            out Dictionary<string, StoryNodeDefinition> index, out string error)
         {
             error = null;
-            _nodes.Clear();
+            index = new Dictionary<string, StoryNodeDefinition>(StringComparer.Ordinal);
             if (
                 definition.Nodes == null
                 || definition.Nodes.Count == 0
@@ -172,13 +195,13 @@ namespace Game.Story
 
             foreach (StoryNodeDefinition node in definition.Nodes)
             {
-                if (node == null || string.IsNullOrWhiteSpace(node.NodeId) || !_nodes.TryAdd(node.NodeId, node))
+                if (node == null || string.IsNullOrWhiteSpace(node.NodeId) || !index.TryAdd(node.NodeId, node))
                 {
                     error = "Story contains a missing or duplicate node ID.";
                     return false;
                 }
             }
-            if (!_nodes.ContainsKey(definition.StartNodeId))
+            if (!index.ContainsKey(definition.StartNodeId))
             {
                 error = "Story start node was not found.";
                 return false;

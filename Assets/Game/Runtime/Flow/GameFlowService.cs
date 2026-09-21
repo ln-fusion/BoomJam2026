@@ -111,6 +111,8 @@ namespace Game.Flow
         public Task EnterLevelAsync(LevelId levelId, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
+            if (_isNavigating)
+                return Task.CompletedTask;
             _currentLevel = levelId ?? throw new ArgumentNullException(nameof(levelId));
             StoryId? prelude = _getPrelude?.Invoke(levelId);
             if (prelude != null && !(_isStoryCompleted?.Invoke(prelude) ?? false))
@@ -136,9 +138,15 @@ namespace Game.Flow
         /// <param name="cancellationToken">取消导航操作的令牌。</param>
         public Task PlayStoryAsync(StoryId storyId, StoryReturnTarget returnTarget, CancellationToken cancellationToken)
         {
+            cancellationToken.ThrowIfCancellationRequested();
+            if (_isNavigating)
+            {
+                _logger.LogWarning(LogContext.Empty, "[GameFlowService] 剧情场景切换进行中,忽略重复请求。");
+                return Task.CompletedTask;
+            }
             _storyReturnTarget = returnTarget;
             _currentStoryId = storyId ?? throw new ArgumentNullException(nameof(storyId));
-            return NavigateAsync(SceneNames.Story, cancellationToken);
+            return NavigateAsync(SceneNames.Story, cancellationToken, true);
         }
 
         /// <summary>返回开始菜单.</summary>
@@ -178,7 +186,8 @@ namespace Game.Flow
         /// </summary>
         /// <param name="sceneName">目标功能场景名。</param>
         /// <param name="cancellationToken">调用方取消标记。</param>
-        private async Task NavigateAsync(string sceneName, CancellationToken cancellationToken)
+        /// <param name="forceReload">是否强制卸载并重新加载目标场景。</param>
+        private async Task NavigateAsync(string sceneName, CancellationToken cancellationToken, bool forceReload = false)
         {
             // 防重入：切换期间屏蔽重复导航请求
             if (_isNavigating)
@@ -203,7 +212,7 @@ namespace Game.Flow
                 // 先快照再卸载：LoadedSceneNames 可能是活集合视图（如测试替身），循环内卸载会改集合
                 foreach (var loaded in new List<string>(_sceneLoader.LoadedSceneNames))
                 {
-                    if (loaded == sceneName)
+                    if (!forceReload && loaded == sceneName)
                     {
                         continue;
                     }

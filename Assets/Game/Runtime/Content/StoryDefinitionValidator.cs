@@ -75,8 +75,11 @@ namespace Game.Content
             {
                 if (node == null || string.IsNullOrWhiteSpace(node.NodeId) || !nodes.Add(node.NodeId))
                     return Fail("Story node IDs must be non-empty and unique.", out error);
-                if (node.Type == StoryNodeType.Dialogue && string.IsNullOrWhiteSpace(node.TextKey))
-                    return Fail("Dialogue nodes require a localization key.", out error);
+                if (!Enum.IsDefined(typeof(StoryNodeType), node.Type))
+                    return Fail($"StoryId={definition.StoryId}; NodeId={node.NodeId}; Field=Type: unknown node type.", out error);
+                if (node.Type == StoryNodeType.Dialogue &&
+                    string.IsNullOrWhiteSpace(node.TextZhCn) && string.IsNullOrWhiteSpace(node.TextEnUs))
+                    return Fail($"StoryId={definition.StoryId}; NodeId={node.NodeId}; Field=TextZhCn/TextEnUs: dialogue text is required.", out error);
                 if (node.Type == StoryNodeType.Choice)
                 {
                     if (node.Choices == null || node.Choices.Count == 0)
@@ -110,6 +113,8 @@ namespace Game.Content
                 return Fail("Story start node does not exist.", out error);
             foreach (StoryNodeDefinition node in definition.Nodes)
             {
+                if (node.Type == StoryNodeType.End && !string.IsNullOrWhiteSpace(node.NextNodeId))
+                    return Fail($"StoryId={definition.StoryId}; NodeId={node.NodeId}; Field=NextNodeId: End node cannot have a target.", out error);
                 if (
                     (
                         node.Type == StoryNodeType.Dialogue
@@ -126,11 +131,11 @@ namespace Game.Content
                     && !string.IsNullOrWhiteSpace(node.NextNodeId)
                     && !nodes.Contains(node.NextNodeId)
                 )
-                    return Fail("Story node references an unknown target.", out error);
+                            return Fail($"StoryId={definition.StoryId}; NodeId={node.NodeId}; Field=NextNodeId: target '{node.NextNodeId}' does not exist.", out error);
                 if (node.Type == StoryNodeType.Choice)
                     foreach (StoryChoiceDefinition choice in node.Choices)
                         if (!nodes.Contains(choice.NextNodeId))
-                            return Fail("Choice references an unknown target.", out error);
+                            return Fail($"StoryId={definition.StoryId}; NodeId={node.NodeId}; Field=Choices[{choice.ChoiceId}].NextNodeId: target '{choice.NextNodeId}' does not exist.", out error);
                 if (string.IsNullOrWhiteSpace(node.SpeakerCharacterId) && node.Type == StoryNodeType.ShowCharacter)
                     return Fail("ShowCharacter nodes require a speaker character.", out error);
                 if (node.Type == StoryNodeType.ShowCg && string.IsNullOrWhiteSpace(node.AssetId))
@@ -162,20 +167,40 @@ namespace Game.Content
                     if (node.Type == StoryNodeType.PlayAudio && !assetExists(node.AudioId))
                         return Fail("Audio asset does not exist: " + node.AudioId, out error);
                 }
-                if (localizationKeyExists != null)
-                {
-                    if (node.Type == StoryNodeType.Dialogue && !localizationKeyExists(node.TextKey))
-                        return Fail("Dialogue localization key does not exist: " + node.TextKey, out error);
-                    if (
-                        node.Type == StoryNodeType.Choice
-                        && node.Choices != null
-                        && !node.Choices.TrueForAll(c => localizationKeyExists(c.TextKey))
-                    )
-                        return Fail("Choice localization key does not exist: " + node.Choices[0].TextKey, out error);
-                    if (!string.IsNullOrWhiteSpace(node.SpeakerKey) && !localizationKeyExists(node.SpeakerKey))
-                        return Fail("Speaker localization key does not exist: " + node.SpeakerKey, out error);
-                }
+                if (node.Type == StoryNodeType.Choice && node.Choices != null)
+                    foreach (StoryChoiceDefinition choice in node.Choices)
+                        if (string.IsNullOrWhiteSpace(choice.TextZhCn) && string.IsNullOrWhiteSpace(choice.TextEnUs))
+                            return Fail($"StoryId={definition.StoryId}; NodeId={node.NodeId}; Field=Choices[{choice.ChoiceId}].TextZhCn/TextEnUs: choice text is required.", out error);
             }
+            // 验证从入口可达的节点集合，并要求至少存在一条路径到 End，
+            // 防止内容编辑成功但运行时永远无法结束或遗留孤立节点。
+            var reachable = new HashSet<string>(StringComparer.Ordinal);
+            var pending = new Queue<string>();
+            reachable.Add(definition.StartNodeId);
+            pending.Enqueue(definition.StartNodeId);
+            bool reachableEnd = false;
+            while (pending.Count > 0)
+            {
+                string currentId = pending.Dequeue();
+                StoryNodeDefinition current = null;
+                foreach (StoryNodeDefinition candidate in definition.Nodes)
+                    if (candidate.NodeId == currentId) { current = candidate; break; }
+                if (current == null) continue;
+                if (current.Type == StoryNodeType.End)
+                    reachableEnd = true;
+                if (current.Type != StoryNodeType.Choice && current.Type != StoryNodeType.End &&
+                    !string.IsNullOrWhiteSpace(current.NextNodeId) && reachable.Add(current.NextNodeId))
+                    pending.Enqueue(current.NextNodeId);
+                if (current.Type == StoryNodeType.Choice && current.Choices != null)
+                    foreach (StoryChoiceDefinition choice in current.Choices)
+                        if (choice != null && reachable.Add(choice.NextNodeId))
+                            pending.Enqueue(choice.NextNodeId);
+            }
+            if (!reachableEnd)
+                return Fail("Story must have a reachable End node.", out error);
+            foreach (StoryNodeDefinition node in definition.Nodes)
+                if (!reachable.Contains(node.NodeId))
+                    return Fail("Story contains an unreachable node: " + node.NodeId, out error);
             return true;
         }
 

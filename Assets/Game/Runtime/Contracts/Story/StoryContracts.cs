@@ -10,7 +10,7 @@ namespace Game.Contracts.Story
     {
         /// <summary>解析时使用的本地化键；无键时为空字符串。</summary>
         public string Key { get; }
-        /// <summary>解析时实际显示的文本；无本地化服务时为键名本身。</summary>
+        /// <summary>本次实际显示的文本；剧情播放时来自 JSON 语言选择结果。</summary>
         public string Text { get; }
         /// <summary>解析时生效的 Locale 代码；未知时为空字符串。</summary>
         public string LocaleCode { get; }
@@ -133,18 +133,18 @@ namespace Game.Contracts.Story
     /// <summary>基础对白显示数据。</summary>
     public sealed class StoryDialogueView
     {
-        /// <summary>说话人本地化键，可为空。</summary>
-        public string SpeakerKey { get; }
-        /// <summary>正文本地化键。</summary>
-        public string TextKey { get; }
+        /// <summary>说话人实际文本，可为空。</summary>
+        public string SpeakerText { get; }
+        /// <summary>正文实际文本。</summary>
+        public string Text { get; }
 
         /// <summary>创建对白显示数据。</summary>
-        /// <param name="speakerKey">说话人名称键。</param>
-        /// <param name="textKey">正文键。</param>
-        public StoryDialogueView(string speakerKey, string textKey)
+        /// <param name="speakerText">说话人实际文本。</param>
+        /// <param name="text">正文实际文本。</param>
+        public StoryDialogueView(string speakerText, string text)
         {
-            SpeakerKey = speakerKey ?? string.Empty;
-            TextKey = textKey ?? string.Empty;
+            SpeakerText = speakerText ?? string.Empty;
+            Text = text ?? string.Empty;
         }
     }
 
@@ -153,16 +153,16 @@ namespace Game.Contracts.Story
     {
         /// <summary>选项稳定标识。</summary>
         public ChoiceId ChoiceId { get; }
-        /// <summary>选项本地化键。</summary>
-        public string TextKey { get; }
+        /// <summary>选项实际文本。</summary>
+        public string Text { get; }
 
         /// <summary>创建选项显示数据。</summary>
         /// <param name="choiceId">选项标识。</param>
-        /// <param name="textKey">选项文本键。</param>
-        public StoryChoiceView(ChoiceId choiceId, string textKey)
+        /// <param name="text">选项实际文本。</param>
+        public StoryChoiceView(ChoiceId choiceId, string text)
         {
             ChoiceId = choiceId ?? throw new ArgumentNullException(nameof(choiceId));
-            TextKey = textKey ?? string.Empty;
+            Text = text ?? string.Empty;
         }
     }
 
