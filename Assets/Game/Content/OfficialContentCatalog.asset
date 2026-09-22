@@ -30,6 +30,32 @@ MonoBehaviour:
     UnlockRequirement:
       Mode: 0
       RequiredLevelIds: []
+    CapacityLimit: 0
+    PhysicsProfile:
+      GravityY: -9.81
+      VelocityIterations: 8
+      PositionIterations: 3
+      ContactOffset: 0.01
+    WorldBounds:
+      MinX: 0
+      MinY: 0
+      MaxX: 0
+      MaxY: 0
+    DeployableZones: []
+    ForbiddenZones: []
+    StartPoint:
+      PositionX: 0
+      PositionY: 0
+      RotationZ: 0
+    GoalPoint:
+      PositionX: 0
+      PositionY: 0
+      Width: 1
+      Height: 1
+    Objects: []
+    AllowedAbilities: []
+    SuccessConditions: []
+    FailureConditions: []
   - Header:
       ContentId: official.level.test_01_02
       Source: 0
@@ -48,6 +74,32 @@ MonoBehaviour:
       Mode: 1
       RequiredLevelIds:
       - official.level.test_01_01
+    CapacityLimit: 0
+    PhysicsProfile:
+      GravityY: -9.81
+      VelocityIterations: 8
+      PositionIterations: 3
+      ContactOffset: 0.01
+    WorldBounds:
+      MinX: 0
+      MinY: 0
+      MaxX: 0
+      MaxY: 0
+    DeployableZones: []
+    ForbiddenZones: []
+    StartPoint:
+      PositionX: 0
+      PositionY: 0
+      RotationZ: 0
+    GoalPoint:
+      PositionX: 0
+      PositionY: 0
+      Width: 1
+      Height: 1
+    Objects: []
+    AllowedAbilities: []
+    SuccessConditions: []
+    FailureConditions: []
   - Header:
       ContentId: official.level.test_01_03
       Source: 0
@@ -66,6 +118,32 @@ MonoBehaviour:
       Mode: 1
       RequiredLevelIds:
       - official.level.test_01_02
+    CapacityLimit: 0
+    PhysicsProfile:
+      GravityY: -9.81
+      VelocityIterations: 8
+      PositionIterations: 3
+      ContactOffset: 0.01
+    WorldBounds:
+      MinX: 0
+      MinY: 0
+      MaxX: 0
+      MaxY: 0
+    DeployableZones: []
+    ForbiddenZones: []
+    StartPoint:
+      PositionX: 0
+      PositionY: 0
+      RotationZ: 0
+    GoalPoint:
+      PositionX: 0
+      PositionY: 0
+      Width: 1
+      Height: 1
+    Objects: []
+    AllowedAbilities: []
+    SuccessConditions: []
+    FailureConditions: []
   - Header:
       ContentId: official.level.test_01_04
       Source: 0
@@ -84,6 +162,32 @@ MonoBehaviour:
       Mode: 1
       RequiredLevelIds:
       - official.level.test_01_03
+    CapacityLimit: 0
+    PhysicsProfile:
+      GravityY: -9.81
+      VelocityIterations: 8
+      PositionIterations: 3
+      ContactOffset: 0.01
+    WorldBounds:
+      MinX: 0
+      MinY: 0
+      MaxX: 0
+      MaxY: 0
+    DeployableZones: []
+    ForbiddenZones: []
+    StartPoint:
+      PositionX: 0
+      PositionY: 0
+      RotationZ: 0
+    GoalPoint:
+      PositionX: 0
+      PositionY: 0
+      Width: 1
+      Height: 1
+    Objects: []
+    AllowedAbilities: []
+    SuccessConditions: []
+    FailureConditions: []
   - Header:
       ContentId: official.level.test_01_05
       Source: 0
@@ -102,6 +206,32 @@ MonoBehaviour:
       Mode: 1
       RequiredLevelIds:
       - official.level.test_01_04
+    CapacityLimit: 0
+    PhysicsProfile:
+      GravityY: -9.81
+      VelocityIterations: 8
+      PositionIterations: 3
+      ContactOffset: 0.01
+    WorldBounds:
+      MinX: 0
+      MinY: 0
+      MaxX: 0
+      MaxY: 0
+    DeployableZones: []
+    ForbiddenZones: []
+    StartPoint:
+      PositionX: 0
+      PositionY: 0
+      RotationZ: 0
+    GoalPoint:
+      PositionX: 0
+      PositionY: 0
+      Width: 1
+      Height: 1
+    Objects: []
+    AllowedAbilities: []
+    SuccessConditions: []
+    FailureConditions: []
   - Header:
       ContentId: official.level.test_02_01
       Source: 0
@@ -119,6 +249,32 @@ MonoBehaviour:
     UnlockRequirement:
       Mode: 0
       RequiredLevelIds: []
+    CapacityLimit: 0
+    PhysicsProfile:
+      GravityY: -9.81
+      VelocityIterations: 8
+      PositionIterations: 3
+      ContactOffset: 0.01
+    WorldBounds:
+      MinX: 0
+      MinY: 0
+      MaxX: 0
+      MaxY: 0
+    DeployableZones: []
+    ForbiddenZones: []
+    StartPoint:
+      PositionX: 0
+      PositionY: 0
+      RotationZ: 0
+    GoalPoint:
+      PositionX: 0
+      PositionY: 0
+      Width: 1
+      Height: 1
+    Objects: []
+    AllowedAbilities: []
+    SuccessConditions: []
+    FailureConditions: []
   - Header:
       ContentId: official.level.test_02_02
       Source: 0
@@ -137,6 +293,32 @@ MonoBehaviour:
       Mode: 1
       RequiredLevelIds:
       - official.level.test_02_01
+    CapacityLimit: 0
+    PhysicsProfile:
+      GravityY: -9.81
+      VelocityIterations: 8
+      PositionIterations: 3
+      ContactOffset: 0.01
+    WorldBounds:
+      MinX: 0
+      MinY: 0
+      MaxX: 0
+      MaxY: 0
+    DeployableZones: []
+    ForbiddenZones: []
+    StartPoint:
+      PositionX: 0
+      PositionY: 0
+      RotationZ: 0
+    GoalPoint:
+      PositionX: 0
+      PositionY: 0
+      Width: 1
+      Height: 1
+    Objects: []
+    AllowedAbilities: []
+    SuccessConditions: []
+    FailureConditions: []
   - Header:
       ContentId: official.level.test_02_03
       Source: 0
@@ -155,6 +337,32 @@ MonoBehaviour:
       Mode: 1
       RequiredLevelIds:
       - official.level.test_02_02
+    CapacityLimit: 0
+    PhysicsProfile:
+      GravityY: -9.81
+      VelocityIterations: 8
+      PositionIterations: 3
+      ContactOffset: 0.01
+    WorldBounds:
+      MinX: 0
+      MinY: 0
+      MaxX: 0
+      MaxY: 0
+    DeployableZones: []
+    ForbiddenZones: []
+    StartPoint:
+      PositionX: 0
+      PositionY: 0
+      RotationZ: 0
+    GoalPoint:
+      PositionX: 0
+      PositionY: 0
+      Width: 1
+      Height: 1
+    Objects: []
+    AllowedAbilities: []
+    SuccessConditions: []
+    FailureConditions: []
   - Header:
       ContentId: official.level.test_02_04
       Source: 0
@@ -173,6 +381,32 @@ MonoBehaviour:
       Mode: 1
       RequiredLevelIds:
       - official.level.test_02_03
+    CapacityLimit: 0
+    PhysicsProfile:
+      GravityY: -9.81
+      VelocityIterations: 8
+      PositionIterations: 3
+      ContactOffset: 0.01
+    WorldBounds:
+      MinX: 0
+      MinY: 0
+      MaxX: 0
+      MaxY: 0
+    DeployableZones: []
+    ForbiddenZones: []
+    StartPoint:
+      PositionX: 0
+      PositionY: 0
+      RotationZ: 0
+    GoalPoint:
+      PositionX: 0
+      PositionY: 0
+      Width: 1
+      Height: 1
+    Objects: []
+    AllowedAbilities: []
+    SuccessConditions: []
+    FailureConditions: []
   - Header:
       ContentId: official.level.test_02_05
       Source: 0
@@ -191,6 +425,32 @@ MonoBehaviour:
       Mode: 1
       RequiredLevelIds:
       - official.level.test_02_04
+    CapacityLimit: 0
+    PhysicsProfile:
+      GravityY: -9.81
+      VelocityIterations: 8
+      PositionIterations: 3
+      ContactOffset: 0.01
+    WorldBounds:
+      MinX: 0
+      MinY: 0
+      MaxX: 0
+      MaxY: 0
+    DeployableZones: []
+    ForbiddenZones: []
+    StartPoint:
+      PositionX: 0
+      PositionY: 0
+      RotationZ: 0
+    GoalPoint:
+      PositionX: 0
+      PositionY: 0
+      Width: 1
+      Height: 1
+    Objects: []
+    AllowedAbilities: []
+    SuccessConditions: []
+    FailureConditions: []
   - Header:
       ContentId: official.level.test_03_01
       Source: 0
@@ -208,6 +468,32 @@ MonoBehaviour:
     UnlockRequirement:
       Mode: 0
       RequiredLevelIds: []
+    CapacityLimit: 0
+    PhysicsProfile:
+      GravityY: -9.81
+      VelocityIterations: 8
+      PositionIterations: 3
+      ContactOffset: 0.01
+    WorldBounds:
+      MinX: 0
+      MinY: 0
+      MaxX: 0
+      MaxY: 0
+    DeployableZones: []
+    ForbiddenZones: []
+    StartPoint:
+      PositionX: 0
+      PositionY: 0
+      RotationZ: 0
+    GoalPoint:
+      PositionX: 0
+      PositionY: 0
+      Width: 1
+      Height: 1
+    Objects: []
+    AllowedAbilities: []
+    SuccessConditions: []
+    FailureConditions: []
   - Header:
       ContentId: official.level.test_03_02
       Source: 0
@@ -226,6 +512,32 @@ MonoBehaviour:
       Mode: 1
       RequiredLevelIds:
       - official.level.test_03_01
+    CapacityLimit: 0
+    PhysicsProfile:
+      GravityY: -9.81
+      VelocityIterations: 8
+      PositionIterations: 3
+      ContactOffset: 0.01
+    WorldBounds:
+      MinX: 0
+      MinY: 0
+      MaxX: 0
+      MaxY: 0
+    DeployableZones: []
+    ForbiddenZones: []
+    StartPoint:
+      PositionX: 0
+      PositionY: 0
+      RotationZ: 0
+    GoalPoint:
+      PositionX: 0
+      PositionY: 0
+      Width: 1
+      Height: 1
+    Objects: []
+    AllowedAbilities: []
+    SuccessConditions: []
+    FailureConditions: []
   - Header:
       ContentId: official.level.test_03_03
       Source: 0
@@ -244,6 +556,32 @@ MonoBehaviour:
       Mode: 1
       RequiredLevelIds:
       - official.level.test_03_02
+    CapacityLimit: 0
+    PhysicsProfile:
+      GravityY: -9.81
+      VelocityIterations: 8
+      PositionIterations: 3
+      ContactOffset: 0.01
+    WorldBounds:
+      MinX: 0
+      MinY: 0
+      MaxX: 0
+      MaxY: 0
+    DeployableZones: []
+    ForbiddenZones: []
+    StartPoint:
+      PositionX: 0
+      PositionY: 0
+      RotationZ: 0
+    GoalPoint:
+      PositionX: 0
+      PositionY: 0
+      Width: 1
+      Height: 1
+    Objects: []
+    AllowedAbilities: []
+    SuccessConditions: []
+    FailureConditions: []
   - Header:
       ContentId: official.level.test_03_04
       Source: 0
@@ -262,6 +600,32 @@ MonoBehaviour:
       Mode: 1
       RequiredLevelIds:
       - official.level.test_03_03
+    CapacityLimit: 0
+    PhysicsProfile:
+      GravityY: -9.81
+      VelocityIterations: 8
+      PositionIterations: 3
+      ContactOffset: 0.01
+    WorldBounds:
+      MinX: 0
+      MinY: 0
+      MaxX: 0
+      MaxY: 0
+    DeployableZones: []
+    ForbiddenZones: []
+    StartPoint:
+      PositionX: 0
+      PositionY: 0
+      RotationZ: 0
+    GoalPoint:
+      PositionX: 0
+      PositionY: 0
+      Width: 1
+      Height: 1
+    Objects: []
+    AllowedAbilities: []
+    SuccessConditions: []
+    FailureConditions: []
   - Header:
       ContentId: official.level.test_03_05
       Source: 0
@@ -280,6 +644,32 @@ MonoBehaviour:
       Mode: 1
       RequiredLevelIds:
       - official.level.test_03_04
+    CapacityLimit: 0
+    PhysicsProfile:
+      GravityY: -9.81
+      VelocityIterations: 8
+      PositionIterations: 3
+      ContactOffset: 0.01
+    WorldBounds:
+      MinX: 0
+      MinY: 0
+      MaxX: 0
+      MaxY: 0
+    DeployableZones: []
+    ForbiddenZones: []
+    StartPoint:
+      PositionX: 0
+      PositionY: 0
+      RotationZ: 0
+    GoalPoint:
+      PositionX: 0
+      PositionY: 0
+      Width: 1
+      Height: 1
+    Objects: []
+    AllowedAbilities: []
+    SuccessConditions: []
+    FailureConditions: []
   - Header:
       ContentId: official.level.test_04_01
       Source: 0
@@ -297,6 +687,32 @@ MonoBehaviour:
     UnlockRequirement:
       Mode: 0
       RequiredLevelIds: []
+    CapacityLimit: 0
+    PhysicsProfile:
+      GravityY: -9.81
+      VelocityIterations: 8
+      PositionIterations: 3
+      ContactOffset: 0.01
+    WorldBounds:
+      MinX: 0
+      MinY: 0
+      MaxX: 0
+      MaxY: 0
+    DeployableZones: []
+    ForbiddenZones: []
+    StartPoint:
+      PositionX: 0
+      PositionY: 0
+      RotationZ: 0
+    GoalPoint:
+      PositionX: 0
+      PositionY: 0
+      Width: 1
+      Height: 1
+    Objects: []
+    AllowedAbilities: []
+    SuccessConditions: []
+    FailureConditions: []
   - Header:
       ContentId: official.level.test_04_02
       Source: 0
@@ -315,6 +731,32 @@ MonoBehaviour:
       Mode: 1
       RequiredLevelIds:
       - official.level.test_04_01
+    CapacityLimit: 0
+    PhysicsProfile:
+      GravityY: -9.81
+      VelocityIterations: 8
+      PositionIterations: 3
+      ContactOffset: 0.01
+    WorldBounds:
+      MinX: 0
+      MinY: 0
+      MaxX: 0
+      MaxY: 0
+    DeployableZones: []
+    ForbiddenZones: []
+    StartPoint:
+      PositionX: 0
+      PositionY: 0
+      RotationZ: 0
+    GoalPoint:
+      PositionX: 0
+      PositionY: 0
+      Width: 1
+      Height: 1
+    Objects: []
+    AllowedAbilities: []
+    SuccessConditions: []
+    FailureConditions: []
   - Header:
       ContentId: official.level.test_04_03
       Source: 0
@@ -333,6 +775,32 @@ MonoBehaviour:
       Mode: 1
       RequiredLevelIds:
       - official.level.test_04_02
+    CapacityLimit: 0
+    PhysicsProfile:
+      GravityY: -9.81
+      VelocityIterations: 8
+      PositionIterations: 3
+      ContactOffset: 0.01
+    WorldBounds:
+      MinX: 0
+      MinY: 0
+      MaxX: 0
+      MaxY: 0
+    DeployableZones: []
+    ForbiddenZones: []
+    StartPoint:
+      PositionX: 0
+      PositionY: 0
+      RotationZ: 0
+    GoalPoint:
+      PositionX: 0
+      PositionY: 0
+      Width: 1
+      Height: 1
+    Objects: []
+    AllowedAbilities: []
+    SuccessConditions: []
+    FailureConditions: []
   - Header:
       ContentId: official.level.test_04_04
       Source: 0
@@ -351,6 +819,32 @@ MonoBehaviour:
       Mode: 1
       RequiredLevelIds:
       - official.level.test_04_03
+    CapacityLimit: 0
+    PhysicsProfile:
+      GravityY: -9.81
+      VelocityIterations: 8
+      PositionIterations: 3
+      ContactOffset: 0.01
+    WorldBounds:
+      MinX: 0
+      MinY: 0
+      MaxX: 0
+      MaxY: 0
+    DeployableZones: []
+    ForbiddenZones: []
+    StartPoint:
+      PositionX: 0
+      PositionY: 0
+      RotationZ: 0
+    GoalPoint:
+      PositionX: 0
+      PositionY: 0
+      Width: 1
+      Height: 1
+    Objects: []
+    AllowedAbilities: []
+    SuccessConditions: []
+    FailureConditions: []
   - Header:
       ContentId: official.level.test_04_05
       Source: 0
@@ -369,6 +863,32 @@ MonoBehaviour:
       Mode: 1
       RequiredLevelIds:
       - official.level.test_04_04
+    CapacityLimit: 0
+    PhysicsProfile:
+      GravityY: -9.81
+      VelocityIterations: 8
+      PositionIterations: 3
+      ContactOffset: 0.01
+    WorldBounds:
+      MinX: 0
+      MinY: 0
+      MaxX: 0
+      MaxY: 0
+    DeployableZones: []
+    ForbiddenZones: []
+    StartPoint:
+      PositionX: 0
+      PositionY: 0
+      RotationZ: 0
+    GoalPoint:
+      PositionX: 0
+      PositionY: 0
+      Width: 1
+      Height: 1
+    Objects: []
+    AllowedAbilities: []
+    SuccessConditions: []
+    FailureConditions: []
   - Header:
       ContentId: official.level.test_05_01
       Source: 0
@@ -386,6 +906,32 @@ MonoBehaviour:
     UnlockRequirement:
       Mode: 0
       RequiredLevelIds: []
+    CapacityLimit: 0
+    PhysicsProfile:
+      GravityY: -9.81
+      VelocityIterations: 8
+      PositionIterations: 3
+      ContactOffset: 0.01
+    WorldBounds:
+      MinX: 0
+      MinY: 0
+      MaxX: 0
+      MaxY: 0
+    DeployableZones: []
+    ForbiddenZones: []
+    StartPoint:
+      PositionX: 0
+      PositionY: 0
+      RotationZ: 0
+    GoalPoint:
+      PositionX: 0
+      PositionY: 0
+      Width: 1
+      Height: 1
+    Objects: []
+    AllowedAbilities: []
+    SuccessConditions: []
+    FailureConditions: []
   - Header:
       ContentId: official.level.test_05_02
       Source: 0
@@ -404,6 +950,32 @@ MonoBehaviour:
       Mode: 1
       RequiredLevelIds:
       - official.level.test_05_01
+    CapacityLimit: 0
+    PhysicsProfile:
+      GravityY: -9.81
+      VelocityIterations: 8
+      PositionIterations: 3
+      ContactOffset: 0.01
+    WorldBounds:
+      MinX: 0
+      MinY: 0
+      MaxX: 0
+      MaxY: 0
+    DeployableZones: []
+    ForbiddenZones: []
+    StartPoint:
+      PositionX: 0
+      PositionY: 0
+      RotationZ: 0
+    GoalPoint:
+      PositionX: 0
+      PositionY: 0
+      Width: 1
+      Height: 1
+    Objects: []
+    AllowedAbilities: []
+    SuccessConditions: []
+    FailureConditions: []
   - Header:
       ContentId: official.level.test_05_03
       Source: 0
@@ -422,6 +994,32 @@ MonoBehaviour:
       Mode: 1
       RequiredLevelIds:
       - official.level.test_05_02
+    CapacityLimit: 0
+    PhysicsProfile:
+      GravityY: -9.81
+      VelocityIterations: 8
+      PositionIterations: 3
+      ContactOffset: 0.01
+    WorldBounds:
+      MinX: 0
+      MinY: 0
+      MaxX: 0
+      MaxY: 0
+    DeployableZones: []
+    ForbiddenZones: []
+    StartPoint:
+      PositionX: 0
+      PositionY: 0
+      RotationZ: 0
+    GoalPoint:
+      PositionX: 0
+      PositionY: 0
+      Width: 1
+      Height: 1
+    Objects: []
+    AllowedAbilities: []
+    SuccessConditions: []
+    FailureConditions: []
   - Header:
       ContentId: official.level.test_05_04
       Source: 0
@@ -440,6 +1038,32 @@ MonoBehaviour:
       Mode: 1
       RequiredLevelIds:
       - official.level.test_05_03
+    CapacityLimit: 0
+    PhysicsProfile:
+      GravityY: -9.81
+      VelocityIterations: 8
+      PositionIterations: 3
+      ContactOffset: 0.01
+    WorldBounds:
+      MinX: 0
+      MinY: 0
+      MaxX: 0
+      MaxY: 0
+    DeployableZones: []
+    ForbiddenZones: []
+    StartPoint:
+      PositionX: 0
+      PositionY: 0
+      RotationZ: 0
+    GoalPoint:
+      PositionX: 0
+      PositionY: 0
+      Width: 1
+      Height: 1
+    Objects: []
+    AllowedAbilities: []
+    SuccessConditions: []
+    FailureConditions: []
   - Header:
       ContentId: official.level.test_05_05
       Source: 0
@@ -458,6 +1082,32 @@ MonoBehaviour:
       Mode: 1
       RequiredLevelIds:
       - official.level.test_05_04
+    CapacityLimit: 0
+    PhysicsProfile:
+      GravityY: -9.81
+      VelocityIterations: 8
+      PositionIterations: 3
+      ContactOffset: 0.01
+    WorldBounds:
+      MinX: 0
+      MinY: 0
+      MaxX: 0
+      MaxY: 0
+    DeployableZones: []
+    ForbiddenZones: []
+    StartPoint:
+      PositionX: 0
+      PositionY: 0
+      RotationZ: 0
+    GoalPoint:
+      PositionX: 0
+      PositionY: 0
+      Width: 1
+      Height: 1
+    Objects: []
+    AllowedAbilities: []
+    SuccessConditions: []
+    FailureConditions: []
   - Header:
       ContentId: official.level.test_06_01
       Source: 0
@@ -475,6 +1125,32 @@ MonoBehaviour:
     UnlockRequirement:
       Mode: 0
       RequiredLevelIds: []
+    CapacityLimit: 0
+    PhysicsProfile:
+      GravityY: -9.81
+      VelocityIterations: 8
+      PositionIterations: 3
+      ContactOffset: 0.01
+    WorldBounds:
+      MinX: 0
+      MinY: 0
+      MaxX: 0
+      MaxY: 0
+    DeployableZones: []
+    ForbiddenZones: []
+    StartPoint:
+      PositionX: 0
+      PositionY: 0
+      RotationZ: 0
+    GoalPoint:
+      PositionX: 0
+      PositionY: 0
+      Width: 1
+      Height: 1
+    Objects: []
+    AllowedAbilities: []
+    SuccessConditions: []
+    FailureConditions: []
   - Header:
       ContentId: official.level.test_06_02
       Source: 0
@@ -493,6 +1169,32 @@ MonoBehaviour:
       Mode: 1
       RequiredLevelIds:
       - official.level.test_06_01
+    CapacityLimit: 0
+    PhysicsProfile:
+      GravityY: -9.81
+      VelocityIterations: 8
+      PositionIterations: 3
+      ContactOffset: 0.01
+    WorldBounds:
+      MinX: 0
+      MinY: 0
+      MaxX: 0
+      MaxY: 0
+    DeployableZones: []
+    ForbiddenZones: []
+    StartPoint:
+      PositionX: 0
+      PositionY: 0
+      RotationZ: 0
+    GoalPoint:
+      PositionX: 0
+      PositionY: 0
+      Width: 1
+      Height: 1
+    Objects: []
+    AllowedAbilities: []
+    SuccessConditions: []
+    FailureConditions: []
   - Header:
       ContentId: official.level.test_06_03
       Source: 0
@@ -511,6 +1213,32 @@ MonoBehaviour:
       Mode: 1
       RequiredLevelIds:
       - official.level.test_06_02
+    CapacityLimit: 0
+    PhysicsProfile:
+      GravityY: -9.81
+      VelocityIterations: 8
+      PositionIterations: 3
+      ContactOffset: 0.01
+    WorldBounds:
+      MinX: 0
+      MinY: 0
+      MaxX: 0
+      MaxY: 0
+    DeployableZones: []
+    ForbiddenZones: []
+    StartPoint:
+      PositionX: 0
+      PositionY: 0
+      RotationZ: 0
+    GoalPoint:
+      PositionX: 0
+      PositionY: 0
+      Width: 1
+      Height: 1
+    Objects: []
+    AllowedAbilities: []
+    SuccessConditions: []
+    FailureConditions: []
   - Header:
       ContentId: official.level.test_06_04
       Source: 0
@@ -529,6 +1257,32 @@ MonoBehaviour:
       Mode: 1
       RequiredLevelIds:
       - official.level.test_06_03
+    CapacityLimit: 0
+    PhysicsProfile:
+      GravityY: -9.81
+      VelocityIterations: 8
+      PositionIterations: 3
+      ContactOffset: 0.01
+    WorldBounds:
+      MinX: 0
+      MinY: 0
+      MaxX: 0
+      MaxY: 0
+    DeployableZones: []
+    ForbiddenZones: []
+    StartPoint:
+      PositionX: 0
+      PositionY: 0
+      RotationZ: 0
+    GoalPoint:
+      PositionX: 0
+      PositionY: 0
+      Width: 1
+      Height: 1
+    Objects: []
+    AllowedAbilities: []
+    SuccessConditions: []
+    FailureConditions: []
   - Header:
       ContentId: official.level.test_06_05
       Source: 0
@@ -547,6 +1301,32 @@ MonoBehaviour:
       Mode: 1
       RequiredLevelIds:
       - official.level.test_06_04
+    CapacityLimit: 0
+    PhysicsProfile:
+      GravityY: -9.81
+      VelocityIterations: 8
+      PositionIterations: 3
+      ContactOffset: 0.01
+    WorldBounds:
+      MinX: 0
+      MinY: 0
+      MaxX: 0
+      MaxY: 0
+    DeployableZones: []
+    ForbiddenZones: []
+    StartPoint:
+      PositionX: 0
+      PositionY: 0
+      RotationZ: 0
+    GoalPoint:
+      PositionX: 0
+      PositionY: 0
+      Width: 1
+      Height: 1
+    Objects: []
+    AllowedAbilities: []
+    SuccessConditions: []
+    FailureConditions: []
   maps:
   - Header:
       ContentId: official.map.test_01
@@ -635,11 +1415,33 @@ MonoBehaviour:
     - NodeId: start
       Type: 0
       TextKey: story.c06.start
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: choice
       Choices: []
     - NodeId: choice
       Type: 1
       TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: 
       Choices:
       - ChoiceId: left
@@ -651,21 +1453,65 @@ MonoBehaviour:
     - NodeId: left_path
       Type: 2
       TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: merge
       Choices: []
     - NodeId: right_path
       Type: 2
       TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: merge
       Choices: []
     - NodeId: merge
       Type: 0
       TextKey: story.c06.merge
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: end
       Choices: []
     - NodeId: end
       Type: 3
       TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: 
       Choices: []
   - Header:
@@ -682,11 +1528,33 @@ MonoBehaviour:
     - NodeId: start
       Type: 0
       TextKey: story.c06.start
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: choice
       Choices: []
     - NodeId: choice
       Type: 1
       TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: 
       Choices:
       - ChoiceId: left
@@ -698,21 +1566,65 @@ MonoBehaviour:
     - NodeId: left_path
       Type: 2
       TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: merge
       Choices: []
     - NodeId: right_path
       Type: 2
       TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: merge
       Choices: []
     - NodeId: merge
       Type: 0
       TextKey: story.c06.merge
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: end
       Choices: []
     - NodeId: end
       Type: 3
       TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: 
       Choices: []
   - Header:
@@ -729,11 +1641,33 @@ MonoBehaviour:
     - NodeId: start
       Type: 0
       TextKey: story.c06.start
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: choice
       Choices: []
     - NodeId: choice
       Type: 1
       TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: 
       Choices:
       - ChoiceId: left
@@ -745,21 +1679,65 @@ MonoBehaviour:
     - NodeId: left_path
       Type: 2
       TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: merge
       Choices: []
     - NodeId: right_path
       Type: 2
       TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: merge
       Choices: []
     - NodeId: merge
       Type: 0
       TextKey: story.c06.merge
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: end
       Choices: []
     - NodeId: end
       Type: 3
       TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: 
       Choices: []
   - Header:
@@ -776,11 +1754,33 @@ MonoBehaviour:
     - NodeId: start
       Type: 0
       TextKey: story.c06.start
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: choice
       Choices: []
     - NodeId: choice
       Type: 1
       TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: 
       Choices:
       - ChoiceId: left
@@ -792,21 +1792,65 @@ MonoBehaviour:
     - NodeId: left_path
       Type: 2
       TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: merge
       Choices: []
     - NodeId: right_path
       Type: 2
       TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: merge
       Choices: []
     - NodeId: merge
       Type: 0
       TextKey: story.c06.merge
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: end
       Choices: []
     - NodeId: end
       Type: 3
       TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: 
       Choices: []
   - Header:
@@ -823,11 +1867,33 @@ MonoBehaviour:
     - NodeId: start
       Type: 0
       TextKey: story.c06.start
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: choice
       Choices: []
     - NodeId: choice
       Type: 1
       TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: 
       Choices:
       - ChoiceId: left
@@ -839,21 +1905,65 @@ MonoBehaviour:
     - NodeId: left_path
       Type: 2
       TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: merge
       Choices: []
     - NodeId: right_path
       Type: 2
       TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: merge
       Choices: []
     - NodeId: merge
       Type: 0
       TextKey: story.c06.merge
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: end
       Choices: []
     - NodeId: end
       Type: 3
       TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: 
       Choices: []
   - Header:
@@ -870,11 +1980,33 @@ MonoBehaviour:
     - NodeId: start
       Type: 0
       TextKey: story.c06.start
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: choice
       Choices: []
     - NodeId: choice
       Type: 1
       TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: 
       Choices:
       - ChoiceId: left
@@ -886,21 +2018,65 @@ MonoBehaviour:
     - NodeId: left_path
       Type: 2
       TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: merge
       Choices: []
     - NodeId: right_path
       Type: 2
       TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: merge
       Choices: []
     - NodeId: merge
       Type: 0
       TextKey: story.c06.merge
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: end
       Choices: []
     - NodeId: end
       Type: 3
       TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: 
       Choices: []
   - Header:
@@ -917,11 +2093,33 @@ MonoBehaviour:
     - NodeId: start
       Type: 0
       TextKey: story.c06.start
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: choice
       Choices: []
     - NodeId: choice
       Type: 1
       TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: 
       Choices:
       - ChoiceId: left
@@ -933,21 +2131,65 @@ MonoBehaviour:
     - NodeId: left_path
       Type: 2
       TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: merge
       Choices: []
     - NodeId: right_path
       Type: 2
       TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: merge
       Choices: []
     - NodeId: merge
       Type: 0
       TextKey: story.c06.merge
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: end
       Choices: []
     - NodeId: end
       Type: 3
       TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: 
       Choices: []
   - Header:
@@ -964,11 +2206,33 @@ MonoBehaviour:
     - NodeId: start
       Type: 0
       TextKey: story.c06.start
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: choice
       Choices: []
     - NodeId: choice
       Type: 1
       TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: 
       Choices:
       - ChoiceId: left
@@ -980,21 +2244,65 @@ MonoBehaviour:
     - NodeId: left_path
       Type: 2
       TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: merge
       Choices: []
     - NodeId: right_path
       Type: 2
       TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: merge
       Choices: []
     - NodeId: merge
       Type: 0
       TextKey: story.c06.merge
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: end
       Choices: []
     - NodeId: end
       Type: 3
       TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: 
       Choices: []
   - Header:
@@ -1011,11 +2319,33 @@ MonoBehaviour:
     - NodeId: start
       Type: 0
       TextKey: story.c06.start
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: choice
       Choices: []
     - NodeId: choice
       Type: 1
       TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: 
       Choices:
       - ChoiceId: left
@@ -1027,21 +2357,65 @@ MonoBehaviour:
     - NodeId: left_path
       Type: 2
       TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: merge
       Choices: []
     - NodeId: right_path
       Type: 2
       TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: merge
       Choices: []
     - NodeId: merge
       Type: 0
       TextKey: story.c06.merge
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: end
       Choices: []
     - NodeId: end
       Type: 3
       TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: 
       Choices: []
   - Header:
@@ -1058,11 +2432,33 @@ MonoBehaviour:
     - NodeId: start
       Type: 0
       TextKey: story.c06.start
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: choice
       Choices: []
     - NodeId: choice
       Type: 1
       TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: 
       Choices:
       - ChoiceId: left
@@ -1074,21 +2470,65 @@ MonoBehaviour:
     - NodeId: left_path
       Type: 2
       TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: merge
       Choices: []
     - NodeId: right_path
       Type: 2
       TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: merge
       Choices: []
     - NodeId: merge
       Type: 0
       TextKey: story.c06.merge
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: end
       Choices: []
     - NodeId: end
       Type: 3
       TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: 
       Choices: []
   - Header:
@@ -1105,11 +2545,33 @@ MonoBehaviour:
     - NodeId: start
       Type: 0
       TextKey: story.c06.start
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: choice
       Choices: []
     - NodeId: choice
       Type: 1
       TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: 
       Choices:
       - ChoiceId: left
@@ -1121,21 +2583,65 @@ MonoBehaviour:
     - NodeId: left_path
       Type: 2
       TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: merge
       Choices: []
     - NodeId: right_path
       Type: 2
       TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: merge
       Choices: []
     - NodeId: merge
       Type: 0
       TextKey: story.c06.merge
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: end
       Choices: []
     - NodeId: end
       Type: 3
       TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: 
       Choices: []
   - Header:
@@ -1152,11 +2658,33 @@ MonoBehaviour:
     - NodeId: start
       Type: 0
       TextKey: story.c06.start
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: choice
       Choices: []
     - NodeId: choice
       Type: 1
       TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: 
       Choices:
       - ChoiceId: left
@@ -1168,21 +2696,65 @@ MonoBehaviour:
     - NodeId: left_path
       Type: 2
       TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: merge
       Choices: []
     - NodeId: right_path
       Type: 2
       TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: merge
       Choices: []
     - NodeId: merge
       Type: 0
       TextKey: story.c06.merge
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: end
       Choices: []
     - NodeId: end
       Type: 3
       TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: 
       Choices: []
   - Header:
@@ -1199,11 +2771,33 @@ MonoBehaviour:
     - NodeId: start
       Type: 0
       TextKey: story.c06.start
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: choice
       Choices: []
     - NodeId: choice
       Type: 1
       TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: 
       Choices:
       - ChoiceId: left
@@ -1215,21 +2809,65 @@ MonoBehaviour:
     - NodeId: left_path
       Type: 2
       TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: merge
       Choices: []
     - NodeId: right_path
       Type: 2
       TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: merge
       Choices: []
     - NodeId: merge
       Type: 0
       TextKey: story.c06.merge
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: end
       Choices: []
     - NodeId: end
       Type: 3
       TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: 
       Choices: []
   - Header:
@@ -1246,11 +2884,33 @@ MonoBehaviour:
     - NodeId: start
       Type: 0
       TextKey: story.c06.start
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: choice
       Choices: []
     - NodeId: choice
       Type: 1
       TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: 
       Choices:
       - ChoiceId: left
@@ -1262,21 +2922,65 @@ MonoBehaviour:
     - NodeId: left_path
       Type: 2
       TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: merge
       Choices: []
     - NodeId: right_path
       Type: 2
       TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: merge
       Choices: []
     - NodeId: merge
       Type: 0
       TextKey: story.c06.merge
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: end
       Choices: []
     - NodeId: end
       Type: 3
       TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: 
       Choices: []
   - Header:
@@ -1293,11 +2997,33 @@ MonoBehaviour:
     - NodeId: start
       Type: 0
       TextKey: story.c06.start
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: choice
       Choices: []
     - NodeId: choice
       Type: 1
       TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: 
       Choices:
       - ChoiceId: left
@@ -1309,21 +3035,65 @@ MonoBehaviour:
     - NodeId: left_path
       Type: 2
       TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: merge
       Choices: []
     - NodeId: right_path
       Type: 2
       TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: merge
       Choices: []
     - NodeId: merge
       Type: 0
       TextKey: story.c06.merge
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: end
       Choices: []
     - NodeId: end
       Type: 3
       TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: 
       Choices: []
   - Header:
@@ -1340,11 +3110,33 @@ MonoBehaviour:
     - NodeId: start
       Type: 0
       TextKey: story.c06.start
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: choice
       Choices: []
     - NodeId: choice
       Type: 1
       TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: 
       Choices:
       - ChoiceId: left
@@ -1356,21 +3148,65 @@ MonoBehaviour:
     - NodeId: left_path
       Type: 2
       TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: merge
       Choices: []
     - NodeId: right_path
       Type: 2
       TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: merge
       Choices: []
     - NodeId: merge
       Type: 0
       TextKey: story.c06.merge
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: end
       Choices: []
     - NodeId: end
       Type: 3
       TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: 
       Choices: []
   - Header:
@@ -1387,11 +3223,33 @@ MonoBehaviour:
     - NodeId: start
       Type: 0
       TextKey: story.c06.start
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: choice
       Choices: []
     - NodeId: choice
       Type: 1
       TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: 
       Choices:
       - ChoiceId: left
@@ -1403,21 +3261,65 @@ MonoBehaviour:
     - NodeId: left_path
       Type: 2
       TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: merge
       Choices: []
     - NodeId: right_path
       Type: 2
       TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: merge
       Choices: []
     - NodeId: merge
       Type: 0
       TextKey: story.c06.merge
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: end
       Choices: []
     - NodeId: end
       Type: 3
       TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: 
       Choices: []
   - Header:
@@ -1434,11 +3336,33 @@ MonoBehaviour:
     - NodeId: start
       Type: 0
       TextKey: story.c06.start
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: choice
       Choices: []
     - NodeId: choice
       Type: 1
       TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: 
       Choices:
       - ChoiceId: left
@@ -1450,21 +3374,65 @@ MonoBehaviour:
     - NodeId: left_path
       Type: 2
       TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: merge
       Choices: []
     - NodeId: right_path
       Type: 2
       TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: merge
       Choices: []
     - NodeId: merge
       Type: 0
       TextKey: story.c06.merge
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: end
       Choices: []
     - NodeId: end
       Type: 3
       TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: 
       Choices: []
   - Header:
@@ -1481,11 +3449,33 @@ MonoBehaviour:
     - NodeId: start
       Type: 0
       TextKey: story.c06.start
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: choice
       Choices: []
     - NodeId: choice
       Type: 1
       TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: 
       Choices:
       - ChoiceId: left
@@ -1497,21 +3487,65 @@ MonoBehaviour:
     - NodeId: left_path
       Type: 2
       TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: merge
       Choices: []
     - NodeId: right_path
       Type: 2
       TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: merge
       Choices: []
     - NodeId: merge
       Type: 0
       TextKey: story.c06.merge
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: end
       Choices: []
     - NodeId: end
       Type: 3
       TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: 
       Choices: []
   - Header:
@@ -1528,11 +3562,33 @@ MonoBehaviour:
     - NodeId: start
       Type: 0
       TextKey: story.c06.start
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: choice
       Choices: []
     - NodeId: choice
       Type: 1
       TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: 
       Choices:
       - ChoiceId: left
@@ -1544,21 +3600,65 @@ MonoBehaviour:
     - NodeId: left_path
       Type: 2
       TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: merge
       Choices: []
     - NodeId: right_path
       Type: 2
       TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: merge
       Choices: []
     - NodeId: merge
       Type: 0
       TextKey: story.c06.merge
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: end
       Choices: []
     - NodeId: end
       Type: 3
       TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: 
       Choices: []
   - Header:
@@ -1575,11 +3675,33 @@ MonoBehaviour:
     - NodeId: start
       Type: 0
       TextKey: story.c06.start
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: choice
       Choices: []
     - NodeId: choice
       Type: 1
       TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: 
       Choices:
       - ChoiceId: left
@@ -1591,21 +3713,65 @@ MonoBehaviour:
     - NodeId: left_path
       Type: 2
       TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: merge
       Choices: []
     - NodeId: right_path
       Type: 2
       TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: merge
       Choices: []
     - NodeId: merge
       Type: 0
       TextKey: story.c06.merge
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: end
       Choices: []
     - NodeId: end
       Type: 3
       TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: 
       Choices: []
   - Header:
@@ -1622,11 +3788,33 @@ MonoBehaviour:
     - NodeId: start
       Type: 0
       TextKey: story.c06.start
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: choice
       Choices: []
     - NodeId: choice
       Type: 1
       TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: 
       Choices:
       - ChoiceId: left
@@ -1638,21 +3826,65 @@ MonoBehaviour:
     - NodeId: left_path
       Type: 2
       TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: merge
       Choices: []
     - NodeId: right_path
       Type: 2
       TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: merge
       Choices: []
     - NodeId: merge
       Type: 0
       TextKey: story.c06.merge
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: end
       Choices: []
     - NodeId: end
       Type: 3
       TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: 
       Choices: []
   - Header:
@@ -1669,11 +3901,33 @@ MonoBehaviour:
     - NodeId: start
       Type: 0
       TextKey: story.c06.start
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: choice
       Choices: []
     - NodeId: choice
       Type: 1
       TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: 
       Choices:
       - ChoiceId: left
@@ -1685,21 +3939,65 @@ MonoBehaviour:
     - NodeId: left_path
       Type: 2
       TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: merge
       Choices: []
     - NodeId: right_path
       Type: 2
       TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: merge
       Choices: []
     - NodeId: merge
       Type: 0
       TextKey: story.c06.merge
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: end
       Choices: []
     - NodeId: end
       Type: 3
       TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: 
       Choices: []
   - Header:
@@ -1716,11 +4014,33 @@ MonoBehaviour:
     - NodeId: start
       Type: 0
       TextKey: story.c06.start
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: choice
       Choices: []
     - NodeId: choice
       Type: 1
       TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: 
       Choices:
       - ChoiceId: left
@@ -1732,21 +4052,65 @@ MonoBehaviour:
     - NodeId: left_path
       Type: 2
       TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: merge
       Choices: []
     - NodeId: right_path
       Type: 2
       TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: merge
       Choices: []
     - NodeId: merge
       Type: 0
       TextKey: story.c06.merge
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: end
       Choices: []
     - NodeId: end
       Type: 3
       TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: 
       Choices: []
   - Header:
@@ -1763,11 +4127,33 @@ MonoBehaviour:
     - NodeId: start
       Type: 0
       TextKey: story.c06.start
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: choice
       Choices: []
     - NodeId: choice
       Type: 1
       TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: 
       Choices:
       - ChoiceId: left
@@ -1779,21 +4165,65 @@ MonoBehaviour:
     - NodeId: left_path
       Type: 2
       TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: merge
       Choices: []
     - NodeId: right_path
       Type: 2
       TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: merge
       Choices: []
     - NodeId: merge
       Type: 0
       TextKey: story.c06.merge
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: end
       Choices: []
     - NodeId: end
       Type: 3
       TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: 
       Choices: []
   - Header:
@@ -1810,11 +4240,33 @@ MonoBehaviour:
     - NodeId: start
       Type: 0
       TextKey: story.c06.start
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: choice
       Choices: []
     - NodeId: choice
       Type: 1
       TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: 
       Choices:
       - ChoiceId: left
@@ -1826,21 +4278,65 @@ MonoBehaviour:
     - NodeId: left_path
       Type: 2
       TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: merge
       Choices: []
     - NodeId: right_path
       Type: 2
       TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: merge
       Choices: []
     - NodeId: merge
       Type: 0
       TextKey: story.c06.merge
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: end
       Choices: []
     - NodeId: end
       Type: 3
       TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: 
       Choices: []
   - Header:
@@ -1857,11 +4353,33 @@ MonoBehaviour:
     - NodeId: start
       Type: 0
       TextKey: story.c06.start
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: choice
       Choices: []
     - NodeId: choice
       Type: 1
       TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: 
       Choices:
       - ChoiceId: left
@@ -1873,21 +4391,65 @@ MonoBehaviour:
     - NodeId: left_path
       Type: 2
       TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: merge
       Choices: []
     - NodeId: right_path
       Type: 2
       TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: merge
       Choices: []
     - NodeId: merge
       Type: 0
       TextKey: story.c06.merge
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: end
       Choices: []
     - NodeId: end
       Type: 3
       TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: 
       Choices: []
   - Header:
@@ -1904,11 +4466,33 @@ MonoBehaviour:
     - NodeId: start
       Type: 0
       TextKey: story.c06.start
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: choice
       Choices: []
     - NodeId: choice
       Type: 1
       TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: 
       Choices:
       - ChoiceId: left
@@ -1920,21 +4504,65 @@ MonoBehaviour:
     - NodeId: left_path
       Type: 2
       TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: merge
       Choices: []
     - NodeId: right_path
       Type: 2
       TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: merge
       Choices: []
     - NodeId: merge
       Type: 0
       TextKey: story.c06.merge
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: end
       Choices: []
     - NodeId: end
       Type: 3
       TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: 
       Choices: []
   - Header:
@@ -1951,11 +4579,33 @@ MonoBehaviour:
     - NodeId: start
       Type: 0
       TextKey: story.c06.start
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: choice
       Choices: []
     - NodeId: choice
       Type: 1
       TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: 
       Choices:
       - ChoiceId: left
@@ -1967,21 +4617,65 @@ MonoBehaviour:
     - NodeId: left_path
       Type: 2
       TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: merge
       Choices: []
     - NodeId: right_path
       Type: 2
       TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: merge
       Choices: []
     - NodeId: merge
       Type: 0
       TextKey: story.c06.merge
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: end
       Choices: []
     - NodeId: end
       Type: 3
       TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: 
       Choices: []
   - Header:
@@ -1998,11 +4692,33 @@ MonoBehaviour:
     - NodeId: start
       Type: 0
       TextKey: story.c06.start
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: choice
       Choices: []
     - NodeId: choice
       Type: 1
       TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: 
       Choices:
       - ChoiceId: left
@@ -2014,21 +4730,65 @@ MonoBehaviour:
     - NodeId: left_path
       Type: 2
       TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: merge
       Choices: []
     - NodeId: right_path
       Type: 2
       TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: merge
       Choices: []
     - NodeId: merge
       Type: 0
       TextKey: story.c06.merge
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: end
       Choices: []
     - NodeId: end
       Type: 3
       TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: 
       Choices: []
   - Header:
@@ -2045,11 +4805,33 @@ MonoBehaviour:
     - NodeId: start
       Type: 0
       TextKey: story.c06.start
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: choice
       Choices: []
     - NodeId: choice
       Type: 1
       TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: 
       Choices:
       - ChoiceId: left
@@ -2061,21 +4843,65 @@ MonoBehaviour:
     - NodeId: left_path
       Type: 2
       TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: merge
       Choices: []
     - NodeId: right_path
       Type: 2
       TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: merge
       Choices: []
     - NodeId: merge
       Type: 0
       TextKey: story.c06.merge
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: end
       Choices: []
     - NodeId: end
       Type: 3
       TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: 
       Choices: []
   - Header:
@@ -2092,11 +4918,33 @@ MonoBehaviour:
     - NodeId: start
       Type: 0
       TextKey: story.c06.start
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: choice
       Choices: []
     - NodeId: choice
       Type: 1
       TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: 
       Choices:
       - ChoiceId: left
@@ -2108,21 +4956,65 @@ MonoBehaviour:
     - NodeId: left_path
       Type: 2
       TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: merge
       Choices: []
     - NodeId: right_path
       Type: 2
       TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: merge
       Choices: []
     - NodeId: merge
       Type: 0
       TextKey: story.c06.merge
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: end
       Choices: []
     - NodeId: end
       Type: 3
       TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: 
       Choices: []
   - Header:
@@ -2130,21 +5022,43 @@ MonoBehaviour:
       Source: 0
       FormatVersion: 1
       ContentRevision: 1
-      MinGameVersion:
-      MaxTestedGameVersion:
-      PayloadSha256:
+      MinGameVersion: 
+      MaxTestedGameVersion: 
+      PayloadSha256: 
     StoryId: official.story.postlude.test_01_02
     StartNodeId: start
     Nodes:
     - NodeId: start
       Type: 0
       TextKey: story.c06.start
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: choice
       Choices: []
     - NodeId: choice
       Type: 1
-      TextKey:
-      NextNodeId:
+      TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
+      NextNodeId: 
       Choices:
       - ChoiceId: left
         TextKey: story.c06.left
@@ -2154,44 +5068,110 @@ MonoBehaviour:
         NextNodeId: right_path
     - NodeId: left_path
       Type: 2
-      TextKey:
+      TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: merge
       Choices: []
     - NodeId: right_path
       Type: 2
-      TextKey:
+      TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: merge
       Choices: []
     - NodeId: merge
       Type: 0
       TextKey: story.c06.merge
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: end
       Choices: []
     - NodeId: end
       Type: 3
-      TextKey:
-      NextNodeId:
+      TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
+      NextNodeId: 
       Choices: []
   - Header:
       ContentId: official.story.postlude.test_01_03
       Source: 0
       FormatVersion: 1
       ContentRevision: 1
-      MinGameVersion:
-      MaxTestedGameVersion:
-      PayloadSha256:
+      MinGameVersion: 
+      MaxTestedGameVersion: 
+      PayloadSha256: 
     StoryId: official.story.postlude.test_01_03
     StartNodeId: start
     Nodes:
     - NodeId: start
       Type: 0
       TextKey: story.c06.start
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: choice
       Choices: []
     - NodeId: choice
       Type: 1
-      TextKey:
-      NextNodeId:
+      TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
+      NextNodeId: 
       Choices:
       - ChoiceId: left
         TextKey: story.c06.left
@@ -2201,44 +5181,110 @@ MonoBehaviour:
         NextNodeId: right_path
     - NodeId: left_path
       Type: 2
-      TextKey:
+      TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: merge
       Choices: []
     - NodeId: right_path
       Type: 2
-      TextKey:
+      TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: merge
       Choices: []
     - NodeId: merge
       Type: 0
       TextKey: story.c06.merge
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: end
       Choices: []
     - NodeId: end
       Type: 3
-      TextKey:
-      NextNodeId:
+      TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
+      NextNodeId: 
       Choices: []
   - Header:
       ContentId: official.story.postlude.test_01_04
       Source: 0
       FormatVersion: 1
       ContentRevision: 1
-      MinGameVersion:
-      MaxTestedGameVersion:
-      PayloadSha256:
+      MinGameVersion: 
+      MaxTestedGameVersion: 
+      PayloadSha256: 
     StoryId: official.story.postlude.test_01_04
     StartNodeId: start
     Nodes:
     - NodeId: start
       Type: 0
       TextKey: story.c06.start
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: choice
       Choices: []
     - NodeId: choice
       Type: 1
-      TextKey:
-      NextNodeId:
+      TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
+      NextNodeId: 
       Choices:
       - ChoiceId: left
         TextKey: story.c06.left
@@ -2248,44 +5294,110 @@ MonoBehaviour:
         NextNodeId: right_path
     - NodeId: left_path
       Type: 2
-      TextKey:
+      TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: merge
       Choices: []
     - NodeId: right_path
       Type: 2
-      TextKey:
+      TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: merge
       Choices: []
     - NodeId: merge
       Type: 0
       TextKey: story.c06.merge
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: end
       Choices: []
     - NodeId: end
       Type: 3
-      TextKey:
-      NextNodeId:
+      TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
+      NextNodeId: 
       Choices: []
   - Header:
       ContentId: official.story.postlude.test_01_05
       Source: 0
       FormatVersion: 1
       ContentRevision: 1
-      MinGameVersion:
-      MaxTestedGameVersion:
-      PayloadSha256:
+      MinGameVersion: 
+      MaxTestedGameVersion: 
+      PayloadSha256: 
     StoryId: official.story.postlude.test_01_05
     StartNodeId: start
     Nodes:
     - NodeId: start
       Type: 0
       TextKey: story.c06.start
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: choice
       Choices: []
     - NodeId: choice
       Type: 1
-      TextKey:
-      NextNodeId:
+      TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
+      NextNodeId: 
       Choices:
       - ChoiceId: left
         TextKey: story.c06.left
@@ -2295,44 +5407,110 @@ MonoBehaviour:
         NextNodeId: right_path
     - NodeId: left_path
       Type: 2
-      TextKey:
+      TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: merge
       Choices: []
     - NodeId: right_path
       Type: 2
-      TextKey:
+      TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: merge
       Choices: []
     - NodeId: merge
       Type: 0
       TextKey: story.c06.merge
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: end
       Choices: []
     - NodeId: end
       Type: 3
-      TextKey:
-      NextNodeId:
+      TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
+      NextNodeId: 
       Choices: []
   - Header:
       ContentId: official.story.postlude.test_02_01
       Source: 0
       FormatVersion: 1
       ContentRevision: 1
-      MinGameVersion:
-      MaxTestedGameVersion:
-      PayloadSha256:
+      MinGameVersion: 
+      MaxTestedGameVersion: 
+      PayloadSha256: 
     StoryId: official.story.postlude.test_02_01
     StartNodeId: start
     Nodes:
     - NodeId: start
       Type: 0
       TextKey: story.c06.start
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: choice
       Choices: []
     - NodeId: choice
       Type: 1
-      TextKey:
-      NextNodeId:
+      TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
+      NextNodeId: 
       Choices:
       - ChoiceId: left
         TextKey: story.c06.left
@@ -2342,44 +5520,110 @@ MonoBehaviour:
         NextNodeId: right_path
     - NodeId: left_path
       Type: 2
-      TextKey:
+      TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: merge
       Choices: []
     - NodeId: right_path
       Type: 2
-      TextKey:
+      TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: merge
       Choices: []
     - NodeId: merge
       Type: 0
       TextKey: story.c06.merge
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: end
       Choices: []
     - NodeId: end
       Type: 3
-      TextKey:
-      NextNodeId:
+      TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
+      NextNodeId: 
       Choices: []
   - Header:
       ContentId: official.story.postlude.test_02_02
       Source: 0
       FormatVersion: 1
       ContentRevision: 1
-      MinGameVersion:
-      MaxTestedGameVersion:
-      PayloadSha256:
+      MinGameVersion: 
+      MaxTestedGameVersion: 
+      PayloadSha256: 
     StoryId: official.story.postlude.test_02_02
     StartNodeId: start
     Nodes:
     - NodeId: start
       Type: 0
       TextKey: story.c06.start
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: choice
       Choices: []
     - NodeId: choice
       Type: 1
-      TextKey:
-      NextNodeId:
+      TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
+      NextNodeId: 
       Choices:
       - ChoiceId: left
         TextKey: story.c06.left
@@ -2389,44 +5633,110 @@ MonoBehaviour:
         NextNodeId: right_path
     - NodeId: left_path
       Type: 2
-      TextKey:
+      TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: merge
       Choices: []
     - NodeId: right_path
       Type: 2
-      TextKey:
+      TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: merge
       Choices: []
     - NodeId: merge
       Type: 0
       TextKey: story.c06.merge
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: end
       Choices: []
     - NodeId: end
       Type: 3
-      TextKey:
-      NextNodeId:
+      TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
+      NextNodeId: 
       Choices: []
   - Header:
       ContentId: official.story.postlude.test_02_03
       Source: 0
       FormatVersion: 1
       ContentRevision: 1
-      MinGameVersion:
-      MaxTestedGameVersion:
-      PayloadSha256:
+      MinGameVersion: 
+      MaxTestedGameVersion: 
+      PayloadSha256: 
     StoryId: official.story.postlude.test_02_03
     StartNodeId: start
     Nodes:
     - NodeId: start
       Type: 0
       TextKey: story.c06.start
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: choice
       Choices: []
     - NodeId: choice
       Type: 1
-      TextKey:
-      NextNodeId:
+      TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
+      NextNodeId: 
       Choices:
       - ChoiceId: left
         TextKey: story.c06.left
@@ -2436,44 +5746,110 @@ MonoBehaviour:
         NextNodeId: right_path
     - NodeId: left_path
       Type: 2
-      TextKey:
+      TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: merge
       Choices: []
     - NodeId: right_path
       Type: 2
-      TextKey:
+      TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: merge
       Choices: []
     - NodeId: merge
       Type: 0
       TextKey: story.c06.merge
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: end
       Choices: []
     - NodeId: end
       Type: 3
-      TextKey:
-      NextNodeId:
+      TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
+      NextNodeId: 
       Choices: []
   - Header:
       ContentId: official.story.postlude.test_02_04
       Source: 0
       FormatVersion: 1
       ContentRevision: 1
-      MinGameVersion:
-      MaxTestedGameVersion:
-      PayloadSha256:
+      MinGameVersion: 
+      MaxTestedGameVersion: 
+      PayloadSha256: 
     StoryId: official.story.postlude.test_02_04
     StartNodeId: start
     Nodes:
     - NodeId: start
       Type: 0
       TextKey: story.c06.start
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: choice
       Choices: []
     - NodeId: choice
       Type: 1
-      TextKey:
-      NextNodeId:
+      TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
+      NextNodeId: 
       Choices:
       - ChoiceId: left
         TextKey: story.c06.left
@@ -2483,44 +5859,110 @@ MonoBehaviour:
         NextNodeId: right_path
     - NodeId: left_path
       Type: 2
-      TextKey:
+      TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: merge
       Choices: []
     - NodeId: right_path
       Type: 2
-      TextKey:
+      TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: merge
       Choices: []
     - NodeId: merge
       Type: 0
       TextKey: story.c06.merge
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: end
       Choices: []
     - NodeId: end
       Type: 3
-      TextKey:
-      NextNodeId:
+      TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
+      NextNodeId: 
       Choices: []
   - Header:
       ContentId: official.story.postlude.test_02_05
       Source: 0
       FormatVersion: 1
       ContentRevision: 1
-      MinGameVersion:
-      MaxTestedGameVersion:
-      PayloadSha256:
+      MinGameVersion: 
+      MaxTestedGameVersion: 
+      PayloadSha256: 
     StoryId: official.story.postlude.test_02_05
     StartNodeId: start
     Nodes:
     - NodeId: start
       Type: 0
       TextKey: story.c06.start
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: choice
       Choices: []
     - NodeId: choice
       Type: 1
-      TextKey:
-      NextNodeId:
+      TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
+      NextNodeId: 
       Choices:
       - ChoiceId: left
         TextKey: story.c06.left
@@ -2530,44 +5972,110 @@ MonoBehaviour:
         NextNodeId: right_path
     - NodeId: left_path
       Type: 2
-      TextKey:
+      TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: merge
       Choices: []
     - NodeId: right_path
       Type: 2
-      TextKey:
+      TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: merge
       Choices: []
     - NodeId: merge
       Type: 0
       TextKey: story.c06.merge
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: end
       Choices: []
     - NodeId: end
       Type: 3
-      TextKey:
-      NextNodeId:
+      TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
+      NextNodeId: 
       Choices: []
   - Header:
       ContentId: official.story.postlude.test_03_01
       Source: 0
       FormatVersion: 1
       ContentRevision: 1
-      MinGameVersion:
-      MaxTestedGameVersion:
-      PayloadSha256:
+      MinGameVersion: 
+      MaxTestedGameVersion: 
+      PayloadSha256: 
     StoryId: official.story.postlude.test_03_01
     StartNodeId: start
     Nodes:
     - NodeId: start
       Type: 0
       TextKey: story.c06.start
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: choice
       Choices: []
     - NodeId: choice
       Type: 1
-      TextKey:
-      NextNodeId:
+      TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
+      NextNodeId: 
       Choices:
       - ChoiceId: left
         TextKey: story.c06.left
@@ -2577,44 +6085,110 @@ MonoBehaviour:
         NextNodeId: right_path
     - NodeId: left_path
       Type: 2
-      TextKey:
+      TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: merge
       Choices: []
     - NodeId: right_path
       Type: 2
-      TextKey:
+      TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: merge
       Choices: []
     - NodeId: merge
       Type: 0
       TextKey: story.c06.merge
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: end
       Choices: []
     - NodeId: end
       Type: 3
-      TextKey:
-      NextNodeId:
+      TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
+      NextNodeId: 
       Choices: []
   - Header:
       ContentId: official.story.postlude.test_03_02
       Source: 0
       FormatVersion: 1
       ContentRevision: 1
-      MinGameVersion:
-      MaxTestedGameVersion:
-      PayloadSha256:
+      MinGameVersion: 
+      MaxTestedGameVersion: 
+      PayloadSha256: 
     StoryId: official.story.postlude.test_03_02
     StartNodeId: start
     Nodes:
     - NodeId: start
       Type: 0
       TextKey: story.c06.start
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: choice
       Choices: []
     - NodeId: choice
       Type: 1
-      TextKey:
-      NextNodeId:
+      TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
+      NextNodeId: 
       Choices:
       - ChoiceId: left
         TextKey: story.c06.left
@@ -2624,44 +6198,110 @@ MonoBehaviour:
         NextNodeId: right_path
     - NodeId: left_path
       Type: 2
-      TextKey:
+      TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: merge
       Choices: []
     - NodeId: right_path
       Type: 2
-      TextKey:
+      TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: merge
       Choices: []
     - NodeId: merge
       Type: 0
       TextKey: story.c06.merge
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: end
       Choices: []
     - NodeId: end
       Type: 3
-      TextKey:
-      NextNodeId:
+      TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
+      NextNodeId: 
       Choices: []
   - Header:
       ContentId: official.story.postlude.test_03_03
       Source: 0
       FormatVersion: 1
       ContentRevision: 1
-      MinGameVersion:
-      MaxTestedGameVersion:
-      PayloadSha256:
+      MinGameVersion: 
+      MaxTestedGameVersion: 
+      PayloadSha256: 
     StoryId: official.story.postlude.test_03_03
     StartNodeId: start
     Nodes:
     - NodeId: start
       Type: 0
       TextKey: story.c06.start
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: choice
       Choices: []
     - NodeId: choice
       Type: 1
-      TextKey:
-      NextNodeId:
+      TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
+      NextNodeId: 
       Choices:
       - ChoiceId: left
         TextKey: story.c06.left
@@ -2671,44 +6311,110 @@ MonoBehaviour:
         NextNodeId: right_path
     - NodeId: left_path
       Type: 2
-      TextKey:
+      TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: merge
       Choices: []
     - NodeId: right_path
       Type: 2
-      TextKey:
+      TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: merge
       Choices: []
     - NodeId: merge
       Type: 0
       TextKey: story.c06.merge
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: end
       Choices: []
     - NodeId: end
       Type: 3
-      TextKey:
-      NextNodeId:
+      TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
+      NextNodeId: 
       Choices: []
   - Header:
       ContentId: official.story.postlude.test_03_04
       Source: 0
       FormatVersion: 1
       ContentRevision: 1
-      MinGameVersion:
-      MaxTestedGameVersion:
-      PayloadSha256:
+      MinGameVersion: 
+      MaxTestedGameVersion: 
+      PayloadSha256: 
     StoryId: official.story.postlude.test_03_04
     StartNodeId: start
     Nodes:
     - NodeId: start
       Type: 0
       TextKey: story.c06.start
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: choice
       Choices: []
     - NodeId: choice
       Type: 1
-      TextKey:
-      NextNodeId:
+      TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
+      NextNodeId: 
       Choices:
       - ChoiceId: left
         TextKey: story.c06.left
@@ -2718,44 +6424,110 @@ MonoBehaviour:
         NextNodeId: right_path
     - NodeId: left_path
       Type: 2
-      TextKey:
+      TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: merge
       Choices: []
     - NodeId: right_path
       Type: 2
-      TextKey:
+      TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: merge
       Choices: []
     - NodeId: merge
       Type: 0
       TextKey: story.c06.merge
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: end
       Choices: []
     - NodeId: end
       Type: 3
-      TextKey:
-      NextNodeId:
+      TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
+      NextNodeId: 
       Choices: []
   - Header:
       ContentId: official.story.postlude.test_03_05
       Source: 0
       FormatVersion: 1
       ContentRevision: 1
-      MinGameVersion:
-      MaxTestedGameVersion:
-      PayloadSha256:
+      MinGameVersion: 
+      MaxTestedGameVersion: 
+      PayloadSha256: 
     StoryId: official.story.postlude.test_03_05
     StartNodeId: start
     Nodes:
     - NodeId: start
       Type: 0
       TextKey: story.c06.start
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: choice
       Choices: []
     - NodeId: choice
       Type: 1
-      TextKey:
-      NextNodeId:
+      TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
+      NextNodeId: 
       Choices:
       - ChoiceId: left
         TextKey: story.c06.left
@@ -2765,44 +6537,110 @@ MonoBehaviour:
         NextNodeId: right_path
     - NodeId: left_path
       Type: 2
-      TextKey:
+      TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: merge
       Choices: []
     - NodeId: right_path
       Type: 2
-      TextKey:
+      TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: merge
       Choices: []
     - NodeId: merge
       Type: 0
       TextKey: story.c06.merge
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: end
       Choices: []
     - NodeId: end
       Type: 3
-      TextKey:
-      NextNodeId:
+      TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
+      NextNodeId: 
       Choices: []
   - Header:
       ContentId: official.story.postlude.test_04_01
       Source: 0
       FormatVersion: 1
       ContentRevision: 1
-      MinGameVersion:
-      MaxTestedGameVersion:
-      PayloadSha256:
+      MinGameVersion: 
+      MaxTestedGameVersion: 
+      PayloadSha256: 
     StoryId: official.story.postlude.test_04_01
     StartNodeId: start
     Nodes:
     - NodeId: start
       Type: 0
       TextKey: story.c06.start
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: choice
       Choices: []
     - NodeId: choice
       Type: 1
-      TextKey:
-      NextNodeId:
+      TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
+      NextNodeId: 
       Choices:
       - ChoiceId: left
         TextKey: story.c06.left
@@ -2812,44 +6650,110 @@ MonoBehaviour:
         NextNodeId: right_path
     - NodeId: left_path
       Type: 2
-      TextKey:
+      TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: merge
       Choices: []
     - NodeId: right_path
       Type: 2
-      TextKey:
+      TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: merge
       Choices: []
     - NodeId: merge
       Type: 0
       TextKey: story.c06.merge
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: end
       Choices: []
     - NodeId: end
       Type: 3
-      TextKey:
-      NextNodeId:
+      TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
+      NextNodeId: 
       Choices: []
   - Header:
       ContentId: official.story.postlude.test_04_02
       Source: 0
       FormatVersion: 1
       ContentRevision: 1
-      MinGameVersion:
-      MaxTestedGameVersion:
-      PayloadSha256:
+      MinGameVersion: 
+      MaxTestedGameVersion: 
+      PayloadSha256: 
     StoryId: official.story.postlude.test_04_02
     StartNodeId: start
     Nodes:
     - NodeId: start
       Type: 0
       TextKey: story.c06.start
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: choice
       Choices: []
     - NodeId: choice
       Type: 1
-      TextKey:
-      NextNodeId:
+      TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
+      NextNodeId: 
       Choices:
       - ChoiceId: left
         TextKey: story.c06.left
@@ -2859,44 +6763,110 @@ MonoBehaviour:
         NextNodeId: right_path
     - NodeId: left_path
       Type: 2
-      TextKey:
+      TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: merge
       Choices: []
     - NodeId: right_path
       Type: 2
-      TextKey:
+      TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: merge
       Choices: []
     - NodeId: merge
       Type: 0
       TextKey: story.c06.merge
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: end
       Choices: []
     - NodeId: end
       Type: 3
-      TextKey:
-      NextNodeId:
+      TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
+      NextNodeId: 
       Choices: []
   - Header:
       ContentId: official.story.postlude.test_04_03
       Source: 0
       FormatVersion: 1
       ContentRevision: 1
-      MinGameVersion:
-      MaxTestedGameVersion:
-      PayloadSha256:
+      MinGameVersion: 
+      MaxTestedGameVersion: 
+      PayloadSha256: 
     StoryId: official.story.postlude.test_04_03
     StartNodeId: start
     Nodes:
     - NodeId: start
       Type: 0
       TextKey: story.c06.start
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: choice
       Choices: []
     - NodeId: choice
       Type: 1
-      TextKey:
-      NextNodeId:
+      TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
+      NextNodeId: 
       Choices:
       - ChoiceId: left
         TextKey: story.c06.left
@@ -2906,44 +6876,110 @@ MonoBehaviour:
         NextNodeId: right_path
     - NodeId: left_path
       Type: 2
-      TextKey:
+      TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: merge
       Choices: []
     - NodeId: right_path
       Type: 2
-      TextKey:
+      TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: merge
       Choices: []
     - NodeId: merge
       Type: 0
       TextKey: story.c06.merge
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: end
       Choices: []
     - NodeId: end
       Type: 3
-      TextKey:
-      NextNodeId:
+      TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
+      NextNodeId: 
       Choices: []
   - Header:
       ContentId: official.story.postlude.test_04_04
       Source: 0
       FormatVersion: 1
       ContentRevision: 1
-      MinGameVersion:
-      MaxTestedGameVersion:
-      PayloadSha256:
+      MinGameVersion: 
+      MaxTestedGameVersion: 
+      PayloadSha256: 
     StoryId: official.story.postlude.test_04_04
     StartNodeId: start
     Nodes:
     - NodeId: start
       Type: 0
       TextKey: story.c06.start
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: choice
       Choices: []
     - NodeId: choice
       Type: 1
-      TextKey:
-      NextNodeId:
+      TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
+      NextNodeId: 
       Choices:
       - ChoiceId: left
         TextKey: story.c06.left
@@ -2953,44 +6989,110 @@ MonoBehaviour:
         NextNodeId: right_path
     - NodeId: left_path
       Type: 2
-      TextKey:
+      TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: merge
       Choices: []
     - NodeId: right_path
       Type: 2
-      TextKey:
+      TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: merge
       Choices: []
     - NodeId: merge
       Type: 0
       TextKey: story.c06.merge
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: end
       Choices: []
     - NodeId: end
       Type: 3
-      TextKey:
-      NextNodeId:
+      TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
+      NextNodeId: 
       Choices: []
   - Header:
       ContentId: official.story.postlude.test_04_05
       Source: 0
       FormatVersion: 1
       ContentRevision: 1
-      MinGameVersion:
-      MaxTestedGameVersion:
-      PayloadSha256:
+      MinGameVersion: 
+      MaxTestedGameVersion: 
+      PayloadSha256: 
     StoryId: official.story.postlude.test_04_05
     StartNodeId: start
     Nodes:
     - NodeId: start
       Type: 0
       TextKey: story.c06.start
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: choice
       Choices: []
     - NodeId: choice
       Type: 1
-      TextKey:
-      NextNodeId:
+      TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
+      NextNodeId: 
       Choices:
       - ChoiceId: left
         TextKey: story.c06.left
@@ -3000,44 +7102,110 @@ MonoBehaviour:
         NextNodeId: right_path
     - NodeId: left_path
       Type: 2
-      TextKey:
+      TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: merge
       Choices: []
     - NodeId: right_path
       Type: 2
-      TextKey:
+      TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: merge
       Choices: []
     - NodeId: merge
       Type: 0
       TextKey: story.c06.merge
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: end
       Choices: []
     - NodeId: end
       Type: 3
-      TextKey:
-      NextNodeId:
+      TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
+      NextNodeId: 
       Choices: []
   - Header:
       ContentId: official.story.postlude.test_05_01
       Source: 0
       FormatVersion: 1
       ContentRevision: 1
-      MinGameVersion:
-      MaxTestedGameVersion:
-      PayloadSha256:
+      MinGameVersion: 
+      MaxTestedGameVersion: 
+      PayloadSha256: 
     StoryId: official.story.postlude.test_05_01
     StartNodeId: start
     Nodes:
     - NodeId: start
       Type: 0
       TextKey: story.c06.start
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: choice
       Choices: []
     - NodeId: choice
       Type: 1
-      TextKey:
-      NextNodeId:
+      TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
+      NextNodeId: 
       Choices:
       - ChoiceId: left
         TextKey: story.c06.left
@@ -3047,44 +7215,110 @@ MonoBehaviour:
         NextNodeId: right_path
     - NodeId: left_path
       Type: 2
-      TextKey:
+      TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: merge
       Choices: []
     - NodeId: right_path
       Type: 2
-      TextKey:
+      TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: merge
       Choices: []
     - NodeId: merge
       Type: 0
       TextKey: story.c06.merge
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: end
       Choices: []
     - NodeId: end
       Type: 3
-      TextKey:
-      NextNodeId:
+      TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
+      NextNodeId: 
       Choices: []
   - Header:
       ContentId: official.story.postlude.test_05_02
       Source: 0
       FormatVersion: 1
       ContentRevision: 1
-      MinGameVersion:
-      MaxTestedGameVersion:
-      PayloadSha256:
+      MinGameVersion: 
+      MaxTestedGameVersion: 
+      PayloadSha256: 
     StoryId: official.story.postlude.test_05_02
     StartNodeId: start
     Nodes:
     - NodeId: start
       Type: 0
       TextKey: story.c06.start
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: choice
       Choices: []
     - NodeId: choice
       Type: 1
-      TextKey:
-      NextNodeId:
+      TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
+      NextNodeId: 
       Choices:
       - ChoiceId: left
         TextKey: story.c06.left
@@ -3094,44 +7328,110 @@ MonoBehaviour:
         NextNodeId: right_path
     - NodeId: left_path
       Type: 2
-      TextKey:
+      TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: merge
       Choices: []
     - NodeId: right_path
       Type: 2
-      TextKey:
+      TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: merge
       Choices: []
     - NodeId: merge
       Type: 0
       TextKey: story.c06.merge
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: end
       Choices: []
     - NodeId: end
       Type: 3
-      TextKey:
-      NextNodeId:
+      TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
+      NextNodeId: 
       Choices: []
   - Header:
       ContentId: official.story.postlude.test_05_03
       Source: 0
       FormatVersion: 1
       ContentRevision: 1
-      MinGameVersion:
-      MaxTestedGameVersion:
-      PayloadSha256:
+      MinGameVersion: 
+      MaxTestedGameVersion: 
+      PayloadSha256: 
     StoryId: official.story.postlude.test_05_03
     StartNodeId: start
     Nodes:
     - NodeId: start
       Type: 0
       TextKey: story.c06.start
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: choice
       Choices: []
     - NodeId: choice
       Type: 1
-      TextKey:
-      NextNodeId:
+      TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
+      NextNodeId: 
       Choices:
       - ChoiceId: left
         TextKey: story.c06.left
@@ -3141,44 +7441,110 @@ MonoBehaviour:
         NextNodeId: right_path
     - NodeId: left_path
       Type: 2
-      TextKey:
+      TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: merge
       Choices: []
     - NodeId: right_path
       Type: 2
-      TextKey:
+      TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: merge
       Choices: []
     - NodeId: merge
       Type: 0
       TextKey: story.c06.merge
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: end
       Choices: []
     - NodeId: end
       Type: 3
-      TextKey:
-      NextNodeId:
+      TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
+      NextNodeId: 
       Choices: []
   - Header:
       ContentId: official.story.postlude.test_05_04
       Source: 0
       FormatVersion: 1
       ContentRevision: 1
-      MinGameVersion:
-      MaxTestedGameVersion:
-      PayloadSha256:
+      MinGameVersion: 
+      MaxTestedGameVersion: 
+      PayloadSha256: 
     StoryId: official.story.postlude.test_05_04
     StartNodeId: start
     Nodes:
     - NodeId: start
       Type: 0
       TextKey: story.c06.start
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: choice
       Choices: []
     - NodeId: choice
       Type: 1
-      TextKey:
-      NextNodeId:
+      TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
+      NextNodeId: 
       Choices:
       - ChoiceId: left
         TextKey: story.c06.left
@@ -3188,44 +7554,110 @@ MonoBehaviour:
         NextNodeId: right_path
     - NodeId: left_path
       Type: 2
-      TextKey:
+      TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: merge
       Choices: []
     - NodeId: right_path
       Type: 2
-      TextKey:
+      TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: merge
       Choices: []
     - NodeId: merge
       Type: 0
       TextKey: story.c06.merge
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: end
       Choices: []
     - NodeId: end
       Type: 3
-      TextKey:
-      NextNodeId:
+      TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
+      NextNodeId: 
       Choices: []
   - Header:
       ContentId: official.story.postlude.test_05_05
       Source: 0
       FormatVersion: 1
       ContentRevision: 1
-      MinGameVersion:
-      MaxTestedGameVersion:
-      PayloadSha256:
+      MinGameVersion: 
+      MaxTestedGameVersion: 
+      PayloadSha256: 
     StoryId: official.story.postlude.test_05_05
     StartNodeId: start
     Nodes:
     - NodeId: start
       Type: 0
       TextKey: story.c06.start
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: choice
       Choices: []
     - NodeId: choice
       Type: 1
-      TextKey:
-      NextNodeId:
+      TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
+      NextNodeId: 
       Choices:
       - ChoiceId: left
         TextKey: story.c06.left
@@ -3235,44 +7667,110 @@ MonoBehaviour:
         NextNodeId: right_path
     - NodeId: left_path
       Type: 2
-      TextKey:
+      TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: merge
       Choices: []
     - NodeId: right_path
       Type: 2
-      TextKey:
+      TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: merge
       Choices: []
     - NodeId: merge
       Type: 0
       TextKey: story.c06.merge
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: end
       Choices: []
     - NodeId: end
       Type: 3
-      TextKey:
-      NextNodeId:
+      TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
+      NextNodeId: 
       Choices: []
   - Header:
       ContentId: official.story.postlude.test_06_01
       Source: 0
       FormatVersion: 1
       ContentRevision: 1
-      MinGameVersion:
-      MaxTestedGameVersion:
-      PayloadSha256:
+      MinGameVersion: 
+      MaxTestedGameVersion: 
+      PayloadSha256: 
     StoryId: official.story.postlude.test_06_01
     StartNodeId: start
     Nodes:
     - NodeId: start
       Type: 0
       TextKey: story.c06.start
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: choice
       Choices: []
     - NodeId: choice
       Type: 1
-      TextKey:
-      NextNodeId:
+      TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
+      NextNodeId: 
       Choices:
       - ChoiceId: left
         TextKey: story.c06.left
@@ -3282,44 +7780,110 @@ MonoBehaviour:
         NextNodeId: right_path
     - NodeId: left_path
       Type: 2
-      TextKey:
+      TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: merge
       Choices: []
     - NodeId: right_path
       Type: 2
-      TextKey:
+      TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: merge
       Choices: []
     - NodeId: merge
       Type: 0
       TextKey: story.c06.merge
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: end
       Choices: []
     - NodeId: end
       Type: 3
-      TextKey:
-      NextNodeId:
+      TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
+      NextNodeId: 
       Choices: []
   - Header:
       ContentId: official.story.postlude.test_06_02
       Source: 0
       FormatVersion: 1
       ContentRevision: 1
-      MinGameVersion:
-      MaxTestedGameVersion:
-      PayloadSha256:
+      MinGameVersion: 
+      MaxTestedGameVersion: 
+      PayloadSha256: 
     StoryId: official.story.postlude.test_06_02
     StartNodeId: start
     Nodes:
     - NodeId: start
       Type: 0
       TextKey: story.c06.start
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: choice
       Choices: []
     - NodeId: choice
       Type: 1
-      TextKey:
-      NextNodeId:
+      TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
+      NextNodeId: 
       Choices:
       - ChoiceId: left
         TextKey: story.c06.left
@@ -3329,44 +7893,110 @@ MonoBehaviour:
         NextNodeId: right_path
     - NodeId: left_path
       Type: 2
-      TextKey:
+      TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: merge
       Choices: []
     - NodeId: right_path
       Type: 2
-      TextKey:
+      TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: merge
       Choices: []
     - NodeId: merge
       Type: 0
       TextKey: story.c06.merge
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: end
       Choices: []
     - NodeId: end
       Type: 3
-      TextKey:
-      NextNodeId:
+      TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
+      NextNodeId: 
       Choices: []
   - Header:
       ContentId: official.story.postlude.test_06_03
       Source: 0
       FormatVersion: 1
       ContentRevision: 1
-      MinGameVersion:
-      MaxTestedGameVersion:
-      PayloadSha256:
+      MinGameVersion: 
+      MaxTestedGameVersion: 
+      PayloadSha256: 
     StoryId: official.story.postlude.test_06_03
     StartNodeId: start
     Nodes:
     - NodeId: start
       Type: 0
       TextKey: story.c06.start
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: choice
       Choices: []
     - NodeId: choice
       Type: 1
-      TextKey:
-      NextNodeId:
+      TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
+      NextNodeId: 
       Choices:
       - ChoiceId: left
         TextKey: story.c06.left
@@ -3376,44 +8006,110 @@ MonoBehaviour:
         NextNodeId: right_path
     - NodeId: left_path
       Type: 2
-      TextKey:
+      TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: merge
       Choices: []
     - NodeId: right_path
       Type: 2
-      TextKey:
+      TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: merge
       Choices: []
     - NodeId: merge
       Type: 0
       TextKey: story.c06.merge
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: end
       Choices: []
     - NodeId: end
       Type: 3
-      TextKey:
-      NextNodeId:
+      TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
+      NextNodeId: 
       Choices: []
   - Header:
       ContentId: official.story.postlude.test_06_04
       Source: 0
       FormatVersion: 1
       ContentRevision: 1
-      MinGameVersion:
-      MaxTestedGameVersion:
-      PayloadSha256:
+      MinGameVersion: 
+      MaxTestedGameVersion: 
+      PayloadSha256: 
     StoryId: official.story.postlude.test_06_04
     StartNodeId: start
     Nodes:
     - NodeId: start
       Type: 0
       TextKey: story.c06.start
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: choice
       Choices: []
     - NodeId: choice
       Type: 1
-      TextKey:
-      NextNodeId:
+      TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
+      NextNodeId: 
       Choices:
       - ChoiceId: left
         TextKey: story.c06.left
@@ -3423,44 +8119,110 @@ MonoBehaviour:
         NextNodeId: right_path
     - NodeId: left_path
       Type: 2
-      TextKey:
+      TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: merge
       Choices: []
     - NodeId: right_path
       Type: 2
-      TextKey:
+      TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: merge
       Choices: []
     - NodeId: merge
       Type: 0
       TextKey: story.c06.merge
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: end
       Choices: []
     - NodeId: end
       Type: 3
-      TextKey:
-      NextNodeId:
+      TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
+      NextNodeId: 
       Choices: []
   - Header:
       ContentId: official.story.postlude.test_06_05
       Source: 0
       FormatVersion: 1
       ContentRevision: 1
-      MinGameVersion:
-      MaxTestedGameVersion:
-      PayloadSha256:
+      MinGameVersion: 
+      MaxTestedGameVersion: 
+      PayloadSha256: 
     StoryId: official.story.postlude.test_06_05
     StartNodeId: start
     Nodes:
     - NodeId: start
       Type: 0
       TextKey: story.c06.start
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: choice
       Choices: []
     - NodeId: choice
       Type: 1
-      TextKey:
-      NextNodeId:
+      TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
+      NextNodeId: 
       Choices:
       - ChoiceId: left
         TextKey: story.c06.left
@@ -3470,23 +8232,67 @@ MonoBehaviour:
         NextNodeId: right_path
     - NodeId: left_path
       Type: 2
-      TextKey:
+      TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: merge
       Choices: []
     - NodeId: right_path
       Type: 2
-      TextKey:
+      TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: merge
       Choices: []
     - NodeId: merge
       Type: 0
       TextKey: story.c06.merge
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
       NextNodeId: end
       Choices: []
     - NodeId: end
       Type: 3
-      TextKey:
-      NextNodeId:
+      TextKey: 
+      SpeakerKey: 
+      SpeakerCharacterId: 
+      AppearanceOverride: 
+      AssetId: 
+      BackgroundId: 
+      CharacterPosition: 0
+      ExpressionId: 
+      EffectType: 0
+      AudioId: 
+      AudioKind: 1
+      WaitSeconds: 0
+      NextNodeId: 
       Choices: []
   characters: []
   archiveEntries: []
