@@ -25,6 +25,16 @@ namespace Game.Presentation
         private IContentService _content;
         private StoryId _storyId;
         private bool _isReturning;
+        private string _lastHistoryDialogueNodeId;
+        private CancellationTokenSource _lifetime = new CancellationTokenSource();
+
+        /// <summary>销毁表现器时禁止未完成的返回任务继续操作旧界面。</summary>
+        private void OnDestroy()
+        {
+            _isReturning = true;
+            _lifetime.Cancel();
+            _lifetime.Dispose();
+        }
 
         /// <summary>创建面板、启动当前流程指定的剧情并显示首个节点。</summary>
         /// <param name="runtimeServices">运行时服务容器；为空时只播放兼容测试剧情且不执行返回流程。</param>
@@ -33,13 +43,15 @@ namespace Game.Presentation
             if (_runner != null)
                 return;
             _runtimeServices = runtimeServices;
-            _content = runtimeServices?.Content ?? new OfficialContentService(OfficialTestMapCatalog.CreateProvider());
+            _content = runtimeServices?.Content ??
+                new OfficialContentService(OfficialTestMapCatalog.CreateProvider());
             _runner = new StoryRunner(id => _content.GetStory(id));
             GameObject panelObject = new GameObject("StoryDialoguePanel");
             panelObject.transform.SetParent(transform, false);
             _panel = panelObject.AddComponent<StoryDialoguePanel>();
             _panel.SetSkipAction(Skip);
             _globalCanvas = FindObjectOfType<GlobalCanvasLayer>();
+            _panel.SetSettingsAction(() => _globalCanvas?.OpenSettings());
             _runtimeServices = runtimeServices;
             _localization = runtimeServices == null ? null : runtimeServices.Localization;
             if (_localization != null)
@@ -53,8 +65,6 @@ namespace Game.Presentation
             StoryId storyId = ResolveStoryId();
             _storyId = storyId;
             _runner.Start(storyId);
-            // 历史属于当前会话, 在新剧情开始处重置; 剧情结束只清表现, 保留历史供回看。
-            _panel.ResetHistory();
             RenderCurrentNode();
         }
 
@@ -74,10 +84,10 @@ namespace Game.Presentation
                 return;
             GameObject instance = Instantiate(prefab, _panel.transform, false);
             StoryUiBindings bindings = instance.GetComponent<StoryUiBindings>();
-            if (bindings == null)
+            if (bindings == null || !bindings.IsComplete)
             {
                 Debug.LogWarning(
-                    "[StoryScenePresenter] ui.story-panel 预制体缺少 StoryUiBindings, 回退代码生成界面。",
+                    "[StoryScenePresenter] ui.story-panel 预制体绑定不完整，回退代码生成界面。",
                     this
                 );
                 Destroy(instance);
@@ -103,7 +113,6 @@ namespace Game.Presentation
             StorySnapshot snapshot = _runner.GetSnapshot();
             if (snapshot == null || snapshot.IsCompleted)
             {
-                _panel.Clear();
                 ReturnAfterStory();
                 return;
             }
@@ -111,15 +120,14 @@ namespace Game.Presentation
             StoryNodeDefinition node = snapshot.CurrentNode;
             if (node.Type == StoryNodeType.Dialogue)
             {
-                string speakerKey = node.SpeakerKey ?? string.Empty;
-                _panel.AppendDialogueHistory(
-                    _storyId,
-                    new StoryNodeId(node.NodeId),
-                    node.SpeakerCharacterId,
-                    speakerKey,
-                    node.TextKey
-                );
-                _panel.ShowDialogue(new StoryDialogueView(speakerKey, node.TextKey), ResolvePortrait(node), Advance);
+                string speaker = SelectStoryText(node.SpeakerTextZhCn, node.SpeakerTextEnUs, node, false);
+                string text = SelectStoryText(node.TextZhCn, node.TextEnUs, node);
+                if (!string.Equals(_lastHistoryDialogueNodeId, node.NodeId, StringComparison.Ordinal))
+                {
+                    _panel.AppendDialogueHistory(_storyId, new StoryNodeId(node.NodeId), node.SpeakerCharacterId, speaker, text);
+                    _lastHistoryDialogueNodeId = node.NodeId;
+                }
+                _panel.ShowDialogue(new StoryDialogueView(speaker, text), ResolvePortrait(node), Advance);
                 return;
             }
             if (node.Type == StoryNodeType.Choice)
@@ -128,20 +136,19 @@ namespace Game.Presentation
                 if (node.Choices != null)
                     foreach (StoryChoiceDefinition choice in node.Choices)
                         if (choice != null && !string.IsNullOrWhiteSpace(choice.ChoiceId))
-                            choices.Add(new StoryChoiceView(new ChoiceId(choice.ChoiceId), choice.TextKey));
+                            choices.Add(new StoryChoiceView(
+                                new ChoiceId(choice.ChoiceId),
+                                SelectStoryText(choice.TextZhCn, choice.TextEnUs, node)
+                            ));
                 _panel.ShowChoices(
                     choices.AsReadOnly(),
                     choice =>
                     {
+                        StoryChoiceDefinition selected = null;
                         foreach (StoryChoiceDefinition definition in node.Choices)
                             if (definition != null && definition.ChoiceId == choice.Value)
-                                _panel.AppendChoiceHistory(
-                                    _storyId,
-                                    new StoryNodeId(node.NodeId),
-                                    choice.Value,
-                                    definition.TextKey
-                                );
-                        Choose(choice);
+                                selected = definition;
+                        Choose(choice, node, selected);
                     }
                 );
                 return;
@@ -198,6 +205,23 @@ namespace Game.Presentation
             Advance();
         }
 
+        /// <summary>按当前语言选择剧情文本，并在两种语言都缺失时输出定位日志。</summary>
+        /// <param name="zhCn">中文文本。</param>
+        /// <param name="enUs">英文文本。</param>
+        /// <param name="node">当前节点，用于错误定位。</param>
+        /// <param name="required">是否要求至少存在一种文本。</param>
+        /// <returns>当前语言文本或可用回退文本。</returns>
+        private string SelectStoryText(string zhCn, string enUs, StoryNodeDefinition node, bool required = true)
+        {
+            bool english = string.Equals(_localization?.CurrentLocaleCode, "en-US", StringComparison.OrdinalIgnoreCase);
+            string selected = english && !string.IsNullOrWhiteSpace(enUs) ? enUs : zhCn;
+            if (string.IsNullOrWhiteSpace(selected))
+                selected = enUs;
+            if (required && string.IsNullOrWhiteSpace(selected))
+                Debug.LogError("Missing full JSON story text: " + node.NodeId, this);
+            return selected ?? string.Empty;
+        }
+
         /// <summary>解析节点立绘：显式覆盖优先，否则查询角色当前默认形象。</summary>
         /// <param name="node">当前剧情节点。</param>
         /// <returns>立绘精灵；无角色或资源缺失时为 null。</returns>
@@ -213,7 +237,9 @@ namespace Game.Presentation
                 return null;
             // 通过直持的注册表解析, 避免 Characters as ICharacterAssetRegistry 向下转型。
             ICharacterAssetRegistry registry = _runtimeServices.CharacterAssets;
-            return registry == null ? null : registry.GetPortrait(characterId, appearance, null);
+            ExpressionId expression = string.IsNullOrWhiteSpace(node.ExpressionId)
+                ? null : new ExpressionId(node.ExpressionId);
+            return registry == null ? null : registry.GetPortrait(characterId, appearance, expression);
         }
 
         /// <summary>按节点音频类别播放音乐或音效。</summary>
@@ -237,12 +263,15 @@ namespace Game.Presentation
                 Debug.LogError("Story advance failed: " + result.Message, this);
                 return;
             }
+            _lastHistoryDialogueNodeId = null;
             RenderCurrentNode();
         }
 
-        /// <summary>处理选项点击并显示目标节点。</summary>
+        /// <summary>处理选项点击、记录选择并显示目标节点。</summary>
         /// <param name="choiceId">被点击的选项标识。</param>
-        private void Choose(ChoiceId choiceId)
+        /// <param name="choiceNode">当前选项节点。</param>
+        /// <param name="selected">实际选择的分支。</param>
+        private void Choose(ChoiceId choiceId, StoryNodeDefinition choiceNode, StoryChoiceDefinition selected)
         {
             Result result = _runner.Choose(choiceId);
             if (!result.IsSuccess)
@@ -250,80 +279,98 @@ namespace Game.Presentation
                 Debug.LogError("Story choice failed: " + result.Message, this);
                 return;
             }
+            if (selected != null)
+                _panel.AppendChoiceHistory(
+                    _storyId,
+                    new StoryNodeId(choiceNode.NodeId),
+                    choiceId.Value,
+                    SelectStoryText(selected.TextZhCn, selected.TextEnUs, choiceNode)
+                );
+            _lastHistoryDialogueNodeId = null;
             RenderCurrentNode();
         }
 
-        /// <summary>执行整段剧情跳过, 并把跳过期间实际经过的节点补入历史后清理表现。</summary>
+        /// <summary>执行整段剧情跳过并清理表现。</summary>
         private void Skip()
         {
-            StorySnapshot before = _runner.GetSnapshot();
-            Result result = _runner.Skip();
-            if (!result.IsSuccess)
+            // 逐节点推进而不是直接调用 Runner.Skip，确保背景、角色、CG、音频和效果
+            // 等表现节点在跳过时仍然落地到最终状态。
+            for (int steps = 0; steps < 256; steps++)
             {
-                Debug.LogError("Story skip failed: " + result.Message, this);
-                return;
-            }
-            AppendSkippedHistory(before);
-            RenderCurrentNode();
-        }
-
-        /// <summary>把整段跳过期间实际经过的节点补入历史, 使跳过与逐节点推进的记录语义一致。</summary>
-        /// <param name="before">跳过前取得的快照; 为空时不补记录。</param>
-        private void AppendSkippedHistory(StorySnapshot before)
-        {
-            if (_panel == null || _content == null)
-                return;
-            StorySnapshot after = _runner.GetSnapshot();
-            if (after?.VisitedNodes == null)
-                return;
-
-            // 跳过前的节点已经由 RenderCurrentNode 记录过; 同一节点重复经过时只保留首次记录。
-            var seen = new HashSet<string>(StringComparer.Ordinal);
-            if (before?.VisitedNodes != null)
-                foreach (StoryNodeId visited in before.VisitedNodes)
-                    if (visited != null)
-                        seen.Add(visited.Value);
-
-            StoryDefinition definition = _content.GetStory(_storyId);
-            foreach (StoryNodeId visited in after.VisitedNodes)
-            {
-                if (visited == null || !seen.Add(visited.Value))
-                    continue;
-                StoryNodeDefinition node = FindNode(definition, visited.Value);
-                if (node == null)
-                    continue;
-                if (node.Type == StoryNodeType.Dialogue)
+                StorySnapshot snapshot = _runner.GetSnapshot();
+                if (snapshot == null || snapshot.IsCompleted)
                 {
-                    _panel.AppendDialogueHistory(
-                        _storyId,
-                        visited,
-                        node.SpeakerCharacterId,
-                        node.SpeakerKey,
-                        node.TextKey
-                    );
-                    continue;
+                    RenderCurrentNode();
+                    return;
                 }
-                if (node.Type != StoryNodeType.Choice || node.Choices == null || node.Choices.Count == 0)
-                    continue;
-                // StoryRunner.Skip 对选项节点自动取第一个可选项, 此处按同一规则补记所选项。
-                StoryChoiceDefinition chosen = node.Choices[0];
-                if (chosen != null)
-                    _panel.AppendChoiceHistory(_storyId, visited, chosen.ChoiceId, chosen.TextKey);
+                StoryNodeDefinition node = snapshot.CurrentNode;
+                ApplySkipNode(node);
+                Result result;
+                if (node.Type == StoryNodeType.Choice)
+                {
+                    if (node.Choices == null || node.Choices.Count == 0)
+                    {
+                        Debug.LogError("Story skip failed: choice has no branch.", this);
+                        return;
+                    }
+                    StoryChoiceDefinition choice = node.Choices[0];
+                    _panel.AppendChoiceHistory(_storyId, new StoryNodeId(node.NodeId),
+                        choice.ChoiceId, SelectStoryText(choice.TextZhCn, choice.TextEnUs, node));
+                    result = _runner.Choose(new ChoiceId(choice.ChoiceId));
+                }
+                else
+                {
+                    result = _runner.Advance();
+                }
+                if (!result.IsSuccess)
+                {
+                    Debug.LogError("Story skip failed: " + result.Message, this);
+                    return;
+                }
             }
+            Debug.LogError("Story skip failed: execution step limit exceeded.", this);
         }
 
-        /// <summary>在剧情定义中按节点标识查找节点。</summary>
-        /// <param name="definition">目标剧情定义; 为空时返回 null。</param>
-        /// <param name="nodeId">节点稳定标识。</param>
-        /// <returns>匹配的节点定义; 未找到时为 null。</returns>
-        private static StoryNodeDefinition FindNode(StoryDefinition definition, string nodeId)
+        /// <summary>在跳过期间应用当前节点的最终表现状态。</summary>
+        /// <param name="node">当前待跳过节点。</param>
+        private void ApplySkipNode(StoryNodeDefinition node)
         {
-            if (definition?.Nodes == null)
-                return null;
-            foreach (StoryNodeDefinition node in definition.Nodes)
-                if (node != null && string.Equals(node.NodeId, nodeId, StringComparison.Ordinal))
-                    return node;
-            return null;
+            if (node == null)
+                return;
+            switch (node.Type)
+            {
+                case StoryNodeType.Dialogue:
+                    if (!string.Equals(_lastHistoryDialogueNodeId, node.NodeId, StringComparison.Ordinal))
+                    {
+                        _panel.AppendDialogueHistory(_storyId, new StoryNodeId(node.NodeId),
+                            node.SpeakerCharacterId,
+                            SelectStoryText(node.SpeakerTextZhCn, node.SpeakerTextEnUs, node, false),
+                            SelectStoryText(node.TextZhCn, node.TextEnUs, node));
+                        _lastHistoryDialogueNodeId = node.NodeId;
+                    }
+                    break;
+                case StoryNodeType.ShowCharacter:
+                    _panel.ShowCharacter(node.SpeakerCharacterId, node.AppearanceOverride, ResolvePortrait(node));
+                    break;
+                case StoryNodeType.HideCharacter:
+                    _panel.HideCharacter(node.SpeakerCharacterId);
+                    break;
+                case StoryNodeType.MoveCharacter:
+                    _panel.MoveCharacter(node.SpeakerCharacterId, node.CharacterPosition);
+                    break;
+                case StoryNodeType.SetBackground:
+                    _panel.SetBackground(node.BackgroundId);
+                    break;
+                case StoryNodeType.ShowCg:
+                    _panel.ShowCg(node.AssetId);
+                    break;
+                case StoryNodeType.PlayAudio:
+                    PlayNodeAudio(node);
+                    break;
+                case StoryNodeType.ScreenEffect:
+                    _panel.PlayScreenEffect(node.EffectType);
+                    break;
+            }
         }
 
         /// <summary>剧情结束后提交完成事实，再按流程返回地图或进入占位关卡。</summary>
@@ -342,23 +389,31 @@ namespace Game.Presentation
         private async Task CompleteAndReturnAsync(Game.Flow.GameFlowService flow)
         {
             _isReturning = true;
+            CancellationToken token = _lifetime.Token;
+            StoryReturnTarget target = flow.LastStoryReturnTarget.Value;
             try
             {
                 StorySnapshot finished = _runner.GetSnapshot();
+                if (finished == null || !finished.IsCompleted)
+                    return;
                 if (finished != null && finished.IsCompleted)
                 {
                     SaveResult commit = await _runtimeServices.SaveStoryCompletedAsync(
                         finished.StoryId,
-                        CancellationToken.None
+                        token
                     );
+                    token.ThrowIfCancellationRequested();
                     if (!commit.IsSuccess)
                     {
                         Debug.LogError("剧情完成事实提交失败, 返回跳转被阻断: " + commit.Message, this);
+                        _globalCanvas?.ShowFeedback(commit.Message);
+                        _panel.SetRetryAction(ReturnAfterStory);
                         return;
                     }
                 }
 
-                StoryReturnTarget target = flow.LastStoryReturnTarget.Value;
+                token.ThrowIfCancellationRequested();
+                // 导航由应用 Flow 接管；卸载本场景会销毁 Presenter，不能用其令牌取消导航自身。
                 if (target.Kind == StoryReturnKind.Level && target.Level != null)
                     await flow.EnterLevelAsync(target.Level, CancellationToken.None);
                 else if (target.Kind == StoryReturnKind.MetaPage)
@@ -368,12 +423,13 @@ namespace Game.Presentation
             catch (Exception exception)
             {
                 Debug.LogException(exception);
-                _globalCanvas?.ShowFeedback(exception.Message);
+                if (!token.IsCancellationRequested)
+                {
+                    _globalCanvas?.ShowFeedback(exception.Message);
+                    _panel.SetRetryAction(ReturnAfterStory);
+                }
             }
-            finally
-            {
-                _isReturning = false;
-            }
+            finally { if (!token.IsCancellationRequested) _isReturning = false; }
         }
     }
 }

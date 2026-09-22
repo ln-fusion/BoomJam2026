@@ -71,7 +71,7 @@
         "*.sln": "*.csproj, Directory.Build.props, Directory.Build.targets",
         "*": "$(capture).meta"
     },
-    "dotnet.defaultSolution": "Change and Run.sln",
+    "dotnet.defaultSolution": "再跑亿遍.sln",
     "[csharp]": {
         "editor.defaultFormatter": "csharpier.csharpier-vscode",
         "editor.formatOnSave": true

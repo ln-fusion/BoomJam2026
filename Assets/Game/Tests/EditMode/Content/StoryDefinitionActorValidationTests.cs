@@ -26,9 +26,11 @@ namespace Game.Tests.EditMode.Content
                 {
                     NodeId = "start",
                     Type = StoryNodeType.Dialogue,
-                    SpeakerKey = "story.speaker.unknown",
+                    SpeakerTextZhCn = "未知角色",
+                    SpeakerTextEnUs = "Unknown",
                     SpeakerCharacterId = "official.character.hani",
-                    TextKey = "story.test",
+                    TextZhCn = "测试对白。",
+                    TextEnUs = "Test dialogue.",
                     NextNodeId = "end",
                 }
             );
@@ -48,7 +50,8 @@ namespace Game.Tests.EditMode.Content
                     NodeId = "start",
                     Type = StoryNodeType.Dialogue,
                     SpeakerCharacterId = "official.character.unknown",
-                    TextKey = "story.test",
+                    TextZhCn = "测试对白。",
+                    TextEnUs = "Test dialogue.",
                     NextNodeId = "end",
                 }
             );
@@ -67,7 +70,8 @@ namespace Game.Tests.EditMode.Content
                     Type = StoryNodeType.Dialogue,
                     SpeakerCharacterId = "official.character.hani",
                     AppearanceOverride = "official.appearance.hani.wedding",
-                    TextKey = "story.test",
+                    TextZhCn = "测试对白。",
+                    TextEnUs = "Test dialogue.",
                     NextNodeId = "end",
                 }
             );
@@ -116,7 +120,8 @@ namespace Game.Tests.EditMode.Content
                 {
                     NodeId = "start",
                     Type = StoryNodeType.Dialogue,
-                    TextKey = "story.missing",
+                    TextZhCn = "测试对白。",
+                    TextEnUs = "Test dialogue.",
                     NextNodeId = "end",
                 }
             );
@@ -142,7 +147,8 @@ namespace Game.Tests.EditMode.Content
                 {
                     NodeId = "start",
                     Type = StoryNodeType.Dialogue,
-                    TextKey = "story.existing",
+                    TextZhCn = "测试对白。",
+                    TextEnUs = "Test dialogue.",
                     NextNodeId = "end",
                 }
             );

@@ -8,6 +8,45 @@ namespace Game.Tests.EditMode.Story
     /// <summary>Verifies C07 story execution without a UI.</summary>
     public sealed class StoryRunnerTests
     {
+        /// <summary>多次非法推进和选择不消耗有效路径的执行额度。</summary>
+        [Test]
+        public void InvalidChoiceAttempts_DoNotConsumeExecutionBudget()
+        {
+            var provider = Game.Content.OfficialTestMapCatalog.CreateProvider();
+            var runner = new StoryRunner(id => provider.TryGetStory(id, out var story) ? story : null);
+            runner.Start(new StoryId("official.story.c06_branch"));
+            Assert.That(runner.Advance().IsSuccess, Is.True);
+            for (int i = 0; i < 300; i++)
+            {
+                Assert.That(runner.Advance().IsSuccess, Is.False);
+                Assert.That(runner.Choose(new ChoiceId("missing")).IsSuccess, Is.False);
+            }
+            Assert.That(runner.Choose(new ChoiceId("left")).IsSuccess, Is.True);
+            Assert.That(runner.Skip().IsSuccess, Is.True);
+            Assert.That(runner.GetSnapshot().IsCompleted, Is.True);
+        }
+
+        /// <summary>新剧情索引无效时保留原有会话、节点和执行能力。</summary>
+        [Test]
+        public void FailedStart_PreservesExistingSession()
+        {
+            var provider = Game.Content.OfficialTestMapCatalog.CreateProvider();
+            var invalid = new Game.Contracts.Content.StoryDefinition
+            {
+                StoryId = "invalid",
+                StartNodeId = "missing"
+            };
+            var runner = new StoryRunner(id => id.Value == "invalid" ? invalid :
+                (provider.TryGetStory(id, out var story) ? story : null));
+            var session = runner.Start(new StoryId("official.story.c06_branch"));
+            Assert.That(runner.Advance().IsSuccess, Is.True);
+            var before = runner.GetSnapshot();
+            Assert.Throws<System.ArgumentException>(() => runner.Start(new StoryId("invalid")));
+            Assert.That(runner.GetSnapshot().StoryId, Is.EqualTo(session.StoryId));
+            Assert.That(runner.GetSnapshot().CurrentNode.NodeId, Is.EqualTo(before.CurrentNode.NodeId));
+            Assert.That(runner.Choose(new ChoiceId("left")).IsSuccess, Is.True);
+        }
+
         /// <summary>Executes a linear story to its end without a UI.</summary>
         [Test]
         public void LinearStory_ExecutesToEnd()
@@ -21,7 +60,8 @@ namespace Game.Tests.EditMode.Story
                     {
                         NodeId = "start",
                         Type = Game.Contracts.Content.StoryNodeType.Dialogue,
-                        TextKey = "story.c07.start",
+                        TextZhCn = "测试对白。",
+                        TextEnUs = "Test dialogue.",
                         NextNodeId = "end",
                     },
                     new Game.Contracts.Content.StoryNodeDefinition

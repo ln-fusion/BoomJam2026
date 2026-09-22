@@ -14,8 +14,8 @@ namespace Game.Content
     [Serializable]
     public sealed class StoryRuntimeEnvelope
     {
-        /// <summary>信封格式版本; 当前运行时只接受 1。</summary>
-        public int FormatVersion = 1;
+        /// <summary>信封格式版本; 当前运行时只接受版本 2。</summary>
+        public int FormatVersion = 2;
 
         /// <summary>
         /// 源 authoring 内容按节点稳定排序后序列化的 SHA-256 摘要（前 16 位十六进制）。
@@ -29,12 +29,11 @@ namespace Game.Content
     /// <summary>
     /// 剧情 Authoring 到 Runtime 信封的序列化与兼容解析。
     /// </summary>
-    /// <remarks>
-    /// Generated 文件写为 <see cref="StoryRuntimeEnvelope"/>; 读取时兼容旧版裸
-    /// <see cref="StoryDefinition"/> JSON, 保证既有内容不回退破坏。
-    /// </remarks>
+    /// <remarks>Generated 文件写为 <see cref="StoryRuntimeEnvelope"/>；旧格式必须在迁移阶段转换。</remarks>
     public static class StoryRuntimeSerializer
     {
+        private const int CurrentFormatVersion = 2;
+
         /// <summary>把剧情定义序列化为信封 JSON 文本。</summary>
         /// <param name="story">待编译的剧情定义。</param>
         /// <returns>信封 JSON 文本。</returns>
@@ -44,14 +43,14 @@ namespace Game.Content
                 throw new ArgumentNullException(nameof(story));
             var envelope = new StoryRuntimeEnvelope
             {
-                FormatVersion = 1,
+                FormatVersion = CurrentFormatVersion,
                 SourceHash = ComputeSourceHash(story),
                 Story = story,
             };
             return JsonUtility.ToJson(envelope, true);
         }
 
-        /// <summary>尝试解析信封或旧版裸 JSON。</summary>
+        /// <summary>尝试解析当前版本剧情运行时信封。</summary>
         /// <param name="json">Generated 文件文本。</param>
         /// <param name="story">解析出的剧情定义; 失败时为 null。</param>
         /// <returns>解析成功返回 true, 否则返回 false。</returns>
@@ -62,16 +61,15 @@ namespace Game.Content
                 return false;
             try
             {
-                // JsonUtility 对缺失的引用字段会创建空壳实例: 需以 StoryId 非空确认信封命中,
-                // 否则裸 StoryDefinition JSON 会被误判并跳过回退解析。
                 StoryRuntimeEnvelope envelope = JsonUtility.FromJson<StoryRuntimeEnvelope>(json);
-                if (envelope?.Story != null && !string.IsNullOrWhiteSpace(envelope.Story.StoryId))
-                {
-                    story = envelope.Story;
-                    return true;
-                }
-                story = JsonUtility.FromJson<StoryDefinition>(json);
-                return story != null;
+                if (envelope == null || envelope.FormatVersion != CurrentFormatVersion ||
+                    envelope.Story == null || string.IsNullOrWhiteSpace(envelope.Story.StoryId))
+                    return false;
+                if (string.IsNullOrWhiteSpace(envelope.SourceHash) ||
+                    !string.Equals(envelope.SourceHash, ComputeSourceHash(envelope.Story), StringComparison.OrdinalIgnoreCase))
+                    return false;
+                story = envelope.Story;
+                return true;
             }
             catch (Exception)
             {

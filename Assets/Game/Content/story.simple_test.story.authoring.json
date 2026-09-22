@@ -1,0 +1,59 @@
+{
+    "Header": {
+        "ContentId": "story.simple_test",
+        "Source": 0,
+        "FormatVersion": 1,
+        "ContentRevision": 1,
+        "MinGameVersion": "",
+        "MaxTestedGameVersion": "",
+        "PayloadSha256": ""
+    },
+    "StoryId": "story.simple_test",
+    "StartNodeId": "start",
+    "Nodes": [
+        {
+            "NodeId": "start",
+            "Type": 0,
+            "TextZhCn": "ZH test start",
+            "TextEnUs": "EN test start",
+            "TextKey": "",
+            "SpeakerTextZhCn": "Speaker",
+            "SpeakerTextEnUs": "Speaker",
+            "SpeakerKey": "",
+            "SpeakerCharacterId": "",
+            "AppearanceOverride": "",
+            "AssetId": "",
+            "BackgroundId": "",
+            "CharacterPosition": 0,
+            "ExpressionId": "",
+            "EffectType": 0,
+            "AudioId": "",
+            "AudioKind": 1,
+            "WaitSeconds": 0.0,
+            "NextNodeId": "end",
+            "Choices": []
+        },
+        {
+            "NodeId": "end",
+            "Type": 3,
+            "TextZhCn": "",
+            "TextEnUs": "",
+            "TextKey": "",
+            "SpeakerTextZhCn": "",
+            "SpeakerTextEnUs": "",
+            "SpeakerKey": "",
+            "SpeakerCharacterId": "",
+            "AppearanceOverride": "",
+            "AssetId": "",
+            "BackgroundId": "",
+            "CharacterPosition": 0,
+            "ExpressionId": "",
+            "EffectType": 0,
+            "AudioId": "",
+            "AudioKind": 1,
+            "WaitSeconds": 0.0,
+            "NextNodeId": "",
+            "Choices": []
+        }
+    ]
+}

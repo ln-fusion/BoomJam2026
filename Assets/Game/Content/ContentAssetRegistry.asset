@@ -20,5 +20,7 @@ MonoBehaviour:
     Asset: {fileID: 905849420239346442, guid: 7b3b4d838931e478095869fd76154111, type: 3}
   - Id: ui.settings-modal
     Asset: {fileID: 5828662595183140162, guid: 087d58b8c6f6744fdbd973060f80c33f, type: 3}
+  - Id: ui.story-panel
+    Asset: {fileID: 4368027274722968176, guid: 7a598db9715336746afc295150136b6d, type: 3}
   sprites: []
   audioClips: []
