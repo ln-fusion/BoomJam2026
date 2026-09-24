@@ -45,6 +45,11 @@ namespace Game.Contracts.Gameplay
     /// <summary>
     /// 部署命令失败原因枚举; 与设计文档 6.4 一致。
     /// </summary>
+    /// <remarks>
+    /// <see cref="PlacementNotFound"/> 是相对设计文档 §6.4 的补充: 该节只列举部署规则的失败,
+    /// 未列举"移动或删除一个不存在的放置项"这一运行时失败, 而 <see cref="IStageSession"/> 的
+    /// 移动与删除命令必须能表达它。
+    /// </remarks>
     public enum PlacementError
     {
         /// <summary>无错误。</summary>
@@ -70,6 +75,9 @@ namespace Game.Contracts.Gameplay
 
         /// <summary>超出关卡容量上限。</summary>
         CapacityExceeded,
+
+        /// <summary>目标放置项不存在于当前部署方案。</summary>
+        PlacementNotFound,
     }
 
     /// <summary>
@@ -177,43 +185,80 @@ namespace Game.Contracts.Gameplay
     }
 
     /// <summary>
-    /// 开始模拟的结果; 携带是否通过权威校验与错误原因。
+    /// 开始模拟的结果; 携带是否进入模拟状态与失败原因。
     /// </summary>
     /// <remarks>
-    /// C19 只提供最小字段, 校验细节与恢复语义由 C23/C24 扩展。
+    /// <para>
+    /// 失败分为两类, 两类原因字段互斥: 权威校验失败时填 <see cref="Error"/>
+    /// （<see cref="ErrorCode"/> 为 <see cref="Foundation.ErrorCode.None"/>）;
+    /// 基础设施失败（构建物理世界）时填 <see cref="ErrorCode"/>
+    /// （<see cref="Error"/> 为 <see cref="PlacementError.None"/>）。
+    /// 调用方先看 <see cref="IsSuccess"/>, 再按哪个字段非 <c>None</c> 分支, 不需要额外的类型判别字段。
+    /// </para>
+    /// <para>
+    /// 两类原因都必须能表达: 部署方案不合法是玩家可修正的输入问题,
+    /// 而物理世界构建失败是内容或引擎侧问题, 二者的 UI 反馈与重试策略不同。
+    /// </para>
     /// </remarks>
     public readonly struct StartSimulationResult
     {
         /// <summary>是否成功进入模拟状态。</summary>
         public bool IsSuccess { get; }
 
-        /// <summary>失败原因; 成功时为 <see cref="PlacementError.None"/>。</summary>
+        /// <summary>权威校验失败原因; 非校验类失败或成功时为 <see cref="PlacementError.None"/>。</summary>
         public PlacementError Error { get; }
 
-        /// <summary>日志用错误消息。</summary>
+        /// <summary>基础设施失败原因; 非基础设施类失败或成功时为 <see cref="Foundation.ErrorCode.None"/>。</summary>
+        public ErrorCode ErrorCode { get; }
+
+        /// <summary>人类可读错误消息; 仅用于日志, 不直接展示为玩家文案。</summary>
         public string Message { get; }
 
         /// <summary>创建开始模拟结果。</summary>
         /// <param name="isSuccess">是否成功。</param>
-        /// <param name="error">失败原因。</param>
+        /// <param name="error">权威校验失败原因。</param>
+        /// <param name="errorCode">基础设施失败原因。</param>
         /// <param name="message">日志用错误消息。</param>
-        public StartSimulationResult(bool isSuccess, PlacementError error, string message = null)
+        private StartSimulationResult(bool isSuccess, PlacementError error, ErrorCode errorCode, string message)
         {
             IsSuccess = isSuccess;
             Error = error;
+            ErrorCode = errorCode;
             Message = message ?? string.Empty;
         }
 
         /// <summary>创建成功结果。</summary>
         /// <returns>成功的开始模拟结果。</returns>
-        public static StartSimulationResult Success() => new StartSimulationResult(true, PlacementError.None);
+        public static StartSimulationResult Success() =>
+            new StartSimulationResult(true, PlacementError.None, ErrorCode.None, string.Empty);
 
-        /// <summary>创建失败结果。</summary>
-        /// <param name="error">失败原因。</param>
+        /// <summary>创建权威校验失败结果。</summary>
+        /// <param name="error">失败原因; 不允许为 <see cref="PlacementError.None"/>。</param>
         /// <param name="message">日志用错误消息。</param>
         /// <returns>失败的开始模拟结果。</returns>
-        public static StartSimulationResult Failure(PlacementError error, string message = null) =>
-            new StartSimulationResult(false, error, message);
+        /// <exception cref="ArgumentException">
+        /// <paramref name="error"/> 为 <see cref="PlacementError.None"/> 时抛出: 失败结果必须能说明原因。
+        /// </exception>
+        public static StartSimulationResult Failure(PlacementError error, string message = null)
+        {
+            if (error == PlacementError.None)
+                throw new ArgumentException("A failed start result requires an error code.", nameof(error));
+            return new StartSimulationResult(false, error, ErrorCode.None, message);
+        }
+
+        /// <summary>创建基础设施失败结果; 用于物理世界构建失败等非部署规则原因。</summary>
+        /// <param name="errorCode">失败原因; 不允许为 <see cref="Foundation.ErrorCode.None"/>。</param>
+        /// <param name="message">日志用错误消息。</param>
+        /// <returns>失败的开始模拟结果。</returns>
+        /// <exception cref="ArgumentException">
+        /// <paramref name="errorCode"/> 为 <see cref="Foundation.ErrorCode.None"/> 时抛出: 失败结果必须能说明原因。
+        /// </exception>
+        public static StartSimulationResult InfrastructureFailure(ErrorCode errorCode, string message = null)
+        {
+            if (errorCode == ErrorCode.None)
+                throw new ArgumentException("A failed start result requires an error code.", nameof(errorCode));
+            return new StartSimulationResult(false, PlacementError.None, errorCode, message);
+        }
     }
 
     /// <summary>
@@ -252,28 +297,31 @@ namespace Game.Contracts.Gameplay
         /// <summary>在部署区放置一个能力框。</summary>
         /// <param name="command">放置命令。</param>
         /// <returns>放置结果, 成功时携带放置稳定标识。</returns>
-        Result<PlacementId> PlaceAbility(PlaceAbilityCommand command);
+        PlacementResult<PlacementId> PlaceAbility(PlaceAbilityCommand command);
 
         /// <summary>移动一个已放置的能力框。</summary>
         /// <param name="command">移动命令。</param>
         /// <returns>移动结果。</returns>
-        Result MoveAbility(MoveAbilityCommand command);
+        PlacementResult MoveAbility(MoveAbilityCommand command);
 
         /// <summary>移除一个已放置的能力框。</summary>
         /// <param name="placementId">放置稳定标识。</param>
         /// <returns>移除结果。</returns>
-        Result RemoveAbility(PlacementId placementId);
+        PlacementResult RemoveAbility(PlacementId placementId);
 
         /// <summary>清空当前部署方案。</summary>
         /// <returns>清空结果。</returns>
-        Result ClearDeployment();
+        PlacementResult ClearDeployment();
 
         /// <summary>开始模拟; 先执行权威校验并冻结部署方案。</summary>
-        /// <returns>开始结果（结构细节待 C24 定稿）。</returns>
+        /// <returns>开始结果; 失败时区分权威校验失败与物理世界构建失败。</returns>
         StartSimulationResult StartSimulation();
 
         /// <summary>主动停止模拟并恢复部署阶段。</summary>
-        /// <returns>停止结果。</returns>
+        /// <returns>
+        /// 停止结果; 只有 <see cref="StageSessionState.Simulating"/> 状态接受本命令,
+        /// 其余状态返回 <see cref="Foundation.ErrorCode.OperationNotAllowed"/>。
+        /// </returns>
         Result StopSimulation();
     }
 }
