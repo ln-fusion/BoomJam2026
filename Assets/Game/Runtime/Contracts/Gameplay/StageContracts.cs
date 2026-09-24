@@ -290,6 +290,17 @@ namespace Game.Contracts.Gameplay
         /// <summary>当前部署方案快照; 未开始部署时为空方案。</summary>
         DeploymentPlanSnapshot Deployment { get; }
 
+        /// <summary>
+        /// 当前模拟运行的固定 Tick 循环; 只有 <see cref="StageSessionState.Simulating"/> 状态非 null。
+        /// </summary>
+        /// <remarks>
+        /// 技术设计文档 §6.3 的接口清单只列命令入口, 未包含 Tick 驱动, 本条属于该节与 §6.6 的衔接:
+        /// §6.6 把驱动入口定在 <see cref="ISimulationLoop.AdvanceFrame"/>, 而循环随本地物理世界生灭,
+        /// 只有会话能提供它。驱动方每渲染帧读取本属性并推进; 其余状态为 null,
+        /// 因此调用方无需再判断会话状态。
+        /// </remarks>
+        ISimulationLoop Simulation { get; }
+
         /// <summary>加载关卡数据, 使状态从 Unloaded 进入 Deploying。</summary>
         /// <returns>加载结果; 失败时返回错误码。</returns>
         Result Load();

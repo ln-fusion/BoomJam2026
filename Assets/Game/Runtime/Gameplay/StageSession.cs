@@ -4,6 +4,7 @@ using Game.Contracts.Content;
 using Game.Contracts.Gameplay;
 using Game.Foundation;
 using Game.Gameplay.Deployment;
+using Game.Gameplay.Simulation;
 
 namespace Game.Gameplay
 {
@@ -22,8 +23,12 @@ namespace Game.Gameplay
     /// 因为物理内部还持有接触对、关节与休眠状态, 局部复位会留下残留。
     /// </para>
     /// <para>
-    /// 当前阶段（C24）尚未引入固定 Tick 循环: 进入 <see cref="StageSessionState.Simulating"/>
-    /// 后世界不会被步进, 也没有成功/失败判定。恒定步长推进、条件判定与结算属于 C25/C26/C27。
+    /// 进入 <see cref="StageSessionState.Simulating"/> 后, 本地物理世界由
+    /// <see cref="Simulation"/> 提供的固定 Tick 循环推进; 循环只调用本地物理场景的
+    /// <c>PhysicsScene2D.Simulate</c>, 不推进默认场景（技术设计文档 §6.6）。
+    /// 单个 Tick 内的八个固定阶段目前只落地了物理步进与 Tick 递增,
+    /// 能力运行时、效果解析、条件判定与成败决议分别在 C26/C27 接入;
+    /// 因此当前阶段进入 Simulating 后不会产生成功或失败结果。
     /// </para>
     /// <para>
     /// 会话在 <see cref="StageSessionState.Simulating"/> 期间持有本地物理 Scene,
@@ -35,6 +40,7 @@ namespace Game.Gameplay
     {
         private readonly LevelDefinition _definition;
         private readonly IStageWorldBuilder _worldBuilder;
+        private readonly SimulationLoopSettings _simulationSettings;
         private readonly AbilityWhitelistError _contentError;
         private readonly string _contentErrorMessage;
         private readonly PlacementService _placement;
@@ -53,9 +59,22 @@ namespace Game.Gameplay
         /// <remarks>每次读取都返回独立快照, 调用方修改返回值不会影响会话内的方案。</remarks>
         public DeploymentPlanSnapshot Deployment => _placement == null ? _emptyDeployment : _placement.Plan.Snapshot();
 
+        /// <summary>
+        /// 当前模拟运行的固定 Tick 循环; 只有 <see cref="StageSessionState.Simulating"/> 状态非 null。
+        /// </summary>
+        /// <remarks>
+        /// 驱动方每渲染帧读取本属性并调用一次 <see cref="ISimulationLoop.AdvanceFrame"/>;
+        /// 其余状态为 null, 因此不需要额外的状态判断。循环与本次运行的本地物理场景同寿命,
+        /// <see cref="StopSimulation"/> 之后即失效; 重新开始模拟会得到 Tick 计数归零的新循环。
+        /// </remarks>
+        public ISimulationLoop Simulation { get; private set; }
+
         /// <summary>创建关卡会话。</summary>
         /// <param name="definition">关卡定义; 不能为空且必须包含非空 LevelId。</param>
         /// <param name="worldBuilder">本地物理世界构建器; 开始模拟时使用。</param>
+        /// <param name="simulationSettings">
+        /// 固定 Tick 循环参数; 为 null 时使用 <see cref="SimulationLoopSettings.Default"/>。
+        /// </param>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="definition"/> 或 <paramref name="worldBuilder"/> 为 null 时抛出。
         /// </exception>
@@ -65,7 +84,11 @@ namespace Game.Gameplay
         /// 内容错误属于可上报、可修复的失败, 让调用方走统一失败路径比在构造点上抛异常更容易
         /// 定位到具体关卡。
         /// </remarks>
-        public StageSession(LevelDefinition definition, IStageWorldBuilder worldBuilder)
+        public StageSession(
+            LevelDefinition definition,
+            IStageWorldBuilder worldBuilder,
+            SimulationLoopSettings? simulationSettings = null
+        )
         {
             if (definition == null)
                 throw new ArgumentNullException(nameof(definition));
@@ -74,6 +97,7 @@ namespace Game.Gameplay
 
             _definition = definition;
             _worldBuilder = worldBuilder ?? throw new ArgumentNullException(nameof(worldBuilder));
+            _simulationSettings = simulationSettings ?? SimulationLoopSettings.Default;
             LevelId = new LevelId(definition.LevelId);
 
             _contentError = AbilityWhitelist.TryCreate(definition, out AbilityWhitelist whitelist, out string message);
@@ -175,11 +199,11 @@ namespace Game.Gameplay
         /// 开始模拟: 先执行权威校验, 通过后构建本地物理世界并冻结部署方案。
         /// </summary>
         /// <returns>
-        /// 成功时状态进入 <see cref="StageSessionState.Simulating"/>; 非部署状态返回
-        /// <see cref="PlacementError.SessionLocked"/>; 方案未通过权威校验时返回对应
-        /// <see cref="PlacementError"/> 且状态退回 <see cref="StageSessionState.Deploying"/>;
+        /// 成功时状态进入 <see cref="StageSessionState.Simulating"/> 且 <see cref="Simulation"/>
+        /// 可用; 非部署状态返回 <see cref="PlacementError.SessionLocked"/>; 方案未通过权威校验时
+        /// 返回对应 <see cref="PlacementError"/> 且状态退回 <see cref="StageSessionState.Deploying"/>;
         /// 物理世界构建失败时返回带 <see cref="StartSimulationResult.ErrorCode"/> 的结果,
-        /// 状态同样退回 <see cref="StageSessionState.Deploying"/>。
+        /// 状态同样退回 <see cref="StageSessionState.Deploying"/> 且不留下循环。
         /// </returns>
         public StartSimulationResult StartSimulation()
         {
@@ -197,7 +221,7 @@ namespace Game.Gameplay
 
             // §6.5: 先释放上一次运行的世界再重建。正常路径上上次运行已在停止时释放,
             // 这里再释放一次是幂等的, 用于兜住任何遗漏释放的路径。
-            DisposeWorld();
+            ReleaseSimulation();
             Result<IStageWorld> built = _worldBuilder.Build(_definition);
             if (!built.IsSuccess)
             {
@@ -206,6 +230,9 @@ namespace Game.Gameplay
             }
 
             _world = built.Value;
+            // §6.5 第 7 步与 §6.6: 循环绑定本次运行的本地物理, 因此每次开始模拟
+            // 都是 Tick 0 开始的新一轮计时。
+            Simulation = new SimulationLoop(_world.Physics, _simulationSettings);
             State = StageSessionState.Simulating;
             return StartSimulationResult.Success();
         }
@@ -219,8 +246,8 @@ namespace Game.Gameplay
         /// </returns>
         /// <remarks>
         /// <see cref="StageSessionState.Resolving"/> 与 <see cref="StageSessionState.Restoring"/>
-        /// 在本方法内同步走完。C25 引入固定 Tick 循环之前不存在需要跨帧等待的恢复工作,
-        /// 因此这两个状态在外部观察不到停留; 一旦引入异步恢复, 中间态就必须真正可观测。
+        /// 在本方法内同步走完。C25 已引入固定 Tick 循环, 但停止路径上仍不存在需要跨帧等待的
+        /// 恢复工作, 因此这两个状态在外部观察不到停留; 一旦引入异步恢复, 中间态就必须真正可观测。
         /// </remarks>
         public Result StopSimulation()
         {
@@ -234,14 +261,19 @@ namespace Game.Gameplay
 
             State = StageSessionState.Resolving;
             State = StageSessionState.Restoring;
-            DisposeWorld();
+            ReleaseSimulation();
             State = StageSessionState.Deploying;
             return Result.Success();
         }
 
-        /// <summary>释放当前本地物理世界; 无世界时不做任何事。</summary>
-        private void DisposeWorld()
+        /// <summary>解除模拟循环并释放本地物理世界; 两者都不存在时不做任何事。</summary>
+        /// <remarks>
+        /// 必须先解除循环再释放世界: 循环持有世界物理场景的句柄, 世界释放后该句柄立即失效,
+        /// 若解除之前还有一次渲染帧回调, 循环会因物理步进失败而判为不可用, 掩盖真正的调用时序问题。
+        /// </remarks>
+        private void ReleaseSimulation()
         {
+            Simulation = null;
             if (_world == null)
                 return;
             _world.Dispose();
