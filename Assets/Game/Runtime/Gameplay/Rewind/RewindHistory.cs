@@ -142,11 +142,16 @@ namespace Game.Gameplay.Rewind
         /// <param name="tick">目标 Tick; 通常为 <c>当前 Tick - 回溯 Tick 数</c>。</param>
         /// <param name="snapshot">查找到的快照; 失败时为 default。</param>
         /// <returns>存在不晚于目标 Tick 的快照时返回 true。</returns>
+        /// <remarks>
+        /// 从最新一条向最旧遍历, 返回不晚于 <paramref name="tick"/> 的快照中最新的一个。
+        /// 该结果依赖快照按 Tick 递增顺序写入, 与固定 Tick 采样流程一致;
+        /// 目标 Tick 早于全部已保存快照时返回 false, 由调用方决定失败策略。
+        /// </remarks>
         public bool TryGetSnapshotAtOrBefore(long tick, out RewindSnapshot snapshot)
         {
-            for (int i = 0; i < _count; i++)
+            for (int age = _count - 1; age >= 0; age--)
             {
-                RewindSnapshot candidate = GetByAge(i);
+                RewindSnapshot candidate = GetByAge(age);
                 if (candidate.Tick <= tick)
                 {
                     snapshot = candidate;
