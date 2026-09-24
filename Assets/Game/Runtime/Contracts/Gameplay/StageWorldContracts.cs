@@ -49,6 +49,11 @@ namespace Game.Contracts.Gameplay
     /// 物理 Scene 使用 <see cref="LocalPhysicsMode.Physics2D"/>, 不会被 Unity 自动推进,
     /// 只能由 <see cref="PhysicsScene2D.Simulate"/> 显式步进（技术设计文档 §6.6）。
     /// </para>
+    /// <para>
+    /// 释放通过 <see cref="IDisposable.Dispose"/> 完成。本方法返回时 <see cref="Scene"/> 立即失效,
+    /// 但场景卸载是异步的, 场景内对象还会存续若干帧; 调用方若"先释放再重建",
+    /// 不能假设旧世界的对象已经消失。
+    /// </para>
     /// </remarks>
     public interface IStageWorld : IDisposable
     {
