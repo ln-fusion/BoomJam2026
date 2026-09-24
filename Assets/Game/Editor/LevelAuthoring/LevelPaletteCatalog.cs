@@ -102,5 +102,49 @@ namespace Game.Editor.Level
                 );
             return match?.DisplayName ?? prefabId;
         }
+
+        /// <summary>
+        /// 判断预制体稳定标识是否属于可在关卡中放置的官方静态对象。
+        /// </summary>
+        /// <param name="prefabId">预制体稳定标识。</param>
+        /// <returns>登记为静态对象条目时返回 true。</returns>
+        /// <remarks>
+        /// 关卡对象的 <c>PrefabId</c> 必须来自本目录: 内容编译与运行时世界构建都只认这些登记项,
+        /// 手写一个目录外的 ID 会在构建世界时以 <c>NotFound</c> 失败。
+        /// </remarks>
+        public static bool IsKnownStageObjectPrefab(string prefabId)
+        {
+            if (string.IsNullOrWhiteSpace(prefabId))
+                return false;
+            foreach (PaletteEntry entry in GetEntries())
+            {
+                if (
+                    entry.Kind == PaletteEntryKind.StageObject
+                    && string.Equals(entry.PrefabId, prefabId, StringComparison.Ordinal)
+                )
+                    return true;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// 从预制体稳定标识提取用于生成对象稳定 ID 的短名。
+        /// </summary>
+        /// <param name="prefabId">预制体稳定标识; 形如 <c>official.prefab.ground_platform</c>。</param>
+        /// <returns>
+        /// 末段短名, 例如 <c>ground_platform</c>; 标识为空、末段为空或末段清洗后无字符时返回 <c>obj</c>。
+        /// </returns>
+        /// <remarks>非字母数字下划线字符会被替换为下划线, 保证结果可作为稳定 ID 的一段。</remarks>
+        public static string GetPrefabShortName(string prefabId)
+        {
+            if (string.IsNullOrWhiteSpace(prefabId))
+                return "obj";
+            int separator = prefabId.LastIndexOf('.');
+            string tail = separator >= 0 ? prefabId.Substring(separator + 1) : prefabId;
+            var builder = new System.Text.StringBuilder(tail.Length);
+            foreach (char character in tail)
+                builder.Append(char.IsLetterOrDigit(character) || character == '_' ? character : '_');
+            return builder.Length == 0 ? "obj" : builder.ToString();
+        }
     }
 }
