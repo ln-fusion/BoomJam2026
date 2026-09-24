@@ -20,6 +20,9 @@ namespace Game.Tests.EditMode.Gameplay
         private int _buildCount;
         private int _disposeCount;
 
+        /// <summary>物理替身; 由本构建器统一持有, 使用例不必再从世界实例上取。</summary>
+        internal FakeSimulationPhysics Physics { get; } = new FakeSimulationPhysics();
+
         /// <summary>成功构建出的世界数量。</summary>
         internal int BuildCount => _buildCount;
 
@@ -44,7 +47,7 @@ namespace Game.Tests.EditMode.Gameplay
                 return Result<IStageWorld>.Failure(FailureCode, FailureMessage);
 
             _buildCount++;
-            return Result<IStageWorld>.Success(new FakeStageWorld(this));
+            return Result<IStageWorld>.Success(new FakeStageWorld(this, Physics));
         }
 
         /// <summary>记录一次世界释放; 由 <see cref="FakeStageWorld"/> 回调。</summary>
@@ -57,17 +60,24 @@ namespace Game.Tests.EditMode.Gameplay
     internal sealed class FakeStageWorld : IStageWorld
     {
         private readonly FakeStageWorldBuilder _owner;
+        private readonly ISimulationPhysics _physics;
         private bool _disposed;
 
         /// <summary>创建世界替身。</summary>
         /// <param name="owner">记账用的构建器。</param>
-        internal FakeStageWorld(FakeStageWorldBuilder owner) => _owner = owner;
+        /// <param name="physics">本轮运行使用的物理替身, 由构建器统一持有以便用例断言。</param>
+        internal FakeStageWorld(FakeStageWorldBuilder owner, ISimulationPhysics physics)
+        {
+            _owner = owner;
+            _physics = physics;
+        }
 
         /// <summary>零值 Scene 句柄; 世界替身不承载真实场景。</summary>
         public Scene Scene => default;
 
-        /// <summary>零值物理 Scene 句柄; 世界替身不承载真实物理场景。</summary>
-        public PhysicsScene2D PhysicsScene => default;
+        /// <summary>本地物理替身; 只记账步进次数与实际步长。</summary>
+        /// <remarks>替身不拒绝步进: 世界替身的 Scene 是零值但不存在真实的默认场景风险。</remarks>
+        public ISimulationPhysics Physics => _physics;
 
         /// <summary>恒为空的已生成对象集合。</summary>
         public IReadOnlyList<StageWorldObject> Objects => Array.Empty<StageWorldObject>();

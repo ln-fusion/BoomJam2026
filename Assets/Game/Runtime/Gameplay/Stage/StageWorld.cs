@@ -14,8 +14,10 @@ namespace Game.Gameplay.Stage
     /// <remarks>
     /// 构造由 <see cref="StageWorldBuilder"/> 完成, 不对外公开: 世界一旦建立即不可增删对象,
     /// 保证 <see cref="Objects"/> 在生命周期内是稳定集合, 调用方可安全缓存顺序。
+    /// 世界自身实现 <see cref="ISimulationPhysics"/>, 使本地物理句柄不外流;
+    /// 见 <see cref="Physics"/> 的说明。
     /// </remarks>
-    public sealed class StageWorld : IStageWorld
+    public sealed class StageWorld : IStageWorld, ISimulationPhysics
     {
         private readonly List<StageWorldObject> _objects;
         private readonly Dictionary<EntityId, StageWorldObject> _byEntityId;
@@ -36,20 +38,31 @@ namespace Game.Gameplay.Stage
         }
 
         /// <summary>承载本世界的本地 Scene 句柄; 已释放时返回无效句柄。</summary>
-        /// <remarks>判断世界是否仍可用请用本属性的 <c>IsValid()</c>, 不要用 <see cref="PhysicsScene"/>。</remarks>
+        /// <remarks>
+        /// 本属性的 <c>IsValid()</c> 是世界生命周期的唯一可靠判据;
+        /// 零值 <c>PhysicsScene2D</c> 句柄的 <c>IsValid()</c> 返回 true, 不能用作判据。
+        /// </remarks>
         public Scene Scene => _scene;
 
-        /// <summary>
-        /// 本世界的独立物理 Scene; 已释放时返回零值句柄。
-        /// </summary>
+        /// <summary>本世界的本地物理步进入口; 世界自身即入口, 不额外分配对象。</summary>
         /// <remarks>
-        /// 已实测: <c>default(PhysicsScene2D).IsValid()</c> 返回 <c>true</c>,
-        /// 因此该句柄的有效性不能作为"世界已释放"的判据, 必须改用 <see cref="Scene"/>。
+        /// 以 <see cref="Scene"/> 的有效性作为唯一闸门: 已释放世界的承载 Scene 立即失效,
+        /// 于是步进被拒绕而不是落到零值句柄所指的默认场景上（技术设计文档 §6.6）。
         /// </remarks>
-        public PhysicsScene2D PhysicsScene => _scene.IsValid() ? _scene.GetPhysicsScene2D() : default;
+        public ISimulationPhysics Physics => this;
 
         /// <summary>已生成对象列表; 按对象稳定 ID 序数升序。</summary>
         public IReadOnlyList<StageWorldObject> Objects => _objects;
+
+        /// <summary>按固定步长推进本世界的本地物理。</summary>
+        /// <param name="fixedDeltaSeconds">本次步长, 单位为秒。</param>
+        /// <returns>推进成功返回 true; 本世界已释放时返回 false 且不做任何事。</returns>
+        public bool Simulate(double fixedDeltaSeconds)
+        {
+            if (!_scene.IsValid())
+                return false;
+            return _scene.GetPhysicsScene2D().Simulate((float)fixedDeltaSeconds);
+        }
 
         /// <summary>按实体标识查询已生成对象。</summary>
         /// <param name="entityId">实体稳定标识; 为 null 时返回 false。</param>

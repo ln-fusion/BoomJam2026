@@ -47,7 +47,7 @@ namespace Game.Contracts.Gameplay
     /// </para>
     /// <para>
     /// 物理 Scene 使用 <see cref="LocalPhysicsMode.Physics2D"/>, 不会被 Unity 自动推进,
-    /// 只能由 <see cref="PhysicsScene2D.Simulate"/> 显式步进（技术设计文档 §6.6）。
+    /// 只能由 <see cref="Physics"/> 显式步进（技术设计文档 §6.6）。
     /// </para>
     /// <para>
     /// 释放通过 <see cref="IDisposable.Dispose"/> 完成。本方法返回时 <see cref="Scene"/> 立即失效,
@@ -62,13 +62,14 @@ namespace Game.Contracts.Gameplay
         Scene Scene { get; }
 
         /// <summary>
-        /// 本世界的独立物理 Scene; 与全局物理互不影响。
+        /// 本世界的本地物理步进入口; 与全局物理互不影响, 只能显式步进。
         /// </summary>
         /// <remarks>
-        /// 世界释放后本属性返回零值句柄, 但 <c>PhysicsScene2D.IsValid()</c> 对零值仍返回 true,
-        /// 因此不要用它判断世界是否已释放, 应改用 <see cref="Scene"/>。
+        /// 需要原始 <c>PhysicsScene2D</c> 时由 <see cref="Scene"/> 自行推导, 不由本接口转发句柄:
+        /// <see cref="Scene"/> 是世界生命周期的唯一可靠判据, 而零值 <c>PhysicsScene2D</c> 句柄
+        /// 指向默认场景且 <c>IsValid()</c> 返回 true, 转发它只会制造误用机会。
         /// </remarks>
-        PhysicsScene2D PhysicsScene { get; }
+        ISimulationPhysics Physics { get; }
 
         /// <summary>
         /// 已生成对象列表; 顺序为稳定的创建顺序（按对象稳定 ID 序数升序）。
