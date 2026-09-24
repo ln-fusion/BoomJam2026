@@ -26,19 +26,33 @@ namespace Game.Editor.Level
         /// <summary>关卡 Authoring 文件的默认根目录; 相对于项目根。</summary>
         public const string DefaultLevelsRootPath = "Assets/Game/Content/Authoring/Levels";
 
+        /// <summary>左侧关卡列表的初始宽度; 像素。</summary>
+        public const float LevelPaneWidth = 240f;
+
+        /// <summary>右侧属性栏的初始宽度; 像素。</summary>
+        public const float InspectorPaneWidth = 340f;
+
+        /// <summary>关卡列表的行高; 每行两段文本需要比默认行高更高的取值。</summary>
+        public const float LevelRowHeight = 34f;
+
         private readonly List<LevelAuthoringData> _levels = new List<LevelAuthoringData>();
         private ILevelAuthoringRepository _repository;
         private LevelEditController _controller;
         private ListView _levelList;
         private LevelViewportElement _viewport;
-        private TextField _levelIdField;
+        private Label _listHeaderLabel;
+        private HelpBox _listEmptyHint;
+        private VisualElement _levelContainer;
+        private VisualElement _paletteContainer;
+        private VisualElement _inspectorContainer;
+        private VisualElement _validationContainer;
+        private Label _levelIdLabel;
+        private Label _levelStatsLabel;
         private TextField _mapIdField;
         private TextField _displayNameKeyField;
         private IntegerField _capacityField;
         private Label _statusLabel;
         private Label _dirtyLabel;
-        private VisualElement _inspectorContainer;
-        private VisualElement _validationContainer;
         private LevelAuthoringData _current;
         private bool _isDirty;
 
@@ -47,6 +61,11 @@ namespace Game.Editor.Level
         public static void Open() => GetWindow<LevelEditorWindow>("Level Editor");
 
         /// <summary>创建窗口界面骨架并加载关卡列表。</summary>
+        /// <remarks>
+        /// 布局是三栏: 左关卡列表、中视口、右属性栏。属性栏自身可滚动, 因为它承载关卡的
+        /// 全部属性、对象参数与校验结果, 高度不可预期; 视口不放进滚动容器, 否则滚轮缩放
+        /// 与拖动平移会被滚动容器截走。
+        /// </remarks>
         public void CreateGUI()
         {
             _repository = new FileLevelAuthoringRepository(GetLevelsRootPath());
@@ -54,50 +73,29 @@ namespace Game.Editor.Level
             root.style.flexDirection = FlexDirection.Column;
 
             root.Add(BuildToolbar());
-            root.Add(BuildEditBar());
-            var split = new TwoPaneSplitView(0, 260f, TwoPaneSplitViewOrientation.Horizontal);
-            split.style.flexGrow = 1f;
-            split.Add(BuildLevelPane());
-            split.Add(BuildEditorPane());
-            root.Add(split);
+
+            var outer = new TwoPaneSplitView(0, LevelPaneWidth, TwoPaneSplitViewOrientation.Horizontal);
+            outer.style.flexGrow = 1f;
+            outer.Add(BuildLevelPane());
+            var inner = new TwoPaneSplitView(1, InspectorPaneWidth, TwoPaneSplitViewOrientation.Horizontal);
+            inner.style.flexGrow = 1f;
+            inner.Add(BuildViewportPane());
+            inner.Add(BuildInspectorPane());
+            outer.Add(inner);
+            root.Add(outer);
             root.Add(BuildStatusBar());
 
+            BuildPaletteSection();
             ReloadLevels();
         }
 
-        /// <summary>构建编辑工具栏: 区域增删与官方对象调色板。</summary>
-        /// <returns>编辑工具栏元素。</returns>
-        /// <remarks>
-        /// 新增对象落在视口中心, 随后可直接拖动; 这样无需实现拖放式调色板也能完成放置。
-        /// </remarks>
-        private VisualElement BuildEditBar()
-        {
-            var bar = new VisualElement();
-            bar.style.flexDirection = FlexDirection.Row;
-            bar.style.flexWrap = Wrap.Wrap;
-            bar.style.paddingLeft = 6f;
-            bar.style.paddingRight = 6f;
-            bar.style.paddingBottom = 4f;
-            bar.Add(new Label("区域"));
-            bar.Add(MakeButton("+可部署区", () => AddZoneAtViewCenter(ZoneKind.Deployable)));
-            bar.Add(MakeButton("+禁放区", () => AddZoneAtViewCenter(ZoneKind.Forbidden)));
-            bar.Add(new Label("  对象"));
-            foreach (PaletteEntry entry in LevelPaletteCatalog.GetEntries())
-            {
-                PaletteEntry captured = entry;
-                bar.Add(MakeButton("+" + captured.DisplayName, () => AddPaletteEntryAtViewCenter(captured)));
-            }
-            bar.Add(new Label("  "));
-            bar.Add(MakeButton("校验", RefreshValidation));
-            return bar;
-        }
-
-        /// <summary>构建顶部工具栏: 新建、保存、刷新、定位。</summary>
+        /// <summary>构建顶部工具栏: 文件操作、视图取景与脏标记。</summary>
         /// <returns>工具栏元素。</returns>
         private VisualElement BuildToolbar()
         {
             var bar = new VisualElement();
             bar.style.flexDirection = FlexDirection.Row;
+            bar.style.flexWrap = Wrap.Wrap;
             bar.style.paddingLeft = 6f;
             bar.style.paddingRight = 6f;
             bar.style.paddingTop = 4f;
@@ -105,7 +103,10 @@ namespace Game.Editor.Level
             bar.Add(MakeButton("新建关卡", OnCreateLevel));
             bar.Add(MakeButton("保存", OnSaveLevel));
             bar.Add(MakeButton("重新加载", ReloadLevels));
+            bar.Add(MakeSeparator());
+            bar.Add(MakeButton("缩放到适应", () => _viewport?.ZoomToFitContent()));
             bar.Add(MakeButton("定位到内容", () => _viewport?.FocusOnContent()));
+            bar.Add(MakeButton("重置视图", () => _viewport?.ResetView()));
             _dirtyLabel = new Label();
             _dirtyLabel.style.marginLeft = 8f;
             _dirtyLabel.style.unityTextAlign = TextAnchor.MiddleLeft;
@@ -120,15 +121,18 @@ namespace Game.Editor.Level
         {
             var pane = new VisualElement();
             pane.style.flexDirection = FlexDirection.Column;
-            pane.style.borderRightWidth = 1f;
-            pane.style.borderRightColor = new Color(0.2f, 0.2f, 0.2f);
-            var title = new Label("关卡列表");
-            title.style.unityFontStyleAndWeight = FontStyle.Bold;
-            title.style.paddingLeft = 6f;
-            title.style.paddingTop = 4f;
-            pane.Add(title);
 
-            _levelList = new ListView(_levels, 20, MakeLevelRow, BindLevelRow);
+            _listHeaderLabel = new Label();
+            _listHeaderLabel.style.unityFontStyleAndWeight = FontStyle.Bold;
+            _listHeaderLabel.style.paddingLeft = 6f;
+            _listHeaderLabel.style.paddingTop = 4f;
+            pane.Add(_listHeaderLabel);
+
+            _listEmptyHint = new HelpBox("还没有关卡。用工具栏「新建关卡」创建第一个关卡。", HelpBoxMessageType.Info);
+            _listEmptyHint.style.display = DisplayStyle.None;
+            pane.Add(_listEmptyHint);
+
+            _levelList = new ListView(_levels, LevelRowHeight, MakeLevelRow, BindLevelRow);
             _levelList.selectionType = SelectionType.Single;
             _levelList.style.flexGrow = 1f;
             _levelList.selectedIndicesChanged += OnLevelSelected;
@@ -136,37 +140,20 @@ namespace Game.Editor.Level
             return pane;
         }
 
-        /// <summary>构建右侧编辑面板: 元数据字段与 2D 视口。</summary>
-        /// <returns>编辑面板元素。</returns>
-        private VisualElement BuildEditorPane()
+        /// <summary>构建中栏视口; 中栏只放视口, 保证滚轮与拖动不会被其它控件截走。</summary>
+        /// <returns>视口面板元素。</returns>
+        private VisualElement BuildViewportPane()
         {
             var pane = new VisualElement();
             pane.style.flexDirection = FlexDirection.Column;
             pane.style.flexGrow = 1f;
-
-            var metadata = new VisualElement();
-            metadata.style.paddingLeft = 6f;
-            metadata.style.paddingRight = 6f;
-            metadata.style.paddingTop = 4f;
-            _levelIdField = new TextField("关卡 ID");
-            _levelIdField.SetEnabled(false);
-            _mapIdField = new TextField("所属地图");
-            _mapIdField.RegisterValueChangedCallback(evt => Mutate(d => d.MapId = evt.newValue));
-            _displayNameKeyField = new TextField("显示名称键");
-            _displayNameKeyField.RegisterValueChangedCallback(evt => Mutate(d => d.DisplayNameKey = evt.newValue));
-            _capacityField = new IntegerField("容量上限");
-            _capacityField.RegisterValueChangedCallback(evt => Mutate(d => d.CapacityLimit = evt.newValue));
-            metadata.Add(_levelIdField);
-            metadata.Add(_mapIdField);
-            metadata.Add(_displayNameKeyField);
-            metadata.Add(_capacityField);
-            pane.Add(metadata);
+            pane.style.minWidth = 160f;
 
             _viewport = new LevelViewportElement();
             _viewport.style.flexGrow = 1f;
             _viewport.style.backgroundColor = new Color(0.13f, 0.13f, 0.15f);
-            _viewport.style.marginLeft = 6f;
-            _viewport.style.marginRight = 6f;
+            _viewport.style.marginLeft = 4f;
+            _viewport.style.marginRight = 4f;
             _viewport.style.marginTop = 4f;
             _viewport.style.marginBottom = 4f;
             _viewport.ViewChanged += OnViewportChanged;
@@ -175,21 +162,75 @@ namespace Game.Editor.Level
             _viewport.DeleteRequested += OnViewportDeleteRequested;
             _viewport.VertexInsertRequested += OnViewportVertexInsertRequested;
             pane.Add(_viewport);
-
-            _validationContainer = new VisualElement();
-            _validationContainer.style.paddingLeft = 6f;
-            _validationContainer.style.paddingRight = 6f;
-            pane.Add(_validationContainer);
-
-            _inspectorContainer = new VisualElement();
-            _inspectorContainer.style.paddingLeft = 6f;
-            _inspectorContainer.style.paddingRight = 6f;
-            _inspectorContainer.style.paddingBottom = 6f;
-            pane.Add(_inspectorContainer);
             return pane;
         }
 
-        /// <summary>构建底部状态栏。</summary>
+        /// <summary>构建右侧属性栏: 关卡、添加、选中项与校验四个可折叠分区。</summary>
+        /// <returns>属性栏元素。</returns>
+        /// <remarks>
+        /// 分区容器在窗口生命周期内只创建一次, 之后只清空并填充分区内容:
+        /// 这样折叠状态与滚动位置不会因为一次编辑而复位, 也不会把正在输入的光标顶掉。
+        /// </remarks>
+        private VisualElement BuildInspectorPane()
+        {
+            var scroll = new ScrollView();
+            scroll.style.minWidth = 220f;
+            scroll.style.paddingLeft = 6f;
+            scroll.style.paddingRight = 6f;
+            scroll.style.paddingTop = 4f;
+            scroll.style.paddingBottom = 6f;
+
+            _levelContainer = new VisualElement();
+            _paletteContainer = new VisualElement();
+            _inspectorContainer = new VisualElement();
+            _validationContainer = new VisualElement();
+
+            scroll.Add(MakeSection("关卡", _levelContainer, true));
+            scroll.Add(MakeSection("添加", _paletteContainer, true));
+            scroll.Add(MakeSection("选中项", _inspectorContainer, true));
+            scroll.Add(MakeSection("校验", _validationContainer, true));
+            return scroll;
+        }
+
+        /// <summary>创建一个带标题的可折叠分区。</summary>
+        /// <param name="title">分区标题。</param>
+        /// <param name="body">分区内容容器。</param>
+        /// <param name="expanded">是否默认展开。</param>
+        /// <returns>分区元素。</returns>
+        private static Foldout MakeSection(string title, VisualElement body, bool expanded)
+        {
+            var foldout = new Foldout { text = title, value = expanded };
+            foldout.style.marginBottom = 2f;
+            foldout.Add(body);
+            return foldout;
+        }
+
+        /// <summary>填充"添加"分区: 区域与官方对象调色板。</summary>
+        /// <remarks>
+        /// 新增内容落在视口中心, 随后可直接拖动; 这样无需实现拖放式调色板也能完成放置。
+        /// 新内容落在视口中心而不是世界原点, 因此无论视图平移到哪里都能立刻看到结果。
+        /// </remarks>
+        private void BuildPaletteSection()
+        {
+            _paletteContainer.Clear();
+            var zoneRow = new VisualElement();
+            zoneRow.style.flexDirection = FlexDirection.Row;
+            zoneRow.Add(MakeButton("+可部署区", () => AddZoneAtViewCenter(ZoneKind.Deployable)));
+            zoneRow.Add(MakeButton("+禁放区", () => AddZoneAtViewCenter(ZoneKind.Forbidden)));
+            _paletteContainer.Add(zoneRow);
+
+            var objectGrid = new VisualElement();
+            objectGrid.style.flexDirection = FlexDirection.Row;
+            objectGrid.style.flexWrap = Wrap.Wrap;
+            foreach (PaletteEntry entry in LevelPaletteCatalog.GetEntries())
+            {
+                PaletteEntry captured = entry;
+                objectGrid.Add(MakeButton("+" + captured.DisplayName, () => AddPaletteEntryAtViewCenter(captured)));
+            }
+            _paletteContainer.Add(objectGrid);
+        }
+
+        /// <summary>构建底部状态栏: 操作提示与最近一次操作结果。</summary>
         /// <returns>状态栏元素。</returns>
         private VisualElement BuildStatusBar()
         {
@@ -197,15 +238,30 @@ namespace Game.Editor.Level
             bar.style.flexDirection = FlexDirection.Row;
             bar.style.paddingLeft = 6f;
             bar.style.paddingBottom = 3f;
-            bar.Add(
-                new Label(
-                    "左键选中/拖动 · 双击区域边插顶点 · Delete 删除 · 中键或 Alt+左键平移 · 滚轮缩放 · Esc 取消选中"
-                )
+            bar.style.flexShrink = 0f;
+            var hint = new Label(
+                "左键选中并拖动 · 空白处左键或中键或 Alt+左键平移 · 滚轮缩放 · 双击区域边插顶点 · Delete 删除 · Esc 取消选中 · F 缩放到适应 · Home 重置视图"
             );
+            hint.style.whiteSpace = WhiteSpace.Normal;
+            hint.style.flexShrink = 1f;
+            bar.Add(hint);
             _statusLabel = new Label();
             _statusLabel.style.marginLeft = 12f;
+            _statusLabel.style.color = new Color(1f, 0.8f, 0.4f);
+            _statusLabel.style.whiteSpace = WhiteSpace.NoWrap;
             bar.Add(_statusLabel);
             return bar;
+        }
+
+        /// <summary>创建工具栏的分组分隔符。</summary>
+        /// <returns>分隔符元素。</returns>
+        private static VisualElement MakeSeparator()
+        {
+            var separator = new Label("│");
+            separator.style.marginLeft = 6f;
+            separator.style.marginRight = 6f;
+            separator.style.color = new Color(0.4f, 0.4f, 0.45f);
+            return separator;
         }
 
         /// <summary>创建一个工具栏按钮。</summary>
@@ -219,23 +275,57 @@ namespace Game.Editor.Level
             return button;
         }
 
-        /// <summary>创建关卡列表的一行。</summary>
+        /// <summary>关卡列表行内关卡 ID 标签的名称; 用于绑定行数据时定位子元素。</summary>
+        private const string LevelIdRowPart = "level-id";
+
+        /// <summary>关卡列表行内内容统计标签的名称; 用于绑定行数据时定位子元素。</summary>
+        private const string LevelStatsRowPart = "level-stats";
+
+        /// <summary>创建关卡列表的一行; 两段文本分别是关卡 ID 与内容统计。</summary>
         /// <returns>行元素。</returns>
         private static VisualElement MakeLevelRow()
         {
-            var label = new Label();
-            label.style.paddingLeft = 4f;
-            label.style.unityTextAlign = TextAnchor.MiddleLeft;
-            return label;
+            var row = new VisualElement();
+            row.style.paddingLeft = 4f;
+            row.style.paddingTop = 2f;
+            row.style.justifyContent = Justify.Center;
+
+            var levelId = new Label { name = LevelIdRowPart };
+            levelId.style.unityFontStyleAndWeight = FontStyle.Bold;
+            var stats = new Label { name = LevelStatsRowPart };
+            stats.style.fontSize = 10f;
+            stats.style.color = new Color(0.6f, 0.63f, 0.7f);
+
+            row.Add(levelId);
+            row.Add(stats);
+            return row;
         }
 
-        /// <summary>绑定关卡列表行数据。</summary>
+        /// <summary>绑定关卡列表行数据; 统计与校验状态让列表本身就能反映关卡是否可用。</summary>
         /// <param name="element">行元素。</param>
         /// <param name="index">数据下标。</param>
         private void BindLevelRow(VisualElement element, int index)
         {
-            if (element is Label label && index >= 0 && index < _levels.Count)
-                label.text = _levels[index].Definition?.LevelId ?? "(无效关卡)";
+            if (element == null || index < 0 || index >= _levels.Count)
+                return;
+            LevelAuthoringData data = _levels[index];
+            LevelDefinition definition = data?.Definition;
+            Label levelId = element.Q<Label>(LevelIdRowPart);
+            if (levelId != null)
+                levelId.text = definition?.LevelId ?? "(无法解析的关卡文件)";
+            Label stats = element.Q<Label>(LevelStatsRowPart);
+            if (stats == null)
+                return;
+            if (definition == null)
+            {
+                stats.text = "定义缺失, 无法编辑";
+                return;
+            }
+            int issueCount = LevelEditValidator.Validate(data).Count;
+            string state = issueCount == 0 ? "校验通过" : $"⚠ {issueCount} 个问题";
+            stats.text =
+                $"对象 {definition.Objects?.Count ?? 0} · 区 {definition.DeployableZones?.Count ?? 0}"
+                + $"/{definition.ForbiddenZones?.Count ?? 0} · {state}";
         }
 
         /// <summary>获取关卡 Authoring 根目录; 由项目根拼接相对路径。</summary>
@@ -255,11 +345,27 @@ namespace Game.Editor.Level
             _levels.Clear();
             _levels.AddRange(loaded);
             _levelList?.Rebuild();
+            RefreshLevelPane();
             if (_levels.Count > 0)
                 _levelList.selectedIndex = 0;
             else
                 ApplyCurrent(null);
             SetStatus($"已加载 {_levels.Count} 个关卡");
+        }
+
+        /// <summary>刷新关卡列表的标题、空列表提示与列表可见性。</summary>
+        /// <remarks>
+        /// 没有关卡时隐藏列表并显示提示, 而不是留一片空白: 否则首次打开编辑器
+        /// 会看到三个空栏, 无法判断是没有关卡还是加载失败。
+        /// </remarks>
+        private void RefreshLevelPane()
+        {
+            if (_listHeaderLabel != null)
+                _listHeaderLabel.text = $"关卡 ({_levels.Count})";
+            if (_listEmptyHint != null)
+                _listEmptyHint.style.display = _levels.Count == 0 ? DisplayStyle.Flex : DisplayStyle.None;
+            if (_levelList != null)
+                _levelList.style.display = _levels.Count == 0 ? DisplayStyle.None : DisplayStyle.Flex;
         }
 
         /// <summary>处理关卡列表选中项变化。</summary>
@@ -289,23 +395,24 @@ namespace Game.Editor.Level
 
         /// <summary>把指定关卡设为当前编辑对象并刷新界面。</summary>
         /// <param name="data">关卡源数据; 为 null 时清空编辑区。</param>
+        /// <remarks>
+        /// 视口取景优先沿用保存值, 但两种情况改为缩放到适应: 从未保存过取景（新建关卡首次打开）,
+        /// 以及保存的取景看不到完整世界边界（关卡尺寸变大后, 旧取景会把整个关卡留在视野之外）。
+        /// 否则打开关卡会停在空视野上, 表现为"缩放与平移都没反应"。
+        /// </remarks>
         private void ApplyCurrent(LevelAuthoringData data)
         {
             _current = data;
             _isDirty = false;
             _controller = data?.Definition == null ? null : new LevelEditController(data);
-            LevelDefinition definition = data?.Definition;
-            _levelIdField.SetValueWithoutNotify(definition?.LevelId ?? string.Empty);
-            _mapIdField.SetValueWithoutNotify(definition?.MapId ?? string.Empty);
-            _displayNameKeyField.SetValueWithoutNotify(definition?.DisplayNameKey ?? string.Empty);
-            _capacityField.SetValueWithoutNotify(definition?.CapacityLimit ?? 0);
             _viewport.SetData(data);
-            _viewport.ApplyViewState(data?.EditorViewState);
+            bool appliedSavedView = _viewport.ApplyViewState(data?.EditorViewState);
+            if (data?.Definition != null && (!appliedSavedView || !_viewport.IsContentVisible))
+                _viewport.ZoomToFitContent();
+            RebuildLevelSection();
             RebuildInspector();
             RefreshValidation();
             RefreshDirtyLabel();
-            if (definition != null)
-                _viewport.FocusOnContent();
         }
 
         /// <summary>创建新关卡源数据并写入磁盘。</summary>
@@ -399,11 +506,17 @@ namespace Game.Editor.Level
 
         /// <summary>执行一次编辑操作并按结果刷新界面。</summary>
         /// <param name="operation">执行编辑的委托; 返回操作结果。</param>
+        /// <param name="refreshSelectionPanel">是否重建"选中项"分区。</param>
         /// <remarks>
         /// 成功时标记脏状态并同步视口与校验面板; 失败时只把消息写到状态栏, 不改变脏状态,
         /// 使"被拒绝的编辑"不会伪装成已修改。
+        /// <para>
+        /// <paramref name="refreshSelectionPanel"/> 只在编辑改变了选中项集合时才需要:
+        /// 改动单个字段（位置、旋转、参数值）时重建分区会销毁正在编辑的输入框, 使连续输入中断;
+        /// 新增或删除对象、区域、参数时才需要重建。
+        /// </para>
         /// </remarks>
-        private void ApplyEdit(Func<Result> operation)
+        private void ApplyEdit(Func<Result> operation, bool refreshSelectionPanel = false)
         {
             if (_controller == null || operation == null)
                 return;
@@ -415,7 +528,9 @@ namespace Game.Editor.Level
             }
             MarkDirty();
             _viewport.SetData(_current);
-            RebuildInspector();
+            if (refreshSelectionPanel)
+                RebuildInspector();
+            RefreshLevelStats();
             RefreshValidation();
             SetStatus(string.Empty);
         }
@@ -481,14 +596,20 @@ namespace Game.Editor.Level
             switch (selection.Kind)
             {
                 case LevelSelectionKind.StageObject:
-                    ApplyEdit(() => _controller.RemoveObject(selection.ObjectId));
+                    ApplyEdit(() => _controller.RemoveObject(selection.ObjectId), true);
                     break;
                 case LevelSelectionKind.Zone:
-                    ApplyEdit(() => _controller.RemoveZone(selection.ZoneKind, selection.ZoneIndex));
+                    ApplyEdit(() => _controller.RemoveZone(selection.ZoneKind, selection.ZoneIndex), true);
                     break;
                 case LevelSelectionKind.ZoneVertex:
-                    ApplyEdit(() =>
-                        _controller.RemoveZoneVertex(selection.ZoneKind, selection.ZoneIndex, selection.VertexIndex)
+                    ApplyEdit(
+                        () =>
+                            _controller.RemoveZoneVertex(
+                                selection.ZoneKind,
+                                selection.ZoneIndex,
+                                selection.VertexIndex
+                            ),
+                        true
                     );
                     break;
                 default:
@@ -504,20 +625,23 @@ namespace Game.Editor.Level
             if (_controller == null)
                 return;
             LevelSelection inserted = LevelSelection.None;
-            ApplyEdit(() =>
-            {
-                Result result = _controller.InsertZoneVertex(
-                    request.ZoneKind,
-                    request.ZoneIndex,
-                    request.InsertIndex,
-                    request.Position,
-                    out LevelSelection selection
-                );
-                inserted = selection;
-                return result;
-            });
+            ApplyEdit(
+                () =>
+                {
+                    Result result = _controller.InsertZoneVertex(
+                        request.ZoneKind,
+                        request.ZoneIndex,
+                        request.InsertIndex,
+                        request.Position,
+                        out LevelSelection selection
+                    );
+                    inserted = selection;
+                    return result;
+                },
+                true
+            );
             if (!inserted.IsNone)
-                _viewport.SetSelection(inserted);
+                SelectInViewport(inserted);
         }
 
         /// <summary>在当前视口中心新增一个矩形区域。</summary>
@@ -533,21 +657,24 @@ namespace Game.Editor.Level
             const float halfWidth = 4f;
             const float halfHeight = 3f;
             LevelSelection created = LevelSelection.None;
-            ApplyEdit(() =>
-            {
-                Result result = _controller.AddRectZone(
-                    kind,
-                    center.x - halfWidth,
-                    center.y - halfHeight,
-                    center.x + halfWidth,
-                    center.y + halfHeight,
-                    out LevelSelection selection
-                );
-                created = selection;
-                return result;
-            });
+            ApplyEdit(
+                () =>
+                {
+                    Result result = _controller.AddRectZone(
+                        kind,
+                        center.x - halfWidth,
+                        center.y - halfHeight,
+                        center.x + halfWidth,
+                        center.y + halfHeight,
+                        out LevelSelection selection
+                    );
+                    created = selection;
+                    return result;
+                },
+                true
+            );
             if (!created.IsNone)
-                _viewport.SetSelection(created);
+                SelectInViewport(created);
         }
 
         /// <summary>按调色板条目在视口中心放置起点、终点或官方对象。</summary>
@@ -564,54 +691,169 @@ namespace Game.Editor.Level
             switch (entry.Kind)
             {
                 case PaletteEntryKind.SpawnPoint:
-                    ApplyEdit(() => _controller.SetStartPoint(_viewport.ViewCenter, 0f));
-                    _viewport.SetSelection(LevelSelection.SpawnPoint());
+                    ApplyEdit(() => _controller.SetStartPoint(_viewport.ViewCenter, 0f), true);
+                    SelectInViewport(LevelSelection.SpawnPoint());
                     break;
                 case PaletteEntryKind.GoalPoint:
-                    ApplyEdit(() => _controller.SetGoalPoint(_viewport.ViewCenter, 2f, 2f));
-                    _viewport.SetSelection(LevelSelection.GoalPoint());
+                    ApplyEdit(() => _controller.SetGoalPoint(_viewport.ViewCenter, 2f, 2f), true);
+                    SelectInViewport(LevelSelection.GoalPoint());
                     break;
                 default:
                     LevelSelection created = LevelSelection.None;
-                    ApplyEdit(() =>
-                    {
-                        Result result = _controller.AddObject(
-                            entry.PrefabId,
-                            _viewport.ViewCenter,
-                            out LevelSelection value
-                        );
-                        created = value;
-                        return result;
-                    });
+                    ApplyEdit(
+                        () =>
+                        {
+                            Result result = _controller.AddObject(
+                                entry.PrefabId,
+                                _viewport.ViewCenter,
+                                out LevelSelection value
+                            );
+                            created = value;
+                            return result;
+                        },
+                        true
+                    );
                     if (!created.IsNone)
-                        _viewport.SetSelection(created);
+                        SelectInViewport(created);
                     break;
             }
         }
 
-        /// <summary>刷新校验面板; 无问题时清空显示。</summary>
+        /// <summary>重建"关卡"分区: 只读标识、可编辑元数据与内容统计。</summary>
+        /// <remarks>
+        /// 关卡 ID 是内容稳定标识, 会进入存档与解锁记录, 因此只读; 改 ID 等价于新建关卡。
+        /// 本方法只在切换关卡时调用, 元数据编辑走 <see cref="Mutate"/>, 否则每次按键都会丢掉输入焦点。
+        /// </remarks>
+        private void RebuildLevelSection()
+        {
+            if (_levelContainer == null)
+                return;
+            _levelContainer.Clear();
+            LevelDefinition definition = _current?.Definition;
+            if (definition == null)
+            {
+                _levelContainer.Add(new Label("未打开关卡。"));
+                return;
+            }
+
+            _levelIdLabel = new Label(definition.LevelId ?? string.Empty);
+            _levelIdLabel.style.unityFontStyleAndWeight = FontStyle.Bold;
+            _levelContainer.Add(MakeCaptionRow("关卡 ID", _levelIdLabel));
+
+            _mapIdField = new TextField("所属地图");
+            _mapIdField.value = definition.MapId ?? string.Empty;
+            _mapIdField.RegisterValueChangedCallback(evt => Mutate(d => d.MapId = evt.newValue));
+            _levelContainer.Add(_mapIdField);
+
+            _displayNameKeyField = new TextField("显示名称键");
+            _displayNameKeyField.value = definition.DisplayNameKey ?? string.Empty;
+            _displayNameKeyField.RegisterValueChangedCallback(evt => Mutate(d => d.DisplayNameKey = evt.newValue));
+            _levelContainer.Add(_displayNameKeyField);
+
+            _capacityField = new IntegerField("容量上限");
+            _capacityField.value = definition.CapacityLimit;
+            _capacityField.RegisterValueChangedCallback(OnCapacityChanged);
+            _levelContainer.Add(_capacityField);
+
+            _levelStatsLabel = new Label();
+            _levelStatsLabel.style.fontSize = 10f;
+            _levelStatsLabel.style.color = new Color(0.6f, 0.63f, 0.7f);
+            _levelStatsLabel.style.marginTop = 2f;
+            _levelContainer.Add(_levelStatsLabel);
+            RefreshLevelStats();
+        }
+
+        /// <summary>处理容量上限变化; 负容量无意义, 夹取到零并回写显示值。</summary>
+        /// <param name="evt">数值变化事件。</param>
+        private void OnCapacityChanged(ChangeEvent<int> evt)
+        {
+            int clamped = Mathf.Max(0, evt.newValue);
+            if (clamped != evt.newValue && _capacityField != null)
+                _capacityField.SetValueWithoutNotify(clamped);
+            Mutate(d => d.CapacityLimit = clamped);
+        }
+
+        /// <summary>刷新"关卡"分区的内容统计行。</summary>
+        private void RefreshLevelStats()
+        {
+            if (_levelStatsLabel == null)
+                return;
+            LevelDefinition definition = _current?.Definition;
+            if (definition == null)
+            {
+                _levelStatsLabel.text = string.Empty;
+                return;
+            }
+            int vertexCount = CountZoneVertices(definition.DeployableZones);
+            vertexCount += CountZoneVertices(definition.ForbiddenZones);
+            _levelStatsLabel.text =
+                $"修订 {_current.ContentRevision} · 对象 {definition.Objects?.Count ?? 0}"
+                + $" · 区域顶点 {vertexCount} · 容量 {definition.CapacityLimit}";
+        }
+
+        /// <summary>统计一组合法区域的顶点总数。</summary>
+        /// <param name="zones">区域集合; 可为 null。</param>
+        /// <returns>顶点总数。</returns>
+        private static int CountZoneVertices(List<ZoneData> zones)
+        {
+            if (zones == null)
+                return 0;
+            int total = 0;
+            foreach (ZoneData zone in zones)
+                total += zone?.Vertices?.Count ?? 0;
+            return total;
+        }
+
+        /// <summary>创建一行"标题 + 内容"的只读信息行。</summary>
+        /// <param name="caption">左侧标题。</param>
+        /// <param name="content">右侧内容元素; 会随行宽拉伸。</param>
+        /// <returns>信息行元素。</returns>
+        private static VisualElement MakeCaptionRow(string caption, VisualElement content)
+        {
+            var row = new VisualElement();
+            row.style.flexDirection = FlexDirection.Row;
+            var label = new Label(caption);
+            label.style.width = 70f;
+            label.style.unityTextAlign = TextAnchor.MiddleLeft;
+            content.style.flexGrow = 1f;
+            row.Add(label);
+            row.Add(content);
+            return row;
+        }
+
+        /// <summary>刷新校验分区; 无问题时显示通过提示。</summary>
+        /// <remarks>
+        /// 每条问题都是按钮, 点击后把视口选中项跳到对应目标, 与开发计划 C31A 的
+        /// "从编辑器错误跳到对应配置"一致。
+        /// </remarks>
         private void RefreshValidation()
         {
             if (_validationContainer == null)
                 return;
             _validationContainer.Clear();
             IReadOnlyList<LevelValidationIssue> issues = LevelEditValidator.Validate(_current);
+            if (_current?.Definition == null)
+            {
+                _validationContainer.Add(new Label("未打开关卡, 无校验结果。"));
+                return;
+            }
             if (LevelEditValidator.IsValid(issues))
             {
-                var ok = new Label("校验通过");
+                var ok = new Label("✔ 校验通过");
                 ok.style.color = new Color(0.5f, 0.85f, 0.5f);
                 _validationContainer.Add(ok);
                 return;
             }
-            var header = new Label($"校验发现 {issues.Count} 个问题");
+            var header = new Label($"✖ 校验发现 {issues.Count} 个问题");
             header.style.unityFontStyleAndWeight = FontStyle.Bold;
             header.style.color = new Color(1f, 0.6f, 0.5f);
             _validationContainer.Add(header);
             foreach (LevelValidationIssue issue in issues)
             {
                 LevelSelection target = issue.Target;
-                var button = new Button(() => _viewport.SetSelection(target)) { text = "→ " + issue.Message };
+                var button = new Button(() => SelectInViewport(target)) { text = "→ " + issue.Message };
                 button.style.unityTextAlign = TextAnchor.MiddleLeft;
+                button.style.whiteSpace = WhiteSpace.Normal;
                 button.style.marginBottom = 1f;
                 _validationContainer.Add(button);
             }
@@ -619,13 +861,18 @@ namespace Game.Editor.Level
 
         /// <summary>在原位修改当前关卡数据并标记脏状态。</summary>
         /// <param name="mutate">修改委托。</param>
+        /// <remarks>
+        /// 只刷新统计与校验, 不重建"关卡"分区: 重建会销毁正在输入的字段, 使光标在每次按键后丢失。
+        /// 容量上限会立即参与校验（放置费用不得超过容量）, 所以校验必须跟着刷新。
+        /// </remarks>
         private void Mutate(Action<LevelDefinition> mutate)
         {
             if (_current?.Definition == null)
                 return;
             mutate(_current.Definition);
             MarkDirty();
-            RebuildInspector();
+            RefreshLevelStats();
+            RefreshValidation();
         }
 
         /// <summary>标记当前关卡存在未保存修改。</summary>
@@ -684,7 +931,9 @@ namespace Game.Editor.Level
                     BuildWorldBoundsInspector(definition);
                     break;
                 default:
-                    _inspectorContainer.Add(new Label("(未选中) 用上方按钮新增区域或对象, 或点击视口中的已有内容。"));
+                    _inspectorContainer.Add(
+                        new Label("(未选中) 在「添加」分区新增区域或对象, 或点击视口中的已有内容。")
+                    );
                     break;
             }
         }
@@ -769,7 +1018,7 @@ namespace Game.Editor.Level
                         ApplyEdit(() => _controller.SetObjectParameter(target.ObjectId, captured.Key, evt.newValue))
                     );
                     var remove = new Button(() =>
-                        ApplyEdit(() => _controller.RemoveObjectParameter(target.ObjectId, captured.Key))
+                        ApplyEdit(() => _controller.RemoveObjectParameter(target.ObjectId, captured.Key), true)
                     )
                     {
                         text = "×",
@@ -788,7 +1037,7 @@ namespace Game.Editor.Level
                         string key = PromptForParameterKey();
                         if (string.IsNullOrWhiteSpace(key))
                             return;
-                        ApplyEdit(() => _controller.SetObjectParameter(target.ObjectId, key, string.Empty));
+                        ApplyEdit(() => _controller.SetObjectParameter(target.ObjectId, key, string.Empty), true);
                     }
                 )
             );
@@ -806,7 +1055,7 @@ namespace Game.Editor.Level
                 _inspectorContainer.Add(
                     MakeButton(
                         "在此创建起点",
-                        () => ApplyEdit(() => _controller.SetStartPoint(_viewport.ViewCenter, 0f))
+                        () => ApplyEdit(() => _controller.SetStartPoint(_viewport.ViewCenter, 0f), true)
                     )
                 );
                 return;
@@ -828,7 +1077,9 @@ namespace Game.Editor.Level
                         ApplyEdit(() => _controller.SetStartPoint(new Vector2(start.PositionX, start.PositionY), value))
                 )
             );
-            _inspectorContainer.Add(MakeButton("删除起点", () => ApplyEdit(() => _controller.RemoveStartPoint())));
+            _inspectorContainer.Add(
+                MakeButton("删除起点", () => ApplyEdit(() => _controller.RemoveStartPoint(), true))
+            );
         }
 
         /// <summary>构建终点属性面板。</summary>
@@ -843,7 +1094,7 @@ namespace Game.Editor.Level
                 _inspectorContainer.Add(
                     MakeButton(
                         "在此创建终点",
-                        () => ApplyEdit(() => _controller.SetGoalPoint(_viewport.ViewCenter, 2f, 2f))
+                        () => ApplyEdit(() => _controller.SetGoalPoint(_viewport.ViewCenter, 2f, 2f), true)
                     )
                 );
                 return;
@@ -866,7 +1117,7 @@ namespace Game.Editor.Level
                         ApplyEdit(() => _controller.SetGoalPoint(new Vector2(goal.PositionX, goal.PositionY), w, h))
                 )
             );
-            _inspectorContainer.Add(MakeButton("删除终点", () => ApplyEdit(() => _controller.RemoveGoalPoint())));
+            _inspectorContainer.Add(MakeButton("删除终点", () => ApplyEdit(() => _controller.RemoveGoalPoint(), true)));
         }
 
         /// <summary>构建区域顶点属性面板。</summary>
@@ -909,8 +1160,14 @@ namespace Game.Editor.Level
                 MakeButton(
                     "删除该顶点",
                     () =>
-                        ApplyEdit(() =>
-                            _controller.RemoveZoneVertex(selection.ZoneKind, selection.ZoneIndex, selection.VertexIndex)
+                        ApplyEdit(
+                            () =>
+                                _controller.RemoveZoneVertex(
+                                    selection.ZoneKind,
+                                    selection.ZoneIndex,
+                                    selection.VertexIndex
+                                ),
+                            true
                         )
                 )
             );
@@ -936,7 +1193,7 @@ namespace Game.Editor.Level
             _inspectorContainer.Add(
                 MakeButton(
                     "删除区域",
-                    () => ApplyEdit(() => _controller.RemoveZone(selection.ZoneKind, selection.ZoneIndex))
+                    () => ApplyEdit(() => _controller.RemoveZone(selection.ZoneKind, selection.ZoneIndex), true)
                 )
             );
         }
@@ -1024,6 +1281,19 @@ namespace Game.Editor.Level
         /// <summary>询问新参数键名。</summary>
         /// <returns>键名; 取消或为空时返回空字符串。</returns>
         private static string PromptForParameterKey() => PromptWindow.Show("新增参数", "参数键名", string.Empty);
+
+        /// <summary>在视口中选中一个编辑目标并同步"选中项"分区。</summary>
+        /// <param name="selection">要选中的目标。</param>
+        /// <remarks>
+        /// <see cref="LevelViewportElement.SetSelection"/> 刻意不触发 <c>SelectionChanged</c>,
+        /// 以免与窗口内部的选中处理互相回调; 因此窗口主动选中时必须自行重建属性面板,
+        /// 否则会出现"视口已选中但属性栏仍显示旧目标"。
+        /// </remarks>
+        private void SelectInViewport(LevelSelection selection)
+        {
+            _viewport.SetSelection(selection);
+            RebuildInspector();
+        }
 
         /// <summary>设置底部状态栏文本。</summary>
         /// <param name="message">状态文本。</param>
