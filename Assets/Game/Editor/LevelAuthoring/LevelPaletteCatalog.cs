@@ -54,7 +54,7 @@ namespace Game.Editor.Level
     /// </summary>
     /// <remarks>
     /// C20 只提供占位条目: 预制体稳定 ID 已按内容命名约定固定, 但对应的正式预制体
-    /// 由后续周期的美术与内容流水线提供。视口按 <see cref="StageObjectData.PrefabId"/>
+    /// 由后续周期的美术与内容流水线提供。视口按 <see cref="Game.Contracts.Content.StageObjectData.PrefabId"/>
     /// 之外的对象标识绘制占位图形, 不依赖预制体实际存在。
     /// </remarks>
     public static class LevelPaletteCatalog
