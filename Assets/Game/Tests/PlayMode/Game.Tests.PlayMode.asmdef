@@ -3,9 +3,11 @@
     "rootNamespace": "Game.Tests.PlayMode",
     "references": [
         "Game.Bootstrap",
+        "Game.Content",
         "Game.Contracts",
         "Game.Foundation",
         "Game.Flow",
+        "Game.Gameplay",
         "Game.Presentation"
     ],
     "includePlatforms": [],
