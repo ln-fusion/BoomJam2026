@@ -54,7 +54,7 @@ namespace Game.Tests.PlayMode
             _world = result.Value;
             Assert.That(_world.Scene.IsValid(), Is.True);
             Assert.That(_world.Scene.name, Does.StartWith(StageWorldBuilder.SceneNamePrefix));
-            Assert.That(_world.PhysicsScene.IsValid(), Is.True, "本地物理 Scene 必须可用于显式步进。");
+            Assert.That(_world.Scene.GetPhysicsScene2D().IsValid(), Is.True, "本地物理 Scene 必须可用于显式步进。");
             yield return null;
         }
 
@@ -204,7 +204,7 @@ namespace Game.Tests.PlayMode
 
             Assert.That(_world.Objects, Is.Empty);
             Assert.That(_world.Scene.IsValid(), Is.True);
-            Assert.That(_world.PhysicsScene.IsValid(), Is.True);
+            Assert.That(_world.Scene.GetPhysicsScene2D().IsValid(), Is.True);
             yield return null;
         }
 
@@ -260,6 +260,29 @@ namespace Game.Tests.PlayMode
             // Scene.IsValid() 是可靠判据; PhysicsScene2D.IsValid() 对零值句柄仍返回 true, 不能用作判据。
             Assert.That(world.Scene.IsValid(), Is.False);
             Assert.That(world.Objects, Is.Empty);
+        }
+
+        /// <summary>
+        /// 释放后的世界必须拒绝步进本地物理, 而不是落到零值句柄所指的默认场景上。
+        /// </summary>
+        /// <remarks>
+        /// 零值 <c>PhysicsScene2D</c> 句柄的 <c>IsValid()</c> 返回 true 且指向默认场景,
+        /// 单靠句柄无法判断能否步进; 世界以承载 Scene 的有效性把守这一步, 因此断言必须落在返回值上。
+        /// </remarks>
+        [UnityTest]
+        public IEnumerator Dispose_RejectsPhysicsStepping()
+        {
+            StageWorldBuilder builder = CreateBuilder(("official.prefab.ground", false));
+            IStageWorld world = BuildOrFail(
+                builder,
+                CreateDefinition(MakeObject("object.a", "official.prefab.ground"))
+            );
+            Assert.That(world.Physics.Simulate(1.0 / 60.0), Is.True, "存活世界的本地物理必须可以步进。");
+
+            world.Dispose();
+
+            Assert.That(world.Physics.Simulate(1.0 / 60.0), Is.False, "已释放世界不得再步进任何物理。");
+            yield return null;
         }
 
         /// <summary>构建世界或在失败时断言失败消息。</summary>
