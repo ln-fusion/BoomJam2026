@@ -68,26 +68,24 @@ namespace Game.Editor.Level
         }
 
         /// <summary>从关卡稳定 ID 推导所属地图标识; 无法推导时返回空字符串由人工填写。</summary>
-        /// <param name="levelId">关卡稳定 ID。</param>
-        /// <returns>地图稳定标识; 例如 official.map.test_01。</returns>
+        /// <param name="levelId">关卡稳定 ID; 形如 <c>official.level.test_01_01</c>。</param>
+        /// <returns>
+        /// 地图稳定标识, 例如 <c>official.level.test_01_01</c> 推导为 <c>official.map.test_01</c>;
+        /// 当 ID 不满足 <c>&lt;命名空间&gt;.level.&lt;地图名&gt;_&lt;关卡序号&gt;</c> 三段形式时返回空字符串。
+        /// </returns>
         private static string DeriveMapId(string levelId)
         {
             if (string.IsNullOrWhiteSpace(levelId))
                 return string.Empty;
             string[] segments = levelId.Split('.');
-            if (segments.Length < 4)
+            // 只接受 <命名空间>.level.<地图名>_<关卡序号>; 其余形态宁可留空交人工填写, 不猜。
+            if (segments.Length != 3 || segments[1] != "level")
                 return string.Empty;
             // official.level.test_01_01 -> official.map.test_01
-            int lastSegment = segments.Length - 1;
-            string levelNumber = segments[lastSegment];
-            int separator = levelNumber.LastIndexOf('_');
+            int separator = segments[2].LastIndexOf('_');
             if (separator <= 0)
                 return string.Empty;
-            return string.Join(".", segments, 0, lastSegment)
-                + "."
-                + segments[lastSegment - 1]
-                + "."
-                + levelNumber.Substring(0, separator);
+            return segments[0] + ".map." + segments[2].Substring(0, separator);
         }
     }
 }
