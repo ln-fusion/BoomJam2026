@@ -9,11 +9,11 @@ using UnityEngine;
 namespace Game.Tests.EditMode.Gameplay
 {
     /// <summary>
-    /// 验证 C23/C24 关卡会话的状态迁移、部署命令门禁与物理世界生命周期。
+    /// 验证 C23/C24/C25 关卡会话的状态迁移、部署命令门禁、物理世界生命周期与固定 Tick 循环接线。
     /// </summary>
     /// <remarks>
-    /// 世界构建使用替身, 因此本类不创建任何 Scene, 也不依赖帧与场景卸载时序;
-    /// 真实世界的创建与释放由 PlayMode 的会话测试覆盖。
+    /// 世界构建与物理步进都使用替身, 因此本类不创建任何 Scene, 也不依赖帧与场景卸载时序;
+    /// 真实世界的创建、释放与物理推进由 PlayMode 的会话与世界测试覆盖。
     /// </remarks>
     public sealed class StageSessionTests
     {
@@ -402,26 +402,116 @@ namespace Game.Tests.EditMode.Gameplay
             Assert.Throws<ArgumentNullException>(() => new StageSessionFactory(null));
         }
 
+        /// <summary>未开始模拟时不得提供循环: 驱动方因此不需要额外的状态判断。</summary>
+        [Test]
+        public void Simulation_IsNullUntilSimulationStarts()
+        {
+            StageSession session = LoadedSession(out _);
+            Assert.That(session.Simulation, Is.Null);
+
+            Assert.That(session.StartSimulation().IsSuccess, Is.True);
+            Assert.That(session.Simulation, Is.Not.Null);
+
+            Assert.That(session.StopSimulation().IsSuccess, Is.True);
+            Assert.That(session.Simulation, Is.Null);
+        }
+
+        /// <summary>开始模拟必须提供从 Tick 0 计数、且尚未步进物理的循环。</summary>
+        [Test]
+        public void StartSimulation_ProvidesLoopAtTickZero()
+        {
+            StageSession session = LoadedSession(out FakeStageWorldBuilder builder);
+
+            Assert.That(session.StartSimulation().IsSuccess, Is.True);
+
+            Assert.That(session.Simulation.CurrentTick, Is.Zero);
+            Assert.That(session.Simulation.Status, Is.EqualTo(SimulationLoopStatus.Running));
+            Assert.That(builder.Physics.SimulateCount, Is.Zero);
+        }
+
+        /// <summary>世界构建失败不得留下任何可以推进的循环。</summary>
+        [Test]
+        public void StartSimulation_WhenWorldBuildFails_LeavesNoLoop()
+        {
+            StageSession session = LoadedSession(out FakeStageWorldBuilder builder);
+            builder.FailureCode = ErrorCode.SceneLoadFailed;
+
+            StartSimulationResult result = session.StartSimulation();
+
+            Assert.That(result.IsSuccess, Is.False);
+            Assert.That(session.Simulation, Is.Null);
+        }
+
+        /// <summary>推进渲染帧必须落到本次运行的本地物理上, 并让 Tick 计数随之前进。</summary>
+        [Test]
+        public void AdvanceFrame_StepsLocalPhysicsAndAdvancesTick()
+        {
+            StageSession session = LoadedSession(
+                out FakeStageWorldBuilder builder,
+                simulationSettings: LargeBudgetSettings()
+            );
+            Assert.That(session.StartSimulation().IsSuccess, Is.True);
+
+            session.Simulation.AdvanceFrame(0.5);
+
+            Assert.That(session.Simulation.CurrentTick, Is.EqualTo(30), "60 Hz 下交付半秒应得到 30 个 Tick。");
+            Assert.That(builder.Physics.SimulateCount, Is.EqualTo(30));
+            Assert.That(builder.Physics.LastDelta, Is.EqualTo(1.0 / 60.0));
+        }
+
+        /// <summary>重新开始模拟必须得到 Tick 归零的新循环, 不复用上一轮计数。</summary>
+        [Test]
+        public void RestartSimulation_ResetsTickToZero()
+        {
+            StageSession session = LoadedSession(out _, simulationSettings: LargeBudgetSettings());
+            Assert.That(session.StartSimulation().IsSuccess, Is.True);
+            session.Simulation.AdvanceFrame(0.5);
+            Assert.That(session.Simulation.CurrentTick, Is.EqualTo(30));
+            Assert.That(session.StopSimulation().IsSuccess, Is.True);
+
+            Assert.That(session.StartSimulation().IsSuccess, Is.True);
+
+            Assert.That(session.Simulation.CurrentTick, Is.Zero);
+        }
+
         /// <summary>构造未加载的会话与记账用的世界构建器替身。</summary>
         /// <param name="builder">输出参数: 新建的世界构建器替身。</param>
         /// <param name="capacityLimit">关卡容量上限。</param>
+        /// <param name="simulationSettings">固定 Tick 循环参数; 为 null 时用会话默认值。</param>
         /// <returns>处于 Unloaded 状态的会话。</returns>
-        private static StageSession CreateSession(out FakeStageWorldBuilder builder, int capacityLimit = DefaultLimit)
+        private static StageSession CreateSession(
+            out FakeStageWorldBuilder builder,
+            int capacityLimit = DefaultLimit,
+            SimulationLoopSettings? simulationSettings = null
+        )
         {
             builder = new FakeStageWorldBuilder();
-            return new StageSession(DeploymentFixtures.Level(capacityLimit), builder);
+            return new StageSession(DeploymentFixtures.Level(capacityLimit), builder, simulationSettings);
         }
 
         /// <summary>构造已加载到 Deploying 的会话。</summary>
         /// <param name="builder">输出参数: 新建的世界构建器替身。</param>
         /// <param name="capacityLimit">关卡容量上限。</param>
+        /// <param name="simulationSettings">固定 Tick 循环参数; 为 null 时用会话默认值。</param>
         /// <returns>处于 Deploying 状态的会话。</returns>
-        private static StageSession LoadedSession(out FakeStageWorldBuilder builder, int capacityLimit = DefaultLimit)
+        private static StageSession LoadedSession(
+            out FakeStageWorldBuilder builder,
+            int capacityLimit = DefaultLimit,
+            SimulationLoopSettings? simulationSettings = null
+        )
         {
-            StageSession session = CreateSession(out builder, capacityLimit);
+            StageSession session = CreateSession(out builder, capacityLimit, simulationSettings);
             Result loaded = session.Load();
             Assert.That(loaded.IsSuccess, Is.True, loaded.Message);
             return session;
         }
+
+        /// <summary>
+        /// 单帧预算放宽后的循环参数: 默认预算只有 8 个 Tick, 会把半秒的帧截断,
+        /// 不利于断言"交付了这么多时长就该有这么多个 Tick"。
+        /// </summary>
+        /// <returns>60 Hz、单帧预算 600、落后阈值 10 秒的循环参数。</returns>
+        private static SimulationLoopSettings LargeBudgetSettings() =>
+            new SimulationLoopSettings(1.0 / 60.0, 600, 10.0);
     }
 }
