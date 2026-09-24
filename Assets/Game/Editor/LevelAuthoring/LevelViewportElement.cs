@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using Game.Contracts.Content;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -13,20 +14,32 @@ namespace Game.Editor.Level
     /// 视口只读取 <see cref="LevelAuthoringData"/> 并绘制占位图形。平移、缩放与
     /// 选择结果通过 <see cref="ViewChanged"/> 与 <see cref="SelectionChanged"/> 回传给窗口,
     /// 由窗口决定何时写回 Authoring 数据。视口自身不修改关卡数据。
+    /// <para>
+    /// 网格与世界坐标轴始终绘制, 因此无关卡或视野为空时仍能看到平移与缩放的反馈;
+    /// 取景与坐标换算全部委托给 <see cref="ViewportTransform"/>, 后者可在 EditMode 下单独测试。
+    /// </para>
+    /// <para>
+    /// 鼠标: 左键选中并拖动目标, 空白处左键或中键或 Alt+左键平移视图,
+    /// 滚轮以指针为锚点缩放, 双击区域边插入顶点, Delete 删除选中项, Esc 清除选中,
+    /// F 缩放到适应, Home 重置视图, +/- 以视口中心为锚点缩放。
+    /// </para>
     /// </remarks>
     public sealed class LevelViewportElement : VisualElement
     {
         /// <summary>世界单位到屏幕像素的缩放步进。</summary>
         public const float ZoomStep = 1.15f;
 
-        /// <summary>允许的最小缩放。</summary>
-        public const float MinZoom = 2f;
-
-        /// <summary>允许的最大缩放。</summary>
-        public const float MaxZoom = 200f;
-
         /// <summary>占位图形的默认绘制尺寸; 世界单位。</summary>
         public const float DefaultGlyphSize = 1f;
+
+        /// <summary>网格线的目标像素间距; 世界步长按 1/2/5×10^n 取最接近本值的一档。</summary>
+        public const float GridTargetPixelSpacing = 24f;
+
+        /// <summary>每隔多少条细网格线绘制一条主网格线。</summary>
+        public const int GridMajorEvery = 10;
+
+        /// <summary>单轴网格线的绘制上限; 兜底缩放异常, 避免绘制循环失控。</summary>
+        public const int MaxGridLinesPerAxis = 512;
 
         /// <summary>顶点与世界边界角手柄的命中半径; 屏幕像素。</summary>
         public const float HandleHitRadiusPixels = 7f;
@@ -38,17 +51,23 @@ namespace Game.Editor.Level
         public const float EdgeHitWidthPixels = 6f;
 
         private readonly List<StageObjectGlyph> _glyphs = new List<StageObjectGlyph>();
+        private readonly ViewportTransform _view = new ViewportTransform();
+        private readonly Label _hintLabel;
+        private readonly Label _zoomLabel;
         private LevelAuthoringData _data;
-        private float _zoom = 32f;
-        private Vector2 _pan;
         private DragMode _dragMode;
         private Vector2 _dragOrigin;
-        private Vector2 _panOrigin;
         private LevelSelection _selected = LevelSelection.None;
         private LevelSelection _dragTarget = LevelSelection.None;
         private Vector2 _dragAnchorOffset;
+        private bool _pendingFit;
 
         /// <summary>创建 2D 视口。</summary>
+        /// <remarks>
+        /// 提示与缩放读数用覆盖层标签而不是画笔绘制, 因为 <c>Painter2D</c> 不能画文字。
+        /// 两个标签都把 <c>pickingMode</c> 设为 <see cref="PickingMode.Ignore"/>:
+        /// 否则覆盖层会成为鼠标事件的目标, 视口的拾取与拖动全部失效。
+        /// </remarks>
         public LevelViewportElement()
         {
             focusable = true;
@@ -58,13 +77,39 @@ namespace Game.Editor.Level
             RegisterCallback<MouseMoveEvent>(OnMouseMove);
             RegisterCallback<MouseUpEvent>(OnMouseUp);
             RegisterCallback<KeyDownEvent>(OnKeyDown);
+            RegisterCallback<GeometryChangedEvent>(OnGeometryChanged);
+            RegisterCallback<MouseCaptureOutEvent>(OnCaptureOut);
+
+            _hintLabel = new Label { pickingMode = PickingMode.Ignore };
+            _hintLabel.style.position = Position.Absolute;
+            _hintLabel.style.left = 0f;
+            _hintLabel.style.right = 0f;
+            _hintLabel.style.top = 0f;
+            _hintLabel.style.bottom = 0f;
+            _hintLabel.style.unityTextAlign = TextAnchor.MiddleCenter;
+            _hintLabel.style.whiteSpace = WhiteSpace.Normal;
+            _hintLabel.style.paddingLeft = 16f;
+            _hintLabel.style.paddingRight = 16f;
+            _hintLabel.style.color = new Color(0.62f, 0.65f, 0.72f);
+            Add(_hintLabel);
+
+            _zoomLabel = new Label { pickingMode = PickingMode.Ignore };
+            _zoomLabel.style.position = Position.Absolute;
+            _zoomLabel.style.right = 8f;
+            _zoomLabel.style.bottom = 6f;
+            _zoomLabel.style.fontSize = 10f;
+            _zoomLabel.style.color = new Color(0.6f, 0.63f, 0.7f);
+            Add(_zoomLabel);
+
+            RefreshHint();
+            RefreshZoomLabel();
         }
 
-        /// <summary>视口中心对应的世界坐标; 随平移变化。</summary>
-        public Vector2 ViewCenter => new Vector2(-_pan.x / _zoom, _pan.y / _zoom);
+        /// <summary>视口中心对应的世界坐标; 平移视图即改写该值。</summary>
+        public Vector2 ViewCenter => _view.Center;
 
         /// <summary>当前缩放; 单位为像素每世界单位。</summary>
-        public float Zoom => _zoom;
+        public float Zoom => _view.Zoom;
 
         /// <summary>当前选中的对象稳定 ID; 未选中或选中的不是对象时为空字符串。</summary>
         /// <remarks>保留本属性用于兼容只关心对象选中的调用方。</remarks>
@@ -73,6 +118,13 @@ namespace Game.Editor.Level
 
         /// <summary>当前选中项。</summary>
         public LevelSelection Selection => _selected;
+
+        /// <summary>关卡世界边界是否完整落在当前视口内。</summary>
+        /// <remarks>
+        /// 窗口在应用保存的视口状态后用它判断取景是否仍可沿用: 关卡尺寸变大后,
+        /// 旧的取景可能把整个关卡留在视野之外, 于是仍会看到空视野。
+        /// </remarks>
+        public bool IsContentVisible => _view.ContainsWorldRect(ResolveContentBounds());
 
         /// <summary>是否允许编辑; 关闭时左键只用于平移与选中。</summary>
         public bool IsEditable { get; set; } = true;
@@ -98,18 +150,44 @@ namespace Game.Editor.Level
         {
             _data = data;
             RebuildGlyphs();
+            RefreshHint();
             MarkDirtyRepaint();
         }
 
-        /// <summary>应用保存的视口状态; 缩放非法时回退到默认值。</summary>
-        /// <param name="state">视口状态; 为 null 时使用默认值。</param>
-        public void ApplyViewState(EditorViewStateData state)
+        /// <summary>应用保存的视口状态。</summary>
+        /// <param name="state">视口状态; 为 null 时只清空选中并使用默认缩放。</param>
+        /// <returns>是否采用了保存的缩放; 返回 false 时调用方应改用缩放到适应。</returns>
+        /// <remarks>
+        /// 返回 false 有两种情况: 没有视口状态（从未保存过取景）, 或保存的缩放超出允许区间
+        /// （缺字段的旧文件里 Zoom 默认为 1, 小于下限）。此时只设置中心点, 由调用方决定取景方式,
+        /// 这样"打开关卡"不会既丢掉保存的取景, 又停在一个可能看不到任何内容的默认视野里。
+        /// </remarks>
+        public bool ApplyViewState(EditorViewStateData state)
         {
-            _zoom = state != null && state.Zoom >= MinZoom && state.Zoom <= MaxZoom ? state.Zoom : 32f;
-            Vector2 center = state != null ? new Vector2(state.ViewCenterX, state.ViewCenterY) : Vector2.zero;
-            _pan = new Vector2(-center.x * _zoom, center.y * _zoom);
-            _selected = state == null ? LevelSelection.None : state.ResolveSelection();
+            if (state == null)
+            {
+                _selected = LevelSelection.None;
+                _view.SetView(Vector2.zero, ViewportTransform.DefaultZoom);
+                return FinishViewStateChange(false);
+            }
+            _selected = state.ResolveSelection();
+            bool hasUsableZoom = state.Zoom >= ViewportTransform.MinZoom && state.Zoom <= ViewportTransform.MaxZoom;
+            _view.SetView(
+                new Vector2(state.ViewCenterX, state.ViewCenterY),
+                hasUsableZoom ? state.Zoom : ViewportTransform.DefaultZoom
+            );
+            return FinishViewStateChange(hasUsableZoom);
+        }
+
+        /// <summary>视口状态应用后的统一收尾: 刷新提示与读数并请求重绘。</summary>
+        /// <param name="hasUsableZoom">是否采用了保存的缩放。</param>
+        /// <returns>原样返回 <paramref name="hasUsableZoom"/>。</returns>
+        private bool FinishViewStateChange(bool hasUsableZoom)
+        {
+            RefreshHint();
+            RefreshZoomLabel();
             MarkDirtyRepaint();
+            return hasUsableZoom;
         }
 
         /// <summary>把当前视口与选中状态回写到视口状态对象。</summary>
@@ -118,10 +196,9 @@ namespace Game.Editor.Level
         {
             if (state == null)
                 return;
-            Vector2 center = ViewCenter;
-            state.ViewCenterX = center.x;
-            state.ViewCenterY = center.y;
-            state.Zoom = _zoom;
+            state.ViewCenterX = _view.Center.x;
+            state.ViewCenterY = _view.Center.y;
+            state.Zoom = _view.Zoom;
             state.CaptureSelection(_selected);
         }
 
@@ -130,32 +207,81 @@ namespace Game.Editor.Level
         public void SetSelection(LevelSelection selection)
         {
             _selected = selection;
+            RefreshGlyphSelection();
             MarkDirtyRepaint();
+        }
+
+        /// <summary>把视图中心移到指定世界坐标, 缩放不变。</summary>
+        /// <param name="world">新的中心世界坐标。</param>
+        public void SetViewCenter(Vector2 world)
+        {
+            _view.Center = world;
+            AfterViewCommand();
         }
 
         /// <summary>把世界坐标转换为视口本地坐标; 世界 Y 轴向上, 视口 Y 轴向下。</summary>
         /// <param name="world">世界坐标。</param>
         /// <returns>视口本地坐标。</returns>
-        public Vector2 WorldToLocal(Vector2 world) =>
-            new Vector2(world.x * _zoom + _pan.x, contentRect.height - (world.y * _zoom + _pan.y));
+        public Vector2 WorldToLocal(Vector2 world) => _view.WorldToLocal(world);
 
-        /// <summary>把视口本地坐标转换为世界坐标。</summary>
+        /// <summary>把视口本地坐标转换为世界坐标; 与 <see cref="WorldToLocal"/> 互为逆运算。</summary>
         /// <param name="local">视口本地坐标。</param>
         /// <returns>世界坐标。</returns>
-        public Vector2 LocalToWorld(Vector2 local) =>
-            new Vector2((local.x - _pan.x) / _zoom, (contentRect.height - local.y - _pan.y) / _zoom);
+        public Vector2 LocalToWorld(Vector2 local) => _view.LocalToWorld(local);
 
-        /// <summary>把视口定位到关卡世界边界中心。</summary>
+        /// <summary>把视图移到关卡世界边界的中心, 缩放不变。</summary>
         public void FocusOnContent()
         {
-            if (_data?.Definition?.WorldBounds is BoundsData bounds)
+            _view.Center = ResolveContentBounds().center;
+            AfterViewCommand();
+        }
+
+        /// <summary>缩放到刚好装下整个关卡世界边界并居中。</summary>
+        /// <remarks>
+        /// 布局尚未完成时尺寸为 0, 算不出倍率; 此时记下待办, 由 <see cref="OnGeometryChanged"/>
+        /// 在量到尺寸后补做。否则新建关卡首次打开会停在默认缩放上, 用户看到的是空视野。
+        /// </remarks>
+        public void ZoomToFitContent()
+        {
+            if (!_view.HasUsableSize)
             {
-                Vector2 center = new Vector2((bounds.MinX + bounds.MaxX) * 0.5f, (bounds.MinY + bounds.MaxY) * 0.5f);
-                _pan = new Vector2(-center.x * _zoom, center.y * _zoom);
+                _pendingFit = true;
+                return;
             }
+            _pendingFit = false;
+            _view.FitTo(ResolveContentBounds(), ViewportTransform.FitPaddingRatio);
+            AfterViewCommand();
+        }
+
+        /// <summary>把视图重置为默认缩放并对准关卡世界边界的中心。</summary>
+        public void ResetView()
+        {
+            _view.SetView(ResolveContentBounds().center, ViewportTransform.DefaultZoom);
+            AfterViewCommand();
+        }
+
+        /// <summary>视图命令执行后的统一收尾: 重绘、刷新读数并通知窗口回写视口状态。</summary>
+        private void AfterViewCommand()
+        {
             MarkDirtyRepaint();
+            RefreshZoomLabel();
             ViewChanged?.Invoke();
         }
+
+        /// <summary>关卡世界边界形成的世界矩形, 作为取景依据。</summary>
+        /// <returns>世界矩形; 边界缺失时返回以原点为中心的单位矩形。</returns>
+        private Rect ResolveContentBounds()
+        {
+            BoundsData bounds = _data?.Definition?.WorldBounds;
+            if (bounds == null)
+                return new Rect(-1f, -1f, 2f, 2f);
+            return new Rect(bounds.MinX, bounds.MinY, bounds.MaxX - bounds.MinX, bounds.MaxY - bounds.MinY);
+        }
+
+        /// <summary>每个命中容差的单位换算依据; 命中半径按像素给定, 拾取在世界空间进行。</summary>
+        /// <param name="pixels">像素长度。</param>
+        /// <returns>世界单位长度。</returns>
+        private float Tolerance(float pixels) => _view.PixelsToWorldLength(pixels);
 
         /// <summary>重建绘制缓存; 按稳定 ID 排序保证绘制顺序稳定。</summary>
         private void RebuildGlyphs()
@@ -220,15 +346,22 @@ namespace Game.Editor.Level
             _glyphs.Sort((left, right) => string.CompareOrdinal(left.ObjectId, right.ObjectId));
         }
 
-        /// <summary>绘制世界边界、区域与对象占位图形。</summary>
+        /// <summary>绘制网格、世界边界、区域与对象占位图形。</summary>
         /// <param name="context">UI Toolkit 绘制上下文。</param>
+        /// <remarks>
+        /// 网格与世界坐标轴在关卡缺失时也绘制: 视口必须始终对平移与缩放有可见反馈,
+        /// 否则空关卡下用户无法判断是"操作没生效"还是"这里本来就没内容"。
+        /// </remarks>
         private void DrawContent(MeshGenerationContext context)
         {
+            SyncViewSize();
+            Painter2D painter = context.painter2D;
+            painter.lineWidth = 1f;
+            DrawGrid(painter);
+
             LevelDefinition definition = _data?.Definition;
             if (definition == null)
                 return;
-            Painter2D painter = context.painter2D;
-            painter.lineWidth = 1f;
 
             if (definition.WorldBounds != null)
             {
@@ -267,6 +400,142 @@ namespace Game.Editor.Level
             DrawWorldBoundsHandles(painter, definition);
             DrawSelectedZoneHandles(painter, definition);
         }
+
+        /// <summary>把布局量到的尺寸同步给视图变换。</summary>
+        /// <remarks>
+        /// 视口自身不设 padding/border, 因此内容矩形就代表视口矩形; 若日后给视口加内边距,
+        /// 必须同时修正这里的取值与鼠标坐标的换算, 否则绘制与拾取会错位。
+        /// </remarks>
+        private void SyncViewSize()
+        {
+            _view.Size = contentRect.size;
+        }
+
+        /// <summary>绘制世界网格与世界坐标轴。</summary>
+        /// <param name="painter">绘制器。</param>
+        /// <remarks>
+        /// 步长按当前缩放取 1/2/5×10^n 中最接近目标像素间距的一档, 使网格在任何缩放下
+        /// 保持大致相同的视觉密度; 每 <see cref="GridMajorEvery"/> 条再画一条主网格线。
+        /// </remarks>
+        private void DrawGrid(Painter2D painter)
+        {
+            if (!_view.HasUsableSize)
+                return;
+            Vector2 min = _view.LocalToWorld(new Vector2(0f, _view.Size.y));
+            Vector2 max = _view.LocalToWorld(new Vector2(_view.Size.x, 0f));
+            float step = ResolveGridStep();
+            DrawGridLines(painter, min, max, step, new Color(0.22f, 0.22f, 0.26f));
+            DrawGridLines(painter, min, max, step * GridMajorEvery, new Color(0.3f, 0.31f, 0.36f));
+            DrawAxisLine(painter, min, max, true);
+            DrawAxisLine(painter, min, max, false);
+        }
+
+        /// <summary>选出当前缩放下视觉密度合适的网格世界步长。</summary>
+        /// <returns>世界单位步长; 恒为正且不超过缩放下的目标间距。</returns>
+        private float ResolveGridStep()
+        {
+            float raw = _view.PixelsToWorldLength(GridTargetPixelSpacing);
+            float magnitude = Mathf.Pow(10f, Mathf.Floor(Mathf.Log10(raw)));
+            float normalized = raw / magnitude;
+            float factor =
+                normalized <= 1f ? 1f
+                : normalized <= 2f ? 2f
+                : normalized <= 5f ? 5f
+                : 10f;
+            return magnitude * factor;
+        }
+
+        /// <summary>按固定世界步长绘制一族网格线。</summary>
+        /// <param name="painter">绘制器。</param>
+        /// <param name="min">可见范围的最小世界坐标。</param>
+        /// <param name="max">可见范围的最大世界坐标。</param>
+        /// <param name="step">世界单位步长。</param>
+        /// <param name="color">线条颜色。</param>
+        private void DrawGridLines(Painter2D painter, Vector2 min, Vector2 max, float step, Color color)
+        {
+            if (step <= 0f)
+                return;
+            painter.strokeColor = color;
+            int count = 0;
+            for (float x = Mathf.Ceil(min.x / step) * step; x <= max.x && count < MaxGridLinesPerAxis; x += step)
+            {
+                DrawLine(painter, new Vector2(x, min.y), new Vector2(x, max.y));
+                count++;
+            }
+            count = 0;
+            for (float y = Mathf.Ceil(min.y / step) * step; y <= max.y && count < MaxGridLinesPerAxis; y += step)
+            {
+                DrawLine(painter, new Vector2(min.x, y), new Vector2(max.x, y));
+                count++;
+            }
+        }
+
+        /// <summary>绘制一条世界坐标轴; X 轴为 y=0, Y 轴为 x=0。</summary>
+        /// <param name="painter">绘制器。</param>
+        /// <param name="min">可见范围的最小世界坐标。</param>
+        /// <param name="max">可见范围的最大世界坐标。</param>
+        /// <param name="vertical">true 绘制 Y 轴, false 绘制 X 轴。</param>
+        private void DrawAxisLine(Painter2D painter, Vector2 min, Vector2 max, bool vertical)
+        {
+            painter.strokeColor = new Color(0.4f, 0.43f, 0.52f);
+            if (vertical)
+            {
+                if (min.x <= 0f && max.x >= 0f)
+                    DrawLine(painter, new Vector2(0f, min.y), new Vector2(0f, max.y));
+                return;
+            }
+            if (min.y <= 0f && max.y >= 0f)
+                DrawLine(painter, new Vector2(min.x, 0f), new Vector2(max.x, 0f));
+        }
+
+        /// <summary>绘制一条世界坐标线段。</summary>
+        /// <param name="painter">绘制器。</param>
+        /// <param name="from">起点世界坐标。</param>
+        /// <param name="to">终点世界坐标。</param>
+        private void DrawLine(Painter2D painter, Vector2 from, Vector2 to)
+        {
+            painter.BeginPath();
+            painter.MoveTo(WorldToLocal(from));
+            painter.LineTo(WorldToLocal(to));
+            painter.Stroke();
+        }
+
+        /// <summary>刷新占位图形的选中标记; 只在选中项变化时调用, 避免重建整个绘制缓存。</summary>
+        private void RefreshGlyphSelection()
+        {
+            foreach (StageObjectGlyph glyph in _glyphs)
+                glyph.IsSelected = glyph.Selection == _selected;
+        }
+
+        /// <summary>按当前是否打开关卡刷新空心提示文本。</summary>
+        private void RefreshHint()
+        {
+            bool hasLevel = _data?.Definition != null;
+            _hintLabel.text = hasLevel
+                ? string.Empty
+                : "未打开关卡\n用工具栏「新建关卡」创建, 或在左侧列表中选择一个关卡";
+            _hintLabel.style.display = hasLevel ? DisplayStyle.None : DisplayStyle.Flex;
+        }
+
+        /// <summary>刷新右下角的缩放读数, 使缩放操作始终有数值反馈。</summary>
+        private void RefreshZoomLabel()
+        {
+            _zoomLabel.text = "缩放 " + _view.Zoom.ToString("0.#", CultureInfo.InvariantCulture) + " px/世界单位";
+        }
+
+        /// <summary>布局变化后同步尺寸; 若之前因尺寸未就绪推迟了适应, 此时补做。</summary>
+        /// <param name="evt">几何变化事件。</param>
+        private void OnGeometryChanged(GeometryChangedEvent evt)
+        {
+            SyncViewSize();
+            if (_pendingFit)
+                ZoomToFitContent();
+        }
+
+        /// <summary>鼠标捕获被外部夺走时结束拖动。</summary>
+        /// <param name="evt">捕获丢失事件。</param>
+        /// <remarks>不处理本事件会让拖动状态残留, 之后仅移动鼠标也会继续平移或拖动目标。</remarks>
+        private void OnCaptureOut(MouseCaptureOutEvent evt) => EndDrag();
 
         /// <summary>绘制区域集合; 选中区域使用高亮描边。</summary>
         /// <param name="painter">绘制器。</param>
@@ -414,21 +683,25 @@ namespace Game.Editor.Level
 
         /// <summary>处理滚轮缩放; 以指针位置为锚点。</summary>
         /// <param name="evt">滚轮事件。</param>
+        /// <remarks>
+        /// <c>WheelEvent.delta.y</c> 为正表示向上滚, 与 <c>ScrollView</c> 的约定一致, 因此向上滚为放大。
+        /// </remarks>
         private void OnWheel(WheelEvent evt)
         {
-            Vector2 anchor = evt.localMousePosition;
-            Vector2 worldBefore = LocalToWorld(anchor);
-            float factor = evt.delta.y > 0f ? ZoomStep : 1f / ZoomStep;
-            float next = Mathf.Clamp(_zoom * factor, MinZoom, MaxZoom);
-            if (Mathf.Approximately(next, _zoom))
-                return;
-            _zoom = next;
-            Vector2 worldAfter = LocalToWorld(anchor);
-            Vector2 delta = worldAfter - worldBefore;
-            _pan += new Vector2(delta.x * _zoom, -delta.y * _zoom);
-            MarkDirtyRepaint();
-            ViewChanged?.Invoke();
+            ZoomAt(evt.localMousePosition, evt.delta.y > 0f ? ZoomStep : 1f / ZoomStep);
             evt.StopPropagation();
+        }
+
+        /// <summary>在指定视口位置按倍率缩放并通知窗口; 缩放已被夹到上下限时不做任何改动。</summary>
+        /// <param name="localPosition">锚点的视口坐标。</param>
+        /// <param name="factor">缩放倍率。</param>
+        private void ZoomAt(Vector2 localPosition, float factor)
+        {
+            float before = _view.Zoom;
+            _view.ZoomBy(factor, localPosition);
+            if (Mathf.Approximately(before, _view.Zoom))
+                return;
+            AfterViewCommand();
         }
 
         /// <summary>
@@ -456,29 +729,47 @@ namespace Game.Editor.Level
                 _selected = hit;
                 if (selectionChanged)
                 {
-                    RebuildGlyphs();
+                    RefreshGlyphSelection();
                     MarkDirtyRepaint();
                     ViewChanged?.Invoke();
                     SelectionChanged?.Invoke(hit);
                 }
                 if (IsEditable && !hit.IsNone && IsDraggable(hit))
                 {
-                    _dragMode = DragMode.Item;
+                    BeginDrag(DragMode.Item, evt.localMousePosition);
                     _dragTarget = hit;
                     _dragAnchorOffset = ResolveAnchor(hit) - world;
-                    _dragOrigin = evt.localMousePosition;
-                    _panOrigin = _pan;
                     evt.StopPropagation();
                     return;
                 }
             }
             if (evt.button == 0 || evt.button == 2 || evt.button == 1)
-            {
-                _dragMode = DragMode.Pan;
-                _dragOrigin = evt.localMousePosition;
-                _panOrigin = _pan;
-            }
+                BeginDrag(DragMode.Pan, evt.localMousePosition);
             evt.StopPropagation();
+        }
+
+        /// <summary>开始一次拖动并捕获鼠标, 使指针移出视口后仍能收到移动与松开事件。</summary>
+        /// <param name="mode">拖动模式。</param>
+        /// <param name="localPosition">按下时的视口坐标。</param>
+        /// <remarks>
+        /// 不捕获鼠标时, 指针一旦离开视口就收不到 <c>MouseMoveEvent</c> 与 <c>MouseUpEvent</c>:
+        /// 拖动会在中途冻结, 在视口外松开后状态还会残留, 之后仅仅移动鼠标就会继续平移视图。
+        /// </remarks>
+        private void BeginDrag(DragMode mode, Vector2 localPosition)
+        {
+            _dragMode = mode;
+            _dragOrigin = localPosition;
+            this.CaptureMouse();
+        }
+
+        /// <summary>结束拖动并释放鼠标捕获; 已在非拖动状态时不做任何事。</summary>
+        private void EndDrag()
+        {
+            if (_dragMode == DragMode.None)
+                return;
+            _dragMode = DragMode.None;
+            _dragTarget = LevelSelection.None;
+            this.ReleaseMouse();
         }
 
         /// <summary>处理拖拽: 平移视图或移动编辑目标。</summary>
@@ -487,9 +778,16 @@ namespace Game.Editor.Level
         {
             if (_dragMode == DragMode.None)
                 return;
+            // 捕获被夺走或窗口失焦时可能收不到松开事件, 靠"无按键按下"兜底结束拖动。
+            if (evt.pressedButtons == 0)
+            {
+                EndDrag();
+                return;
+            }
             if (_dragMode == DragMode.Pan)
             {
-                _pan = _panOrigin + (evt.localMousePosition - _dragOrigin);
+                _view.PanBy(evt.localMousePosition - _dragOrigin);
+                _dragOrigin = evt.localMousePosition;
                 MarkDirtyRepaint();
                 ViewChanged?.Invoke();
                 return;
@@ -506,13 +804,15 @@ namespace Game.Editor.Level
         /// <param name="evt">鼠标事件。</param>
         private void OnMouseUp(MouseUpEvent evt)
         {
-            _dragMode = DragMode.None;
-            _dragTarget = LevelSelection.None;
+            EndDrag();
             evt.StopPropagation();
         }
 
-        /// <summary>处理键盘: Esc 清除选中, Delete 请求删除选中项。</summary>
+        /// <summary>处理键盘: Esc 清除选中, Delete 请求删除选中项, F 缩放到适应, Home 重置视图, +/- 缩放。</summary>
         /// <param name="evt">键盘事件。</param>
+        /// <remarks>
+        /// 视图快捷键让取景不依赖滚轮: 滚轮方向跟随系统设定, 而"看不到内容"必须总有确定解法。
+        /// </remarks>
         private void OnKeyDown(KeyDownEvent evt)
         {
             if (evt.keyCode == KeyCode.Escape)
@@ -520,10 +820,34 @@ namespace Game.Editor.Level
                 if (_selected.IsNone)
                     return;
                 _selected = LevelSelection.None;
-                RebuildGlyphs();
+                RefreshGlyphSelection();
                 MarkDirtyRepaint();
                 ViewChanged?.Invoke();
                 SelectionChanged?.Invoke(LevelSelection.None);
+                evt.StopPropagation();
+                return;
+            }
+            if (evt.keyCode == KeyCode.F)
+            {
+                ZoomToFitContent();
+                evt.StopPropagation();
+                return;
+            }
+            if (evt.keyCode == KeyCode.Home)
+            {
+                ResetView();
+                evt.StopPropagation();
+                return;
+            }
+            if (evt.character == '+' || evt.character == '=')
+            {
+                ZoomAt(_view.Size * 0.5f, ZoomStep);
+                evt.StopPropagation();
+                return;
+            }
+            if (evt.character == '-' || evt.character == '_')
+            {
+                ZoomAt(_view.Size * 0.5f, 1f / ZoomStep);
                 evt.StopPropagation();
                 return;
             }
@@ -549,7 +873,7 @@ namespace Game.Editor.Level
             if (definition == null)
                 return LevelSelection.None;
 
-            float handleTolerance = HandleHitRadiusPixels / Mathf.Max(_zoom, 0.0001f);
+            float handleTolerance = Tolerance(HandleHitRadiusPixels);
             LevelSelection vertexHit = HitZoneVertex(definition, world, handleTolerance);
             if (!vertexHit.IsNone)
                 return vertexHit;
@@ -608,7 +932,7 @@ namespace Game.Editor.Level
         /// <returns>命中的区域选中项; 未命中时为 <see cref="LevelSelection.None"/>。</returns>
         private LevelSelection HitZoneBody(LevelDefinition definition, Vector2 world)
         {
-            float edgeTolerance = EdgeHitWidthPixels / Mathf.Max(_zoom, 0.0001f);
+            float edgeTolerance = Tolerance(EdgeHitWidthPixels);
             if (HitZoneEdge(definition, ZoneKind.Forbidden, world, edgeTolerance, out LevelSelection edge))
                 return edge;
             if (HitZoneEdge(definition, ZoneKind.Deployable, world, edgeTolerance, out edge))
@@ -861,7 +1185,7 @@ namespace Game.Editor.Level
             if (definition == null)
                 return false;
             Vector2 world = LocalToWorld(localPosition);
-            float tolerance = EdgeHitWidthPixels / Mathf.Max(_zoom, 0.0001f);
+            float tolerance = Tolerance(EdgeHitWidthPixels);
             if (!TryFindEdge(definition, world, tolerance, out ViewportVertexInsertRequest request))
                 return false;
             VertexInsertRequested?.Invoke(request);
