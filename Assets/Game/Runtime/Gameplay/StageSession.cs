@@ -56,7 +56,8 @@ namespace Game.Gameplay
             }
             State = StageSessionState.Loading;
             // C19 最小实现: 定义的加载为同步赋值, 不进行异步 IO。
-            // C21 接入 IStageWorldBuilder 后, 这里负责构建本地物理世界。
+            // 本地物理世界不在本步骤构建——技术设计文档 §6.5 规定世界在开始模拟时创建,
+            // 因此 IStageWorldBuilder 的接入点是 C24 的 StartSimulation, 部署阶段没有物理世界。
             State = StageSessionState.Deploying;
             return Result.Success();
         }
