@@ -6,6 +6,7 @@
         "Game.Contracts",
         "Game.Foundation",
         "Game.Flow",
+        "Game.Gameplay",
         "Game.Presentation"
     ],
     "includePlatforms": [],
